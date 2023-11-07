@@ -1,0 +1,111 @@
+---
+import ToogleThemeMode from './ToogleThemeMode'
+---
+
+<header class='absolute w-full top-0 z-20'>
+  <div
+    class='px-2 relative container mx-auto w-full h-[var(--height-header)] flex justify-between'
+  >
+    <div class='w-[100px] h-[100px]'>
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        viewBox='0 0 100 120'
+        fill='currentColor'
+        class='relative mt-1 z-20'
+      >
+        <g
+          fill='none'
+          stroke='currentColor'
+          stroke-linecap='round'
+          stroke-width='8'
+        >
+          <circle
+            cx='45'
+            cy='15'
+            r='13'
+            class='hover:scale-105'
+            fill='currentColor'
+            stroke-width='0'></circle>
+          <g id='body'>
+            <path d='M 50 20 Q 36 28 39 70'></path>
+          </g>
+          <g id='right-arm'>
+            <path d='M 39 35 Q 23 40 14 73'></path>
+            <!-- <path d="M 50 73 Q 54 90 47 105" /> -->
+          </g>
+
+          <g id='right-leg'>
+            <path d='M 39 73 Q 50 70 70 73'></path>
+            <path id='right-leg-bottom' d='M 70 73 Q 74 90 67 110'></path>
+          </g>
+          <g id='left-leg'>
+            <path d='M 39 73 Q 70 40 60 50'></path>
+            <path d='M 64 50 Q 75 60 84 73' class=''></path>
+          </g>
+        </g>
+      </svg>
+    </div>
+    <ToogleThemeMode client:load />
+  </div>
+  <svg
+    class='absolute w-screen z-10 -bottom-4'
+    xmlns='http://www.w3.org/2000/svg'
+    width='100%'
+    height='20'
+    viewBox='0 0 100 20'
+    preserveAspectRatio='none'
+  >
+    <defs>
+      <filter id='pencil-effect'>
+        <feTurbulence
+          type='fractalNoise'
+          baseFrequency='0.5'
+          numOctaves='2'
+          result='noise'></feTurbulence>
+        <feDiffuseLighting
+          in='noise'
+          surfaceScale='4'
+          lighting-color='lightgray'
+          result='diffuse'
+        >
+          <feDistantLight azimuth='25' elevation='100'></feDistantLight>
+        </feDiffuseLighting>
+        <feComposite
+          in='diffuse'
+          in2='SourceGraphic'
+          operator='in'
+          result='pencil-effect'></feComposite>
+      </filter>
+    </defs>
+    <path
+      filter='url(#pencil-effect)'
+      vector-effect='non-scaling-stroke'
+      d='M 0 10 Q 10 4 30 10 Q 40 15 50 15 Q 60 10 75 20 L 100 10'
+      fill='none'
+      stroke='white'
+      stroke-width='4'></path>
+  </svg>
+</header>
+
+<style>
+  @keyframes move-right-leg-bottom {
+    0% {
+      d: path('M 70 73 Q 65 92 60 103');
+    }
+    50% {
+      d: path('M 70 73 Q 80 85 84 99');
+    }
+    100% {
+      d: path('M 70 73 Q 65 92 60 103');
+    }
+  }
+
+  #right-leg-bottom {
+    animation: move-right-leg-bottom 2.5s infinite
+      cubic-bezier(0.78, 0.11, 0.58, 0.99);
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+</style>

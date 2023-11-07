@@ -1,0 +1,64 @@
+---
+import Layout from '../layouts/Layout.astro'
+import { Input } from '@components/atoms/Input.tsx'
+import { Send } from 'lucide-react'
+import { Image } from 'astro:assets'
+import Me from '@components/draws/Me'
+import { Button } from '@components/atoms/Button'
+---
+
+<Layout title="Netoun's website">
+  <section
+    class='relative min-h-screen h-fit flex flex-col items-center justify-center gap-6 py-[calc(var(--height-header))] md:py-[calc(var(--height-header)*2)]'
+  >
+    <div class='absolute inset-0 z-[-1]'>
+      <Image
+        class='hidden dark:block w-full h-full object-cover'
+        src='/images/bg_dark.webp'
+        alt=''
+        width='1920'
+        height='1080'
+      />
+      <Image
+        class='block dark:hidden w-full h-full object-cover'
+        src='/images/bg_light.webp'
+        alt=''
+        width='1920'
+        height='1080'
+      />
+    </div>
+    <div class='mt-24 md:mt-36 relative z-10 flex flex-col items-center'>
+      <h1
+        class='text-5xl font-title max-w-[10ch] sm:max-w-[24ch] text-center leading-tight'
+      >
+        <strong>Welcome 👋</strong>
+         to my
+        <strong
+          class='md:text-secondary relative z-10 after:bg-primary after:absolute after:rounded-md after:skew-x-12 hover:after:-skew-x-12 after:z-[-1] after:-inset-[2px] after:duration-200 after:-top-2 after:right-3 px-2'
+        >
+          Personal
+        </strong> 👨‍💻 website 🌐
+      </h1>
+      <div class='relative mt-16 flex justify-center'>
+        <Me />
+      </div>
+      <div class='mt-16 text-center text-xl'>
+        <p>
+          I'm a <strong>Front End Developer</strong> from <strong>Nantes</strong
+          >
+           🇫🇷
+        </p>
+
+        <div class='mt-2 flex gap-2 flex-wrap items-center justify-center'>
+          I am working actually at
+          <div class='ml-2 flex items-center justify-center gap-2'>
+            <Input placeholder='Insert your company' />
+            <Button>
+              <Send />
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.dark {
+  background-color: var(--color-black);
+}
+
+@layer base {
+  html, body {
+    min-height: 100vh;
+    height: 100%;
+  }
+
+  :root {
+    --height-header: 80px;
+    --color-black: 0deg 0% 5%;
+    --color-white: 60deg 3% 85%;
+  }
+
+  html {
+    --color-primary: var(--color-black);
+    --color-secondary: var(--color-white);
+
+    &.dark {
+      --color-primary: var(--color-white);
+      --color-secondary: var(--color-black);
+    }
+  }
+ 
+
+
+  @font-face {
+    font-family: 'PPTelegraf';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url('/fonts/PPTelegraf-Regular.otf') format('opentype');
+  }
+  @font-face {
+    font-family: 'PPTelegraf';
+    font-style: normal;
+    font-weight: 700;
+    font-display: block;
+    src: url('/fonts/PPTelegraf-Ultrabold.otf') format('opentype');
+  }
+  @font-face {
+    font-family: 'PPTelegraf';
+    font-style: normal;
+    font-weight: 200;
+    font-display: block;
+    src: url('/fonts/PPTelegraf-Ultrabold.otf') format('opentype');
+  }
+}

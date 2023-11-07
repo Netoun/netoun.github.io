@@ -1,0 +1,23 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    // Active await au niveau de la racine, et d'autres fonctionnalités ESM modernes.
+    "target": "ESNext",
+    "module": "ESNext",
+    // Active la résolution de module en mode node, pour des importations de paquets npm.
+    "moduleResolution": "node",
+    // Active les importations de fichiers JSON.
+    "resolveJsonModule": true,
+    // Active une transpilation plus stricte pour une meilleure sortie finale.
+    "isolatedModules": true,
+    // Ajoute des définitions de type utilisé par notre intégration de Vite.
+    "types": ["vite/client"],
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["src/components/*"],
+      "@layouts/*": ["src/layouts/*"]
+    }
+  }
+}
