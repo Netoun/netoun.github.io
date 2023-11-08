@@ -1,11 +1,11 @@
 ---
-import Layout from '../layouts/Layout.astro'
-import Input from '@components/atoms/Input.astro'
-import Section from '@components/atoms/Section.astro'
-import { Send } from 'lucide-react'
-import Me from '@components/draws/Me.astro'
-import Button from '@components/atoms/Button.astro'
-import HistoryItem from '@components/HistoryItem.astro'
+import Layout from "../layouts/Layout.astro"
+import Input from "@components/atoms/Input.astro"
+import Section from "@components/atoms/Section.astro"
+import { Send } from "lucide-react"
+import Me from "@components/draws/Me.astro"
+import Button from "@components/atoms/Button.astro"
+import HistoryItem from "@components/HistoryItem.astro"
 ---
 
 <Layout title="Netoun's website">
@@ -68,6 +68,7 @@ import HistoryItem from '@components/HistoryItem.astro'
           <div class='ml-1 flex items-center justify-center gap-2'>
             <Input placeholder='Insert your company' />
             <Button>
+              <span class='sr-only'>Send</span>
               <Send />
             </Button>
           </div>
@@ -75,4 +76,38 @@ import HistoryItem from '@components/HistoryItem.astro'
       </div>
     </div>
   </Section>
+  <!-- <Section class='py-16'>
+    <div class='container mx-auto'>
+      <h2 class='mt-12 text-3xl'>
+        <strong>My</strong> adventure to be a <strong>Developer</strong>
+      </h2>
+      <div
+        class='mt-12 grid gap-8 grid-cols-3 [&>*]:col-span-2 [&>*:nth-child(even)]:col-start-2'
+      >
+        <HistoryItem title='My birth, where it all began'>
+          I was born on a stormy evening in the middle of summer, and the
+          tension was at its highest. the birth of a genius? not at all. but i
+          was cute with big cheeks.
+        </HistoryItem>
+        <HistoryItem title='Video games, the day I went dark'>
+          Les premiers signes de mon amour pour l'informatique sont apparus
+          lorsque je me suis plongé dans le monde des jeux vidéo. J'ai
+          rapidement découvert que la vraie magie se cachait derrière l'écran."
+        </HistoryItem>
+        <HistoryItem title='My studies, finding my way'>
+          Quand j'ai atterri à l'université pour des études d'informatique,
+          j'étais aussi perdu qu'un chaton dans un rayon de lasers. Pourtant,
+          j'ai décidé de devenir mon propre professeur, en jonglant avec des
+          tutoriels en ligne et en lançant des projets fous.
+        </HistoryItem>
+        <HistoryItem title='Today, my front-end routine'>
+          Et maintenant, me voilà, un développeur front-end confirmé,
+          transformant des pixels en chefs-d'œuvre interactifs, et des erreurs
+          de code en énigmes pour mon chat. J'ai appris que la programmation,
+          c'est comme un jeu vidéo géant, et je suis en train de décrocher le
+          high score.
+        </HistoryItem>
+      </div>
+    </div>
+  </Section> -->
 </Layout>
