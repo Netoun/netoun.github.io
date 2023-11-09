@@ -1,5 +1,6 @@
 ---
-import ToogleThemeMode from './ToogleThemeMode'
+import Logo from "@components/draws/Logo.astro"
+import ToogleThemeMode from "./ToogleThemeMode"
 ---
 
 <header class='absolute w-full top-0 z-20'>
@@ -45,10 +46,13 @@ import ToogleThemeMode from './ToogleThemeMode'
         </g>
       </svg>
     </div>
+    <div class='flex items-center justify-center'>
+      <Logo class='w-[50px] h-[50px]' />
+    </div>
     <ToogleThemeMode client:load />
   </div>
   <svg
-    class='absolute w-screen z-10 -bottom-4'
+    class='absolute w-full z-10 -bottom-4'
     xmlns='http://www.w3.org/2000/svg'
     width='100%'
     height='20'
@@ -90,13 +94,13 @@ import ToogleThemeMode from './ToogleThemeMode'
 <style>
   @keyframes move-right-leg-bottom {
     0% {
-      d: path('M 70 73 Q 65 92 60 103');
+      d: path("M 70 73 Q 65 92 60 103");
     }
     50% {
-      d: path('M 70 73 Q 80 85 84 99');
+      d: path("M 70 73 Q 80 85 84 99");
     }
     100% {
-      d: path('M 70 73 Q 65 92 60 103');
+      d: path("M 70 73 Q 65 92 60 103");
     }
   }
 
