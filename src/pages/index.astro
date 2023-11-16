@@ -5,15 +5,17 @@ import Section from "@components/atoms/Section.astro"
 import { Send } from "lucide-react"
 import Me from "@components/draws/Me.astro"
 import Button from "@components/atoms/Button.astro"
-import HistoryItem from "@components/HistoryItem.astro"
+import { LinkedinIcon, GithubIcon, MailIcon, TwitterIcon } from "lucide-react"
+import Tag from "@components/atoms/Tag.astro"
+import Balance from "@components/draws/Balance.astro"
 ---
 
 <Layout title='Netoun'>
   <Section
-    class='relative min-h-screen h-fit flex flex-col items-center shadow-xl justify-center gap-6 py-[calc(var(--height-header))] md:py-[calc(var(--height-header)*2)]'
+    class='relative z-[60] min-h-[900px] 2xl:min-h-[1100px] flex h-fit gap-6 py-[calc(var(--height-header)+1.5rem)]'
   >
     <div class='absolute inset-0 z-[-1]'>
-      <picture class='h-full dark:hidden'>
+      <!-- <picture class='h-full dark:hidden'>
         <img
           sizes='(max-width: 7200px) 40vw, 2880px'
           srcset='
@@ -24,6 +26,33 @@ import HistoryItem from "@components/HistoryItem.astro"
           src='/images/hero/bg_light_dswwhf_c_scale,w_2880.webp'
           alt=''
           class='w-full h-full object-cover'
+        />
+      </picture> -->
+
+      <picture class='h-full block dark:hidden'>
+        <!-- Source pour mobile en 9/16 -->
+        <source
+          media='(max-width: 767px)'
+          srcset='/images/hero/bg_light_whurz1_ar_9_16,c_fill,g_auto__c_scale,w_1080.webp'
+        />
+
+        <!-- Source pour tablette en 4/3 -->
+        <source
+          media='(min-width: 768px) and (max-width: 1023px)'
+          srcset='/images/hero/bg_light_whurz1_ar_4_3,c_fill,g_auto__c_scale,w_1186.webp'
+        />
+
+        <!-- Source pour petit desktop en 16/9 -->
+        <source
+          media='(min-width: 1024px) and (max-width: 1439px)'
+          srcset='/images/hero/bg_light_whurz1_ar_16_9,c_fill,g_auto__c_scale,w_1440.webp'
+        />
+
+        <!-- Image par défaut pour les autres cas -->
+        <img
+          src='/images/hero/bg_light_whurz1_c_scale,w_2880.webp'
+          alt="Description de l'image"
+          class='w-full h-full object-cover object-bottom drop-shadow-md'
         />
       </picture>
 
@@ -37,77 +66,149 @@ import HistoryItem from "@components/HistoryItem.astro"
             /images/hero/bg_dark_torlt3_c_scale,w_2880.webp 2880w'
           src='/images/hero/bg_dark_torlt3_c_scale,w_2880.webp'
           alt=''
-          class='w-full h-full object-cover'
+          class='w-full h-full object-cover drop-shadow-xl'
         />
       </picture>
     </div>
-    <div class='mt-16 relative z-10 flex flex-col items-center'>
-      <h1
-        class='text-4xl md:text-5xl font-title max-w-[12ch] sm:max-w-[24ch] text-center md:leading-tight'
-      >
-        <strong>Welcome 👋</strong>
-         to my
-        <strong
-          class='text-secondary relative z-10 after:bg-primary after:absolute after:rounded-md after:skew-x-12 hover:after:-skew-x-12 after:z-[-1] after:-inset-[2px] after:duration-200 after:-top-2 after:right-3 px-2'
+    <div
+      class='container my-auto mx-auto relative z-10 flex flex-col justify-center items-center xl:flex-row pt-14 xl:pt-24 2xl:pt-8 pb-24'
+    >
+      <div class='mt-12 md:mt-0 relative flex-1'>
+        <h1
+          class='mx-8 text-center relative text-6xl md:text-7xl xl:text-8xl max-w-[12ch] xl:max-w-[20ch] xl:text-start md:leading-tight xl:leading-tight'
         >
-          Personal
-        </strong> 👨‍💻 website 🌐
-      </h1>
-      <div class='relative mt-16 flex justify-center'>
+          <img
+            src='/images/sparkle.webp'
+            class='absolute -top-14 sm:-top-20 left-0 2xl:-left-16 w-8 md:w-12 animate-blink dark:invert-[1]'
+          />
+          <img
+            src='/images/highlight_hero.webp'
+            class='absolute -bottom-8 right-4 xl:-bottom-12 xl:right-20 w-8 md:w-16 [animation-delay:100ms] animate-blink dark:invert-[1]'
+          />
+
+          <strong
+            >Welcome <img
+              src='/images/coffe.webp'
+              class='w-16 md:w-32 inline-block dark:invert-[1]'
+            /></strong
+          >
+           to my
+          <strong
+            class='md:text-secondary relative z-10 md:after:bg-primary after:absolute after:rounded-md after:skew-x-12 hover:after:-skew-x-12 after:z-[-1] after:-inset-[2px] after:duration-200 after:-top-2 after:right-3 px-2'
+          >
+            Personal
+          </strong>
+          <img
+            src='/images/smile.webp'
+            class='w-14 md:w-24 inline-block dark:invert-[1]'
+          /> website
+          <div class='group inline-block w-16 md:w-24'>
+            <img
+              src='/images/bird.webp'
+              class='inline-block dark:invert-[1] group-hover:animate-ollie-skate'
+            />
+          </div>
+        </h1>
+      </div>
+      <div class='mt-36 xl:mt-0 flex-1 relative flex justify-center'>
         <Me />
       </div>
-      <div class='mt-16 text-center text-xl'>
-        <p>
-          I'm a <strong>Front End Developer</strong> from <strong>Nantes</strong
-          >
+    </div>
+  </Section>
+  <Section class='py-16 relative z-[50]'>
+    <div class='-mt-20 md:mt-0 container mx-auto relative'>
+      <div
+        class='w-[60px] md:w-[120px] aspect-[1/3] absolute -top-24 xl:-top-[max(15vh,200px)] right-12 2xl:right-48 z-[-1]'
+      >
+        <Balance />
+      </div>
+      <h2 class='text-3xl md:text-5xl font-bold'>
+        <span class='text-primary'>About</span> me
+      </h2>
+
+      <div class='mt-16 text-2xl text-start max-w-[50ch]'>
+        <p class='leading-9'>
+          Hi there, I'm <strong>Nicolas</strong>, I'm a {
+            new Date().getFullYear() - 1995
+          } years old
+          <strong>Front End Developer</strong> at <strong>Nantes</strong>
            🇫🇷
         </p>
-
-        <div class='mt-2 flex gap-2 flex-wrap items-center justify-center'>
+        <div class='mt-1 flex gap-2 flex-wrap items-center'>
           I am working actually at
-          <div class='ml-1 flex items-center justify-center gap-2'>
-            <Input placeholder='Insert your company' />
-            <Button>
+          <div class='md:ml-1 inline-flex items-center gap-2'>
+            <Input placeholder='Insert your company' class='w-full' />
+            <Button class='w-12 h-fit text-center'>
               <span class='sr-only'>Send</span>
               <Send />
             </Button>
           </div>
         </div>
       </div>
+      <div class='mt-10 flex gap-4 items-center'>
+        <img src='/images/line.webp' class='h-3 -scale-x-100 dark:invert-[1]' />
+        <a
+          href='mailto:coulonnier.nicolas.44@gmail.com'
+          target='_blank'
+          class='flex items-center gap-2'
+        >
+          <MailIcon className='w-10 h-10 hover:text-opacity-80' />
+          <span class='sr-only'>Linkedin</span>
+        </a>
+        <a
+          href='https://www.x.com/netoun'
+          target='_blank'
+          class='flex items-center gap-2'
+        >
+          <TwitterIcon className='w-10 h-10 hover:text-opacity-80' />
+          <span class='sr-only'>Linkedin</span>
+        </a>
+        <a
+          href='https://www.github.com/netoun'
+          target='_blank'
+          class='flex items-center gap-2'
+        >
+          <GithubIcon className='w-10 h-10 hover:text-opacity-80' />
+          <span class='sr-only'>Linkedin</span>
+        </a>
+
+        <a
+          href='https://www.linkedin.com/in/nicolas-coulonnier/'
+          target='_blank'
+          class='flex items-center gap-2'
+        >
+          <LinkedinIcon className='w-10 h-10 hover:text-opacity-80'>
+            <span class='sr-only'>Linkedin</span>
+          </LinkedinIcon>
+        </a>
+        <img src='/images/line.webp' class='h-3 dark:invert-[1]' />
+      </div>
+      <p class='mt-8 text-xl max-w-[90ch] leading-8'>
+        I'm passionate about <strong>web development</strong> and{" "}
+        <strong>design</strong>, I love to create beautiful and{" "}
+        <strong>performant</strong> websites. I'm focused on <strong
+          >user experience</strong
+        > and{" "}
+        <strong>accessibility</strong>. I pay special attention to
+        <strong>open source</strong> and <strong>best pratices</strong>. Because
+        it's important to question one's work, i try every day to <strong
+          >learn</strong
+        > new things and improve my <strong>skills</strong>.
+      </p>
+      <!-- <div>
+        <h3 class='mt-16 text-4xl font-bold'>My skills</h3>
+
+        <div class='mt-8'>
+          <h4 class='text-3xl font-bold'>
+            <span class='text-primary'>Front End</span> Development
+          </h4>
+          <div class='flex flex-wrap gap-4 mt-4'>
+            <Tag>Remix</Tag>
+            <Tag>Astro</Tag>
+            <Tag>Next</Tag>
+          </div>
+        </div>
+      </div> -->
     </div>
   </Section>
-  <!-- <Section class='py-16'>
-    <div class='container mx-auto'>
-      <h2 class='mt-12 text-3xl'>
-        <strong>My</strong> adventure to be a <strong>Developer</strong>
-      </h2>
-      <div
-        class='mt-12 grid gap-8 grid-cols-3 [&>*]:col-span-2 [&>*:nth-child(even)]:col-start-2'
-      >
-        <HistoryItem title='My birth, where it all began'>
-          I was born on a stormy evening in the middle of summer, and the
-          tension was at its highest. the birth of a genius? not at all. but i
-          was cute with big cheeks.
-        </HistoryItem>
-        <HistoryItem title='Video games, the day I went dark'>
-          Les premiers signes de mon amour pour l'informatique sont apparus
-          lorsque je me suis plongé dans le monde des jeux vidéo. J'ai
-          rapidement découvert que la vraie magie se cachait derrière l'écran."
-        </HistoryItem>
-        <HistoryItem title='My studies, finding my way'>
-          Quand j'ai atterri à l'université pour des études d'informatique,
-          j'étais aussi perdu qu'un chaton dans un rayon de lasers. Pourtant,
-          j'ai décidé de devenir mon propre professeur, en jonglant avec des
-          tutoriels en ligne et en lançant des projets fous.
-        </HistoryItem>
-        <HistoryItem title='Today, my front-end routine'>
-          Et maintenant, me voilà, un développeur front-end confirmé,
-          transformant des pixels en chefs-d'œuvre interactifs, et des erreurs
-          de code en énigmes pour mon chat. J'ai appris que la programmation,
-          c'est comme un jeu vidéo géant, et je suis en train de décrocher le
-          high score.
-        </HistoryItem>
-      </div>
-    </div>
-  </Section> -->
 </Layout>

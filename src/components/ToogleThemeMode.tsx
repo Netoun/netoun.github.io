@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Moon, Sun, Computer } from "lucide-react"
+import { cn } from "src/utils"
 
 const MODE = ["theme-light", "dark", "system"] as const
 
@@ -22,20 +22,27 @@ function ToogleThemeMode() {
   }, [theme])
 
   return (
-    <div className='flex gap-2 items-center'>
+    <div className='relative flex gap-4 items-center'>
+      <img
+        src='/images/highlight.webp'
+        className={cn("absolute w-14 dark:invert-[1] duration-200", {
+          "-translate-x-3": theme === "theme-light",
+          "translate-x-9": theme === "dark"
+        })}
+      />
       {MODE.map((mode) => (
         <button
           key={mode}
-          className={
-            theme === mode
-              ? "duration-200 p-1 rounded-md ring-2 ring-primary"
-              : ""
-          }
+          className={cn("duration-200")}
           onClick={() => setThemeState(mode)}
         >
           <span className='sr-only'>{mode}</span>
-          {mode === "theme-light" && <Sun />}
-          {mode === "dark" && <Moon />}
+          {mode === "theme-light" && (
+            <img src='/images/sun.webp' className='dark:invert-[1] w-9 h-9' />
+          )}
+          {mode === "dark" && (
+            <img src='/images/moon.webp' className='dark:invert-[1] w-8 h-8' />
+          )}
         </button>
       ))}
     </div>

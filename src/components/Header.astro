@@ -3,7 +3,7 @@ import Logo from "@components/draws/Logo.astro"
 import ToogleThemeMode from "./ToogleThemeMode"
 ---
 
-<header class='absolute w-full top-0 z-20'>
+<header class='absolute z-[999] w-full top-0'>
   <div
     class='px-2 relative container mx-auto w-full h-[var(--height-header)] flex justify-between'
   >
@@ -12,7 +12,7 @@ import ToogleThemeMode from "./ToogleThemeMode"
         xmlns='http://www.w3.org/2000/svg'
         viewBox='0 0 100 120'
         fill='currentColor'
-        class='relative mt-1 z-20'
+        class='group relative mt-1 z-20'
       >
         <g
           fill='none'
@@ -20,13 +20,8 @@ import ToogleThemeMode from "./ToogleThemeMode"
           stroke-linecap='round'
           stroke-width='8'
         >
-          <circle
-            cx='45'
-            cy='15'
-            r='13'
-            class='hover:scale-105'
-            fill='currentColor'
-            stroke-width='0'></circle>
+          <circle cx='45' cy='15' r='13' fill='currentColor' stroke-width='0'
+          ></circle>
           <g id='body'>
             <path d='M 50 20 Q 36 28 39 70'></path>
           </g>
@@ -47,7 +42,7 @@ import ToogleThemeMode from "./ToogleThemeMode"
       </svg>
     </div>
     <div class='flex items-center justify-center'>
-      <Logo class='w-[50px] h-[50px]' />
+      <Logo class='translate-y-1 w-[50px] h-[50px]' />
     </div>
     <ToogleThemeMode client:load />
   </div>

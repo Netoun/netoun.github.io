@@ -1,0 +1,101 @@
+---
+import { cn } from "src/utils"
+const gridSizeX = 4
+const gridSizeY = 4
+---
+
+<div
+  class={cn("game-grid")}
+  style={{
+    "--grid-size-x": gridSizeX,
+    "--grid-size-y": gridSizeY
+  }}
+>
+  {
+    Array.from({
+      length: gridSizeX * gridSizeY
+    }).map((e, i) => {
+      return (
+        <div
+          class='game-grid-case'
+          class:list={[
+            {
+              top: i < gridSizeX,
+              bottom: i > gridSizeX * (gridSizeY - 1) - 1,
+              left: i % gridSizeX === 0,
+              right: i % gridSizeX === gridSizeX - 1
+            }
+          ]}
+        >
+          {i}
+        </div>
+      )
+    })
+  }
+</div>
+
+<style>
+  .game-grid {
+    width: 400px;
+    height: 400px;
+    margin-inline: auto;
+    background: gray;
+    display: grid;
+    grid-template-columns: repeat(var(--grid-size-x), 1fr);
+    grid-template-rows: repeat(var(--grid-size-y), 1fr);
+    transform-style: preserve-3d;
+    transform: rotate3d(0.45, 1, 0.45, 200deg);
+    border-radius: 1rem;
+    gap: 0.75rem;
+  }
+
+  .game-grid-case {
+    transform-style: preserve-3d;
+    border: 1px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    position: relative;
+    background: green;
+
+    &.top {
+      border-top: none;
+    }
+
+    &.bottom {
+      border-bottom: none;
+    }
+
+    &.left {
+      border-left: none;
+    }
+
+    &.right {
+      border-right: none;
+    }
+
+    transition: transform 0.2s ease-in-out;
+    transform: translate3d(0, 0, -0.2rem);
+
+    &:after {
+      content: "";
+      position: absolute;
+      top: 0;
+      background: rgb(3, 102, 3);
+      right: 0;
+      bottom: 0;
+      width: 0.2rem;
+      transform: translate3d(0, 0, 0.2rem) rotate3d(0, 1, 0, 90deg);
+    }
+
+    &:hover {
+      background-color: hsl(var(--color-secondary) / 0.5);
+      transform: translate3d(0, 0, -0.5rem);
+      &::after {
+        width: 0.5rem;
+        background: gray;
+      }
+    }
+  }
+</style>
