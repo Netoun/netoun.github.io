@@ -1,13 +1,16 @@
 ---
+import { Image } from "astro:assets"
+
 import Layout from "../layouts/Layout.astro"
 import Input from "@components/atoms/Input.astro"
+import House3D from "@components/House3D.astro"
 import Section from "@components/atoms/Section.astro"
 import { Send } from "lucide-react"
 import Me from "@components/draws/Me.astro"
 import Button from "@components/atoms/Button.astro"
-import { LinkedinIcon, GithubIcon, MailIcon, TwitterIcon } from "lucide-react"
-import Tag from "@components/atoms/Tag.astro"
 import Balance from "@components/draws/Balance.astro"
+import Logo from "@components/draws/Logo.astro"
+import Socials from "@components/Socials.astro"
 ---
 
 <Layout title='Netoun'>
@@ -15,21 +18,7 @@ import Balance from "@components/draws/Balance.astro"
     class='relative z-[60] min-h-[900px] 2xl:min-h-[1100px] flex h-fit gap-6 py-[calc(var(--height-header)+1.5rem)]'
   >
     <div class='absolute inset-0 z-[-1]'>
-      <!-- <picture class='h-full dark:hidden'>
-        <img
-          sizes='(max-width: 7200px) 40vw, 2880px'
-          srcset='
-            /images/hero/bg_light_dswwhf_c_scale,w_480.webp 480w,
-            /images/hero/bg_light_dswwhf_c_scale,w_1824.webp 1824w,
-            /images/hero/bg_light_dswwhf_c_scale,w_2636.webp 2636w,
-            /images/hero/bg_light_dswwhf_c_scale,w_2880.webp 2880w'
-          src='/images/hero/bg_light_dswwhf_c_scale,w_2880.webp'
-          alt=''
-          class='w-full h-full object-cover'
-        />
-      </picture> -->
-
-      <picture class='h-full block dark:hidden'>
+      <picture class='h-full block dark:brightness-50'>
         <!-- Source pour mobile en 9/16 -->
         <source
           media='(max-width: 767px)'
@@ -49,14 +38,17 @@ import Balance from "@components/draws/Balance.astro"
         />
 
         <!-- Image par défaut pour les autres cas -->
-        <img
+        <Image
           src='/images/hero/bg_light_whurz1_c_scale,w_2880.webp'
-          alt="Description de l'image"
-          class='w-full h-full object-cover object-bottom drop-shadow-md'
+          alt='background image'
+          class='w-full h-full object-cover object-bottom drop-shadow-md dark:invert-[1]'
+          width='2880'
+          height='1620'
+          loading='eager'
         />
       </picture>
 
-      <picture class='h-full hidden dark:block'>
+      <!-- <picture class='h-full hidden dark:block'>
         <img
           sizes='(max-width: 2880px) 100vw, 2880px'
           srcset='
@@ -68,7 +60,7 @@ import Balance from "@components/draws/Balance.astro"
           alt=''
           class='w-full h-full object-cover drop-shadow-xl'
         />
-      </picture>
+      </picture> -->
     </div>
     <div
       class='container my-auto mx-auto relative z-10 flex flex-col justify-center items-center xl:flex-row pt-14 xl:pt-24 2xl:pt-8 pb-24'
@@ -115,7 +107,7 @@ import Balance from "@components/draws/Balance.astro"
       </div>
     </div>
   </Section>
-  <Section class='py-16 relative z-[50]'>
+  <Section id='about' class='py-16 relative z-[50]'>
     <div class='-mt-20 md:mt-0 container mx-auto relative'>
       <div
         class='w-[60px] md:w-[120px] aspect-[1/3] absolute -top-24 xl:-top-[max(15vh,200px)] right-12 2xl:right-48 z-[-1]'
@@ -145,70 +137,99 @@ import Balance from "@components/draws/Balance.astro"
           </div>
         </div>
       </div>
-      <div class='mt-10 flex gap-4 items-center'>
-        <img src='/images/line.webp' class='h-3 -scale-x-100 dark:invert-[1]' />
-        <a
-          href='mailto:coulonnier.nicolas.44@gmail.com'
-          target='_blank'
-          class='flex items-center gap-2'
-        >
-          <MailIcon className='w-10 h-10 hover:text-opacity-80' />
-          <span class='sr-only'>Linkedin</span>
-        </a>
-        <a
-          href='https://www.x.com/netoun'
-          target='_blank'
-          class='flex items-center gap-2'
-        >
-          <TwitterIcon className='w-10 h-10 hover:text-opacity-80' />
-          <span class='sr-only'>Linkedin</span>
-        </a>
-        <a
-          href='https://www.github.com/netoun'
-          target='_blank'
-          class='flex items-center gap-2'
-        >
-          <GithubIcon className='w-10 h-10 hover:text-opacity-80' />
-          <span class='sr-only'>Linkedin</span>
-        </a>
+      <Socials />
+      <div class='flex flex-col lg:flex-row gap-8'>
+        <div class='text-xl max-w-[60ch] leading-8 space-y-8'>
+          <h3 class='text-3xl font-bold'>Building digital web experiences</h3>
+          <p>
+            I'm passionate about <strong>web development</strong>, with a keen
+            focus on creating efficient, <strong>user-friendly</strong>
+             websites. My approach is simple: prioritize performance, user
+            experience, and <strong>accessibility</strong> in every project.
+          </p>
+          <p>
+            I pay special attention to
+            <strong>open source</strong> and <strong>best pratices</strong>.
+            Because it's important to question one's work, i try every day to <strong
+              >learn</strong
+            > new things and improve my <strong>skills</strong>.
+          </p>
 
-        <a
-          href='https://www.linkedin.com/in/nicolas-coulonnier/'
-          target='_blank'
-          class='flex items-center gap-2'
-        >
-          <LinkedinIcon className='w-10 h-10 hover:text-opacity-80'>
-            <span class='sr-only'>Linkedin</span>
-          </LinkedinIcon>
-        </a>
-        <img src='/images/line.webp' class='h-3 dark:invert-[1]' />
-      </div>
-      <p class='mt-8 text-xl max-w-[90ch] leading-8'>
-        I'm passionate about <strong>web development</strong> and{" "}
-        <strong>design</strong>, I love to create beautiful and{" "}
-        <strong>performant</strong> websites. I'm focused on <strong
-          >user experience</strong
-        > and{" "}
-        <strong>accessibility</strong>. I pay special attention to
-        <strong>open source</strong> and <strong>best pratices</strong>. Because
-        it's important to question one's work, i try every day to <strong
-          >learn</strong
-        > new things and improve my <strong>skills</strong>.
-      </p>
-      <!-- <div>
-        <h3 class='mt-16 text-4xl font-bold'>My skills</h3>
-
-        <div class='mt-8'>
-          <h4 class='text-3xl font-bold'>
-            <span class='text-primary'>Front End</span> Development
-          </h4>
-          <div class='flex flex-wrap gap-4 mt-4'>
-            <Tag>Remix</Tag>
-            <Tag>Astro</Tag>
-            <Tag>Next</Tag>
-          </div>
+          <p>
+            I construct most of the times with React framework and Typescript
+            like a
+            <a
+              href='https://remix.run/'
+              class='font-[600] underline'
+              target='_blank'
+            >
+              Remix</a
+            >
+             🎔 or
+            <a
+              class='font-[600] underline'
+              href='https://nextjs.org'
+              target='_blank'>Next</a
+            >
+             I thrive on using these cutting-edge technologies to deliver
+            exceptional digital experiences.
+          </p>
         </div>
-      </div> -->
+        <div class='flex flex-col items-center w-full'>
+          <House3D />
+        </div>
+      </div>
     </div>
   </Section>
+  <!-- <Section class='min-h-[750px]' /> -->
+  <footer class='relative min-h-[400px] px-4'>
+    <div class='absolute inset-0 z-[-1] scale-[-1]'>
+      <picture class='h-full block dark:brightness-50'>
+        <!-- Source pour mobile en 9/16 -->
+        <source
+          media='(max-width: 767px)'
+          srcset='/images/hero/bg_light_whurz1_ar_9_16,c_fill,g_auto__c_scale,w_1080.webp'
+        />
+
+        <!-- Source pour tablette en 4/3 -->
+        <source
+          media='(min-width: 768px) and (max-width: 1023px)'
+          srcset='/images/hero/bg_light_whurz1_ar_4_3,c_fill,g_auto__c_scale,w_1186.webp'
+        />
+
+        <!-- Source pour petit desktop en 16/9 -->
+        <source
+          media='(min-width: 1024px) and (max-width: 1439px)'
+          srcset='/images/hero/bg_light_whurz1_ar_16_9,c_fill,g_auto__c_scale,w_1440.webp'
+        />
+
+        <!-- Image par défaut pour les autres cas -->
+        <Image
+          src='/images/hero/bg_light_whurz1_c_scale,w_2880.webp'
+          alt='background image'
+          class='w-full h-full object-cover object-bottom drop-shadow-md dark:invert-[1]'
+          width='2880'
+          height='1620'
+          loading='eager'
+        />
+      </picture>
+    </div>
+    <div
+      class='container mx-auto pt-40 flex flex-col md:flex-row gap-12 justify-between'
+    >
+      <div class='flex flex-col gap-6'>
+        <div class='w-10 h-10'>
+          <Logo />
+        </div>
+        <div>
+          <p class='text-xl'>
+            Thanks for visiting my website, <br /> I hope you enjoyed it
+          </p>
+        </div>
+      </div>
+      <div>
+        <Socials />
+      </div>
+    </div>
+  </footer>
 </Layout>

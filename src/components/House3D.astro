@@ -1,0 +1,295 @@
+<div class='relative py-20 lg:py-0 h-full w-full flex justify-center'>
+  <div class='absolute garden h-full flex bottom-[20px] lg:bottom-[1px] left-0'>
+    <svg
+      class='w-[300px] h-[300px] mt-[-40px] ml-[-100px] md:ml-0 lg:ml-[-100px] xl:ml-0 lg:mt-auto'
+      viewBox='0 0 200 200'
+      fill='hsl(var(--color-secondary))'
+      xmlns='http://www.w3.org/2000/svg'
+    >
+      <defs>
+        <radialGradient id='half-black' cx='0%' cy='80%' fr='125%'>
+          <stop
+            offset='50%'
+            style='stop-color:hsl(var(--color-primary1)); stop-opacity:1'
+          ></stop>
+          <stop
+            offset='50%'
+            style='stop-color:hsl(var(--color-secondary)); stop-opacity:1'
+          ></stop>
+        </radialGradient>
+      </defs>
+      <path
+        id='tree'
+        d='M 60 184 L 65 184 L 65 160 C 72 170 83 160 80 150 C 85 148 91 137 76 135 C 70 121 57 126 53 135 C 45 135 39 142 48 149 C 40 158 54 166 60 160 L 60 184 Z '
+        stroke='currentColor'
+        stroke-width='1px'></path>
+
+      <path
+        id='brush'
+        d='M 107.1 184 C 133.7 184 114.1 166.3 106.4 176.8 C 116.9 157.9 98.7 150.9 93.8 169.8 C 92.4 163.5 82.6 161.4 83.3 172.6 C 83.3 167 67.2 171.9 74.2 178.2 C 63 165.6 58.1 184 74.9 184 L 87.5 184 Z'
+        stroke='currentColor'
+        stroke-width='1px'></path>
+    </svg>
+  </div>
+
+  <div class='house py-8 relative w-[100px] h-[100%] flex flex-col group'>
+    <div class='roof'>
+      <div class='roof-right'></div>
+      <div class='roof-left'></div>
+    </div>
+
+    <div class='wall'>
+      <div class='wall-right'></div>
+      <div class='wall-front'>
+        <div class='door'></div>
+        <div class='window'></div>
+      </div>
+    </div>
+
+    <div class='floor -mt-[5px]'>
+      <div class='floor-right'></div>
+      <div class='floor-face'></div>
+    </div>
+
+    <div
+      class='ground max-w-screen w-[300px] sm:w-[600px] md:w-[700px] lg:w-[300px] xl:w-[600px] mx-auto border border-primary translate-x-[-100px] sm:translate-x-[-250px] md:translate-x-[-300px] lg:translate-x-[-100px] xl:translate-x-[-50%] translate-y-2'
+    >
+    </div>
+  </div>
+</div>
+<script>
+  import { gsap } from "gsap"
+  import { ScrollTrigger } from "gsap/dist/ScrollTrigger"
+
+  gsap.registerPlugin(ScrollTrigger)
+
+  const tree = document.getElementById("tree")
+  const lengthTree = tree.getTotalLength()
+
+  tree.style.strokeDasharray = lengthTree
+  tree.style.strokeDashoffset = lengthTree
+
+  const brush = document.getElementById("brush")
+  const lengthBrush = brush.getTotalLength()
+
+  brush.style.strokeDasharray = lengthBrush
+  brush.style.strokeDashoffset = lengthBrush
+
+  const timeline = gsap.timeline({
+    scrollTrigger: {
+      trigger: ".house",
+      start: "-=100 center",
+      end: "bottom center",
+      scrub: true,
+      snap: [0, 0.1, 0.5, 0.8, 1]
+    }
+  })
+
+  timeline
+    .to(".roof", { marginBottom: 0 })
+    .to(".wall", { marginBottom: 0 })
+    .to(".floor", { marginBottom: 0 })
+    .from(".ground", { width: 0, opacity: 0 })
+
+  timeline.fromTo(
+    tree,
+    { opacity: 0, strokeDashoffset: lengthTree, fill: "none", x: 0 },
+    {
+      opacity: 1,
+      strokeDashoffset: 0,
+      duration: 1,
+      fill: "url('#half-black')",
+      x: 30
+    }
+  )
+
+  timeline.fromTo(
+    brush,
+    { opacity: 0, strokeDashoffset: lengthBrush, fill: "none", x: 20 },
+    {
+      opacity: 1,
+      strokeDashoffset: 0,
+      duration: 1,
+      fill: "url('#half-black')",
+      x: 80
+    }
+  )
+</script>
+
+<style>
+  .roof {
+    display: flex;
+
+    & > * {
+      background-color: hsl(var(--color-secondary));
+      border: 2px solid hsl(var(--color-primary));
+    }
+    height: 50px;
+
+    .roof-right {
+      width: 50px;
+      height: 50px;
+      transform: skewX(-45deg);
+    }
+
+    .roof-left {
+      width: 50px;
+      background-color: hsl(var(--color-primary));
+      height: 50px;
+      transform: skewX(45deg);
+      z-index: 100;
+    }
+  }
+
+  .wall {
+    display: flex;
+    height: 50px;
+    & > * {
+      background-color: hsl(var(--color-secondary));
+      border: 2px solid hsl(var(--color-primary));
+    }
+
+    .wall-front {
+      position: absolute;
+      width: 100px;
+      height: 50px;
+      left: -23px;
+      border-top: none;
+      z-index: 90;
+
+      &:after {
+        content: "";
+        position: absolute;
+        width: 72px;
+        height: 73px;
+        background-color: hsl(var(--color-secondary));
+        border-bottom: 2px solid hsl(var(--color-primary));
+        border-left: 2px solid hsl(var(--color-primary));
+        transform: rotate(135deg);
+        top: -35px;
+        left: 12px;
+        clip-path: polygon(0 0, 0% 0, 100% 100%, 0 100%);
+      }
+
+      .door {
+        position: absolute;
+        bottom: -2px;
+        left: 20px;
+        width: 20px;
+        height: 30px;
+        background-color: hsl(var(--color-secondary));
+        border: 2px solid hsl(var(--color-primary));
+        border-left-width: 4px;
+        border-top-width: 3px;
+
+        &:after {
+          content: "";
+          position: absolute;
+          width: 4px;
+          height: 4px;
+          background-color: hsl(var(--color-secondary));
+          border: 1px solid hsl(var(--color-primary));
+          top: 10px;
+          left: 2px;
+        }
+      }
+
+      .window {
+        position: absolute;
+        top: -23px;
+        z-index: 100;
+        left: 37px;
+        border-radius: 100%;
+        width: 20px;
+        height: 20px;
+        background-color: hsl(var(--color-secondary));
+        border: 2px solid hsl(var(--color-primary));
+        border-left-width: 5px;
+        border-top-width: 3px;
+
+        &:after {
+          content: "";
+          position: absolute;
+          width: 13px;
+          height: 2px;
+          background-color: hsl(var(--color-primary));
+          top: 6px;
+          left: 0px;
+        }
+        &:before {
+          content: "";
+          position: absolute;
+          width: 2px;
+          height: 15px;
+          background-color: hsl(var(--color-primary));
+
+          top: 0px;
+          left: 5px;
+        }
+      }
+    }
+
+    .wall-right {
+      position: absolute;
+      width: 100px;
+      height: 50px;
+      right: -20px;
+      background-color: hsl(var(--color-primary));
+
+      &:before {
+        content: "";
+        position: absolute;
+        width: 72px;
+        height: 73px;
+        background-color: hsl(var(--color-secondary));
+        border-bottom: 2px solid hsl(var(--color-primary));
+        border-left: 2px solid hsl(var(--color-primary));
+        transform: rotate(135deg);
+        top: -36px;
+        left: 12px;
+        clip-path: polygon(0 0, 0% 0, 100% 100%, 0 100%);
+        z-index: -1;
+      }
+    }
+  }
+
+  .floor {
+    display: flex;
+    top: 400px;
+    & > * {
+      background-color: hsl(var(--color-secondary));
+      border: 2px solid hsl(var(--color-primary));
+    }
+
+    .floor-face {
+      position: absolute;
+      left: -23px;
+      height: 10px;
+      width: 100px;
+    }
+
+    .floor-right {
+      position: absolute;
+      background-color: hsl(var(--color-primary));
+      width: 100px;
+      height: 10px;
+      right: -20px;
+    }
+  }
+
+  .house {
+    flex-direction: column-reverse;
+    .roof {
+      order: 3;
+      margin-bottom: 100%;
+    }
+    .wall {
+      margin-bottom: 100%;
+      order: 2;
+    }
+    .floor {
+      order: 1;
+      margin-bottom: 100%;
+    }
+  }
+</style>

@@ -38,6 +38,15 @@ const { title } = Astro.props
     <meta name='description' content='Astro description' />
     <meta name='viewport' content='width=device-width' />
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
+    <link
+      rel='preload'
+      as='image'
+      href='/images/hero/bg_light_whurz1_ar_4_3,c_fill,g_auto__c_scale,w_1186.webp'
+      imagesrcset='/images/hero/bg_light_whurz1_ar_9_16,c_fill,g_auto__c_scale,w_1080.webp, 
+                /images/hero/bg_light_whurz1_ar_16_9,c_fill,g_auto__c_scale,w_1440.webp, 
+               /images/hero/bg_light_whurz1_c_scale,w_2880.webp'
+      imagesizes='(max-width: 920px) 100vw, 920px'
+    />
     <meta name='generator' content={Astro.generator} />
     <title>{title}</title>
   </head>
