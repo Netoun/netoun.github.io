@@ -1,0 +1,46 @@
+---
+interface Props {
+  startDate: Date
+  endDate?: Date
+  title: string
+}
+
+const props = Astro.props
+
+const jobDatetime = new Intl.DateTimeFormat("en-US", {
+  day: "numeric",
+  month: "numeric",
+  year: "numeric"
+})
+const jobDate = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  year: "numeric"
+})
+---
+
+<article>
+  <div id='resume-header' class='space-y-2 py-4'>
+    <span class='font-medium text-muted-foreground'>
+      <time datetime={jobDatetime.format(props.startDate)}
+        >{jobDate.format(props.startDate)}</time
+      > -
+      {
+        props.endDate ? (
+          <time datetime={jobDatetime.format(props.endDate)}>
+            {jobDate.format(props.endDate)}
+          </time>
+        ) : (
+          "..."
+        )
+      }
+    </span>
+    <h3 class='text-2xl font-semibold text-secondary'>
+      {props.title}
+    </h3>
+  </div>
+  <div
+    class='pb-4 text-primary [&_ul]:list-inside [&_ul]:list-disc [&_ul]:py-2'
+  >
+    <slot />
+  </div>
+</article>

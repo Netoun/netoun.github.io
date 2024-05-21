@@ -1,0 +1,294 @@
+---
+import { getCollection } from "astro:content"
+import { ArrowRight, PrinterIcon } from "lucide-react"
+
+import Button from "@components/ui/button.astro"
+import Me from "../components/assets/me.astro"
+import Layout from "../layouts/Layout.astro"
+
+const allExperiences = await getCollection("experience")
+const allSchools = await getCollection("school")
+
+const myAge = new Date().getFullYear() - 1995
+
+const jobDatetime = new Intl.DateTimeFormat("en-US", {
+  day: "numeric",
+  month: "numeric",
+  year: "numeric"
+})
+const jobDate = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  year: "numeric"
+})
+---
+
+<Layout title='Netoun'>
+  <section
+    id='resume'
+    class='space-y-10 py-16 [min-height:calc(100dvh-var(--height-footer)-var(--height-header))]'
+  >
+    <Button onclick='window.print()' class='print:hidden'>
+      Print
+      <PrinterIcon size='20' className='ml-2' />
+    </Button>
+    <div
+      class='flex flex-col justify-between gap-8 md:flex-row print:flex-row print:gap-4'
+    >
+      <div class='space-y-8'>
+        <div class='space-y-6'>
+          <div
+            class='flex max-w-4xl flex-wrap items-center justify-between gap-6'
+          >
+            <div class='flex flex-1 flex-col gap-2'>
+              <h2
+                class='font-title text-6xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem]'
+              >
+                Nicolas Coulonnier
+              </h2>
+              <h3 class='text-3xl'>
+                <span class='font-medium text-secondary'
+                  >Frontend Developer</span
+                >
+              </h3>
+            </div>
+            <div
+              class='relative hidden size-32 rounded-full border bg-white p-4 text-slate-800 shadow-xl hover:animate-spin md:block'
+            >
+              <span
+                class='absolute -left-44 bottom-0 hidden font-title text-sm text-primary md:block print:hidden'
+              >
+                Me according to my niece
+                <ArrowRight size='12' className='inline-block' />
+              </span>
+              <Me />
+            </div>
+          </div>
+          <div>
+            <ul>
+              <li>
+                <strong class='font-title text-sm uppercase'>Age</strong> : {
+                  myAge
+                } years old
+              </li>
+              <li>
+                <strong class='font-title text-sm uppercase'>Location</strong> :
+                Paris, France
+              </li>
+              <li>
+                <strong class='font-title text-sm uppercase'>Email</strong> : <a
+                  href='mailto:coulonnier.nicolas.44@gmail.com'
+                >
+                  coulonnier.nicolas.44@gmail.com
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div
+            class='space-y-2
+                  text-balance
+                  pt-4
+                  text-lg
+                  text-primary
+                  md:max-w-6xl'
+          >
+            <p>
+              I'm passionate about <strong>web development</strong>, with a keen
+              focus on creating efficient, <strong>user-friendly</strong> websites.
+              My approach is simple: prioritize performance, user experience, and
+              <strong>accessibility</strong>
+              in every project.
+            </p>
+            <p class='print:hidden'>
+              I pay special attention to <strong>open source</strong> and <strong
+                >best pratices</strong
+              >. Because it's important to question one's work, i try every day
+              to learn new things and improve my skills.
+            </p>
+            <p class='print:hidden'>
+              I construct most of the times with React framework and Typescript
+              like a <strong>Remix</strong> 🎔 or Next I thrive on using these cutting-edge
+              technologies to deliver exceptional digital experiences.
+            </p>
+          </div>
+        </div>
+        <div
+          class='flex flex-col justify-between gap-4 md:flex-row print:flex-row'
+        >
+          <div class='md:max-w-5xl'>
+            <div>
+              <h2
+                class='font-title text-4xl font-medium uppercase [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem]'
+              >
+                Experience
+              </h2>
+              <div class='space-y-4 text-lg'>
+                {
+                  allExperiences
+                    .sort(
+                      (a, b) =>
+                        Number(new Date(b.data.startDate)) -
+                        Number(new Date(a.data.startDate))
+                    )
+                    .map((resume) => (
+                      <article>
+                        <div id='resume-header' class='space-y-2 py-4'>
+                          <span class='font-medium text-muted-foreground'>
+                            <time
+                              datetime={jobDatetime.format(
+                                new Date(resume.data.startDate)
+                              )}
+                            >
+                              {jobDate.format(new Date(resume.data.startDate))}
+                            </time>{" "}
+                            -
+                            {resume.data.endDate ? (
+                              <time
+                                datetime={jobDatetime.format(
+                                  new Date(resume.data.endDate)
+                                )}
+                              >
+                                {jobDate.format(new Date(resume.data.endDate))}
+                              </time>
+                            ) : (
+                              "..."
+                            )}
+                          </span>
+                          <h4 class='text-2xl'>
+                            <span class='font-semibold text-secondary [text-shadow:hsla(var(--secondary)/0.75)_0px_0px_1rem]'>
+                              {resume.data.company}
+                            </span>{" "}
+                            - <span>{resume.data.job}</span>
+                          </h4>
+                        </div>
+                        <div class='space-y-2 text-balance pb-4 text-primary [&_ul]:list-inside [&_ul]:list-disc [&_ul]:py-2'>
+                          {async () => {
+                            const { Content } = await resume.render()
+                            return <Content />
+                          }}
+                        </div>
+                      </article>
+                    ))
+                }
+              </div>
+            </div>
+            <div>
+              <h2
+                class='text-balance font-title text-4xl font-medium uppercase [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem]'
+              >
+                Schools
+              </h2>
+              <div class='space-y-4 text-lg'>
+                {
+                  allSchools
+                    .sort(
+                      (a, b) =>
+                        Number(new Date(b.data.startDate)) -
+                        Number(new Date(a.data.startDate))
+                    )
+                    .map((resume) => (
+                      <article>
+                        <div id='resume-header' class='space-y-2 py-4'>
+                          <span class='font-medium text-muted-foreground'>
+                            <time
+                              datetime={jobDatetime.format(
+                                new Date(resume.data.startDate)
+                              )}
+                            >
+                              {jobDate.format(new Date(resume.data.startDate))}
+                            </time>{" "}
+                            -
+                            {resume.data.endDate ? (
+                              <time
+                                datetime={jobDatetime.format(
+                                  new Date(resume.data.endDate)
+                                )}
+                              >
+                                {jobDate.format(new Date(resume.data.endDate))}
+                              </time>
+                            ) : (
+                              "..."
+                            )}
+                          </span>
+                          <h4 class='text-2xl'>
+                            <span class='font-semibold text-secondary [text-shadow:hsla(var(--secondary)/0.75)_0px_0px_1rem]'>
+                              {resume.data.diploma}
+                            </span>{" "}
+                            - <span>{resume.data.school}</span>
+                          </h4>
+                        </div>
+                        <div class='space-y-2 text-balance pb-4 text-primary [&_ul]:list-inside [&_ul]:list-disc [&_ul]:py-2'>
+                          {async () => {
+                            const { Content } = await resume.render()
+                            return <Content />
+                          }}
+                        </div>
+                      </article>
+                    ))
+                }
+              </div>
+            </div>
+          </div>
+          <div class='space-y-8'>
+            <div class='rounded-xl border p-6 shadow-xl print:shadow-none'>
+              <h3
+                class='font-title text-3xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem]'
+              >
+                Skills and competencies
+              </h3>
+              <p class='mt-2 text-sm'>
+                <ul>
+                  <li>
+                    <strong>Frontend</strong> : React, Remix, Python, ...
+                  </li>
+                  <li>
+                    <strong>Backend</strong> : Node, Express, Rust, Bun, ...
+                  </li>
+                  <li>
+                    <strong>Database</strong> : MongoDB, PostgreSQL, ...
+                  </li>
+                  <li>
+                    <strong>DevOps</strong> : Git, Docker, NGINX, ...
+                  </li>
+                  <li><strong>System</strong>: Linux, MacOS, Windows</li>
+                </ul>
+              </p>
+            </div>
+            <div class='rounded-xl border p-6 shadow-xl print:shadow-none'>
+              <h3
+                class='font-title text-3xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem]'
+              >
+                Miscellaneous
+              </h3>
+              <p class='mt-2 text-sm'>
+                <ul>
+                  <li>
+                    <strong>Music</strong> : Guitar, drum and music workstation,
+                    ...
+                  </li>
+                  <li>
+                    <strong>Video Games</strong> : Simulation, Strategy
+                  </li>
+                  <li>
+                    <strong>Drawing</strong> : Procreate, Blender
+                  </li>
+                </ul>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style is:global>
+    @media print {
+      html {
+        font-size: 8pt;
+      }
+    }
+    @page {
+      size: A4;
+      margin: 10%;
+    }
+  </style>
+</Layout>

@@ -1,35 +1,74 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-	darkMode: 'class',
-	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+	darkMode: ["selector"],
+	content: [
+		"./src/**/*.{ts,tsx,astro}",
+	],
 	theme: {
 		extend: {
 			fontFamily: {
-				hand: ["Caveat Brush", 'sans-serif'],
-				sans: ['"PPTelegraf"', 'sans-serif'],
+				title: ["Newsreader Variable", "serif"],
+				sans: ["Noto Sans Variable", "sans-serif"],
 			},
 			colors: {
-				primary: "hsl(var(--color-primary) / <alpha-value>)",
-				secondary: 'hsl(var(--color-secondary) / <alpha-value>)'
+				border: "hsl(var(--border))",
+				input: "hsl(var(--input))",
+				ring: "hsl(var(--ring))",
+				background: "hsl(var(--background))",
+				foreground: "hsl(var(--foreground))",
+				primary: {
+					DEFAULT: "hsl(var(--primary))",
+					foreground: "hsl(var(--primary-foreground))",
+				},
+				secondary: {
+					DEFAULT: "hsl(var(--secondary))",
+					foreground: "hsl(var(--secondary-foreground))",
+				},
+				destructive: {
+					DEFAULT: "hsl(var(--destructive))",
+					foreground: "hsl(var(--destructive-foreground))",
+				},
+				success: {
+					DEFAULT: "hsl(var(--success))",
+					foreground: "hsl(var(--success-foreground))",
+				},
+				muted: {
+					DEFAULT: "hsl(var(--muted))",
+					foreground: "hsl(var(--muted-foreground))",
+				},
+				accent: {
+					DEFAULT: "hsl(var(--accent))",
+					foreground: "hsl(var(--accent-foreground))",
+				},
+				popover: {
+					DEFAULT: "hsl(var(--popover))",
+					foreground: "hsl(var(--popover-foreground))",
+				},
+				card: {
+					DEFAULT: "hsl(var(--card))",
+					foreground: "hsl(var(--card-foreground))",
+				},
 			},
-			animation: {
-				'blink': 'blink 500ms steps(1, end) infinite',
-				'ollie-skate': 'ollie-skate 2s ease-in-out',
+			borderRadius: {
+				lg: "var(--radius)",
+				md: "calc(var(--radius) - 2px)",
+				sm: "calc(var(--radius) - 4px)",
 			},
 			keyframes: {
-				'blink': {
-					'0%, 100%': { transform: 'translate(0, 0) rotate(0)' },
-					'50%': { transform: 'translate(1.25rem, -0.75rem)' },
+				"accordion-down": {
+					from: { height: "0" },
+					to: { height: "var(--radix-accordion-content-height)" },
 				},
-				'ollie-skate': {
-					'0%': { transform: 'translate(0, 0) rotate(0)' },
-					'25%': { transform: 'translate(25vw, 1rem) rotate(-45deg)' },
-					'50%': { transform: 'translate(50vw, ) rotate(-25deg)' },
-					'75%': { transform: 'translate(75vw, 0)' },
-					'100%': { transform: 'translate(100vw, 0) rotate(0)' },
+				"accordion-up": {
+					from: { height: "var(--radix-accordion-content-height)" },
+					to: { height: "0" },
 				},
-			}
+			},
+			animation: {
+				"accordion-down": "accordion-down 0.2s ease-out",
+				"accordion-up": "accordion-up 0.2s ease-out",
+			},
 		},
 	},
-	plugins: [],
-}
+	plugins: [require("tailwindcss-animate")],
+};
