@@ -1,235 +1,104 @@
 ---
-import { Image } from "astro:assets"
+import { ArrowRight } from "lucide-react"
+import { cn } from "src/utils"
 
+import Email from "@components/icons/email.astro"
+import Linkedin from "@components/icons/linkedin.astro"
+import { buttonVariants } from "@components/ui/button.astro"
+import Github from "../components/icons/github.astro"
 import Layout from "../layouts/Layout.astro"
-import Input from "@components/atoms/Input.astro"
-import House3D from "@components/House3D.astro"
-import Section from "@components/atoms/Section.astro"
-import { Send } from "lucide-react"
-import Me from "@components/draws/Me.astro"
-import Button from "@components/atoms/Button.astro"
-import Balance from "@components/draws/Balance.astro"
-import Logo from "@components/draws/Logo.astro"
-import Socials from "@components/Socials.astro"
 ---
 
 <Layout title='Netoun'>
-  <Section
-    class='relative z-[60] min-h-[900px] 2xl:min-h-[1100px] flex h-fit gap-6 py-[calc(var(--height-header)+1.5rem)]'
+  <section
+    id='hero'
+    class='flex flex-col items-center gap-12 py-8 text-primary [min-height:calc(100dvh-var(--height-footer)-var(--height-header))] md:flex-row'
   >
-    <div class='absolute inset-0 z-[-1]'>
-      <picture class='h-full block dark:brightness-50'>
-        <!-- Source pour mobile en 9/16 -->
-        <source
-          media='(max-width: 767px)'
-          srcset='/images/hero/bg_light_whurz1_ar_9_16,c_fill,g_auto__c_scale,w_1080.webp'
-        />
-
-        <!-- Source pour tablette en 4/3 -->
-        <source
-          media='(min-width: 768px) and (max-width: 1023px)'
-          srcset='/images/hero/bg_light_whurz1_ar_4_3,c_fill,g_auto__c_scale,w_1186.webp'
-        />
-
-        <!-- Source pour petit desktop en 16/9 -->
-        <source
-          media='(min-width: 1024px) and (max-width: 1439px)'
-          srcset='/images/hero/bg_light_whurz1_ar_16_9,c_fill,g_auto__c_scale,w_1440.webp'
-        />
-
-        <!-- Image par défaut pour les autres cas -->
-        <Image
-          src='/images/hero/bg_light_whurz1_c_scale,w_2880.webp'
-          alt='background image'
-          class='w-full h-full object-cover object-bottom drop-shadow-md dark:invert-[1]'
-          width='2880'
-          height='1620'
-          loading='eager'
-        />
-      </picture>
-
-      <!-- <picture class='h-full hidden dark:block'>
-        <img
-          sizes='(max-width: 2880px) 100vw, 2880px'
-          srcset='
-            /images/hero/bg_dark_torlt3_c_scale,w_1200.webp 1200w,
-            /images/hero/bg_dark_torlt3_c_scale,w_1883.webp 1883w,
-            /images/hero/bg_dark_torlt3_c_scale,w_2521.webp 2521w,
-            /images/hero/bg_dark_torlt3_c_scale,w_2880.webp 2880w'
-          src='/images/hero/bg_dark_torlt3_c_scale,w_2880.webp'
-          alt=''
-          class='w-full h-full object-cover drop-shadow-xl'
-        />
-      </picture> -->
-    </div>
-    <div
-      class='container my-auto mx-auto relative z-10 flex flex-col justify-center items-center xl:flex-row pt-14 xl:pt-24 2xl:pt-8 pb-24'
-    >
-      <div class='mt-12 md:mt-0 relative flex-1'>
-        <h1
-          class='mx-8 text-center relative text-6xl md:text-7xl xl:text-8xl max-w-[12ch] xl:max-w-[20ch] xl:text-start md:leading-tight xl:leading-tight'
-        >
-          <img
-            src='/images/sparkle.webp'
-            class='absolute -top-14 sm:-top-20 left-0 2xl:-left-16 w-8 md:w-12 animate-blink dark:invert-[1]'
-          />
-          <img
-            src='/images/highlight_hero.webp'
-            class='absolute -bottom-8 right-4 xl:-bottom-12 xl:right-20 w-8 md:w-16 [animation-delay:100ms] animate-blink dark:invert-[1]'
-          />
-
-          <strong
-            >Welcome <img
-              src='/images/coffe.webp'
-              class='w-16 md:w-32 inline-block dark:invert-[1]'
-            /></strong
-          >
-           to my
-          <strong
-            class='md:text-secondary relative z-10 md:after:bg-primary after:absolute after:rounded-md after:skew-x-12 hover:after:-skew-x-12 after:z-[-1] after:-inset-[2px] after:duration-200 after:-top-2 after:right-3 px-2'
-          >
-            Personal
-          </strong>
-          <img
-            src='/images/smile.webp'
-            class='w-14 md:w-24 inline-block dark:invert-[1]'
-          /> website
-          <div class='group inline-block w-16 md:w-24'>
-            <img
-              src='/images/bird.webp'
-              class='inline-block dark:invert-[1] group-hover:animate-ollie-skate'
-            />
-          </div>
-        </h1>
-      </div>
-      <div class='mt-36 xl:mt-0 flex-1 relative flex justify-center'>
-        <Me />
-      </div>
-    </div>
-  </Section>
-  <Section id='about' class='py-16 relative z-[50]'>
-    <div class='-mt-20 md:mt-0 container mx-auto relative'>
-      <div
-        class='w-[60px] md:w-[120px] aspect-[1/3] absolute -top-24 xl:-top-[max(15vh,200px)] right-12 2xl:right-48 z-[-1]'
+    <div class='w-full space-y-6 md:flex-1 md:space-y-12'>
+      <h1
+        class='text-balance font-title text-6xl font-medium [text-shadow:hsla(var(--primary)/0.75)_0px_0_20px]'
       >
-        <Balance />
-      </div>
-      <h2 class='text-3xl md:text-5xl font-bold'>
-        <span class='text-primary'>About</span> me
-      </h2>
-
-      <div class='mt-16 text-2xl text-start max-w-[50ch]'>
-        <p class='leading-9'>
-          Hi there, I'm <strong>Nicolas</strong>, I'm a {
-            new Date().getFullYear() - 1995
-          } years old
-          <strong>Front End Developer</strong> at <strong>Nantes</strong>
-           🇫🇷
+        Hi, I'm Nicolas !
+        <br /> I'm a front end engineer.
+      </h1>
+      <div class='space-y-2 text-balance text-lg'>
+        <p>
+          I'm passionate about web technologies and I love to learn new things.
+          I'm always looking for new challenges and opportunities to grow. I'm
+          currently working at <a
+            class='font-medium text-secondary underline hover:text-secondary/80'
+            href='https://lonestone.io'
+            target='_blank'
+            rel='noopener noreferrer'>Lonestone</a
+          > as a Frontend Engineer.
         </p>
-        <div class='mt-1 flex gap-2 flex-wrap items-center'>
-          I am working actually at
-          <div class='md:ml-1 inline-flex items-center gap-2'>
-            <Input placeholder='Insert your company' class='w-full' />
-            <Button class='w-12 h-fit text-center'>
-              <span class='sr-only'>Send</span>
-              <Send />
-            </Button>
-          </div>
-        </div>
+        <p>
+          I created <a
+            class='font-medium text-secondary underline hover:text-secondary/80'
+            href='https://www.treashunt.fr'
+            target='_blank'
+            rel='noopener noreferrer'>Treashunt</a
+          >, a platform to to create, share, and play treasure hunt games with
+          QR codes and geolocation.
+        </p>
       </div>
-      <Socials />
-      <div class='flex flex-col lg:flex-row gap-8'>
-        <div class='text-xl max-w-[60ch] leading-8 space-y-8'>
-          <h3 class='text-3xl font-bold'>Building digital web experiences</h3>
-          <p>
-            I'm passionate about <strong>web development</strong>, with a keen
-            focus on creating efficient, <strong>user-friendly</strong>
-             websites. My approach is simple: prioritize performance, user
-            experience, and <strong>accessibility</strong> in every project.
-          </p>
-          <p>
-            I pay special attention to
-            <strong>open source</strong> and <strong>best pratices</strong>.
-            Because it's important to question one's work, i try every day to <strong
-              >learn</strong
-            > new things and improve my <strong>skills</strong>.
-          </p>
 
-          <p>
-            I construct most of the times with React framework and Typescript
-            like a
-            <a
-              href='https://remix.run/'
-              class='font-[600] underline'
-              target='_blank'
-            >
-              Remix</a
-            >
-             🎔 or
-            <a
-              class='font-[600] underline'
-              href='https://nextjs.org'
-              target='_blank'>Next</a
-            >
-             I thrive on using these cutting-edge technologies to deliver
-            exceptional digital experiences.
-          </p>
-        </div>
-        <div class='flex flex-col items-center w-full'>
-          <House3D />
-        </div>
-      </div>
-    </div>
-  </Section>
-  <!-- <Section class='min-h-[750px]' /> -->
-  <footer class='relative min-h-[400px] px-4'>
-    <div class='absolute inset-0 z-[-1] scale-[-1]'>
-      <picture class='h-full block dark:brightness-50'>
-        <!-- Source pour mobile en 9/16 -->
-        <source
-          media='(max-width: 767px)'
-          srcset='/images/hero/bg_light_whurz1_ar_9_16,c_fill,g_auto__c_scale,w_1080.webp'
-        />
+      <div class='flex flex-wrap items-center gap-4 md:gap-8'>
+        <a
+          href='/cv'
+          class={cn(
+            buttonVariants({
+              // variant: "outline",
+              size: "lg"
+            }),
+            "group"
+          )}
+          >Get my resume
+          <ArrowRight
+            className='ml-2 size-4 duration-100 group-hover:scale-110'
+          />
+        </a>
 
-        <!-- Source pour tablette en 4/3 -->
-        <source
-          media='(min-width: 768px) and (max-width: 1023px)'
-          srcset='/images/hero/bg_light_whurz1_ar_4_3,c_fill,g_auto__c_scale,w_1186.webp'
-        />
-
-        <!-- Source pour petit desktop en 16/9 -->
-        <source
-          media='(min-width: 1024px) and (max-width: 1439px)'
-          srcset='/images/hero/bg_light_whurz1_ar_16_9,c_fill,g_auto__c_scale,w_1440.webp'
-        />
-
-        <!-- Image par défaut pour les autres cas -->
-        <Image
-          src='/images/hero/bg_light_whurz1_c_scale,w_2880.webp'
-          alt='background image'
-          class='w-full h-full object-cover object-bottom drop-shadow-md dark:invert-[1]'
-          width='2880'
-          height='1620'
-          loading='eager'
-        />
-      </picture>
-    </div>
-    <div
-      class='container mx-auto pt-40 flex flex-col md:flex-row gap-12 justify-between'
-    >
-      <div class='flex flex-col gap-6'>
-        <div class='w-10 h-10'>
-          <Logo />
+        <div class='flex items-center gap-4 text-primary'>
+          <a
+            class='font-medium text-primary underline hover:text-primary/80'
+            href='https://github.com/netoun'
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            <Github class='size-8' />
+          </a>
+          <a
+            class='font-medium text-primary underline hover:text-primary/80'
+            href='https://www.linkedin.com/in/nicolas-coulonnier-66416813b'
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            <Linkedin class='size-8' />
+          </a>
+          <a
+            class='font-medium text-primary underline hover:text-primary/80'
+            href='mailto:coulonnier.nicolas.44@gmail.com'
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            <Email class='h-8 w-10' />
+          </a>
         </div>
-        <div>
-          <p class='text-xl'>
-            Thanks for visiting my website, <br /> I hope you enjoyed it
-          </p>
-        </div>
-      </div>
-      <div>
-        <Socials />
       </div>
     </div>
-  </footer>
+    <div class='relative flex-1 p-4'>
+      <div
+        class='absolute right-0 z-[-1] h-1/2 min-h-96 w-1/2 min-w-96 rounded-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary to-transparent opacity-50 blur-[12rem]'
+      >
+      </div>
+      <div class='mx-auto max-w-96'>
+        <img
+          src='https://avatars.githubusercontent.com/u/29695377?v=4'
+          alt='Netoun'
+          class='h-full w-full rounded-lg object-cover shadow-lg'
+        />
+      </div>
+    </div>
+  </section>
 </Layout>
