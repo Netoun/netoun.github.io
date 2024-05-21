@@ -1,6 +1,6 @@
 ---
+import { cn } from "@utils"
 import { ArrowRight } from "lucide-react"
-import { cn } from "src/utils"
 
 import Email from "@components/icons/email.astro"
 import Linkedin from "@components/icons/linkedin.astro"
@@ -66,6 +66,7 @@ import Layout from "../layouts/Layout.astro"
             target='_blank'
             rel='noopener noreferrer'
           >
+            <span class='sr-only'>Lien vers mon Github</span>
             <Github class='size-8' />
           </a>
           <a
@@ -74,6 +75,7 @@ import Layout from "../layouts/Layout.astro"
             target='_blank'
             rel='noopener noreferrer'
           >
+            <span class='sr-only'> Lien vers mon Linkedin</span>
             <Linkedin class='size-8' />
           </a>
           <a
@@ -82,6 +84,9 @@ import Layout from "../layouts/Layout.astro"
             target='_blank'
             rel='noopener noreferrer'
           >
+            <span class='sr-only'>
+              Email : coulonnier.nicolas.44@gmail.com</span
+            >
             <Email class='h-8 w-10' />
           </a>
         </div>

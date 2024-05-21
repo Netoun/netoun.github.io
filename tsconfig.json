@@ -16,6 +16,8 @@
     "types": ["vite/client"],
     "baseUrl": ".",
     "paths": {
+      "@utils": ["src/utils/index"],
+      "@utils/*": ["src/utils/*"],
       "@components/*": ["src/components/*"],
       "@layouts/*": ["src/layouts/*"]
     }
