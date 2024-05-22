@@ -23,7 +23,7 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
 ---
 
 <Layout
-  title='CV Nicolas Coulonnier'
+  title='Nicolas Coulonnier - CV'
   description="Nicolas Coulonnier's resume, a frontend developer based in Nantes, France."
 >
   <section
@@ -42,15 +42,17 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
           <div
             class='flex max-w-4xl flex-wrap items-center justify-between gap-6'
           >
-            <div class='flex flex-1 flex-col gap-2'>
+            <div class='flex flex-1 flex-col'>
               <h2
                 class='font-title text-6xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem]'
               >
                 Nicolas Coulonnier
               </h2>
               <h3 class='text-3xl'>
-                <span class='font-medium text-secondary'
-                  >Frontend Developer</span
+                <span
+                  class='font-medium text-secondary [text-shadow:hsla(var(--secondary)/0.75)_0px_0px_1rem] print:[text-shadow:none]'
+                >
+                  Frontend Developer</span
                 >
               </h3>
             </div>
@@ -120,7 +122,7 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
           <div class='md:max-w-5xl'>
             <div>
               <h2
-                class='font-title text-4xl font-medium uppercase [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem]'
+                class='font-title text-4xl font-medium uppercase [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem] print:[text-shadow:none]'
               >
                 Experience
               </h2>
@@ -157,7 +159,7 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
                             )}
                           </span>
                           <h4 class='text-2xl'>
-                            <span class='font-semibold text-secondary [text-shadow:hsla(var(--secondary)/0.75)_0px_0px_1rem]'>
+                            <span class='font-semibold text-secondary [text-shadow:hsla(var(--secondary)/0.75)_0px_0px_1rem] print:[text-shadow:none]'>
                               {resume.data.company}
                             </span>{" "}
                             - <span>{resume.data.job}</span>
@@ -176,7 +178,7 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
             </div>
             <div>
               <h2
-                class='text-balance font-title text-4xl font-medium uppercase [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem]'
+                class='text-balance font-title text-4xl font-medium uppercase [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem] print:[text-shadow:none]'
               >
                 Schools
               </h2>
@@ -213,7 +215,7 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
                             )}
                           </span>
                           <h4 class='text-2xl'>
-                            <span class='font-semibold text-secondary [text-shadow:hsla(var(--secondary)/0.75)_0px_0px_1rem]'>
+                            <span class='font-semibold text-secondary [text-shadow:hsla(var(--secondary)/0.75)_0px_0px_1rem] print:[text-shadow:none]'>
                               {resume.data.diploma}
                             </span>{" "}
                             - <span>{resume.data.school}</span>
@@ -238,23 +240,21 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
               >
                 Skills and competencies
               </h3>
-              <p class='mt-2 text-sm'>
-                <ul>
-                  <li>
-                    <strong>Frontend</strong> : React, Remix, Python, ...
-                  </li>
-                  <li>
-                    <strong>Backend</strong> : Node, Express, Rust, Bun, ...
-                  </li>
-                  <li>
-                    <strong>Database</strong> : MongoDB, PostgreSQL, ...
-                  </li>
-                  <li>
-                    <strong>DevOps</strong> : Git, Docker, NGINX, ...
-                  </li>
-                  <li><strong>System</strong>: Linux, MacOS, Windows</li>
-                </ul>
-              </p>
+              <ul class='mt-2 space-y-1 text-primary'>
+                <li>
+                  <strong>Frontend</strong> : React, Remix, Python, ...
+                </li>
+                <li>
+                  <strong>Backend</strong> : Node, Express, Rust, Bun, ...
+                </li>
+                <li>
+                  <strong>Database</strong> : MongoDB, PostgreSQL, ...
+                </li>
+                <li>
+                  <strong>DevOps</strong> : Git, Docker, NGINX, ...
+                </li>
+                <li><strong>System</strong>: Linux, MacOS, Windows</li>
+              </ul>
             </div>
             <div class='rounded-xl border p-6 shadow-xl print:shadow-none'>
               <h3
@@ -262,20 +262,17 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
               >
                 Miscellaneous
               </h3>
-              <p class='mt-2 text-sm'>
-                <ul>
-                  <li>
-                    <strong>Music</strong> : Guitar, drum and music workstation,
-                    ...
-                  </li>
-                  <li>
-                    <strong>Video Games</strong> : Simulation, Strategy
-                  </li>
-                  <li>
-                    <strong>Drawing</strong> : Procreate, Blender
-                  </li>
-                </ul>
-              </p>
+              <ul class='mt-2 space-y-1 text-primary'>
+                <li>
+                  <strong>Music</strong> : Guitar, drum and music workstation, ...
+                </li>
+                <li>
+                  <strong>Video Games</strong> : Simulation, Strategy
+                </li>
+                <li>
+                  <strong>Drawing</strong> : Procreate, Blender
+                </li>
+              </ul>
             </div>
           </div>
         </div>

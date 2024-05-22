@@ -110,6 +110,9 @@
     transform: translate(-50%, -50%);
     pointer-events: none; /* Make sure the cursor does not block interactions */
     border-radius: 50%;
-    transition: transform 0.1s;
+    transition:
+      transform 0.1s,
+      top 50ms ease 0s,
+      left 50ms ease 0s;
   }
 }

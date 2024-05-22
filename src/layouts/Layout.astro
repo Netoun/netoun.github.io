@@ -33,11 +33,14 @@ const { title, description } = Astro.props
   <body class='overflow-x-hidden scroll-smooth bg-background text-foreground'>
     <header
       class='sticky top-0 z-[999] h-[var(--height-header)] border-b border-primary/10 px-4 backdrop-blur-3xl print:hidden'
+      transition:persist=''
     >
       <div class='container mx-auto flex h-full items-center justify-between'>
         <div class='size-8'>
           <a href='/'>
             <img
+              width='32'
+              height='32'
               src='/logo.svg'
               alt='Logo'
               class='drop-shadow-[0_0px_5px_hsla(var(--primary)/0.5)]'
@@ -123,6 +126,18 @@ const { title, description } = Astro.props
       themeToggle.addEventListener("click", () => {
         document.documentElement.classList.toggle("dark")
       })
+
+      // function setDarkMode(document) {
+      //   const isDark = localStorage.theme === "dark"
+      //   document.documentElement.classList[isDark ? "add" : "remove"]("dark")
+      // }
+
+      // setDarkMode(document)
+
+      // document.addEventListener("astro:before-swap", (ev) => {
+      //   // Transmettre le document entrant pour définir le thème sur celui-ci
+      //   setDarkMode(ev.newDocument)
+      // })
     </script>
   </body>
 
