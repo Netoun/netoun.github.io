@@ -37,8 +37,8 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
     <div
       class='flex flex-col justify-between gap-8 md:flex-row print:flex-row print:gap-4'
     >
-      <div class='space-y-8'>
-        <div class='space-y-6'>
+      <div class='space-y-8 print:space-y-6'>
+        <div class='space-y-6 print:flex print:justify-between print:space-y-0'>
           <div
             class='flex max-w-4xl flex-wrap items-center justify-between gap-6'
           >
@@ -69,64 +69,66 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
             </div>
           </div>
           <div>
-            <ul>
+            <ul class='print:text-end'>
               <li>
-                <strong class='font-title text-sm uppercase'>Age</strong> : {
-                  myAge
-                } years old
-              </li>
-              <li>
-                <strong class='font-title text-sm uppercase'>Location</strong> :
-                Nantes, France
-              </li>
-              <li>
-                <strong class='font-title text-sm uppercase'>Email</strong> : <a
-                  href='mailto:coulonnier.nicolas.44@gmail.com'
-                >
+                <strong class='font-title uppercase print:font-sans'
+                  >Email</strong
+                > : <a href='mailto:coulonnier.nicolas.44@gmail.com'>
                   coulonnier.nicolas.44@gmail.com
                 </a>
               </li>
+              <li>
+                <strong class='font-title uppercase print:font-sans'>Age</strong
+                > : {myAge} years old
+              </li>
+              <li>
+                <strong class='font-title uppercase print:font-sans'
+                  >Location</strong
+                > : Nantes, France
+              </li>
             </ul>
           </div>
-          <div
-            class='space-y-2
-                  text-balance
-                  pt-4
-                  text-lg
-                  text-primary
-                  md:max-w-6xl'
-          >
-            <p>
-              I'm passionate about <strong>web development</strong>, with a keen
-              focus on creating efficient, <strong>user-friendly</strong> websites.
-              My approach is simple: prioritize performance, user experience, and
-              <strong>accessibility</strong>
-              in every project.
-            </p>
-            <p class='print:hidden'>
-              I pay special attention to <strong>open source</strong> and <strong
-                >best pratices</strong
-              >. Because it's important to question one's work, i try every day
-              to learn new things and improve my skills.
-            </p>
-            <p class='print:hidden'>
-              I construct most of the times with React framework and Typescript
-              like a <strong>Remix</strong> 🎔 or Next I thrive on using these cutting-edge
-              technologies to deliver exceptional digital experiences.
-            </p>
-          </div>
+        </div>
+        <div
+          class='print:text-md
+              space-y-2
+              text-balance
+              pt-4
+              text-lg
+              text-primary
+              md:max-w-6xl
+              print:pt-0'
+        >
+          <p>
+            I'm passionate about <strong>web development</strong>, with a keen
+            focus on creating efficient, <strong>user-friendly</strong> websites.
+            My approach is simple: prioritize performance, user experience, and
+            <strong>accessibility</strong>
+            in every project.
+          </p>
+          <p class='print:hidden'>
+            I pay special attention to <strong>open source</strong> and <strong
+              >best practices.</strong
+            >. Because it's important to question one's work, I try every day to
+            learn new things and improve my skills.
+          </p>
+          <p class='print:hidden'>
+            I construct most of the times with React framework and Typescript
+            like a <strong>Remix</strong> 🎔 or Next I thrive on using these cutting-edge
+            technologies to deliver exceptional digital experiences.
+          </p>
         </div>
         <div
           class='flex flex-col justify-between gap-4 md:flex-row print:flex-row'
         >
-          <div class='md:max-w-5xl'>
+          <div class='md:max-w-5xl print:max-w-[50rem]'>
             <div>
               <h2
-                class='font-title text-4xl font-medium uppercase [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem] print:[text-shadow:none]'
+                class='font-title text-4xl font-medium uppercase [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem] print:text-3xl print:[text-shadow:none]'
               >
                 Experience
               </h2>
-              <div class='space-y-4 text-lg'>
+              <div class='print:text-md space-y-4 text-lg print:space-y-0'>
                 {
                   allExperiences
                     .sort(
@@ -165,7 +167,7 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
                             - <span>{resume.data.job}</span>
                           </h4>
                         </div>
-                        <div class='space-y-2 text-balance pb-4 text-primary [&_ul]:list-inside [&_ul]:list-disc [&_ul]:py-2'>
+                        <div class='space-y-2 text-balance pb-4 text-primary print:space-y-1 print:pb-2 [&_ul]:list-inside [&_ul]:list-disc [&_ul]:py-2 print:[&_ul]:py-0'>
                           {async () => {
                             const { Content } = await resume.render()
                             return <Content />
@@ -178,11 +180,11 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
             </div>
             <div>
               <h2
-                class='text-balance font-title text-4xl font-medium uppercase [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem] print:[text-shadow:none]'
+                class='text-balance font-title text-4xl font-medium uppercase [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem] print:text-3xl print:[text-shadow:none]'
               >
                 Schools
               </h2>
-              <div class='space-y-4 text-lg'>
+              <div class='print:text-md space-y-4 text-lg print:space-y-0'>
                 {
                   allSchools
                     .sort(
@@ -221,7 +223,7 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
                             - <span>{resume.data.school}</span>
                           </h4>
                         </div>
-                        <div class='space-y-2 text-balance pb-4 text-primary [&_ul]:list-inside [&_ul]:list-disc [&_ul]:py-2'>
+                        <div class='space-y-2 text-balance pb-4 text-primary print:space-y-1 print:pb-2 [&_ul]:list-inside [&_ul]:list-disc [&_ul]:py-2 print:[&_ul]:py-0'>
                           {async () => {
                             const { Content } = await resume.render()
                             return <Content />
@@ -240,7 +242,7 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
               >
                 Skills and competencies
               </h3>
-              <ul class='mt-2 space-y-1 text-primary'>
+              <ul class='mt-2 space-y-1 text-primary print:mt-0'>
                 <li>
                   <strong>Frontend</strong> : React, Remix, Python, ...
                 </li>
@@ -279,13 +281,16 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
       </div>
     </div>
   </section>
+  <div
+    class='text-md hidden items-center justify-center text-primary print:fixed print:bottom-0 print:left-0 print:flex print:h-12 print:w-full'
+  >
+    <span class=''>
+      Resume generated on my website at{" "}
+      <a href='https://netoun.com'>netoun.com</a>
+    </span>
+  </div>
 
   <style is:global>
-    @media print {
-      html {
-        font-size: 8pt;
-      }
-    }
     @page {
       size: A4;
       margin: 10%;

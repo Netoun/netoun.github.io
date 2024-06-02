@@ -79,6 +79,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply h-full min-h-screen bg-background text-foreground;
   }

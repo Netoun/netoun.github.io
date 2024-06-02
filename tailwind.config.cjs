@@ -63,10 +63,22 @@ module.exports = {
 					from: { height: "var(--radix-accordion-content-height)" },
 					to: { height: "0" },
 				},
+				"text-shadow-glow": {
+					'0%': { textShadow: "hsla(var(--foreground)/0.5) 0px 0px 2rem" },
+					'25%': { textShadow: "hsla(var(--foreground)/0.5) 0px 0px 3rem" },
+					'50%': {
+						textShadow: "hsla(var(--foreground)/0.75) 0px 0px 5rem",
+					},
+					'75%': { textShadow: "hsla(var(--foreground)/0.7) 0px 0px 4rem" },
+					'100%': {
+						textShadow: "hsla(var(--foreground)/0.5) 0px 0px 2rem"
+					}
+				},
 			},
 			animation: {
 				"accordion-down": "accordion-down 0.2s ease-out",
 				"accordion-up": "accordion-up 0.2s ease-out",
+				"text-shadow": "text-shadow-glow 8s infinite",
 			},
 		},
 	},
