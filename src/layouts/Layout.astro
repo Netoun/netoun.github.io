@@ -20,18 +20,12 @@ const { title, description } = Astro.props
     <meta name='description' content='Astro description' />
     <meta name='viewport' content='width=device-width' />
     <link rel='icon' type='image/svg+xml' href='/logo.svg' />
+    <link rel='sitemap' href='/sitemap-index.xml' />
     <meta name='generator' content={Astro.generator} />
     <title>{title}</title>
     <meta name='description' content={description} />
     <meta name='author' content='Nicolas Coulonnier' />
     <meta property='og:image' content='http://netoun.github.io/profile.jpg' />
-    <script
-      data-host='https://app.microanalytics.io'
-      data-dnt='false'
-      src='https://app.microanalytics.io/js/script.js'
-      id='ZwSg9rf6GA'
-      async
-      defer></script>
   </head>
   <div
     class='absolute -left-1/4 -top-1/4 z-[-1] h-1/2 min-h-96 w-1/2 min-w-96 rounded-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary to-transparent opacity-50 blur-[12rem]'
@@ -74,7 +68,7 @@ const { title, description } = Astro.props
         </div>
       </div>
     </header>
-    <main class='container mx-auto px-4'>
+    <main class='container mx-auto px-4 sm:px-0'>
       <slot />
     </main>
     <footer class='h-[var(--height-footer)] print:hidden'>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://netoun.gihub.io/sitemap-index.xml

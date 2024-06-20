@@ -1,13 +1,13 @@
 ---
+import Layout from "@layouts/Layout.astro"
 import { cn } from "@utils"
 import { ArrowRight, ExternalLinkIcon } from "lucide-react"
 
 import Me from "@components/assets/me.astro"
 import Email from "@components/icons/email.astro"
+import Github from "@components/icons/github.astro"
 import Linkedin from "@components/icons/linkedin.astro"
 import { buttonVariants } from "@components/ui/button.astro"
-import Github from "../components/icons/github.astro"
-import Layout from "../layouts/Layout.astro"
 ---
 
 <Layout
@@ -16,7 +16,7 @@ import Layout from "../layouts/Layout.astro"
 >
   <section
     id='hero'
-    class='flex flex-col items-center gap-12 py-8 text-primary [min-height:calc(100dvh-var(--height-footer)-var(--height-header))] md:flex-row'
+    class='flex flex-col items-center gap-8 py-8 text-primary [min-height:calc(100dvh-var(--height-footer)-var(--height-header))] sm:gap-0 md:flex-row'
   >
     <div class='w-full space-y-6 md:flex-1 md:space-y-12'>
       <h1
@@ -113,7 +113,7 @@ import Layout from "../layouts/Layout.astro"
         </div>
       </div>
     </div>
-    <div class='relative flex-1 p-4'>
+    <div class='p-4c relative flex-1'>
       <div
         class='absolute right-0 z-[-1] h-1/2 min-h-[300px] w-1/2 min-w-[300px] rounded-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary to-transparent opacity-50 blur-[12rem]'
       >
