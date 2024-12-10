@@ -7,8 +7,8 @@ module.exports = {
 	theme: {
 		extend: {
 			fontFamily: {
-				title: ["Newsreader Variable", "serif"],
-				sans: ["Noto Sans Variable", "sans-serif"],
+				title: ["Basteleur", "serif"],
+				sans: ["Spoof", "sans-serif"],
 			},
 			colors: {
 				border: "hsl(var(--border))",

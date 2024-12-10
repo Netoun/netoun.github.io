@@ -1,0 +1,19 @@
+---
+import type { HTMLAttributes } from "astro/types"
+import { ExternalLinkIcon } from "lucide-react"
+
+interface Props extends HTMLAttributes<"a"> {
+  href: string
+}
+
+const { href, ...props } = Astro.props
+---
+
+<a href={href} target='_blank' rel='noopener noreferrer' {...props}>
+  <span
+    class='text-secondary underline underline-offset-2 outline-none hover:text-secondary/80'
+  >
+    <slot />
+  </span>
+  <ExternalLinkIcon className='inline h-4 w-4 text-muted-foreground' />
+</a>

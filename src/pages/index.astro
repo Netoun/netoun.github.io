@@ -1,23 +1,30 @@
 ---
 import Layout from "@layouts/Layout.astro"
 import { cn } from "@utils"
-import { ArrowRight, ExternalLinkIcon } from "lucide-react"
+import { getCollection } from "astro:content"
+import { ArrowRight, ArrowUpRightIcon } from "lucide-react"
 
 import Me from "@components/assets/me.astro"
 import Email from "@components/icons/email.astro"
 import Github from "@components/icons/github.astro"
 import Linkedin from "@components/icons/linkedin.astro"
 import { buttonVariants } from "@components/ui/button.astro"
+import ExternalLink from "@components/ui/external-link.astro"
+import SocialLink from "@components/ui/social-link.astro"
+
+const allPortfolio = await getCollection("portfolio")
 ---
 
 <Layout
   title='Netoun'
   description='Nicolas Coulonnier, Frontend Engineer. Passionate about web technologies and always looking for new challenges and opportunities to grow.'
 >
+  <!-- Hero Section -->
   <section
     id='hero'
     class='flex flex-col items-center gap-8 py-8 text-primary [min-height:calc(100dvh-var(--height-footer)-var(--height-header))] sm:gap-0 md:flex-row'
   >
+    <!-- Hero Content -->
     <div class='w-full space-y-6 md:flex-1 md:space-y-12'>
       <h1
         class='text-balance font-title text-5xl font-medium [text-shadow:hsla(var(--primary)/0.75)_0px_0_20px] md:text-6xl'
@@ -25,91 +32,49 @@ import { buttonVariants } from "@components/ui/button.astro"
         Hi, I'm Nicolas !
         <br /> I'm a front end engineer.
       </h1>
+
+      <!-- Bio -->
       <div class='space-y-2 text-balance text-lg'>
         <p>
           I'm passionate about web technologies and I love to learn new things.
           I'm always looking for new challenges and opportunities to grow. I'm
           currently working at
-          <a
-            href='https://lonestone.io'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            <span
-              class='text-secondary underline underline-offset-2 outline-none hover:text-secondary/80'
-            >
-              Lonestone</span
-            >
-            <ExternalLinkIcon
-              className='inline h-4 w-4 text-muted-foreground'
-            />
-          </a>{" "}as a Frontend Engineer.
+          <ExternalLink href='https://lonestone.io'> Lonestone </ExternalLink>
+          as a Frontend Engineer.
         </p>
         <p>
-          I created <a
-            href='https://www.treashunt.fr'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            <span
-              class='text-secondary underline underline-offset-2 outline-none hover:text-secondary/80'
-            >
-              Treashunt</span
-            >
-            <ExternalLinkIcon
-              className='inline h-4 w-4 text-muted-foreground'
-            /></a
-          >, a platform to to create, share, and play treasure hunt games with
-          QR codes and geolocation.
+          I created <ExternalLink href='https://www.treashunt.fr'>
+            Treashunt
+          </ExternalLink>
+          , a platform to create, share, and play treasure hunt games with QR codes
+          and geolocation.
         </p>
       </div>
 
+      <!-- CTA and Social Links -->
       <div class='flex flex-wrap items-center gap-4 md:gap-8'>
-        <a
-          href='/resume'
-          class={cn(
-            buttonVariants({
-              // variant: "outline",
-              size: "lg"
-            }),
-            "group"
-          )}
-          >Get my resume
+        <a href='/resume' class={cn(buttonVariants({ size: "lg" }), "group")}>
+          Get my resume
           <ArrowRight
             className='ml-2 size-4 duration-100 group-hover:scale-110'
           />
         </a>
 
         <div class='flex items-center gap-4 text-primary'>
-          <a
-            class='font-medium text-primary underline hover:text-primary/80'
-            href='https://github.com/netoun'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            <span class='sr-only'>Lien vers mon Github</span>
-            <Github class='size-8' />
-          </a>
-          <a
-            class='font-medium text-primary underline hover:text-primary/80'
+          <SocialLink href='https://github.com/netoun'>
+            <span class='sr-only'>Github</span>
+            <Github class='h-8 w-auto' />
+          </SocialLink>
+          <SocialLink
             href='https://www.linkedin.com/in/nicolas-coulonnier-66416813b'
-            target='_blank'
-            rel='noopener noreferrer'
           >
-            <span class='sr-only'> Lien vers mon Linkedin</span>
-            <Linkedin class='size-8' />
-          </a>
-          <a
-            class='font-medium text-primary underline hover:text-primary/80'
-            href='mailto:coulonnier.nicolas.44@gmail.com'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            <span class='sr-only'>
-              Email : coulonnier.nicolas.44@gmail.com</span
-            >
+            <span class='sr-only'>LinkedIn</span>
+            <Linkedin class='h-8 w-auto' />
+          </SocialLink>
+          <SocialLink href='mailto:coulonnier.nicolas.44@gmail.com'>
+            <span class='sr-only'>Email</span>
             <Email class='h-8 w-10' />
-          </a>
+          </SocialLink>
         </div>
       </div>
     </div>
@@ -127,6 +92,48 @@ import { buttonVariants } from "@components/ui/button.astro"
         >
         </div>
       </div>
+    </div>
+
+    <!-- Hero Image -->
+  </section>
+
+  <!-- Portfolio Section -->
+  <section class='space-y-8 py-16'>
+    <h2
+      class='font-title text-4xl font-medium uppercase [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem]'
+    >
+      Portfolio
+    </h2>
+    <div class='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
+      {
+        allPortfolio.map((portfolio) => (
+          <article class='group relative space-y-4 rounded-2xl backdrop-blur-sm'>
+            <div class='relative aspect-video w-full overflow-hidden rounded-3xl shadow-2xl'>
+              <iframe
+                src={portfolio.data.link}
+                class='absolute inset-0 h-full w-full'
+                width='1920'
+                height='1080'
+                loading='lazy'
+              />
+              <div class='pointer-events-none absolute inset-0 bg-gradient-to-bl from-black/50 via-transparent via-30% to-transparent' />
+
+              <a
+                href={portfolio.data.link}
+                target='_blank'
+                rel='noopener noreferrer'
+                class='absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-white/50 p-1 text-accent backdrop-blur-sm'
+              >
+                <ArrowUpRightIcon className='size-5' />
+              </a>
+            </div>
+            <div class='flex flex-col p-4 pt-0'>
+              <h3 class='text-2xl font-semibold'>{portfolio.data.title}</h3>
+              <p class='text-muted-foreground'>{portfolio.data.description}</p>
+            </div>
+          </article>
+        ))
+      }
     </div>
   </section>
 </Layout>

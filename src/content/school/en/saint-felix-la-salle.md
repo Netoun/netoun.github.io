@@ -1,7 +1,7 @@
 ---
 school: "Saint Félix la salle"
-startDate: "2017-10-01"
-endDate: "2019-07-01"
+startDate: "2015-09-01"
+endDate: "2017-07-01"
 diploma: "Computer Science Associate’s Degree (SNIR)"
 ---
 
