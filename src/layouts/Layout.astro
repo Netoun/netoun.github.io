@@ -27,6 +27,26 @@ const { title, description } = Astro.props
     <meta name='description' content={description} />
     <meta name='author' content='Nicolas Coulonnier' />
     <meta property='og:image' content='http://netoun.github.io/profile.jpg' />
+    <meta
+      name='theme-color'
+      content='#ffffff'
+      media='(prefers-color-scheme: light)'
+    />
+    <meta
+      name='theme-color'
+      content='#000000'
+      media='(prefers-color-scheme: dark)'
+    />
+    <meta name='color-scheme' content='dark light' />
+    <link rel='canonical' href={Astro.url.href} />
+    <meta property='og:title' content={title} />
+    <meta property='og:description' content={description} />
+    <meta property='og:type' content='website' />
+    <meta property='og:url' content={Astro.url.href} />
+    <meta name='twitter:card' content='summary_large_image' />
+    <meta name='twitter:title' content={title} />
+    <meta name='twitter:description' content={description} />
+    <meta name='twitter:image' content='http://netoun.github.io/profile.jpg' />
   </head>
 
   <body>
@@ -51,7 +71,12 @@ const { title, description } = Astro.props
           </a>
         </div>
         <div>
-          <button id='theme-toggle' class='relative'>
+          <button
+            id='theme-toggle'
+            class='relative'
+            aria-label='Toggle theme'
+            title='Toggle between light and dark theme'
+          >
             <span class='sr-only'>Switch theme</span>
             <span
               class='dark: absolute left-0 top-[0.2rem] size-7 translate-x-[0.2rem] rounded-full bg-secondary transition-transform duration-300 ease-in-out dark:translate-x-[2.15rem]'
@@ -72,8 +97,10 @@ const { title, description } = Astro.props
         </div>
       </div>
     </header>
-    <main class='container mx-auto px-4 sm:px-0'>
-      <slot />
+    <main class='max-w-screen overflow-x-hidden'>
+      <div class='container mx-auto px-4 sm:px-0'>
+        <slot />
+      </div>
     </main>
     <footer class='h-[var(--height-footer)] print:hidden'>
       <div class='flex items-center justify-center'>
@@ -81,27 +108,66 @@ const { title, description } = Astro.props
       </div>
     </footer>
 
-    <script is:inline>
-      document.addEventListener("DOMContentLoaded", () => {
-        // Create the cursor element
-        const wrapperCursor = document.createElement("div")
-        wrapperCursor.classList.add("wrapper-cursor")
-        document.body.appendChild(wrapperCursor)
+    <script>
+      // Chargement différé de GSAP
+      const loadGSAP = async () => {
+        const { gsap } = await import("gsap")
+        const { ScrollTrigger } = await import("gsap/ScrollTrigger")
 
-        const cursor = document.createElement("div")
-        cursor.classList.add("cursor")
-        wrapperCursor.appendChild(cursor)
+        gsap.registerPlugin(ScrollTrigger)
 
-        // Function to update cursor position
-        const updateCursorPosition = (event) => {
-          cursor.style.setProperty("--cursor-x", `${event.clientX}px`)
-          cursor.style.setProperty("--cursor-y", `${event.clientY}px`)
-        }
+        document.addEventListener("DOMContentLoaded", () => {
+          // Create the cursor element
+          const wrapperCursor = document.createElement("div")
+          wrapperCursor.classList.add("wrapper-cursor")
+          document.body.appendChild(wrapperCursor)
 
-        // Add event listener for mouse movement
-        document.addEventListener("mousemove", updateCursorPosition)
-      })
+          const cursor = document.createElement("div")
+          cursor.classList.add("cursor")
+          wrapperCursor.appendChild(cursor)
 
+          // Function to update cursor position
+          const updateCursorPosition = (event: MouseEvent) => {
+            cursor.style.setProperty("--cursor-x", `${event.clientX}px`)
+            cursor.style.setProperty("--cursor-y", `${event.clientY}px`)
+          }
+
+          // Add event listener for mouse movement
+          document.addEventListener("mousemove", updateCursorPosition)
+
+          // Initial animations
+          gsap.from("header", {
+            y: -100,
+            opacity: 0,
+            duration: 1,
+            ease: "power3.out"
+          })
+
+          // Footer animation
+          gsap.from("footer", {
+            opacity: 0,
+            y: 30,
+            duration: 1,
+            scrollTrigger: {
+              trigger: "footer",
+              start: "top bottom",
+              end: "bottom bottom",
+              toggleActions: "play none none reverse"
+            }
+          })
+        })
+      }
+
+      // Wait for the page to be loaded and inactive
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => {
+          requestIdleCallback(() => loadGSAP())
+        })
+      } else {
+        requestIdleCallback(() => loadGSAP())
+      }
+
+      // Theme toggle functionality
       const getThemePreference = () => {
         if (
           typeof localStorage !== "undefined" &&
@@ -113,6 +179,7 @@ const { title, description } = Astro.props
           ? "dark"
           : "light"
       }
+
       const isDark = getThemePreference() === "dark"
       document.documentElement.classList[isDark ? "add" : "remove"]("dark")
 
@@ -128,9 +195,16 @@ const { title, description } = Astro.props
       }
 
       const themeToggle = document.getElementById("theme-toggle")
-      themeToggle.addEventListener("click", () => {
+      themeToggle?.addEventListener("click", () => {
         document.documentElement.classList.toggle("dark")
       })
     </script>
+
+    <style is:global>
+      @page {
+        size: A4;
+        margin: 10%;
+      }
+    </style>
   </body>
 </html>

@@ -13,6 +13,10 @@ import ExternalLink from "@components/ui/external-link.astro"
 import SocialLink from "@components/ui/social-link.astro"
 import Me from "../assets/me.svg?raw"
 
+interface Tag {
+  name: string
+}
+
 const allPortfolio = await getCollection("portfolio")
 const TAGS_COLORS = {
   red: "hsla(0, 50%, 37%, 0.2)",
@@ -29,19 +33,22 @@ const TAGS_COLORS = {
   <!-- Hero Section -->
   <section
     id='hero'
-    class='flex flex-col items-center gap-12 py-8 text-primary sm:gap-0 md:flex-row md:[min-height:calc(100dvh-var(--height-footer)-var(--height-header))]'
+    class='flex flex-col items-center gap-12 py-12 text-primary sm:gap-0 md:flex-row md:py-8 md:[min-height:calc(100dvh-var(--height-footer)-var(--height-header))]'
   >
     <!-- Hero Content -->
-    <div class='w-full space-y-6 md:flex-1 md:space-y-12'>
+    <div class='w-full space-y-8 md:flex-1 md:space-y-12'>
       <h1
-        class='text-balance font-title text-5xl font-medium [text-shadow:hsla(var(--primary)/0.75)_0px_0_20px] md:text-7xl'
+        class='font-title text-[40px] font-medium leading-[40px] [text-shadow:hsla(var(--primary)/0.75)_0px_0_20px] md:text-balance md:text-7xl'
       >
         Hi, I'm Nicolas !
-        <br /> I'm a front end engineer.
+        <br />
+        I'm a front end engineer.
       </h1>
 
       <!-- Bio -->
-      <div class='space-y-2 text-balance pt-60 text-lg md:pt-0'>
+      <div
+        class='scramble-content space-y-2 text-balance pt-48 text-lg md:pt-0'
+      >
         <p>
           I'm passionate about web technologies and I love to learn new things.
           I'm always looking for new challenges and opportunities to grow. I'm
@@ -86,13 +93,14 @@ const TAGS_COLORS = {
       </div>
     </div>
     <div
-      class='absolute -right-[50px] top-48 w-full flex-1 p-4 md:relative md:top-0'
+      class='absolute -right-[50px] top-36 w-full flex-1 p-4 md:relative md:top-0'
     >
       <div
         class='absolute right-0 z-[-1] h-1/2 min-h-[300px] w-1/2 min-w-[300px] rounded-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary to-transparent opacity-50 blur-[12rem]'
       >
       </div>
       <div
+        id='hero-image'
         class='min-w-screen group relative mx-auto max-w-screen-sm rounded-xl'
       >
         <Fragment set:html={Me} />
@@ -105,14 +113,17 @@ const TAGS_COLORS = {
   <!-- Portfolio Section -->
   <section class='space-y-8 py-16'>
     <h2
-      class='font-title text-4xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem] md:text-6xl'
+      class='scramble-title font-title text-4xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem] md:text-6xl'
+      data-original-text='Portfolio'
     >
       Portfolio
     </h2>
-    <div class='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
+    <div
+      class='portfolio-grid grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'
+    >
       {
         allPortfolio.map((portfolio) => (
-          <article class='group relative space-y-4 rounded-2xl backdrop-blur-sm'>
+          <article class='portfolio-card group relative space-y-4 rounded-2xl backdrop-blur-sm'>
             <div class='relative aspect-video w-full overflow-hidden rounded-3xl border-2 border-primary shadow-2xl'>
               <Image
                 src={portfolio.data.image}
@@ -143,7 +154,7 @@ const TAGS_COLORS = {
               <h3 class='text-2xl font-semibold'>{portfolio.data.title}</h3>
               <p class='text-muted-foreground'>{portfolio.data.description}</p>
               <div class='mt-4 flex flex-wrap gap-2'>
-                {portfolio.data.tags.map((tag, index) => (
+                {portfolio.data.tags.map((tag: string, index: number) => (
                   <span
                     class='rounded-md bg-[var(--tag-color)] px-2 py-1 text-sm'
                     style={`--tag-color: ${Object.values(TAGS_COLORS)[index % Object.values(TAGS_COLORS).length]}`}
@@ -158,4 +169,216 @@ const TAGS_COLORS = {
       }
     </div>
   </section>
+
+  <script>
+    import { MotionPathPlugin } from "gsap/MotionPathPlugin"
+
+    import { gsap } from "@utils/gsap"
+
+    gsap.registerPlugin(MotionPathPlugin)
+
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches
+
+    // Create scramble effect for portfolio title
+    if (!prefersReducedMotion) {
+      const scrambleTitle = () => {
+        const title = document.querySelector(".scramble-title") as HTMLElement
+        if (!title) return
+
+        const chars = "!<>-_\\/[]{}—=+*^?#"
+        const originalText =
+          title.getAttribute("data-original-text") || title.textContent || ""
+        let currentText = originalText
+        let frame = 0
+        let isScrambling = false
+
+        const randomChar = () => chars[Math.floor(Math.random() * chars.length)]
+
+        const scramble = () => {
+          if (frame >= 20) {
+            title.textContent = originalText
+            isScrambling = false
+            return
+          }
+
+          frame++
+          const scrambled = currentText
+            .split("")
+            .map((char, index) => {
+              if (char === " ") return " "
+              // Gradually reveal original characters
+              if (Math.random() < frame / 20) return originalText[index]
+              return randomChar()
+            })
+            .join("")
+
+          title.textContent = scrambled
+          requestAnimationFrame(scramble)
+        }
+
+        const startScramble = () => {
+          if (isScrambling) return
+          isScrambling = true
+          frame = 0
+          requestAnimationFrame(scramble)
+        }
+
+        // Set up scroll trigger
+        gsap.to(title, {
+          scrollTrigger: {
+            trigger: title,
+            start: "top center+=100",
+            end: "bottom center",
+            onEnter: startScramble,
+            onEnterBack: startScramble
+          }
+        })
+      }
+
+      // Initialize scramble effect
+      scrambleTitle()
+    }
+
+    // Hero image animations
+    if (!prefersReducedMotion) {
+      const heroImage = document.querySelector("#hero-image")
+      const isMobile = window.matchMedia("(max-width: 768px)").matches
+
+      // Initial floating animation
+      const floatingAnim = gsap.to(heroImage, {
+        duration: 2,
+        y: 15,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        paused: true
+      })
+
+      // Start floating animation
+      floatingAnim.play()
+      if (heroImage && !isMobile) {
+        // Scroll-triggered animation
+        const scrollAnim = gsap.timeline({
+          scrollTrigger: {
+            trigger: "#hero",
+            start: "top top",
+            end: "bottom top",
+            scrub: 1,
+            onEnter: () => floatingAnim.pause(),
+            onLeaveBack: () => floatingAnim.play(),
+            onUpdate: (self) => {
+              // Kill floating animation when scrolling starts
+              if (self.progress > 0) {
+                floatingAnim.pause()
+              } else {
+                floatingAnim.play()
+              }
+            }
+          }
+        })
+
+        scrollAnim.to(heroImage, {
+          y: 420,
+          x: 200,
+          rotationY: 220,
+          rotationZ: -20,
+          duration: 1,
+          ease: "power1.inOut"
+        })
+
+        // Handle resize events to disable/enable animations
+        window.addEventListener("resize", () => {
+          const isNowMobile = window.matchMedia("(max-width: 768px)").matches
+          if (isNowMobile) {
+            floatingAnim.pause()
+            gsap.set(heroImage, { clearProps: "all" })
+          } else {
+            floatingAnim.play()
+          }
+        })
+      }
+    }
+
+    // Portfolio cards hover animation
+    const portfolioCards = document.querySelectorAll(".portfolio-card")
+    portfolioCards.forEach((card) => {
+      if (!prefersReducedMotion) {
+        card.addEventListener("mouseenter", () => {
+          gsap.to(card, {
+            scale: 1.02,
+            duration: 0.3,
+            ease: "power2.out"
+          })
+        })
+
+        card.addEventListener("mouseleave", () => {
+          gsap.to(card, {
+            scale: 1,
+            duration: 0.3,
+            ease: "power2.out"
+          })
+        })
+      }
+
+      // Keyboard navigation
+      card.addEventListener("focus", () => {
+        if (!prefersReducedMotion) {
+          gsap.to(card, {
+            scale: 1.02,
+            duration: 0.3,
+            ease: "power2.out"
+          })
+        }
+      })
+
+      card.addEventListener("blur", () => {
+        if (!prefersReducedMotion) {
+          gsap.to(card, {
+            scale: 1,
+            duration: 0.3,
+            ease: "power2.out"
+          })
+        }
+      })
+    })
+
+    // Motion preference changes
+    window
+      .matchMedia("(prefers-reduced-motion: reduce)")
+      .addEventListener("change", (event) => {
+        if (event.matches) {
+          gsap.set("#hero-image", {
+            clearProps: "all",
+            y: 0,
+            rotationY: 0,
+            opacity: 1
+          })
+          gsap.set(".portfolio-card", { clearProps: "all" })
+        }
+      })
+  </script>
+
+  <style>
+    @media (prefers-reduced-motion: reduce) {
+      .portfolio-card {
+        transition: none !important;
+      }
+      .scramble-title {
+        opacity: 1 !important;
+      }
+    }
+
+    .scramble-title {
+      display: block;
+    }
+
+    #hero-image {
+      transform-style: preserve-3d;
+      perspective: 1000px;
+      will-change: transform;
+    }
+  </style>
 </Layout>
