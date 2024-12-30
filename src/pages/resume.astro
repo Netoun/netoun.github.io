@@ -1,9 +1,9 @@
 ---
 import { getCollection } from "astro:content"
-import { ArrowRight, PrinterIcon } from "lucide-react"
+import { PrinterIcon } from "lucide-react"
 
 import Button from "@components/ui/button.astro"
-import Me from "../components/assets/me.astro"
+import Tag from "@components/ui/tag.astro"
 import Layout from "../layouts/Layout.astro"
 
 const allExperiences = await getCollection("experience")
@@ -20,6 +20,10 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
   month: "short",
   year: "numeric"
 })
+
+for (const experience of allExperiences) {
+  console.log(experience.data.tags)
+}
 ---
 
 <Layout
@@ -28,37 +32,33 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
 >
   <section
     id='resume'
-    class='space-y-10 py-16 [min-height:calc(100dvh-var(--height-footer)-var(--height-header))]'
+    class='max-w space-y-10 py-16 [min-height:calc(100dvh-var(--height-footer)-var(--height-header))] print:m-0 print:p-0 print:py-8'
   >
     <Button onclick='window.print()' class='print:hidden'>
       Print
       <PrinterIcon size='20' className='ml-2' />
     </Button>
-    <div
-      class='flex flex-col justify-between gap-8 md:flex-row print:flex-row print:gap-4'
-    >
-      <div class='space-y-8 print:space-y-6'>
-        <div class='space-y-6 print:flex print:justify-between print:space-y-0'>
+    <div class='flex flex-col justify-between gap-8 md:flex-row print:gap-12'>
+      <div class='space-y-8 print:space-y-6 print:text-[0.95rem]'>
+        <div
+          class='space-y-6 print:flex print:justify-between print:space-y-0 print:pb-4'
+        >
           <div
             class='flex max-w-4xl flex-wrap items-center justify-between gap-6'
           >
             <div class='flex flex-1 flex-col'>
-              <h2
-                class='font-title text-6xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem]'
-              >
+              <h2 class='font-title text-6xl font-medium print:text-5xl'>
                 Nicolas Coulonnier
               </h2>
-              <h3 class='text-3xl'>
-                <span
-                  class='font-medium text-secondary [text-shadow:hsla(var(--secondary)/0.75)_0px_0px_1rem] print:[text-shadow:none]'
-                >
-                  Frontend Developer</span
-                >
+              <h3 class='text-3xl print:text-2xl'>
+                <span class='font-medium text-secondary print:text-[#4a4a4a]'>
+                  Frontend Developer
+                </span>
               </h3>
             </div>
           </div>
           <div>
-            <ul class='print:text-end'>
+            <ul class='print:text-end print:text-[0.9rem]'>
               <li>
                 <strong class='uppercase print:font-sans'>Email</strong> : <a
                   href='mailto:coulonnier.nicolas.44@gmail.com'
@@ -78,7 +78,7 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
           </div>
         </div>
         <div
-          class='print:text-md space-y-2 text-balance pt-4 text-lg text-primary md:max-w-6xl print:pt-0'
+          class='space-y-2 pt-4 text-lg text-primary md:max-w-4xl print:space-y-3 print:pt-0 print:text-[0.95rem] print:leading-normal'
         >
           <p>
             I'm passionate about <strong>web development</strong>, with a keen
@@ -99,10 +99,10 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
             technologies to deliver exceptional digital experiences.
           </p>
         </div>
-        <div class='flex flex-col justify-between md:flex-row print:flex-row'>
-          <div
-            class='space-y-6 md:max-w-5xl print:max-w-[50rem] print:space-y-0'
-          >
+        <div
+          class='flex flex-col justify-between md:flex-row md:gap-8 print:flex-row'
+        >
+          <div class='space-y-6 md:max-w-4xl print:max-w-[65%] print:space-y-8'>
             <div>
               <h2
                 class='font-title text-4xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem] print:text-3xl print:[text-shadow:none]'
@@ -118,7 +118,7 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
                         Number(new Date(a.data.startDate))
                     )
                     .map((resume) => (
-                      <article>
+                      <article class='mb-8 last:mb-0'>
                         <div id='resume-header' class='space-y-2 py-2'>
                           <span class='font-medium text-muted-foreground'>
                             <time
@@ -148,11 +148,20 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
                             - <span>{resume.data.job}</span>
                           </h4>
                         </div>
-                        <div class='space-y-2 text-balance pb-4 text-primary print:space-y-1 print:pb-2 print:leading-7 [&_ul]:list-inside [&_ul]:list-disc [&_ul]:py-2 print:[&_ul]:py-0'>
+                        <div class='space-y-4 pb-4 text-primary print:space-y-1 print:pb-2 print:leading-7 [&_ul]:list-inside [&_ul]:list-disc [&_ul]:py-2 print:[&_ul]:py-0'>
                           {async () => {
                             const { Content } = await resume.render()
-                            return <Content />
+
+                            return (
+                              <>
+                                <Content />
+                              </>
+                            )
                           }}
+                        </div>
+                        <div class='flex max-w-xs flex-wrap gap-2'>
+                          {resume.data.tags &&
+                            resume.data.tags.map((tag) => <Tag tag={tag} />)}
                         </div>
                       </article>
                     ))
@@ -174,7 +183,7 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
                         Number(new Date(a.data.startDate))
                     )
                     .map((resume) => (
-                      <article>
+                      <article class='mb-8 last:mb-0'>
                         <div id='resume-header' class='space-y-2 py-2'>
                           <span class='font-medium text-muted-foreground'>
                             <time
@@ -204,11 +213,15 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
                             - <span>{resume.data.school}</span>
                           </h4>
                         </div>
-                        <div class='space-y-2 text-balance pb-4 text-primary print:space-y-1 print:pb-2 [&_ul]:list-inside [&_ul]:list-disc [&_ul]:py-2 print:[&_ul]:py-0'>
+                        <div class='space-y-4 pb-4 text-primary print:space-y-1 print:pb-2 [&_ul]:list-inside [&_ul]:list-disc [&_ul]:py-2 print:[&_ul]:py-0'>
                           {async () => {
                             const { Content } = await resume.render()
                             return <Content />
                           }}
+                        </div>
+                        <div class='flex max-w-xs flex-wrap gap-2'>
+                          {resume.data.tags &&
+                            resume.data.tags.map((tag) => <Tag tag={tag} />)}
                         </div>
                       </article>
                     ))
@@ -216,65 +229,212 @@ const jobDate = new Intl.DateTimeFormat("en-US", {
               </div>
             </div>
           </div>
-          <div class='space-y-8'>
-            <div class='rounded-xl border p-6 shadow-xl print:shadow-none'>
-              <h3
-                class='font-title text-3xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem]'
-              >
-                Skills and competencies
-              </h3>
-              <ul class='mt-2 space-y-1 text-primary print:mt-0'>
-                <li>
-                  <strong>Frontend</strong> : React, Remix, Python, ...
-                </li>
-                <li>
-                  <strong>Backend</strong> : Node, Express, Rust, Bun, ...
-                </li>
-                <li>
-                  <strong>Database</strong> : MongoDB, PostgreSQL, ...
-                </li>
-                <li>
-                  <strong>DevOps</strong> : Git, Docker, NGINX, ...
-                </li>
-                <li><strong>System</strong>: Linux, MacOS, Windows</li>
-              </ul>
+          <div class='space-y-8 print:max-w-[30%]'>
+            <div
+              id='skills'
+              class='card relative overflow-hidden rounded-xl border bg-foreground/5 p-6 shadow-xl print:shadow-none'
+            >
+              <div class='card-gradient absolute inset-0 opacity-0'></div>
+              <div class='relative z-10'>
+                <h3
+                  class='font-title text-3xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem]'
+                >
+                  Skills and competencies
+                </h3>
+                <div class='mt-2 space-y-4'>
+                  <div>
+                    <strong>Frontend</strong>
+                    <div class='mt-1 flex flex-wrap gap-2'>
+                      <Tag tag='React' />
+                      <Tag tag='Remix' />
+                      <Tag tag='Vue' />
+                      <Tag tag='Typescript' />
+                    </div>
+                  </div>
+                  <div>
+                    <strong>Backend</strong>
+                    <div class='mt-1 flex flex-wrap gap-2'>
+                      <Tag tag='Node' />
+                      <Tag tag='Nest' />
+                      <Tag tag='Python' />
+                      <Tag tag='Rust' />
+                    </div>
+                  </div>
+                  <div>
+                    <strong>Database</strong>
+                    <div class='mt-1 flex flex-wrap gap-2'>
+                      <Tag tag='PostgreSQL' />
+                      <Tag tag='Database' />
+                      <Tag tag='Prisma' />
+                      <Tag tag='MikroOrm' />
+                    </div>
+                  </div>
+                  <div>
+                    <strong>System</strong>
+                    <div class='mt-1 flex flex-wrap gap-2'>
+                      <Tag tag='System' />
+                      <Tag tag='Network' />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class='rounded-xl border p-6 shadow-xl print:shadow-none'>
-              <h3
-                class='font-title text-3xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem]'
-              >
-                Miscellaneous
-              </h3>
-              <ul class='mt-2 space-y-1 text-primary'>
-                <li>
-                  <strong>Music</strong> : Guitar, drum and music workstation, ...
-                </li>
-                <li>
-                  <strong>Video Games</strong> : Simulation, Strategy
-                </li>
-                <li>
-                  <strong>Drawing</strong> : Procreate, Blender
-                </li>
-              </ul>
+            <div
+              id='miscellaneous'
+              class='card relative overflow-hidden rounded-xl border bg-foreground/5 p-6 shadow-xl print:shadow-none'
+            >
+              <div class='card-gradient absolute inset-0 opacity-0'></div>
+              <div class='relative z-10'>
+                <h3
+                  class='font-title text-3xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem]'
+                >
+                  Miscellaneous
+                </h3>
+                <div class='mt-2 space-y-4'>
+                  <div>
+                    <strong>Hobbies</strong>
+                    <div class='mt-1 flex flex-wrap gap-2'>
+                      <Tag tag='Music' />
+                      <Tag tag='Gaming' />
+                      <Tag tag='Drawing' />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </section>
-  <div
-    class='text-md hidden items-center justify-center text-primary print:fixed print:bottom-0 print:left-0 print:flex print:h-12 print:w-full'
-  >
-    <span class=''>
-      Resume generated on my website at{" "}
-      <a href='https://netoun.com'>netoun.com</a>
-    </span>
-  </div>
-
-  <style is:global>
-    @page {
-      size: A4;
-      margin: 10%;
-    }
-  </style>
 </Layout>
+
+<div
+  class='text-md hidden items-center justify-center text-primary print:fixed print:bottom-4 print:left-0 print:flex print:h-8 print:w-full print:text-[0.8rem] print:text-gray-500'
+>
+  <span>
+    Resume generated on my website at{" "}
+    <a href='https://netoun.com' class='text-gray-700'>netoun.com</a>
+  </span>
+</div>
+
+<style is:global>
+  @page {
+    size: A4;
+    margin: 1.5cm 2cm;
+  }
+
+  @media print {
+    html {
+      font-size: 12pt;
+    }
+
+    body {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    /* Suppression des ombres et effets pour l'impression */
+    * {
+      text-shadow: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Assurer que les sauts de page sont gérés correctement */
+    article {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    h2,
+    h3,
+    h4 {
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+
+    /* Ajustements pour les liens */
+    a {
+      text-decoration: none !important;
+    }
+
+    /* Optimisations pour Firefox */
+    @-moz-document url-prefix() {
+      body {
+        size: A4;
+        margin: 0;
+      }
+    }
+  }
+
+  .card {
+    transition: transform 0.3s ease;
+  }
+
+  .card-gradient {
+    background: linear-gradient(
+      45deg,
+      hsla(var(--secondary) / 0.1),
+      hsla(var(--primary) / 0.1),
+      hsla(var(--secondary) / 0.1)
+    );
+    background-size: 200% 200%;
+    filter: blur(24px);
+    opacity: 0.5;
+  }
+
+  @media print {
+    .card-gradient {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap"
+
+  const cards = document.querySelectorAll(".card")
+
+  cards.forEach((card) => {
+    const gradient = card.querySelector(".card-gradient")
+
+    // Animation continue du gradient
+    gsap.to(gradient, {
+      backgroundPosition: "200% 200%",
+      duration: 8,
+      ease: "none",
+      repeat: -1
+    })
+
+    // Animation subtile au hover de la carte
+    card.addEventListener("mouseenter", () => {
+      gsap.to(card, {
+        y: -4,
+        scale: 1.02,
+        duration: 0.4,
+        ease: "power2.out"
+      })
+
+      // Intensifier légèrement le gradient au hover
+      gsap.to(gradient, {
+        opacity: 0.7,
+        duration: 0.4
+      })
+    })
+
+    card.addEventListener("mouseleave", () => {
+      gsap.to(card, {
+        y: 0,
+        scale: 1,
+        duration: 0.4,
+        ease: "power2.in"
+      })
+
+      // Retour à l'opacité normale
+      gsap.to(gradient, {
+        opacity: 0.5,
+        duration: 0.4
+      })
+    })
+  })
+</script>

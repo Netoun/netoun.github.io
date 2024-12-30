@@ -1,0 +1,193 @@
+---
+interface Props {
+  tag: string
+  className?: string
+}
+
+const { tag, className = "" } = Astro.props
+
+// Couleurs possibles pour les tags avec variables CSS
+const tagColors = {
+  React:
+    "bg-[hsl(var(--tag-react)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-react)/var(--tag-opacity-dark))]",
+  Remix:
+    "bg-[hsl(var(--tag-remix)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-remix)/var(--tag-opacity-dark))]",
+  "Chakra UI":
+    "bg-[hsl(var(--tag-chakra)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-chakra)/var(--tag-opacity-dark))]",
+  Prisma:
+    "bg-[hsl(var(--tag-prisma)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-prisma)/var(--tag-opacity-dark))]",
+  Fly: "bg-[hsl(var(--tag-fly)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-fly)/var(--tag-opacity-dark))]",
+  Workers:
+    "bg-[hsl(var(--tag-workers)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-workers)/var(--tag-opacity-dark))]",
+  Canvas:
+    "bg-[hsl(var(--tag-canvas)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-canvas)/var(--tag-opacity-dark))]",
+  "Three.js":
+    "bg-[hsl(var(--tag-threejs)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-threejs)/var(--tag-opacity-dark))]",
+  Typescript:
+    "bg-[hsl(var(--tag-typescript)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-typescript)/var(--tag-opacity-dark))]",
+  PostgreSQL:
+    "bg-[hsl(var(--tag-postgresql)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-postgresql)/var(--tag-opacity-dark))]",
+  GraphQL:
+    "bg-[hsl(var(--tag-graphql)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-graphql)/var(--tag-opacity-dark))]",
+  Node: "bg-[hsl(var(--tag-node)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-node)/var(--tag-opacity-dark))]",
+  Vue: "bg-[hsl(var(--tag-vue)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-vue)/var(--tag-opacity-dark))]",
+  Python:
+    "bg-[hsl(var(--tag-python)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-python)/var(--tag-opacity-dark))]",
+  Rust: "bg-[hsl(var(--tag-rust)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-rust)/var(--tag-opacity-dark))]",
+  "C++":
+    "bg-[hsl(var(--tag-cpp)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-cpp)/var(--tag-opacity-dark))]",
+  Web: "bg-[hsl(var(--tag-web)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-web)/var(--tag-opacity-dark))]",
+  Database:
+    "bg-[hsl(var(--tag-database)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-database)/var(--tag-opacity-dark))]",
+  Network:
+    "bg-[hsl(var(--tag-network)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-network)/var(--tag-opacity-dark))]",
+  System:
+    "bg-[hsl(var(--tag-system)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-system)/var(--tag-opacity-dark))]",
+  DialogFlow:
+    "bg-[hsl(var(--tag-dialogflow)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-dialogflow)/var(--tag-opacity-dark))]",
+  TensorFlow:
+    "bg-[hsl(var(--tag-tensorflow)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-tensorflow)/var(--tag-opacity-dark))]",
+  Drone:
+    "bg-[hsl(var(--tag-drone)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-drone)/var(--tag-opacity-dark))]",
+  Apollo:
+    "bg-[hsl(var(--tag-apollo)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-apollo)/var(--tag-opacity-dark))]",
+  Nest: "bg-[hsl(var(--tag-nest)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-nest)/var(--tag-opacity-dark))]",
+  "Shadcn UI":
+    "bg-[hsl(var(--tag-shadcn)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-shadcn)/var(--tag-opacity-dark))]",
+  Turborepo:
+    "bg-[hsl(var(--tag-turborepo)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-turborepo)/var(--tag-opacity-dark))]",
+  MikroOrm:
+    "bg-[hsl(var(--tag-mikro-orm)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-mikro-orm)/var(--tag-opacity-dark))]",
+  "Computer Science":
+    "bg-[hsl(var(--tag-cs)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-cs)/var(--tag-opacity-dark))]",
+  "Information Systems":
+    "bg-[hsl(var(--tag-is)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-is)/var(--tag-opacity-dark))]"
+}
+---
+
+<span
+  class={`tag relative rounded-full px-2 py-1 text-xs cursor-pointer select-none ${
+    tagColors[tag] ||
+    "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+  } ${className} print:bg-transparent print:text-[#4a4a4a]`}
+>
+  {tag}
+  <div
+    class='glass absolute inset-0 rounded-full opacity-0 backdrop-blur-[1px] backdrop-brightness-150'
+  >
+  </div>
+</span>
+
+<script>
+  import { gsap } from "gsap"
+  import { Elastic } from "gsap/all"
+
+  gsap.registerPlugin(Elastic)
+
+  const tags = document.querySelectorAll(".tag")
+
+  tags.forEach((tag) => {
+    const glass = tag.querySelector(".glass")
+    let isPressed = false
+    let animation
+
+    // Animation d'étirement élastique au hover
+    tag.addEventListener("mouseenter", () => {
+      if (!isPressed) {
+        animation = gsap.to(tag, {
+          scaleX: 1.2,
+          scaleY: 0.8,
+          duration: 0.4,
+          ease: "elastic.out(1, 0.3)"
+        })
+      }
+    })
+
+    tag.addEventListener("mouseleave", () => {
+      if (!isPressed) {
+        animation?.kill()
+        gsap.to(tag, {
+          scale: 1,
+          scaleX: 1,
+          scaleY: 1,
+          duration: 0.4,
+          ease: "elastic.out(1, 0.3)"
+        })
+        // Reset glass effect
+        gsap.to(glass, {
+          opacity: 0,
+          duration: 0.2
+        })
+      }
+    })
+
+    // Animation au click
+    tag.addEventListener("mousedown", () => {
+      isPressed = true
+      animation?.kill()
+
+      // Squish effect
+      gsap.to(tag, {
+        scaleX: 0.9,
+        scaleY: 1.2,
+        duration: 0.1,
+        ease: "power2.out"
+      })
+
+      // Glass effect
+      gsap.to(glass, {
+        opacity: 0.3,
+        duration: 0.1
+      })
+    })
+
+    tag.addEventListener("mouseup", () => {
+      isPressed = false
+
+      // Bounce back
+      gsap.to(tag, {
+        scale: 1,
+        scaleX: 1,
+        scaleY: 1,
+        duration: 0.8,
+        ease: "elastic.out(1, 0.3)"
+      })
+
+      // Fade out glass effect
+      gsap.to(glass, {
+        opacity: 0,
+        duration: 0.3
+      })
+    })
+
+    // Handle mouse leaving while pressed
+    tag.addEventListener("mouseleave", () => {
+      if (isPressed) {
+        isPressed = false
+        gsap.to(tag, {
+          scale: 1,
+          scaleX: 1,
+          scaleY: 1,
+          duration: 0.4,
+          ease: "elastic.out(1, 0.3)"
+        })
+        gsap.to(glass, {
+          opacity: 0,
+          duration: 0.2
+        })
+      }
+    })
+  })
+</script>
+
+<style>
+  .tag {
+    transform-origin: center;
+    will-change: transform;
+  }
+
+  .glass {
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+</style>

@@ -135,7 +135,10 @@ const TAGS_COLORS = {
               <Image
                 src={portfolio.data.image_overlay}
                 alt={portfolio.data.title}
-                class='absolute inset-0 h-full w-full translate-y-full object-cover opacity-0 duration-300 group-hover:translate-y-0 group-hover:opacity-100'
+                class={cn(
+                  "absolute inset-0 h-full w-full translate-y-full object-cover opacity-0 duration-300 group-hover:translate-y-0 group-hover:opacity-100",
+                  portfolio.data.image_overlay_class
+                )}
                 width={600}
                 height={400}
               />
