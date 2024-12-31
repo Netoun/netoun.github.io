@@ -1,0 +1,36 @@
+---
+import { useTranslatedText } from "@i18n/utils"
+import { MoonIcon, SunIcon } from "lucide-react"
+
+const { lang } = Astro.props as { lang: "en" | "fr" }
+const t = useTranslatedText(lang || "en")
+---
+
+<button
+  id='theme-toggle'
+  class='relative'
+  aria-label={t("theme.toggle")}
+  title={t("theme.toggle")}
+>
+  <span class='sr-only'>{t("theme.switch")}</span>
+  <span
+    class='dark: absolute left-0 top-[0.2rem] size-7 translate-x-[0.2rem] rounded-full bg-secondary transition-transform duration-300 ease-in-out dark:translate-x-[2.15rem]'
+  ></span>
+  <div class='relative flex rounded-2xl border border-primary/20'>
+    <div
+      class='flex size-8 items-center justify-center text-secondary-foreground dark:text-foreground'
+    >
+      <SunIcon size='16' />
+    </div>
+    <div class='flex size-8 items-center justify-center'>
+      <MoonIcon size='16' />
+    </div>
+  </div>
+</button>
+
+<script is:inline>
+  const themeToggle = document.getElementById("theme-toggle")
+  themeToggle?.addEventListener("click", () => {
+    document.documentElement.classList.toggle("dark")
+  })
+</script>

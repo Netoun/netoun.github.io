@@ -1,10 +1,15 @@
 ---
+import { defaultLang, languages, useTranslatedText } from "@i18n/utils"
 import { MoonIcon, SunIcon } from "lucide-react"
+
+import LanguageSwitcher from "@components/ui/language-switcher.astro"
 
 import "@fontsource-variable/newsreader"
 import "@fontsource-variable/noto-sans"
 import "../styles/font.css"
 import "../styles/base.css"
+
+import ThemeToggle from "@components/ui/theme-toggle.astro"
 
 interface Props {
   title: string
@@ -12,10 +17,13 @@ interface Props {
 }
 
 const { title, description } = Astro.props
+const { lang } = Astro.params
+const currentLang = (lang as keyof typeof languages) || defaultLang
+const t = useTranslatedText(currentLang)
 ---
 
 <!doctype html>
-<html lang='en' class='print:text-[6pt]'>
+<html lang={currentLang} class='print:text-[6pt]'>
   <head>
     <meta charset='UTF-8' />
     <meta name='description' content='Astro description' />
@@ -47,6 +55,21 @@ const { title, description } = Astro.props
     <meta name='twitter:title' content={title} />
     <meta name='twitter:description' content={description} />
     <meta name='twitter:image' content='http://netoun.github.io/profile.jpg' />
+    <script is:inline>
+      const getThemePreference = () => {
+        if (
+          typeof localStorage !== "undefined" &&
+          localStorage.getItem("theme")
+        ) {
+          return localStorage.getItem("theme")
+        }
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light"
+      }
+      const isDark = getThemePreference() === "dark"
+      document.documentElement.classList[isDark ? "add" : "remove"]("dark")
+    </script>
   </head>
 
   <body>
@@ -71,30 +94,9 @@ const { title, description } = Astro.props
             />
           </a>
         </div>
-        <div>
-          <button
-            id='theme-toggle'
-            class='relative'
-            aria-label='Toggle theme'
-            title='Toggle between light and dark theme'
-          >
-            <span class='sr-only'>Switch theme</span>
-            <span
-              class='dark: absolute left-0 top-[0.2rem] size-7 translate-x-[0.2rem] rounded-full bg-secondary transition-transform duration-300 ease-in-out dark:translate-x-[2.15rem]'
-            ></span>
-            <div
-              class='relative flex rounded-2xl border border-primary dark:border-primary'
-            >
-              <div
-                class='flex size-8 items-center justify-center text-secondary-foreground dark:text-foreground'
-              >
-                <SunIcon size='16' />
-              </div>
-              <div class='flex size-8 items-center justify-center'>
-                <MoonIcon size='16' />
-              </div>
-            </div>
-          </button>
+        <div class='flex items-center gap-4'>
+          <LanguageSwitcher />
+          <ThemeToggle />
         </div>
       </div>
     </header>
@@ -105,7 +107,7 @@ const { title, description } = Astro.props
     </main>
     <footer class='h-[var(--height-footer)] print:hidden'>
       <div class='flex items-center justify-center'>
-        <p>© 2024 - Nicolas Coulonnier</p>
+        <p>{t("footer.copyright")}</p>
       </div>
     </footer>
 
@@ -178,21 +180,6 @@ const { title, description } = Astro.props
       }
 
       // Theme toggle functionality
-      const getThemePreference = () => {
-        if (
-          typeof localStorage !== "undefined" &&
-          localStorage.getItem("theme")
-        ) {
-          return localStorage.getItem("theme")
-        }
-        return window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light"
-      }
-
-      const isDark = getThemePreference() === "dark"
-      document.documentElement.classList[isDark ? "add" : "remove"]("dark")
-
       if (typeof localStorage !== "undefined") {
         const observer = new MutationObserver(() => {
           const isDark = document.documentElement.classList.contains("dark")
@@ -203,11 +190,6 @@ const { title, description } = Astro.props
           attributeFilter: ["class"]
         })
       }
-
-      const themeToggle = document.getElementById("theme-toggle")
-      themeToggle?.addEventListener("click", () => {
-        document.documentElement.classList.toggle("dark")
-      })
     </script>
 
     <style is:global>

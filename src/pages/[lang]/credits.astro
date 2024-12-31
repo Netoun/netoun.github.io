@@ -1,0 +1,78 @@
+---
+import { languages, useTranslatedText } from "@i18n/utils"
+import Layout from "@layouts/Layout.astro"
+
+import Tag from "@components/ui/tag.astro"
+
+export function getStaticPaths() {
+  return Object.keys(languages).map((lang) => ({
+    params: { lang }
+  }))
+}
+
+const { lang } = Astro.params as { lang: keyof typeof languages }
+const t = useTranslatedText(lang)
+
+const technologies = [
+  { name: "Astro", url: "https://astro.build" },
+  { name: "TypeScript", url: "https://www.typescriptlang.org" },
+  { name: "Tailwind CSS", url: "https://tailwindcss.com" }
+]
+---
+
+<Layout title={t("credits.title")} description={t("credits.description")}>
+  <main class='container mx-auto px-4 py-8'>
+    <h1 class='mb-8 text-center text-4xl font-bold'>{t("credits.title")}</h1>
+
+    <div class='mx-auto max-w-2xl space-y-12'>
+      <section>
+        <h2 class='mb-4 text-2xl font-semibold'>{t("credits.fonts.title")}</h2>
+        <div class='space-y-4'>
+          <div class='rounded-lg bg-gray-100 p-4 dark:bg-gray-800'>
+            <h3 class='font-bold'>Basteleur</h3>
+            <p class='mt-2'>
+              <a
+                href='https://velvetyne.fr/fonts/basteleur/'
+                class='text-blue-600 hover:underline dark:text-blue-400'
+              >
+                {t("credits.fonts.basteleur")}
+              </a>
+            </p>
+          </div>
+          <div class='rounded-lg bg-gray-100 p-4 dark:bg-gray-800'>
+            <h3 class='font-bold'>Noto Sans Variable</h3>
+            <p class='mt-2'>
+              <a
+                href='https://fonts.google.com/specimen/Noto+Sans+Variable'
+                class='text-blue-600 hover:underline dark:text-blue-400'
+              >
+                {t("credits.fonts.noto-sans-variable")}
+              </a>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class='mb-4 text-2xl font-semibold'>
+          {t("credits.technologies.title")}
+        </h2>
+        <p class='mb-4'>{t("credits.technologies.description")}</p>
+        <div class='flex flex-wrap gap-4'>
+          {
+            technologies.map((tech) => (
+              <a
+                href={tech.url}
+                class='inline-block'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                <Tag tag={tech.name}>{tech.name}</Tag>
+              </a>
+            ))
+          }
+        </div>
+      </section>
+    </div>
+  </main>
+</Layout>

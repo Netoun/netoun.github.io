@@ -1,12 +1,4 @@
 ---
-interface Props {
-  tag: string
-  className?: string
-}
-
-const { tag, className = "" } = Astro.props
-
-// Couleurs possibles pour les tags avec variables CSS
 const tagColors = {
   React:
     "bg-[hsl(var(--tag-react)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-react)/var(--tag-opacity-dark))]",
@@ -62,12 +54,21 @@ const tagColors = {
     "bg-[hsl(var(--tag-cs)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-cs)/var(--tag-opacity-dark))]",
   "Information Systems":
     "bg-[hsl(var(--tag-is)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-is)/var(--tag-opacity-dark))]"
+} as const
+
+interface Props {
+  tag: keyof typeof tagColors | string
+  className?: string
 }
+
+const { tag, className = "" } = Astro.props
+
+// Couleurs possibles pour les tags avec variables CSS
 ---
 
 <span
   class={`tag relative rounded-full px-2 py-1 text-xs cursor-pointer select-none ${
-    tagColors[tag] ||
+    tagColors[tag as keyof typeof tagColors] ||
     "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
   } ${className} print:bg-transparent print:text-[#4a4a4a]`}
 >
@@ -89,7 +90,7 @@ const tagColors = {
   tags.forEach((tag) => {
     const glass = tag.querySelector(".glass")
     let isPressed = false
-    let animation
+    let animation: GSAPAnimation | null = null
 
     // Animation d'étirement élastique au hover
     tag.addEventListener("mouseenter", () => {

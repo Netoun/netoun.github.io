@@ -1,12 +1,253 @@
 ---
 import Layout from "@layouts/Layout.astro"
+import { HomeIcon } from "lucide-react"
 ---
 
 <Layout title='404' description='404 page not found'>
   <section
     id='hero'
-    class='flex flex-col items-center justify-center py-8 text-primary [min-height:calc(100dvh-var(--height-footer)-var(--height-header))] md:flex-row'
+    class='relative flex flex-col items-center justify-center overflow-hidden py-8 text-primary [min-height:calc(100dvh-var(--height-footer)-var(--height-header))] md:flex-row'
   >
-    <span class='animate-text-shadow text-center font-title text-9xl'>404</span>
+    <div
+      id='shadow-container'
+      class='absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center'
+    >
+      <div class='flex items-center justify-center'>
+        <span
+          id='shadow-4-1'
+          class='z-[1] inline-block font-title text-9xl text-foreground/20 [filter:drop-shadow(0_0_10px_rgba(0,0,0,0.5))] [text-shadow:0_0_10px_rgba(0,0,0,0.5)]'
+          >4</span
+        >
+        <span
+          id='shadow-0'
+          class='z-[1] inline-block font-title text-9xl text-foreground/20 [filter:drop-shadow(0_0_10px_rgba(0,0,0,0.5))] [text-shadow:0_0_10px_rgba(0,0,0,0.5)]'
+          >0</span
+        >
+        <span
+          id='shadow-4-2'
+          class='z-[1] inline-block font-title text-9xl text-foreground/20 [filter:drop-shadow(0_0_10px_rgba(0,0,0,0.5))] [text-shadow:0_0_10px_rgba(0,0,0,0.5)]'
+          >4</span
+        >
+      </div>
+      <div
+        id='congrats'
+        class='pointer-events-none relative z-[99] mt-12 rounded-lg text-center opacity-0'
+      >
+        <a href='/'>
+          <span class='sr-only'>Go home</span>
+          <HomeIcon className='size-8' />
+        </a>
+      </div>
+    </div>
+
+    <div id='numbers-container' class='absolute inset-0 h-full w-full'>
+      <span
+        id='number-4-1'
+        class='absolute z-[2] inline-block origin-center cursor-move select-none font-title text-9xl'
+        >4</span
+      >
+      <span
+        id='number-0'
+        class='absolute z-[2] inline-block origin-center cursor-move select-none font-title text-9xl'
+        >0</span
+      >
+      <span
+        id='number-4-2'
+        class='absolute z-[2] inline-block origin-center cursor-move select-none font-title text-9xl'
+        >4</span
+      >
+    </div>
   </section>
 </Layout>
+
+<script>
+  import { gsap } from "gsap"
+  import { Draggable } from "gsap/Draggable"
+
+  gsap.registerPlugin(Draggable)
+
+  function getRandomPosition(element: Element, container: Element) {
+    const containerRect = container.getBoundingClientRect()
+    const elementRect = element.getBoundingClientRect()
+
+    return {
+      x: gsap.utils.random(0, containerRect.width - elementRect.width),
+      y: gsap.utils.random(0, containerRect.height - elementRect.height)
+    }
+  }
+
+  function isMatching(dragElement: Element, targetElement: Element) {
+    const dragRect = dragElement.getBoundingClientRect()
+    const targetRect = targetElement.getBoundingClientRect()
+    const threshold = 20 // pixels tolerance
+
+    return (
+      Math.abs(dragRect.left - targetRect.left) < threshold &&
+      Math.abs(dragRect.top - targetRect.top) < threshold
+    )
+  }
+
+  function findClosestShadow(number: Element) {
+    if ((number as any).isAnimating) return null
+
+    const numberType = number.textContent
+    const shadows = Array.from(
+      document.querySelectorAll(`[id^="shadow-"]`)
+    ) as Element[]
+    const matchingShadows = shadows
+      .filter((shadow) => shadow.textContent === numberType)
+      .filter(
+        (shadow) =>
+          !Array.from(document.querySelectorAll(`[id^="number-"]`)).some(
+            (n) => n !== number && isMatching(n, shadow)
+          )
+      )
+
+    let closestShadow: Element | null = null
+    let minDistance = Infinity
+
+    matchingShadows.forEach((shadow) => {
+      const numberRect = number.getBoundingClientRect()
+      const shadowRect = shadow.getBoundingClientRect()
+      const distance = Math.sqrt(
+        Math.pow(numberRect.left - shadowRect.left, 2) +
+          Math.pow(numberRect.top - shadowRect.top, 2)
+      )
+
+      if (distance < minDistance) {
+        minDistance = distance
+        closestShadow = shadow
+      }
+    })
+
+    return minDistance < 40 ? closestShadow : null
+  }
+
+  function checkAllMatches() {
+    const numbers = Array.from(document.querySelectorAll('[id^="number-"]'))
+    let allMatched = true
+
+    numbers.forEach((number) => {
+      const shadows = Array.from(
+        document.querySelectorAll('[id^="shadow-"]')
+      ).filter((shadow) => shadow.textContent === number.textContent)
+
+      if (!shadows.some((shadow) => isMatching(number, shadow))) {
+        allMatched = false
+      }
+    })
+
+    if (allMatched) {
+      showCongratulations()
+    }
+  }
+
+  function showCongratulations() {
+    const congrats = document.getElementById("congrats")
+    if (congrats) {
+      gsap.to(congrats, {
+        opacity: 1,
+        scale: 1,
+        duration: 0.5,
+        ease: "back.out(1.7)",
+        pointerEvents: "auto"
+      })
+    }
+  }
+
+  // Animation when the page loads
+  window.addEventListener("load", () => {
+    const hero = document.getElementById("hero")
+    if (!hero) return
+
+    const numberIds = ["number-4-1", "number-0", "number-4-2"]
+
+    // Randomly position draggable numbers
+    numberIds.forEach((numberId) => {
+      const number = document.getElementById(numberId)
+      if (number) {
+        const pos = getRandomPosition(number, hero)
+        gsap.set(number, { x: pos.x, y: pos.y })
+      }
+    })
+
+    // Initial animation
+    const numbers = numberIds
+      .map((id) => document.getElementById(id))
+      .filter(Boolean)
+    gsap.from(numbers, {
+      y: "+=100",
+      opacity: 0,
+      rotationX: -90,
+      stagger: 0.1,
+      duration: 1,
+      ease: "back.out(1.7)",
+      onComplete: () => {
+        // Make each number draggable
+        numbers.forEach((number) => {
+          if (number) {
+            Draggable.create(number, {
+              type: "x,y",
+              bounds: hero,
+              inertia: true,
+              onDragStart: function () {
+                gsap.to(this.target, { scale: 1.1, duration: 0.2 })
+              },
+              onDrag: function () {
+                const closestShadow = findClosestShadow(this.target as Element)
+                if (closestShadow) {
+                  const draggable = this as any
+                  const shadowRect = (
+                    closestShadow as HTMLElement
+                  ).getBoundingClientRect()
+                  const numberRect = (
+                    this.target as HTMLElement
+                  ).getBoundingClientRect()
+                  const container = document.getElementById("numbers-container")
+                  const containerRect = container?.getBoundingClientRect()
+
+                  if (!containerRect) return
+
+                  // Calculate position relative to the container
+                  const targetX = shadowRect.left - containerRect.left
+                  const targetY = shadowRect.top - containerRect.top
+
+                  // Disable dragging immediately
+                  this.disable()
+                  ;(this.target as HTMLElement).style.cursor = "default"
+
+                  // Set flag to prevent animation loop
+                  ;(this.target as any).isAnimating = true
+
+                  // First move down
+                  gsap.to(this.target, {
+                    y: targetY + 50,
+                    x: targetX,
+                    duration: 0.2,
+                    ease: "power2.in",
+                    onComplete: () => {
+                      // Then bounce back to position
+                      gsap.to(this.target, {
+                        y: targetY,
+                        duration: 0.4,
+                        ease: "elastic.out(1, 0.5)",
+                        onComplete: () => {
+                          ;(this.target as any).isAnimating = false
+                          checkAllMatches()
+                        }
+                      })
+                    }
+                  })
+                }
+              },
+              onDragEnd: function () {
+                gsap.to(this.target, { scale: 1, duration: 0.2 })
+                ;(this.target as any).isAnimating = false
+              }
+            })
+          }
+        })
+      }
+    })
+  })
+</script>

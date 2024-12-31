@@ -1,41 +1,51 @@
 ---
-import { getCollection } from "astro:content"
+import { languages, useTranslatedText } from "@i18n/utils"
+import Layout from "@layouts/Layout.astro"
+import { getCollection, type CollectionEntry } from "astro:content"
 import { PrinterIcon } from "lucide-react"
 
 import Button from "@components/ui/button.astro"
 import Tag from "@components/ui/tag.astro"
-import Layout from "../layouts/Layout.astro"
 
-const allExperiences = await getCollection("experience")
-const allSchools = await getCollection("school")
+export function getStaticPaths() {
+  return Object.keys(languages).map((lang) => ({
+    params: { lang }
+  }))
+}
+
+const { lang } = Astro.params as { lang: keyof typeof languages }
+const t = useTranslatedText(lang)
+
+const allExperiences = await getCollection("experience", ({ id }) => {
+  return id.startsWith(`${lang}/`)
+})
+const allSchools = await getCollection("school", ({ id }) => {
+  return id.startsWith(`${lang}/`)
+})
 
 const myAge = new Date().getFullYear() - 1995
 
-const jobDatetime = new Intl.DateTimeFormat("en-US", {
+const jobDatetime = new Intl.DateTimeFormat(lang, {
   day: "numeric",
   month: "numeric",
   year: "numeric"
 })
-const jobDate = new Intl.DateTimeFormat("en-US", {
+const jobDate = new Intl.DateTimeFormat(lang, {
   month: "short",
   year: "numeric"
 })
 
-for (const experience of allExperiences) {
-  console.log(experience.data.tags)
-}
+type Experience = CollectionEntry<"experience">
+type School = CollectionEntry<"school">
 ---
 
-<Layout
-  title='Nicolas Coulonnier - CV'
-  description="Nicolas Coulonnier's resume, a frontend developer based in Nantes, France."
->
+<Layout title={t("resume.title")} description={t("resume.description")}>
   <section
     id='resume'
     class='max-w space-y-10 py-16 [min-height:calc(100dvh-var(--height-footer)-var(--height-header))] print:m-0 print:p-0 print:py-8'
   >
     <Button onclick='window.print()' class='print:hidden'>
-      Print
+      {t("resume.print")}
       <PrinterIcon size='20' className='ml-2' />
     </Button>
     <div class='flex flex-col justify-between gap-8 md:flex-row print:gap-12'>
@@ -60,19 +70,20 @@ for (const experience of allExperiences) {
           <div>
             <ul class='print:text-end print:text-[0.9rem]'>
               <li>
-                <strong class='uppercase print:font-sans'>Email</strong> : <a
-                  href='mailto:coulonnier.nicolas.44@gmail.com'
-                >
+                <strong class='uppercase print:font-sans'
+                  >{t("resume.contact.email")}</strong
+                > : <a href='mailto:coulonnier.nicolas.44@gmail.com'>
                   coulonnier.nicolas.44@gmail.com
                 </a>
               </li>
               <li>
                 <strong class='uppercase print:font-sans'>Age</strong> : {myAge}
-                years old
+                {t("resume.contact.age")}
               </li>
               <li>
-                <strong class='uppercase print:font-sans'>Location</strong> : Nantes,
-                France
+                <strong class='uppercase print:font-sans'
+                  >{t("resume.contact.location")}</strong
+                > : Nantes, France
               </li>
             </ul>
           </div>
@@ -81,22 +92,13 @@ for (const experience of allExperiences) {
           class='space-y-2 pt-4 text-lg text-primary md:max-w-4xl print:space-y-3 print:pt-0 print:text-[0.95rem] print:leading-normal'
         >
           <p>
-            I'm passionate about <strong>web development</strong>, with a keen
-            focus on creating efficient, <strong>user-friendly</strong> websites.
-            My approach is simple: prioritize performance, user experience, and
-            <strong>accessibility</strong>
-            in every project.
+            {t("resume.bio")}
+          </p>
+          <p class='print:hiddepn'>
+            {t("resume.bio.opensource")}
           </p>
           <p class='print:hidden'>
-            I pay special attention to <strong>open source</strong> and <strong
-              >best practices.</strong
-            >. Because it's important to question one's work, I try every day to
-            learn new things and improve my skills.
-          </p>
-          <p class='print:hidden'>
-            I construct most of the times with React framework and Typescript
-            like a <strong>Remix</strong> 🎔 or Next I thrive on using these cutting-edge
-            technologies to deliver exceptional digital experiences.
+            {t("resume.bio.tech")}
           </p>
         </div>
         <div
@@ -107,17 +109,17 @@ for (const experience of allExperiences) {
               <h2
                 class='font-title text-4xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem] print:text-3xl print:[text-shadow:none]'
               >
-                Experience
+                {t("resume.experience")}
               </h2>
               <div class='print:text-md text-lg print:space-y-0'>
                 {
                   allExperiences
                     .sort(
-                      (a, b) =>
+                      (a: Experience, b: Experience) =>
                         Number(new Date(b.data.startDate)) -
                         Number(new Date(a.data.startDate))
                     )
-                    .map((resume) => (
+                    .map((resume: Experience) => (
                       <article class='mb-8 last:mb-0'>
                         <div id='resume-header' class='space-y-2 py-2'>
                           <span class='font-medium text-muted-foreground'>
@@ -161,7 +163,9 @@ for (const experience of allExperiences) {
                         </div>
                         <div class='flex max-w-xs flex-wrap gap-2'>
                           {resume.data.tags &&
-                            resume.data.tags.map((tag) => <Tag tag={tag} />)}
+                            resume.data.tags.map((tag: string) => (
+                              <Tag tag={tag} />
+                            ))}
                         </div>
                       </article>
                     ))
@@ -172,17 +176,17 @@ for (const experience of allExperiences) {
               <h2
                 class='text-balance font-title text-4xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem] print:text-3xl print:[text-shadow:none]'
               >
-                Schools
+                {t("resume.schools")}
               </h2>
               <div class='print:text-md text-lg print:space-y-0'>
                 {
                   allSchools
                     .sort(
-                      (a, b) =>
+                      (a: School, b: School) =>
                         Number(new Date(b.data.startDate)) -
                         Number(new Date(a.data.startDate))
                     )
-                    .map((resume) => (
+                    .map((resume: School) => (
                       <article class='mb-8 last:mb-0'>
                         <div id='resume-header' class='space-y-2 py-2'>
                           <span class='font-medium text-muted-foreground'>
@@ -221,7 +225,9 @@ for (const experience of allExperiences) {
                         </div>
                         <div class='flex max-w-xs flex-wrap gap-2'>
                           {resume.data.tags &&
-                            resume.data.tags.map((tag) => <Tag tag={tag} />)}
+                            resume.data.tags.map((tag: string) => (
+                              <Tag tag={tag} />
+                            ))}
                         </div>
                       </article>
                     ))
@@ -239,11 +245,11 @@ for (const experience of allExperiences) {
                 <h3
                   class='font-title text-3xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem]'
                 >
-                  Skills and competencies
+                  {t("resume.skills")}
                 </h3>
                 <div class='mt-2 space-y-4'>
                   <div>
-                    <strong>Frontend</strong>
+                    <strong>{t("resume.skills.frontend")}</strong>
                     <div class='mt-1 flex flex-wrap gap-2'>
                       <Tag tag='React' />
                       <Tag tag='Remix' />
@@ -252,7 +258,7 @@ for (const experience of allExperiences) {
                     </div>
                   </div>
                   <div>
-                    <strong>Backend</strong>
+                    <strong>{t("resume.skills.backend")}</strong>
                     <div class='mt-1 flex flex-wrap gap-2'>
                       <Tag tag='Node' />
                       <Tag tag='Nest' />
@@ -261,7 +267,7 @@ for (const experience of allExperiences) {
                     </div>
                   </div>
                   <div>
-                    <strong>Database</strong>
+                    <strong>{t("resume.skills.database")}</strong>
                     <div class='mt-1 flex flex-wrap gap-2'>
                       <Tag tag='PostgreSQL' />
                       <Tag tag='Database' />
@@ -270,7 +276,7 @@ for (const experience of allExperiences) {
                     </div>
                   </div>
                   <div>
-                    <strong>System</strong>
+                    <strong>{t("resume.skills.system")}</strong>
                     <div class='mt-1 flex flex-wrap gap-2'>
                       <Tag tag='System' />
                       <Tag tag='Network' />
@@ -288,11 +294,11 @@ for (const experience of allExperiences) {
                 <h3
                   class='font-title text-3xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem]'
                 >
-                  Miscellaneous
+                  {t("resume.misc")}
                 </h3>
                 <div class='mt-2 space-y-4'>
                   <div>
-                    <strong>Hobbies</strong>
+                    <strong>{t("resume.misc.hobbies")}</strong>
                     <div class='mt-1 flex flex-wrap gap-2'>
                       <Tag tag='Music' />
                       <Tag tag='Gaming' />
@@ -313,7 +319,7 @@ for (const experience of allExperiences) {
   class='text-md hidden items-center justify-center text-primary print:fixed print:bottom-4 print:left-0 print:flex print:h-8 print:w-full print:text-[0.8rem] print:text-gray-500'
 >
   <span>
-    Resume generated on my website at{" "}
+    {t("resume.footer")}{" "}
     <a href='https://netoun.com' class='text-gray-700'>netoun.com</a>
   </span>
 </div>
