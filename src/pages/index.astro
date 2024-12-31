@@ -1,0 +1,10 @@
+---
+import { defaultLang } from "@i18n/utils"
+
+const redirectUrl = `/${defaultLang}/`
+---
+
+<meta http-equiv='refresh' content={`0;url=${redirectUrl}`} />
+<script>
+  window.location.pathname = `/${defaultLang}/`
+</script>
