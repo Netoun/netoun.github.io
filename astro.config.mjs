@@ -6,7 +6,7 @@ import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://netoun.com',
+  site: 'https://www.netoun.com',
   output: 'static',
   i18n: {
     defaultLocale: "en",
