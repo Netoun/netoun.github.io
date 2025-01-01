@@ -109,8 +109,15 @@ const translatePath = useTranslatedPath(currentLang)
       </div>
     </main>
     <footer class='h-[var(--height-footer)] print:hidden'>
-      <div class='flex items-center justify-center'>
+      <div class='flex items-center justify-center gap-2'>
         <p>{t("footer.copyright")}</p>
+        <span>•</span>
+        <a
+          href={translatePath("/credits", currentLang)}
+          class='transition-colors hover:text-primary/80'
+        >
+          {t("credits.title")}
+        </a>
       </div>
     </footer>
 

@@ -34,7 +34,9 @@ const tags = {
     "tag.not-defined": "{tag}",
     "tag.Music": "Music",
     "tag.Drawing": "Drawing",
-    "tag.Gaming": "Gaming"
+    "tag.Gaming": "Gaming",
+    "tag.Astro": "Astro",
+    "tag.TailwindCSS": "TailwindCSS"
   },
   fr: {
     "tag.React": "React",
@@ -70,7 +72,9 @@ const tags = {
     "tag.not-defined": "{tag}",
     "tag.Music": "Musique",
     "tag.Drawing": "Dessin",
-    "tag.Gaming": "Jeux vidéo"
+    "tag.Gaming": "Jeux vidéo",
+    "tag.Astro": "Astro",
+    "tag.TailwindCSS": "TailwindCSS"
   }
 } as const
 
@@ -192,10 +196,12 @@ export const ui: Record<string, Record<keyof typeof en, string>> = {
 
 export const routes = {
   en: {
-    resume: "resume"
+    resume: "resume",
+    credits: "credits"
   },
   fr: {
-    resume: "cv"
+    resume: "cv",
+    credits: "credits"
   }
 } as const
 
