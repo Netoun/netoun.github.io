@@ -6,8 +6,8 @@ image: /images/portfolio/treashunt/bg.webp
 image_overlay: /images/portfolio/treashunt/bg_overlay.webp
 image_overlay_class: object-fit
 tags:
-  - Remix
-  - Chakra UI
-  - Prisma
-  - Fly
+  - remix
+  - chakra-ui
+  - prisma
+  - fly
 ---

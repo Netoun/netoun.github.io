@@ -1,19 +1,14 @@
 ---
-import { useTranslatedText } from "@i18n/utils"
+import { getLangFromUrl, getRouteFromUrl, useTranslatedPath } from "@i18n/utils"
 
-const { lang } = Astro.params
-const currentPath = Astro.url.pathname
-const t = useTranslatedText(lang as "en" | "fr")
+const lang = getLangFromUrl(Astro.url)
+const route = getRouteFromUrl(Astro.url)
+const translatePath = useTranslatedPath(lang)
 
 const languages = [
   { code: "en", name: "English", flag: "🇬🇧" },
   { code: "fr", name: "Français", flag: "🇫🇷" }
 ] as const
-
-function getLocalizedPath(targetLang: string) {
-  const pathWithoutLang = currentPath.replace(`/${lang}/`, "/")
-  return `/${targetLang}${pathWithoutLang}`
-}
 
 const currentLanguage = languages.find((l) => l.code === lang) || languages[0]
 ---
@@ -53,7 +48,7 @@ const currentLanguage = languages.find((l) => l.code === lang) || languages[0]
       {
         languages.map((language) => (
           <a
-            href={getLocalizedPath(language.code)}
+            href={translatePath(`/${route ? route : ""}`, language.code)}
             class:list={[
               "flex items-center gap-2 rounded-xl px-4 py-2 text-sm hover:bg-primary/5",
               {

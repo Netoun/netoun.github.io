@@ -1,19 +1,17 @@
 ---
-import { languages, useTranslatedText } from "@i18n/utils"
-import Layout from "@layouts/Layout.astro"
+import {
+  getLangFromUrl,
+  useTranslatedPath,
+  useTranslatedText
+} from "@i18n/utils"
+import Layout from "@layouts/layout.astro"
 import { getCollection, type CollectionEntry } from "astro:content"
 import { PrinterIcon } from "lucide-react"
 
 import Button from "@components/ui/button.astro"
 import Tag from "@components/ui/tag.astro"
 
-export function getStaticPaths() {
-  return Object.keys(languages).map((lang) => ({
-    params: { lang }
-  }))
-}
-
-const { lang } = Astro.params as { lang: keyof typeof languages }
+const lang = getLangFromUrl(Astro.url)
 const t = useTranslatedText(lang)
 
 const allExperiences = await getCollection("experience", ({ id }) => {
@@ -42,7 +40,7 @@ type School = CollectionEntry<"school">
 <Layout title={t("resume.title")} description={t("resume.description")}>
   <section
     id='resume'
-    class='max-w space-y-10 py-16 [min-height:calc(100dvh-var(--height-footer)-var(--height-header))] print:m-0 print:p-0 print:py-8'
+    class='max-w space-y-10 pb-16 pt-8 [min-height:calc(100dvh-var(--height-footer)-var(--height-header))] print:m-0 print:p-0 print:py-8'
   >
     <Button onclick='window.print()' class='print:hidden'>
       {t("resume.print")}
@@ -94,7 +92,7 @@ type School = CollectionEntry<"school">
           <p>
             {t("resume.bio")}
           </p>
-          <p class='print:hiddepn'>
+          <p class='print:hidden'>
             {t("resume.bio.opensource")}
           </p>
           <p class='print:hidden'>
@@ -102,7 +100,7 @@ type School = CollectionEntry<"school">
           </p>
         </div>
         <div
-          class='flex flex-col justify-between md:flex-row md:gap-8 print:flex-row'
+          class='flex flex-col justify-between gap-16 md:flex-row md:gap-8 print:flex-row'
         >
           <div class='space-y-6 md:max-w-4xl print:max-w-[65%] print:space-y-8'>
             <div>
@@ -251,35 +249,35 @@ type School = CollectionEntry<"school">
                   <div>
                     <strong>{t("resume.skills.frontend")}</strong>
                     <div class='mt-1 flex flex-wrap gap-2'>
-                      <Tag tag='React' />
-                      <Tag tag='Remix' />
-                      <Tag tag='Vue' />
-                      <Tag tag='Typescript' />
+                      <Tag tag='react' />
+                      <Tag tag='remix' />
+                      <Tag tag='vue' />
+                      <Tag tag='typescript' />
                     </div>
                   </div>
                   <div>
                     <strong>{t("resume.skills.backend")}</strong>
                     <div class='mt-1 flex flex-wrap gap-2'>
-                      <Tag tag='Node' />
-                      <Tag tag='Nest' />
-                      <Tag tag='Python' />
-                      <Tag tag='Rust' />
+                      <Tag tag='node' />
+                      <Tag tag='nest' />
+                      <Tag tag='python' />
+                      <Tag tag='rust' />
                     </div>
                   </div>
                   <div>
                     <strong>{t("resume.skills.database")}</strong>
                     <div class='mt-1 flex flex-wrap gap-2'>
-                      <Tag tag='PostgreSQL' />
-                      <Tag tag='Database' />
-                      <Tag tag='Prisma' />
-                      <Tag tag='MikroOrm' />
+                      <Tag tag='postgresql' />
+                      <Tag tag='database' />
+                      <Tag tag='prisma' />
+                      <Tag tag='mikro-orm' />
                     </div>
                   </div>
                   <div>
                     <strong>{t("resume.skills.system")}</strong>
                     <div class='mt-1 flex flex-wrap gap-2'>
-                      <Tag tag='System' />
-                      <Tag tag='Network' />
+                      <Tag tag='system' />
+                      <Tag tag='network' />
                     </div>
                   </div>
                 </div>
@@ -300,9 +298,9 @@ type School = CollectionEntry<"school">
                   <div>
                     <strong>{t("resume.misc.hobbies")}</strong>
                     <div class='mt-1 flex flex-wrap gap-2'>
-                      <Tag tag='Music' />
-                      <Tag tag='Gaming' />
-                      <Tag tag='Drawing' />
+                      <Tag tag='music' />
+                      <Tag tag='gaming' />
+                      <Tag tag='drawing' />
                     </div>
                   </div>
                 </div>

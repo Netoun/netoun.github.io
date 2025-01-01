@@ -4,12 +4,12 @@ startDate: "2017-09-01"
 endDate: "2019-10-01"
 job: "Work-Study Program"
 tags:
-  - Drone
-  - Python
-  - Rust
-  - DialogFlow
-  - TensorFlow
-  - React
+  - drone
+  - python
+  - rust
+  - dialogflow
+  - tensorflow
+  - react
 ---
 
 Development of new solutions within the innovation pole :

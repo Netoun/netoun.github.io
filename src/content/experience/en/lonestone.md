@@ -3,17 +3,17 @@ company: "Lonestone"
 startDate: "2021-07-01"
 job: "Software Developer"
 tags:
-  - Typescript
-  - Remix
-  - Shadcn UI
-  - Turborepo
-  - Prisma
-  - PostgreSQL
-  - GraphQL
-  - Apollo
-  - React
-  - Nest
-  - MikroOrm
+  - typescript
+  - remix
+  - shadcn-ui
+  - turborepo
+  - prisma
+  - postgresql
+  - graphql
+  - apollo
+  - react
+  - nest
+  - mikro-orm
 ---
 
 ##### **AB Formations : Private SAS**

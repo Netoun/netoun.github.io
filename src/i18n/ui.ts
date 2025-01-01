@@ -1,3 +1,79 @@
+const tags = {
+  en: {
+    "tag.React": "React",
+    "tag.Remix": "Remix",
+    "tag.Next": "Next",
+    "tag.Canvas": "Canvas",
+    "tag.Chakra UI": "Chakra UI",
+    "tag.Prisma": "Prisma",
+    "tag.Fly": "Fly",
+    "tag.Workers": "Workers",
+    "tag.Three.js": "Three.js",
+    "tag.Typescript": "Typescript",
+    "tag.PostgreSQL": "PostgreSQL",
+    "tag.GraphQL": "GraphQL",
+    "tag.Node": "Node",
+    "tag.Vue": "Vue",
+    "tag.Python": "Python",
+    "tag.Rust": "Rust",
+    "tag.C++": "C++",
+    "tag.Web": "Web",
+    "tag.Database": "Database",
+    "tag.Network": "Network",
+    "tag.System": "System",
+    "tag.DialogFlow": "DialogFlow",
+    "tag.TensorFlow": "TensorFlow",
+    "tag.Drone": "Drone",
+    "tag.Apollo": "Apollo",
+    "tag.Nest": "Nest",
+    "tag.Shadcn UI": "Shadcn UI",
+    "tag.Turborepo": "Turborepo",
+    "tag.MikroOrm": "MikroOrm",
+    "tag.Computer Science": "Computer Science",
+    "tag.Information Systems": "Information Systems",
+    "tag.not-defined": "{tag}",
+    "tag.Music": "Music",
+    "tag.Drawing": "Drawing",
+    "tag.Gaming": "Gaming"
+  },
+  fr: {
+    "tag.React": "React",
+    "tag.Remix": "Remix",
+    "tag.Chakra UI": "Chakra UI",
+    "tag.Prisma": "Prisma",
+    "tag.Fly": "Fly",
+    "tag.Canvas": "Canvas",
+    "tag.Workers": "Workers",
+    "tag.Three.js": "Three.js",
+    "tag.Typescript": "Typescript",
+    "tag.PostgreSQL": "PostgreSQL",
+    "tag.GraphQL": "GraphQL",
+    "tag.Node": "Node",
+    "tag.Vue": "Vue",
+    "tag.Python": "Python",
+    "tag.Rust": "Rust",
+    "tag.C++": "C++",
+    "tag.Web": "Web",
+    "tag.Database": "Base de données",
+    "tag.Network": "Réseau",
+    "tag.System": "Système",
+    "tag.DialogFlow": "DialogFlow",
+    "tag.TensorFlow": "TensorFlow",
+    "tag.Drone": "Drone",
+    "tag.Apollo": "Apollo",
+    "tag.Nest": "Nest",
+    "tag.Shadcn UI": "Shadcn UI",
+    "tag.Turborepo": "Turborepo",
+    "tag.MikroOrm": "MikroOrm",
+    "tag.Computer Science": "Informatique",
+    "tag.Information Systems": "Systèmes d'Information",
+    "tag.not-defined": "{tag}",
+    "tag.Music": "Musique",
+    "tag.Drawing": "Dessin",
+    "tag.Gaming": "Jeux vidéo"
+  }
+} as const
+
 export const en = {
   "nav.resume": "Resume",
   "nav.portfolio": "Portfolio",
@@ -49,7 +125,8 @@ export const en = {
     "https://fonts.google.com/specimen/Noto+Sans+Variable",
   "credits.technologies.title": "Technologies",
   "credits.technologies.description":
-    "This website is built with these amazing technologies:"
+    "This website is built with these amazing technologies:",
+  ...tags.en
 } as const
 
 const fr: Record<keyof typeof en, string> = {
@@ -103,10 +180,23 @@ const fr: Record<keyof typeof en, string> = {
     "https://fonts.google.com/specimen/Noto+Sans+Variable",
   "credits.technologies.title": "Technologies",
   "credits.technologies.description":
-    "Ce site est construit avec ces technologies :"
+    "Ce site est construit avec ces technologies :",
+  "tag.Next": "Next",
+  ...tags.fr
 } as const
 
 export const ui: Record<string, Record<keyof typeof en, string>> = {
   en,
   fr
 } as const
+
+export const routes = {
+  en: {
+    resume: "resume"
+  },
+  fr: {
+    resume: "cv"
+  }
+} as const
+
+export const showDefaultLang = false

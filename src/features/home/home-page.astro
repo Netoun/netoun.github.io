@@ -1,0 +1,423 @@
+---
+import Me from "@assets/me.svg?raw"
+import {
+  getLangFromUrl,
+  languages,
+  useTranslatedPath,
+  useTranslatedText
+} from "@i18n/utils"
+import Layout from "@layouts/layout.astro"
+import { Image } from "astro:assets"
+import { getCollection } from "astro:content"
+import { getRelativeLocaleUrl } from "astro:i18n"
+import { ArrowRight, ArrowUpRightIcon } from "lucide-react"
+
+import { cn } from "@utils/index"
+import Email from "@components/icons/email.astro"
+import Github from "@components/icons/github.astro"
+import Linkedin from "@components/icons/linkedin.astro"
+import { buttonVariants } from "@components/ui/button.astro"
+import ExternalLink from "@components/ui/external-link.astro"
+import SocialLink from "@components/ui/social-link.astro"
+import Tag from "@components/ui/tag.astro"
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslatedText(lang)
+
+const allPortfolio = await getCollection("portfolio", ({ id }) => {
+  return id.startsWith(`${lang}/`)
+})
+
+const translatePath = useTranslatedPath(lang)
+---
+
+<Layout
+  title='Netoun'
+  description='Nicolas Coulonnier, Frontend Engineer. Passionate about web technologies and always looking for new challenges and opportunities to grow.'
+>
+  <!-- Hero Section -->
+  <section
+    id='hero'
+    class='flex flex-col items-center gap-12 py-12 text-primary sm:gap-0 md:flex-row md:py-8 md:[min-height:calc(100dvh-var(--height-footer)-var(--height-header))]'
+  >
+    <!-- Hero Content -->
+    <div class='w-full space-y-8 md:flex-1 md:space-y-12'>
+      <h1
+        class='font-title text-[40px] font-medium leading-[40px] [text-shadow:hsla(var(--primary)/0.75)_0px_0_20px] md:text-balance md:text-7xl'
+      >
+        {t("home.greeting")}
+        <br />
+        {t("home.role")}
+      </h1>
+
+      <div
+        id='hero-image-mobile'
+        class='min-w-screen group relative mx-auto h-[175px] max-w-screen-sm rounded-xl md:hidden'
+      >
+        <div class='-translate-y-[50px] translate-x-[50px]'>
+          <Fragment set:html={Me} />
+        </div>
+      </div>
+
+      <!-- Bio -->
+      <div class='scramble-content space-y-2 text-balance text-lg'>
+        <p>
+          {t("home.bio.1")}
+          <ExternalLink href='https://lonestone.io'> Lonestone </ExternalLink>
+          {t("home.bio.2")}
+        </p>
+      </div>
+
+      <!-- CTA and Social Links -->
+      <div class='flex flex-wrap items-center gap-4 md:gap-8'>
+        <a
+          href={translatePath("resume", lang)}
+          class={cn(buttonVariants({ size: "lg" }), "group")}
+        >
+          {t("home.cta.resume")}
+          <ArrowRight
+            className='ml-2 size-4 duration-100 group-hover:scale-110'
+          />
+        </a>
+
+        <div class='flex items-center gap-4 text-primary'>
+          <SocialLink href='https://github.com/netoun'>
+            <span class='sr-only'>Github</span>
+            <Github class='h-8 w-auto' />
+          </SocialLink>
+          <SocialLink
+            href='https://www.linkedin.com/in/nicolas-coulonnier-66416813b'
+          >
+            <span class='sr-only'>LinkedIn</span>
+            <Linkedin class='h-8 w-auto' />
+          </SocialLink>
+          <SocialLink href='mailto:coulonnier.nicolas.44@gmail.com'>
+            <span class='sr-only'>Email</span>
+            <Email class='h-8 w-10' />
+          </SocialLink>
+        </div>
+      </div>
+    </div>
+    <div class='hidden w-full flex-1 p-4 md:block'>
+      <div
+        class='absolute right-0 z-[-1] h-[300px] min-h-[300px] w-1/2 min-w-[300px] rounded-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary to-transparent opacity-40 blur-[15rem]'
+      >
+      </div>
+      <div
+        id='hero-image-desktop'
+        class='min-w-screen group relative mx-auto max-w-screen-sm rounded-xl'
+      >
+        <Fragment set:html={Me} />
+      </div>
+    </div>
+
+    <!-- Hero Image -->
+  </section>
+
+  <!-- Portfolio Section -->
+  <section class='space-y-8 py-16'>
+    <h2
+      class='scramble-title font-title text-4xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem] md:text-6xl'
+      data-original-text={t("home.portfolio.title")}
+    >
+      {t("home.portfolio.title")}
+    </h2>
+    <div
+      class='portfolio-grid grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'
+    >
+      {
+        allPortfolio.map((portfolio) => (
+          <article class='portfolio-card group relative space-y-4 rounded-2xl backdrop-blur-sm'>
+            <div class='relative aspect-video w-full overflow-hidden rounded-3xl border-2 border-primary shadow-2xl'>
+              <Image
+                src={portfolio.data.image}
+                alt={portfolio.data.title}
+                class='absolute inset-0 h-full w-full object-cover'
+                width={600}
+                height={400}
+              />
+              <Image
+                src={portfolio.data.image_overlay}
+                alt={portfolio.data.title}
+                class={cn(
+                  "absolute inset-0 h-full w-full translate-y-full object-cover opacity-0 duration-300 group-hover:translate-y-0 group-hover:opacity-100",
+                  portfolio.data.image_overlay_class
+                )}
+                width={600}
+                height={400}
+              />
+              <div class='pointer-events-none absolute inset-0 bg-gradient-to-bl from-black/50 via-transparent via-30% to-transparent' />
+
+              <a
+                href={portfolio.data.link}
+                target='_blank'
+                rel='noopener noreferrer'
+                class='absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-white/50 p-1 text-accent backdrop-blur-sm'
+              >
+                <span>
+                  {t("home.portoflio.cta", { portfolio: portfolio.data.title })}
+                </span>
+                <ArrowUpRightIcon className='size-5' />
+              </a>
+            </div>
+            <div class='flex flex-col p-4 pt-0'>
+              <h3 class='text-2xl font-semibold'>{portfolio.data.title}</h3>
+              <p class='text-muted-foreground'>{portfolio.data.description}</p>
+              <div class='mt-4 flex flex-wrap gap-2'>
+                {portfolio.data.tags.map((tag: string) => (
+                  <Tag tag={tag} />
+                ))}
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <script>
+    import { MotionPathPlugin } from "gsap/MotionPathPlugin"
+
+    import { gsap } from "@utils/gsap"
+
+    gsap.registerPlugin(MotionPathPlugin)
+
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches
+
+    // Create scramble effect for portfolio title
+    if (!prefersReducedMotion) {
+      const scrambleTitle = () => {
+        const title = document.querySelector(".scramble-title") as HTMLElement
+        if (!title) return
+
+        const chars = "!<>-_\\/[]{}—=+*^?#"
+        const originalText =
+          title.getAttribute("data-original-text") || title.textContent || ""
+        let currentText = originalText
+        let frame = 0
+        let isScrambling = false
+
+        const randomChar = () => chars[Math.floor(Math.random() * chars.length)]
+
+        const scramble = () => {
+          if (frame >= 20) {
+            title.textContent = originalText
+            isScrambling = false
+            return
+          }
+
+          frame++
+          const scrambled = currentText
+            .split("")
+            .map((char, index) => {
+              if (char === " ") return " "
+              // Gradually reveal original characters
+              if (Math.random() < frame / 20) return originalText[index]
+              return randomChar()
+            })
+            .join("")
+
+          title.textContent = scrambled
+          requestAnimationFrame(scramble)
+        }
+
+        const startScramble = () => {
+          if (isScrambling) return
+          isScrambling = true
+          frame = 0
+          requestAnimationFrame(scramble)
+        }
+
+        // Set up scroll trigger
+        gsap.to(title, {
+          scrollTrigger: {
+            trigger: title,
+            start: "top center+=100",
+            end: "bottom center",
+            onEnter: startScramble,
+            onEnterBack: startScramble
+          }
+        })
+      }
+
+      // Initialize scramble effect
+      scrambleTitle()
+    }
+
+    // Hero image animations
+    if (!prefersReducedMotion) {
+      const heroImageMobile = document.querySelector("#hero-image-mobile")
+      const heroImageDesktop = document.querySelector("#hero-image-desktop")
+      const isMobile = window.matchMedia("(max-width: 768px)").matches
+
+      // Function to create floating animation for an element
+      const createFloatingAnimation = (element: Element) => {
+        // Create a timeline for more complex animation
+        const tl = gsap.timeline({
+          repeat: -1,
+          paused: true,
+          defaults: {
+            duration: 2.5,
+            ease: "power1.inOut"
+          }
+        })
+
+        // Add multiple animations to create more natural movement
+        tl.to(element, {
+          y: "+=20",
+          x: "+=5",
+          rotation: "+=1"
+        }).to(element, {
+          y: "-=20",
+          x: "-=5",
+          rotation: "-=1"
+        })
+
+        return tl
+      }
+
+      type GSAPAnimation = ReturnType<typeof createFloatingAnimation>
+
+      // Create animations for both mobile and desktop
+      const mobileFloatingAnim: GSAPAnimation | null = heroImageMobile
+        ? createFloatingAnimation(heroImageMobile)
+        : null
+      const desktopFloatingAnim: GSAPAnimation | null = heroImageDesktop
+        ? createFloatingAnimation(heroImageDesktop)
+        : null
+
+      // Start appropriate floating animation based on viewport
+      if (isMobile && mobileFloatingAnim) {
+        mobileFloatingAnim.play()
+      } else if (!isMobile && desktopFloatingAnim) {
+        desktopFloatingAnim.play()
+      }
+
+      // Desktop scroll animation
+      if (heroImageDesktop && !isMobile) {
+        const scrollAnim = gsap.timeline({
+          scrollTrigger: {
+            trigger: "#hero",
+            start: "top top",
+            end: "bottom top",
+            scrub: 1,
+            onEnter: () => desktopFloatingAnim?.pause(),
+            onLeaveBack: () => desktopFloatingAnim?.play(),
+            onUpdate: (self) => {
+              if (self.progress > 0) {
+                desktopFloatingAnim?.pause()
+              } else {
+                desktopFloatingAnim?.play()
+              }
+            }
+          }
+        })
+
+        scrollAnim.to(heroImageDesktop, {
+          y: 420,
+          x: 200,
+          rotationY: 220,
+          rotationZ: -20,
+          duration: 1,
+          ease: "power1.inOut"
+        })
+
+        // Handle resize events to disable/enable animations
+        window.addEventListener("resize", () => {
+          const isNowMobile = window.matchMedia("(max-width: 768px)").matches
+          if (isNowMobile) {
+            desktopFloatingAnim?.pause()
+            mobileFloatingAnim?.play()
+            gsap.set(heroImageDesktop, { clearProps: "all" })
+          } else {
+            mobileFloatingAnim?.pause()
+            desktopFloatingAnim?.play()
+            gsap.set(heroImageMobile, { clearProps: "all" })
+          }
+        })
+      }
+    }
+
+    // Portfolio cards hover animation
+    const portfolioCards = document.querySelectorAll(".portfolio-card")
+    portfolioCards.forEach((card) => {
+      if (!prefersReducedMotion) {
+        card.addEventListener("mouseenter", () => {
+          gsap.to(card, {
+            scale: 1.02,
+            duration: 0.3,
+            ease: "power2.out"
+          })
+        })
+
+        card.addEventListener("mouseleave", () => {
+          gsap.to(card, {
+            scale: 1,
+            duration: 0.3,
+            ease: "power2.out"
+          })
+        })
+      }
+
+      // Keyboard navigation
+      card.addEventListener("focus", () => {
+        if (!prefersReducedMotion) {
+          gsap.to(card, {
+            scale: 1.02,
+            duration: 0.3,
+            ease: "power2.out"
+          })
+        }
+      })
+
+      card.addEventListener("blur", () => {
+        if (!prefersReducedMotion) {
+          gsap.to(card, {
+            scale: 1,
+            duration: 0.3,
+            ease: "power2.out"
+          })
+        }
+      })
+    })
+
+    // Motion preference changes
+    window
+      .matchMedia("(prefers-reduced-motion: reduce)")
+      .addEventListener("change", (event) => {
+        if (event.matches) {
+          gsap.set("#hero-image", {
+            clearProps: "all",
+            y: 0,
+            rotationY: 0,
+            opacity: 1
+          })
+          gsap.set(".portfolio-card", { clearProps: "all" })
+        }
+      })
+  </script>
+
+  <style>
+    @media (prefers-reduced-motion: reduce) {
+      .portfolio-card {
+        transition: none !important;
+      }
+      .scramble-title {
+        opacity: 1 !important;
+      }
+    }
+
+    .scramble-title {
+      display: block;
+    }
+
+    #hero-image {
+      transform-style: preserve-3d;
+      perspective: 1000px;
+      will-change: transform;
+    }
+  </style>
+</Layout>

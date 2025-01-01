@@ -4,11 +4,11 @@ startDate: "2015-09-01"
 endDate: "2017-07-01"
 diploma: "Computer Science Associate's Degree (SNIR)"
 tags:
-  - C++
-  - Web
-  - Database
-  - Network
-  - System
+  - c++
+  - web
+  - database
+  - network
+  - system
 ---
 
 Training in the basics of computing, networks and their security, embedded systems, cloud computing and systems programming.

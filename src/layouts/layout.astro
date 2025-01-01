@@ -1,6 +1,9 @@
 ---
-import { defaultLang, languages, useTranslatedText } from "@i18n/utils"
-import { MoonIcon, SunIcon } from "lucide-react"
+import {
+  getLangFromUrl,
+  useTranslatedPath,
+  useTranslatedText
+} from "@i18n/utils"
 
 import LanguageSwitcher from "@components/ui/language-switcher.astro"
 
@@ -17,9 +20,9 @@ interface Props {
 }
 
 const { title, description } = Astro.props
-const { lang } = Astro.params
-const currentLang = (lang as keyof typeof languages) || defaultLang
+const currentLang = getLangFromUrl(Astro.url)
 const t = useTranslatedText(currentLang)
+const translatePath = useTranslatedPath(currentLang)
 ---
 
 <!doctype html>
@@ -84,7 +87,7 @@ const t = useTranslatedText(currentLang)
     >
       <div class='container mx-auto flex h-full items-center justify-between'>
         <div class='size-8'>
-          <a href='/'>
+          <a href={translatePath("/", currentLang)}>
             <img
               width='32'
               height='32'
