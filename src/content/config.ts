@@ -24,15 +24,16 @@ const school = defineCollection({
 
 const portfolio = defineCollection({
   type: "content",
-  schema: z.object({
-    title: z.string(),
-    link: z.string(),
-    description: z.string(),
-    image: z.string(),
-    image_overlay: z.string(),
-    image_overlay_class: z.string(),
-    tags: z.array(z.string())
-  })
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      link: z.string(),
+      description: z.string(),
+      image: image(),
+      image_overlay: image(),
+      image_overlay_class: z.string(),
+      tags: z.array(z.string())
+    })
 })
 
 // Export collections to register them

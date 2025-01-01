@@ -1,13 +1,16 @@
 ---
 title: Procedural Map
-link: https://r-noise-map.vercel.app
-description: Interactive noise map generator with customizable parameters
-image: /images/portfolio/procedural-map/bg.webp
-image_overlay: /images/portfolio/procedural-map/bg_overlay.webp
-image_overlay_class: object-fit object-bottom w-[50px]
+link: https://procedural-map.vercel.app
+description: Generate random maps with procedural generation
+image: ../../../assets/portfolio/procedural-map/bg.webp
+image_overlay: ../../../assets/portfolio/procedural-map/bg_overlay.webp
+image_overlay_class: object-fit
 tags:
+  - typescript
   - react
+  - tailwind
   - workers
   - canvas
-  - three.js
+  - threejs
+  - vite
 ---
