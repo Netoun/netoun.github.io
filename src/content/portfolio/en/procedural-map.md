@@ -1,6 +1,6 @@
 ---
 title: Procedural Map
-link: https://procedural-map.vercel.app
+link: https://r-noise-map.vercel.app/?
 description: Generate random maps with procedural generation
 image: ../../../assets/portfolio/procedural-map/bg.webp
 image_overlay: ../../../assets/portfolio/procedural-map/bg_overlay.webp
