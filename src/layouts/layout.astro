@@ -13,6 +13,7 @@ import "../styles/font.css"
 import "../styles/base.css"
 
 import ThemeToggle from "@components/ui/theme-toggle.astro"
+import Logo from "../assets/logo.svg"
 
 interface Props {
   title: string
@@ -78,23 +79,21 @@ const translatePath = useTranslatedPath(currentLang)
   <body>
     <div
       id='light-gradient'
-      class='absolute -left-1/4 -top-1/4 z-[-1] h-1/2 min-h-96 w-1/2 min-w-96 rounded-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary to-transparent opacity-50 blur-[12rem]'
+      class='from-primary absolute -top-1/4 -left-1/4 z-[-1] h-1/2 min-h-96 w-1/2 min-w-96 rounded-full bg-radial-[at_50%_75%] to-transparent opacity-50 blur-[12rem]'
     >
     </div>
     <header
-      class='sticky top-0 z-[999] h-[var(--height-header)] border-b border-primary/10 px-4 backdrop-blur-3xl print:hidden'
+      id='header'
+      class='border-primary/10 sticky top-0 z-[999] mx-auto h-[var(--height-header)] border px-4 backdrop-blur-3xl print:hidden'
       transition:persist=''
     >
-      <div class='container mx-auto flex h-full items-center justify-between'>
+      <div
+        id='header-container'
+        class='container mx-auto flex h-full items-center justify-between'
+      >
         <div class='size-8'>
           <a href={translatePath("/", currentLang)}>
-            <img
-              width='32'
-              height='32'
-              src='/logo.svg'
-              alt='Logo'
-              class='drop-shadow-[0_0px_5px_hsla(var(--primary)/0.5)]'
-            />
+            <Logo />
           </a>
         </div>
         <div class='flex items-center gap-4'>
@@ -114,7 +113,7 @@ const translatePath = useTranslatedPath(currentLang)
         <span>•</span>
         <a
           href={translatePath("/credits", currentLang)}
-          class='transition-colors hover:text-primary/80'
+          class='hover:text-primary/80 transition-colors'
         >
           {t("credits.title")}
         </a>
@@ -147,14 +146,6 @@ const translatePath = useTranslatedPath(currentLang)
 
           // Add event listener for mouse movement
           document.addEventListener("mousemove", updateCursorPosition)
-
-          // Initial animations
-          gsap.from("header", {
-            y: -100,
-            opacity: 0,
-            duration: 1,
-            ease: "power3.out"
-          })
 
           // Footer animation
           gsap.from("footer", {
@@ -200,6 +191,62 @@ const translatePath = useTranslatedPath(currentLang)
           attributeFilter: ["class"]
         })
       }
+
+      const header = document.querySelector("#header") as HTMLElement
+      const headerContainer = document.querySelector(
+        "#header-container"
+      ) as HTMLElement
+
+      let headerWidth = header.offsetWidth
+      let targetHeaderWidth = headerContainer.offsetWidth
+
+      window.addEventListener("resize", () => {
+        targetHeaderWidth = headerContainer.offsetWidth
+        headerWidth = header.offsetWidth
+      })
+
+      const updateHeader = () => {
+        const scrollPosition = window.scrollY
+
+        // Utilisation d'une fonction d'easing pour un mouvement plus naturel
+        const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3)
+
+        // Calcul des valeurs avec easing
+        const position = easeOutCubic(Math.min(scrollPosition / 32, 1)) * 16
+        const radius = easeOutCubic(Math.min(scrollPosition / 16, 1)) * 16
+
+        // Nouvelle logique pour la largeur du header avec easing
+        let width
+        if (scrollPosition === 0) {
+          width = "100%"
+        } else if (scrollPosition > 64 * 4) {
+          width = `${targetHeaderWidth}px`
+        } else {
+          const progress = easeOutCubic(scrollPosition / 32)
+          width = `${headerWidth + (targetHeaderWidth - headerWidth) * progress}px`
+        }
+
+        // Application des styles avec transition
+        header.style.transition = "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+        header.style.transform = `translate3D(0, ${position}px, 0)`
+        header.style.borderRadius = `${radius}px ${radius}px ${radius}px ${radius}px`
+        header.style.width = width
+      }
+
+      // Appeler updateHeader au chargement de la page
+      updateHeader()
+
+      // Écouter le scroll avec debounce pour de meilleures performances
+      let ticking = false
+      window.addEventListener("scroll", () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            updateHeader()
+            ticking = false
+          })
+          ticking = true
+        }
+      })
     </script>
 
     <style is:global>

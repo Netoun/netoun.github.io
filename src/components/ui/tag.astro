@@ -4,178 +4,143 @@ import { getLangFromUrl, useTranslatedText } from "@i18n/utils"
 const tagColors = {
   react: {
     trad: "React",
-    style:
-      "bg-[hsl(var(--tag-react)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-react)/var(--tag-opacity-dark))]"
+    style: "--tag-react"
   },
   remix: {
     trad: "Remix",
-    style:
-      "bg-[hsl(var(--tag-remix)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-remix)/var(--tag-opacity-dark))]"
+    style: "--tag-remix"
   },
   "chakra-ui": {
     trad: "Chakra UI",
-    style:
-      "bg-[hsl(var(--tag-chakra)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-chakra)/var(--tag-opacity-dark))]"
+    style: "--tag-chakra"
   },
   prisma: {
     trad: "Prisma",
-    style:
-      "bg-[hsl(var(--tag-prisma)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-prisma)/var(--tag-opacity-dark))]"
+    style: "--tag-prisma"
   },
   fly: {
     trad: "Fly",
-    style:
-      "bg-[hsl(var(--tag-fly)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-fly)/var(--tag-opacity-dark))]"
+    style: "--tag-fly"
   },
   workers: {
     trad: "Workers",
-    style:
-      "bg-[hsl(var(--tag-workers)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-workers)/var(--tag-opacity-dark))]"
+    style: "--tag-workers"
   },
   canvas: {
     trad: "Canvas",
-    style:
-      "bg-[hsl(var(--tag-canvas)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-canvas)/var(--tag-opacity-dark))]"
+    style: "--tag-canvas"
   },
   threejs: {
     trad: "Three.js",
-    style:
-      "bg-[hsl(var(--tag-threejs)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-threejs)/var(--tag-opacity-dark))]"
+    style: "--tag-threejs"
   },
   typescript: {
     trad: "Typescript",
-    style:
-      "bg-[hsl(var(--tag-typescript)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-typescript)/var(--tag-opacity-dark))]"
+    style: "--tag-typescript"
   },
   postgresql: {
     trad: "PostgreSQL",
-    style:
-      "bg-[hsl(var(--tag-postgresql)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-postgresql)/var(--tag-opacity-dark))]"
+    style: "--tag-postgresql"
   },
   graphql: {
     trad: "GraphQL",
-    style:
-      "bg-[hsl(var(--tag-graphql)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-graphql)/var(--tag-opacity-dark))]"
+    style: "--tag-graphql"
   },
   node: {
     trad: "Node",
-    style:
-      "bg-[hsl(var(--tag-node)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-node)/var(--tag-opacity-dark))]"
+    style: "--tag-node"
   },
   vue: {
     trad: "Vue",
-    style:
-      "bg-[hsl(var(--tag-vue)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-vue)/var(--tag-opacity-dark))]"
+    style: "--tag-vue"
   },
   python: {
     trad: "Python",
-    style:
-      "bg-[hsl(var(--tag-python)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-python)/var(--tag-opacity-dark))]"
+    style: "--tag-python"
   },
   rust: {
     trad: "Rust",
-    style:
-      "bg-[hsl(var(--tag-rust)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-rust)/var(--tag-opacity-dark))]"
+    style: "--tag-rust"
   },
   cpp: {
     trad: "C++",
-    style:
-      "bg-[hsl(var(--tag-cpp)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-cpp)/var(--tag-opacity-dark))]"
+    style: "--tag-cpp"
   },
   web: {
     trad: "Web",
-    style:
-      "bg-[hsl(var(--tag-web)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-web)/var(--tag-opacity-dark))]"
+    style: "--tag-web"
   },
   database: {
     trad: "Database",
-    style:
-      "bg-[hsl(var(--tag-database)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-database)/var(--tag-opacity-dark))]"
+    style: "--tag-database"
   },
   network: {
     trad: "Network",
-    style:
-      "bg-[hsl(var(--tag-network)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-network)/var(--tag-opacity-dark))]"
+    style: "--tag-network"
   },
   system: {
     trad: "System",
-    style:
-      "bg-[hsl(var(--tag-system)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-system)/var(--tag-opacity-dark))]"
+    style: "--tag-system"
   },
   dialogflow: {
     trad: "DialogFlow",
-    style:
-      "bg-[hsl(var(--tag-dialogflow)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-dialogflow)/var(--tag-opacity-dark))]"
+    style: "--tag-dialogflow"
   },
   tensorflow: {
     trad: "TensorFlow",
-    style:
-      "bg-[hsl(var(--tag-tensorflow)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-tensorflow)/var(--tag-opacity-dark))]"
+    style: "--tag-tensorflow"
   },
   drone: {
     trad: "Drone",
-    style:
-      "bg-[hsl(var(--tag-drone)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-drone)/var(--tag-opacity-dark))]"
+    style: "--tag-drone"
   },
   apollo: {
     trad: "Apollo",
-    style:
-      "bg-[hsl(var(--tag-apollo)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-apollo)/var(--tag-opacity-dark))]"
+    style: "--tag-apollo"
   },
   nest: {
     trad: "Nest",
-    style:
-      "bg-[hsl(var(--tag-nest)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-nest)/var(--tag-opacity-dark))]"
+    style: "--tag-nest"
   },
   "shadcn-ui": {
     trad: "Shadcn UI",
-    style:
-      "bg-[hsl(var(--tag-shadcn)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-shadcn)/var(--tag-opacity-dark))]"
+    style: "--tag-shadcn"
   },
   turborepo: {
     trad: "Turborepo",
-    style:
-      "bg-[hsl(var(--tag-turborepo)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-turborepo)/var(--tag-opacity-dark))]"
+    style: "--tag-turborepo"
   },
   "mikro-orm": {
     trad: "MikroOrm",
-    style:
-      "bg-[hsl(var(--tag-mikro-orm)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-mikro-orm)/var(--tag-opacity-dark))]"
+    style: "--tag-mikro-orm)/k)]"
   },
   "computer-science": {
     trad: "Computer Science",
-    style:
-      "bg-[hsl(var(--tag-cs)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-cs)/var(--tag-opacity-dark))]"
+    style: "--tag-cs"
   },
   "information-systems": {
     trad: "Information Systems",
-    style:
-      "bg-[hsl(var(--tag-is)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-is)/var(--tag-opacity-dark))]"
+    style: "--tag-is"
   },
   music: {
     trad: "Music",
-    style:
-      "bg-[hsl(var(--tag-music)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-music)/var(--tag-opacity-dark))]"
+    style: "--tag-music"
   },
   drawing: {
     trad: "Drawing",
-    style:
-      "bg-[hsl(var(--tag-drawing)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-drawing)/var(--tag-opacity-dark))]"
+    style: "--tag-drawing"
   },
   gaming: {
     trad: "Gaming",
-    style:
-      "bg-[hsl(var(--tag-gaming)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-gaming)/var(--tag-opacity-dark))]"
+    style: "--tag-gaming"
   },
   astro: {
     trad: "Astro",
-    style:
-      "bg-[hsl(var(--tag-astro)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-astro)/var(--tag-opacity-dark))]"
+    style: "--tag-astro"
   },
   tailwindcss: {
     trad: "TailwindCSS",
-    style:
-      "bg-[hsl(var(--tag-tailwindcss)/var(--tag-opacity-light))] dark:bg-[hsl(var(--tag-tailwindcss)/var(--tag-opacity-dark))]"
+    style: "--tag-tailwindcss"
   }
 } as const
 
@@ -199,11 +164,17 @@ const tagObj = tagColors[tag as keyof typeof tagColors] || {
 <span
   class={`tag relative rounded-full px-2 py-1 text-xs cursor-pointer select-none ${
     tagObj.style
-  } ${className} print:bg-transparent print:text-[#4a4a4a]`}
+  } ${className} print:bg-transparent print:text-[#4a4a4a] bg-[color-mix(in_oklab,var(--tag-color)_50%,_transparent)]`}
+  style={{
+    "--tag-color": `var(${tagObj.style})`
+  }}
 >
   {t(`tag.${tagObj.trad}`, { tag })}
   <div
     class='glass absolute inset-0 rounded-full opacity-0 backdrop-blur-[1px] backdrop-brightness-150'
+    style={{
+      "--tag-color": tagObj.style
+    }}
   >
   </div>
 </span>

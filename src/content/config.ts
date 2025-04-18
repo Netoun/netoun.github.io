@@ -30,8 +30,6 @@ const portfolio = defineCollection({
       link: z.string(),
       description: z.string(),
       image: image(),
-      image_overlay: image(),
-      image_overlay_class: z.string(),
       tags: z.array(z.string())
     })
 })

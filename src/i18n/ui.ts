@@ -89,6 +89,8 @@ export const en = {
     ", a platform to create, share, and play treasure hunt games with QR codes and geolocation.",
   "home.cta.resume": "Get my resume",
   "home.portfolio.title": "Portfolio",
+  "home.portfolio.description":
+    "Here are some of public or personal projects I've worked on.",
   "home.portoflio.cta": "Go to {portfolio} website",
   "resume.title": "Nicolas Coulonnier - CV",
   "resume.description":
@@ -144,6 +146,8 @@ const fr: Record<keyof typeof en, string> = {
     ", une plateforme pour créer, partager et jouer à des chasses au trésor avec des QR codes et la géolocalisation.",
   "home.cta.resume": "Voir mon CV",
   "home.portfolio.title": "Portfolio",
+  "home.portfolio.description":
+    "Voici quelques projets publics ou personnels que j'ai réalisés.",
   "home.portoflio.cta": "Aller sur le site web de {portfolio}",
   "resume.title": "Nicolas Coulonnier - CV",
   "resume.description":
