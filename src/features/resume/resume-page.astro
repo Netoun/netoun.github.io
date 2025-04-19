@@ -1,9 +1,5 @@
 ---
-import {
-  getLangFromUrl,
-  useTranslatedPath,
-  useTranslatedText
-} from "@i18n/utils"
+import { getLangFromUrl, useTranslatedText } from "@i18n/utils"
 import Layout from "@layouts/layout.astro"
 import { getCollection, type CollectionEntry } from "astro:content"
 import { PrinterIcon } from "lucide-react"
@@ -40,46 +36,44 @@ type School = CollectionEntry<"school">
 <Layout title={t("resume.title")} description={t("resume.description")}>
   <section
     id='resume'
-    class='max-w space-y-10 pb-16 pt-8 [min-height:calc(100dvh-var(--height-footer)-var(--height-header))] print:m-0 print:p-0 print:py-8'
+    class='max-w [min-height:calc(100dvh-var(--height-footer)-var(--height-header))] space-y-10 pt-8 pb-16 print:m-0 print:p-0'
   >
     <Button onclick='window.print()' class='print:hidden'>
       {t("resume.print")}
       <PrinterIcon size='20' className='ml-2' />
     </Button>
-    <div class='flex flex-col justify-between gap-8 md:flex-row print:gap-12'>
-      <div class='space-y-8 print:space-y-6 print:text-[0.95rem]'>
-        <div
-          class='space-y-6 print:flex print:justify-between print:space-y-0 print:pb-4'
-        >
+    <div class='flex flex-col justify-between gap-8 md:flex-row print:gap-4'>
+      <div class='space-y-8 print:space-y-2'>
+        <div class='space-y-6 print:flex print:justify-between print:space-y-0'>
           <div
             class='flex max-w-4xl flex-wrap items-center justify-between gap-6'
           >
             <div class='flex flex-1 flex-col'>
-              <h2 class='font-title text-6xl font-medium print:text-5xl'>
+              <h2 class='font-title text-6xl font-medium print:text-2xl'>
                 Nicolas Coulonnier
               </h2>
-              <h3 class='text-3xl print:text-2xl'>
-                <span class='font-medium text-secondary print:text-[#4a4a4a]'>
+              <h3 class='text-3xl print:text-xl'>
+                <span class='text-secondary font-medium print:text-[#4a4a4a]'>
                   Frontend Developer
                 </span>
               </h3>
             </div>
           </div>
           <div>
-            <ul class='print:text-end print:text-[0.9rem]'>
+            <ul class='text-primary/70 text-lg print:text-end print:text-sm'>
               <li>
-                <strong class='uppercase print:font-sans'
+                <strong class='print:font-sans'
                   >{t("resume.contact.email")}</strong
                 > : <a href='mailto:coulonnier.nicolas.44@gmail.com'>
                   coulonnier.nicolas.44@gmail.com
                 </a>
               </li>
               <li>
-                <strong class='uppercase print:font-sans'>Age</strong> : {myAge}
+                <strong class='print:font-sans'>Age</strong> : {myAge}
                 {t("resume.contact.age")}
               </li>
               <li>
-                <strong class='uppercase print:font-sans'
+                <strong class='print:font-sans'
                   >{t("resume.contact.location")}</strong
                 > : Nantes, France
               </li>
@@ -87,29 +81,29 @@ type School = CollectionEntry<"school">
           </div>
         </div>
         <div
-          class='space-y-2 pt-4 text-lg text-primary md:max-w-4xl print:space-y-3 print:pt-0 print:text-[0.95rem] print:leading-normal'
+          class='text-primary space-y-2 text-lg md:max-w-4xl print:space-y-1 print:pt-2 print:text-xs'
         >
           <p>
             {t("resume.bio")}
           </p>
-          <p class='print:hidden'>
+          <p>
             {t("resume.bio.opensource")}
           </p>
-          <p class='print:hidden'>
+          <p>
             {t("resume.bio.tech")}
           </p>
         </div>
         <div
-          class='flex flex-col justify-between gap-16 md:flex-row md:gap-8 print:flex-row'
+          class='flex flex-col justify-between gap-16 md:flex-row md:gap-8 print:mt-4 print:flex-col print:gap-6'
         >
-          <div class='space-y-6 md:max-w-4xl print:max-w-[65%] print:space-y-8'>
+          <div class='space-y-6 md:max-w-4xl'>
             <div>
               <h2
-                class='font-title text-4xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem] print:text-3xl print:[text-shadow:none]'
+                class='font-title text-shadow-title text-4xl font-medium print:text-xl print:[text-shadow:none]'
               >
                 {t("resume.experience")}
               </h2>
-              <div class='print:text-md text-lg print:space-y-0'>
+              <div class='text-lg print:space-y-0 print:text-sm'>
                 {
                   allExperiences
                     .sort(
@@ -118,9 +112,9 @@ type School = CollectionEntry<"school">
                         Number(new Date(a.data.startDate))
                     )
                     .map((resume: Experience) => (
-                      <article class='mb-8 last:mb-0'>
+                      <article class='mb-8 last:mb-0 print:mb-2'>
                         <div id='resume-header' class='space-y-2 py-2'>
-                          <span class='font-medium text-muted-foreground'>
+                          <span class='text-muted-foreground font-medium print:text-xs'>
                             <time
                               datetime={jobDatetime.format(
                                 new Date(resume.data.startDate)
@@ -141,14 +135,14 @@ type School = CollectionEntry<"school">
                               "..."
                             )}
                           </span>
-                          <h4 class='text-2xl'>
-                            <span class='font-semibold text-secondary [text-shadow:hsla(var(--secondary)/0.75)_0px_0px_1rem] print:[text-shadow:none]'>
+                          <h4 class='text-2xl print:text-lg'>
+                            <span class='text-secondary text-shadow-title font-semibold print:[text-shadow:none]'>
                               {resume.data.company}
                             </span>{" "}
                             - <span>{resume.data.job}</span>
                           </h4>
                         </div>
-                        <div class='space-y-4 pb-4 text-primary print:space-y-1 print:pb-2 print:leading-7 [&_ul]:list-inside [&_ul]:list-disc [&_ul]:py-2 print:[&_ul]:py-0'>
+                        <div class='text-primary space-y-4 pb-4 print:space-y-1 print:pb-2 print:text-xs [&_ul]:list-inside [&_ul]:list-disc [&_ul]:py-2 print:[&_ul]:py-0'>
                           {async () => {
                             const { Content } = await resume.render()
 
@@ -172,11 +166,11 @@ type School = CollectionEntry<"school">
             </div>
             <div>
               <h2
-                class='text-balance font-title text-4xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem] print:text-3xl print:[text-shadow:none]'
+                class='font-title text-shadow-title text-4xl font-medium print:text-xl print:[text-shadow:none]'
               >
                 {t("resume.schools")}
               </h2>
-              <div class='print:text-md text-lg print:space-y-0'>
+              <div class='text-lg print:space-y-0 print:text-sm'>
                 {
                   allSchools
                     .sort(
@@ -185,9 +179,9 @@ type School = CollectionEntry<"school">
                         Number(new Date(a.data.startDate))
                     )
                     .map((resume: School) => (
-                      <article class='mb-8 last:mb-0'>
+                      <article class='mb-8 last:mb-0 print:mb-2'>
                         <div id='resume-header' class='space-y-2 py-2'>
-                          <span class='font-medium text-muted-foreground'>
+                          <span class='text-muted-foreground font-medium print:text-xs'>
                             <time
                               datetime={jobDatetime.format(
                                 new Date(resume.data.startDate)
@@ -208,14 +202,14 @@ type School = CollectionEntry<"school">
                               "..."
                             )}
                           </span>
-                          <h4 class='text-2xl'>
-                            <span class='font-semibold text-secondary [text-shadow:hsla(var(--secondary)/0.75)_0px_0px_1rem] print:[text-shadow:none]'>
+                          <h4 class='text-2xl print:text-lg'>
+                            <span class='text-secondary text-shadow-title font-semibold print:[text-shadow:none]'>
                               {resume.data.diploma}
                             </span>{" "}
                             - <span>{resume.data.school}</span>
                           </h4>
                         </div>
-                        <div class='space-y-4 pb-4 text-primary print:space-y-1 print:pb-2 [&_ul]:list-inside [&_ul]:list-disc [&_ul]:py-2 print:[&_ul]:py-0'>
+                        <div class='text-primary space-y-4 pb-4 print:space-y-1 print:pb-2 print:text-xs [&_ul]:list-inside [&_ul]:list-disc [&_ul]:py-2 print:[&_ul]:py-0'>
                           {async () => {
                             const { Content } = await resume.render()
                             return <Content />
@@ -233,22 +227,22 @@ type School = CollectionEntry<"school">
               </div>
             </div>
           </div>
-          <div class='space-y-8 print:max-w-[30%]'>
+          <div class='space-y-8 print:space-y-4'>
             <div
               id='skills'
-              class='card relative overflow-hidden rounded-xl border bg-foreground/5 p-6 shadow-xl print:shadow-none'
+              class='card bg-foreground/5 print:border-primary/50 relative overflow-hidden rounded-xl border p-6 shadow-xl print:border-none print:p-0 print:shadow-none'
             >
               <div class='card-gradient absolute inset-0 opacity-0'></div>
               <div class='relative z-10'>
                 <h3
-                  class='font-title text-3xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem]'
+                  class='font-title text-shadow-title text-3xl font-medium print:text-xl print:[text-shadow:none]'
                 >
                   {t("resume.skills")}
                 </h3>
-                <div class='mt-2 space-y-4'>
+                <div class='mt-2 space-y-4 print:space-y-2 print:text-xs'>
                   <div>
                     <strong>{t("resume.skills.frontend")}</strong>
-                    <div class='mt-1 flex flex-wrap gap-2'>
+                    <div class='mt-1 flex flex-wrap gap-2 print:gap-1'>
                       <Tag tag='react' />
                       <Tag tag='remix' />
                       <Tag tag='vue' />
@@ -257,7 +251,7 @@ type School = CollectionEntry<"school">
                   </div>
                   <div>
                     <strong>{t("resume.skills.backend")}</strong>
-                    <div class='mt-1 flex flex-wrap gap-2'>
+                    <div class='mt-1 flex flex-wrap gap-2 print:gap-1'>
                       <Tag tag='node' />
                       <Tag tag='nest' />
                       <Tag tag='python' />
@@ -266,7 +260,7 @@ type School = CollectionEntry<"school">
                   </div>
                   <div>
                     <strong>{t("resume.skills.database")}</strong>
-                    <div class='mt-1 flex flex-wrap gap-2'>
+                    <div class='mt-1 flex flex-wrap gap-2 print:gap-1'>
                       <Tag tag='postgresql' />
                       <Tag tag='database' />
                       <Tag tag='prisma' />
@@ -275,7 +269,7 @@ type School = CollectionEntry<"school">
                   </div>
                   <div>
                     <strong>{t("resume.skills.system")}</strong>
-                    <div class='mt-1 flex flex-wrap gap-2'>
+                    <div class='mt-1 flex flex-wrap gap-2 print:gap-1'>
                       <Tag tag='system' />
                       <Tag tag='network' />
                     </div>
@@ -285,19 +279,19 @@ type School = CollectionEntry<"school">
             </div>
             <div
               id='miscellaneous'
-              class='card relative overflow-hidden rounded-xl border bg-foreground/5 p-6 shadow-xl print:shadow-none'
+              class='card bg-foreground/5 print:border-primary/50 relative overflow-hidden rounded-xl border p-6 shadow-xl print:border-none print:p-0 print:shadow-none'
             >
               <div class='card-gradient absolute inset-0 opacity-0'></div>
               <div class='relative z-10'>
                 <h3
-                  class='font-title text-3xl font-medium [text-shadow:hsla(var(--foreground)/0.5)_0px_0px_1rem]'
+                  class='font-title text-shadow-title text-3xl font-medium print:text-xl print:[text-shadow:none]'
                 >
                   {t("resume.misc")}
                 </h3>
-                <div class='mt-2 space-y-4'>
+                <div class='mt-2 space-y-4 print:space-y-2 print:text-xs'>
                   <div>
                     <strong>{t("resume.misc.hobbies")}</strong>
-                    <div class='mt-1 flex flex-wrap gap-2'>
+                    <div class='mt-1 flex flex-wrap gap-2 print:gap-1'>
                       <Tag tag='music' />
                       <Tag tag='gaming' />
                       <Tag tag='drawing' />
@@ -311,16 +305,16 @@ type School = CollectionEntry<"school">
       </div>
     </div>
   </section>
-</Layout>
 
-<div
-  class='text-md hidden items-center justify-center text-primary print:fixed print:bottom-4 print:left-0 print:flex print:h-8 print:w-full print:text-[0.8rem] print:text-gray-500'
->
-  <span>
-    {t("resume.footer")}{" "}
-    <a href='https://netoun.com' class='text-gray-700'>netoun.com</a>
-  </span>
-</div>
+  <div
+    class='text-md text-primary hidden items-center justify-center print:fixed print:bottom-0 print:left-0 print:flex print:h-8 print:w-full print:text-[0.8rem] print:text-gray-500'
+  >
+    <span>
+      {t("resume.footer")}{" "}
+      <a href='https://netoun.com' class='text-gray-700'>netoun.com</a>
+    </span>
+  </div>
+</Layout>
 
 <style is:global>
   @page {

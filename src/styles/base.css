@@ -80,40 +80,42 @@
   --tag-tailwindcss: oklch(0.5 0.2 200);
 }
 
-.dark {
-  --background: oklch(0.12 0.0402 252.72);
-  --foreground: oklch(0.95 0.01 250);
+@media not print {
+  .dark {
+    --background: oklch(0.12 0.0402 252.72);
+    --foreground: oklch(0.95 0.01 250);
 
-  --card: oklch(0.18 0.0502 252.72);
-  --card-foreground: oklch(0.15 0.1 250);
+    --card: oklch(0.18 0.0502 252.72);
+    --card-foreground: oklch(0.15 0.1 250);
 
-  --popover: oklch(0.18 0.0502 252.72);
-  --popover-foreground: oklch(0.15 0.1 250);
+    --popover: oklch(0.18 0.0502 252.72);
+    --popover-foreground: oklch(0.15 0.1 250);
 
-  --primary: oklch(0.95 0.01 250);
-  --primary-foreground: oklch(0.15 0.1 250);
+    --primary: oklch(0.95 0.01 250);
+    --primary-foreground: oklch(0.15 0.1 250);
 
-  --secondary: oklch(0.5 0.15 200);
-  --secondary-foreground: oklch(0.15 0.1 250);
+    --secondary: oklch(0.5 0.15 200);
+    --secondary-foreground: oklch(0.15 0.1 250);
 
-  --muted: oklch(0.25 0.05 250);
-  --muted-foreground: oklch(0.6 0.05 250);
+    --muted: oklch(0.25 0.05 250);
+    --muted-foreground: oklch(0.6 0.05 250);
 
-  --accent: oklch(0.25 0.05 250);
-  --accent-foreground: oklch(0.15 0.1 250);
+    --accent: oklch(0.25 0.05 250);
+    --accent-foreground: oklch(0.15 0.1 250);
 
-  --destructive: oklch(0.4 0.15 30);
-  --destructive-foreground: oklch(0.15 0.1 250);
+    --destructive: oklch(0.4 0.15 30);
+    --destructive-foreground: oklch(0.15 0.1 250);
 
-  --success: oklch(0.6 0.2 140);
-  --success-foreground: oklch(0.15 0.1 250);
+    --success: oklch(0.6 0.2 140);
+    --success-foreground: oklch(0.15 0.1 250);
 
-  --border: oklch(0.4 0.1 250);
-  --input: oklch(0.25 0.05 250);
-  --ring: oklch(0.8 0.05 250);
+    --border: oklch(0.4 0.1 250);
+    --input: oklch(0.25 0.05 250);
+    --ring: oklch(0.8 0.05 250);
 
-  --tag-opacity-light: 0.3;
-  --tag-opacity-dark: 0.15;
+    --tag-opacity-light: 0.3;
+    --tag-opacity-dark: 0.15;
+  }
 }
 
 @theme inline {
@@ -229,4 +231,16 @@ body {
     transform 0.1s,
     top 50ms ease 0s,
     left 50ms ease 0s;
+}
+
+@media print {
+  html {
+    font-size: 10pt;
+  }
+  body {
+    background: white;
+    &:after {
+      display: none;
+    }
+  }
 }

@@ -162,16 +162,16 @@ const tagObj = tagColors[tag as keyof typeof tagColors] || {
 
 <!-- Couleurs possibles pour les tags avec variables CSS -->
 <span
-  class={`tag relative rounded-full px-2 py-1 text-xs cursor-pointer select-none ${
+  class={`tag relative rounded-full px-2 py-1 text-primary text-xs cursor-pointer select-none print:px-1 print:py-0.5 print:text-[0.5rem] ${
     tagObj.style
-  } ${className} print:bg-transparent print:text-[#4a4a4a] bg-[color-mix(in_oklab,var(--tag-color)_50%,_transparent)]`}
+  } ${className} bg-[color-mix(in_oklab,var(--tag-color)_50%,_transparent)]`}
   style={{
     "--tag-color": `var(${tagObj.style})`
   }}
 >
   {t(`tag.${tagObj.trad}`, { tag })}
   <div
-    class='glass absolute inset-0 rounded-full opacity-0 backdrop-blur-[1px] backdrop-brightness-150'
+    class='glass from-primary/3\0 absolute inset-0 rounded-full bg-radial to-transparent'
     style={{
       "--tag-color": tagObj.style
     }}
