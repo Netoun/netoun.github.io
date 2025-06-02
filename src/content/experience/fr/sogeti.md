@@ -12,4 +12,7 @@ tags:
   - react
 ---
 
-Développement d'applications web pour différents clients dans le cadre de mon alternance. Participation à plusieurs projets utilisant des technologies variées comme Symfony, Angular et Docker.
+Développement de nouvelles solutions au sein du pôle innovation :
+
+- Développement d'un outil de gestion de GitFlow en ReactJS
+- Développement d'un chatbot utilisant des outils de machine learning pour la compréhension des émotions

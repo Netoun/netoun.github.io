@@ -16,20 +16,21 @@ tags:
   - mikro-orm
 ---
 
-##### **Desoutter** : Corporate website
+##### **Desoutter** : Corporate Website Redesign
 
-Corporate website for a company with Next.js, Tailwind CSS and TypeScript.
+Led the development of a modern corporate website using Next.js, Tailwind CSS, and TypeScript, delivering an enhanced digital presence for the company.
 
-##### **Sit in peace** : Ecommerce site
+##### **Sit in Peace** : E-commerce Platform
 
-Ecommerce site for a company with Hydrogen, a headless Shopify solution.
+Architected and developed a headless e-commerce solution using Shopify Hydrogen, enabling seamless online shopping experiences and robust product management.
 
-##### **AB Formations : Private SAS**
+##### **AB Formations** : Professional Training Platform
 
-Platform for creating, managing and monitoring applications for professional training financed by the various OPCOs (company entry training).
+Designed and implemented a comprehensive platform for managing professional training applications, streamlining the process for OPCO-funded training programs and company onboarding initiatives.
 
-##### **Mon Rét@b' d'abord : Creation of a platform for psychologists and their patients.**
+##### **Mon Rét@b' d'abord** : Mental Health Support Platform
 
-A web application designed to assist individuals recovering from mental health conditions, such as schizophrenia or bipolar disorder, in self-assessment and managing their overall well-being
+Engineered a specialized web application to support mental health recovery, featuring self-assessment tools and wellness management features for individuals dealing with conditions like schizophrenia and bipolar disorder.
 
-**And many other projects...**
+**Additional Projects**
+Successfully delivered numerous other projects, consistently meeting client requirements and technical challenges with innovative solutions.

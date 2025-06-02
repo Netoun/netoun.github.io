@@ -16,20 +16,21 @@ tags:
   - mikro-orm
 ---
 
-##### **Desoutter** : Site web de l'entreprise
+##### **Desoutter** : Refonte du Site Corporate
 
-Site web pour une entreprise avec Next.js, Tailwind CSS et TypeScript.
+Direction du développement d'un site corporate moderne utilisant Next.js, Tailwind CSS et TypeScript, offrant une présence numérique renforcée pour l'entreprise.
 
-##### **Sit in peace** : Ecommerce site
+##### **Sit in Peace** : Plateforme E-commerce
 
-Un site e-commerce pour une entreprise avec Hydrogen, une solution headless Shopify.
+Conception et développement d'une solution e-commerce headless avec Shopify Hydrogen, permettant une expérience d'achat en ligne fluide et une gestion robuste des produits.
 
-##### **AB Formations : SAS Privée**
+##### **AB Formations** : Plateforme de Formation Professionnelle
 
-Plateforme de création, gestion et suivi des demandes de formation professionnelle financées par les différents OPCOs (formation à l'entrée en entreprise).
+Conception et implémentation d'une plateforme complète de gestion des demandes de formation professionnelle, optimisant le processus pour les formations financées par les OPCO et les initiatives d'intégration en entreprise.
 
-##### **Mon Rét@b' d'abord : Création d'une plateforme pour les psychologues et leurs patients.**
+##### **Mon Rét@b' d'abord** : Plateforme de Soutien en Santé Mentale
 
-Une application web conçue pour aider les personnes en rétablissement de troubles psychiques, comme la schizophrénie ou les troubles bipolaires, dans leur auto-évaluation et la gestion de leur bien-être global.
+Développement d'une application web spécialisée pour soutenir le rétablissement en santé mentale, intégrant des outils d'auto-évaluation et des fonctionnalités de gestion du bien-être pour les personnes atteintes de troubles comme la schizophrénie et les troubles bipolaires.
 
-**Et de nombreux autres projets...**
+**Projets Additionnels**
+Livraison réussie de nombreux autres projets, répondant systématiquement aux exigences clients et aux défis techniques avec des solutions innovantes.

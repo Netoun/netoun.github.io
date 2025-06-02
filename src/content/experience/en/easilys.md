@@ -1,12 +1,12 @@
 ---
 company: "Easilys"
-startDate: "2019-10-01"
+startDate: "2019-07-01"
 endDate: "2021-07-01"
-job: "Full stack developer"
+job: "Full Stack Developer"
 tags:
   - postgres
   - node
   - vue
 ---
 
-In charge to develop new modules for applications. Carry out tests and validate its development. Manage the corrective and evolutionary maintenance of the application.
+Development and maintenance of a web application for collective catering management. Implementation of a new user interface with React and development of new features.
