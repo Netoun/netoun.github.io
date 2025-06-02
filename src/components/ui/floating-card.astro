@@ -1,0 +1,217 @@
+---
+interface Props {
+  portfolioItems: Array<{
+    title: string
+    description: string
+    image: string
+  }>
+}
+
+const { portfolioItems } = Astro.props
+---
+
+<div
+  class='floating-card bg-accent/90 border-primary/50 fixed z-50 max-w-xs scale-95 transform rounded-3xl border p-4 opacity-0 shadow-lg'
+>
+  <div class='content'>
+    <div class='portfolio-skeleton w-60 space-y-2'>
+      <div class='skeleton-img bg-primary/50 aspect-video w-full rounded-xl'>
+      </div>
+      <div class='skeleton-title bg-primary/50 h-6 w-full rounded-xl'></div>
+      <div class='skeleton-desc bg-primary/20 h-12 w-full rounded-xl'></div>
+    </div>
+    {
+      portfolioItems.map((item, index) => (
+        <div class='portfolio-item' data-index={index}>
+          <img
+            src={item.image}
+            alt={item.title}
+            class='shadow-primary/20 mb-2 aspect-video w-full rounded-xl object-cover shadow-lg'
+          />
+          <h4 class='text-lg font-semibold'>{item.title}</h4>
+          <p class='text-muted-foreground text-sm leading-relaxed tracking-wide'>
+            {item.description}
+          </p>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .floating-card.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .content {
+    opacity: 1;
+  }
+
+  .portfolio-item {
+    display: none;
+  }
+
+  .portfolio-item.active {
+    display: block;
+  }
+
+  .portfolio-skeleton {
+    display: none;
+    animation: pulse 1.2s infinite ease-in-out;
+  }
+  .portfolio-skeleton.active {
+    display: block;
+  }
+  @keyframes pulse {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+</style>
+
+<script>
+  import gsap from "gsap"
+
+  let floatingCard: HTMLElement | null = null
+  let contentElement: HTMLElement | null = null
+
+  function updateFloatingCardPosition(e: MouseEvent) {
+    if (!floatingCard) return
+
+    const cardRect = floatingCard.getBoundingClientRect()
+    const maxX = window.innerWidth - cardRect.width - 20
+    const maxY = window.innerHeight - cardRect.height - 20
+
+    // Calculate initial position
+    let x = e.clientX + 20
+    let y = e.clientY + 20
+
+    // Check if we need to flip the card position
+    const spaceBelow = window.innerHeight - e.clientY
+    const spaceAbove = e.clientY
+    const spaceRight = window.innerWidth - e.clientX
+    const spaceLeft = e.clientX
+
+    // If there's not enough space below, position the card above the cursor
+    if (spaceBelow < cardRect.height + 20) {
+      y = e.clientY - cardRect.height - 20
+    }
+
+    // If there's not enough space on the right, position the card to the left of the cursor
+    if (spaceRight < cardRect.width + 20) {
+      x = e.clientX - cardRect.width - 20
+    }
+
+    // Ensure the card stays within viewport bounds
+    x = Math.max(20, Math.min(x, maxX))
+    y = Math.max(20, Math.min(y, maxY))
+
+    gsap.to(floatingCard, {
+      left: x,
+      top: y,
+      duration: 0.3,
+      ease: "power2.out"
+    })
+  }
+
+  function showPortfolioItem(index: number) {
+    const items = document.querySelectorAll(".portfolio-item")
+    const skeleton = document.querySelector(".portfolio-skeleton")
+    const currentActive = document.querySelector(".portfolio-item.active")
+    const nextActive = items[index]
+
+    // Always kill tweens and reset all items except the nextActive
+    items.forEach((item, i) => {
+      gsap.killTweensOf(item)
+      if (i !== index) {
+        item.classList.remove("active")
+        gsap.set(item, { opacity: 0, y: 10, pointerEvents: "none" })
+      }
+    })
+    // Show skeleton by default
+    skeleton?.classList.add("active")
+
+    if (currentActive && nextActive && currentActive !== nextActive) {
+      gsap.to(currentActive, {
+        opacity: 0,
+        y: -10,
+        duration: 0.15,
+        onComplete: () => {
+          currentActive.classList.remove("active")
+          nextActive.classList.add("active")
+          skeleton?.classList.remove("active")
+          gsap.fromTo(
+            nextActive,
+            { opacity: 0, y: 10 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.25,
+              ease: "power2.out",
+              pointerEvents: "auto"
+            }
+          )
+        }
+      })
+    } else {
+      nextActive?.classList.add("active")
+      skeleton?.classList.remove("active")
+      gsap.fromTo(
+        nextActive,
+        { opacity: 0, y: 10 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.25,
+          ease: "power2.out",
+          pointerEvents: "auto"
+        }
+      )
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    floatingCard = document.querySelector(".floating-card")
+    contentElement = floatingCard?.querySelector(".content") as HTMLElement
+    if (!floatingCard || !contentElement) return
+
+    const portfolioCards = document.querySelectorAll(".portfolio-card")
+    portfolioCards.forEach((card, index) => {
+      card.addEventListener("mouseenter", (e) => {
+        if (floatingCard) {
+          gsap.to(floatingCard, {
+            opacity: 1,
+            scale: 1,
+            duration: 0.2,
+            ease: "power2.out"
+          })
+
+          showPortfolioItem(index)
+          updateFloatingCardPosition(e as MouseEvent)
+        }
+      })
+
+      card.addEventListener("mousemove", (e) => {
+        updateFloatingCardPosition(e as MouseEvent)
+      })
+
+      card.addEventListener("mouseleave", () => {
+        if (floatingCard) {
+          gsap.to(floatingCard, {
+            opacity: 0,
+            scale: 0.95,
+            duration: 0.15,
+            ease: "power2.in"
+          })
+        }
+      })
+    })
+  })
+</script>

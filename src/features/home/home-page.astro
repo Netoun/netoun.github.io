@@ -8,7 +8,7 @@ import {
 import Layout from "@layouts/layout.astro"
 import { Image } from "astro:assets"
 import { getCollection } from "astro:content"
-import { ArrowRight, ArrowUpRightIcon } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 
 import { cn } from "@utils/index"
 import Email from "@components/icons/email.astro"
@@ -16,17 +16,18 @@ import Github from "@components/icons/github.astro"
 import Linkedin from "@components/icons/linkedin.astro"
 import { buttonVariants } from "@components/ui/button.astro"
 import ExternalLink from "@components/ui/external-link.astro"
+import FloatingCard from "@components/ui/floating-card.astro"
 import SocialLink from "@components/ui/social-link.astro"
 import Tag from "@components/ui/tag.astro"
 
 const lang = getLangFromUrl(Astro.url)
-const t = useTranslatedText(lang)
+const t = useTranslatedText(lang as "en" | "fr")
 
 const allPortfolio = await getCollection("portfolio", ({ id }) => {
   return id.startsWith(`${lang}/`)
 })
 
-const translatePath = useTranslatedPath(lang)
+const translatePath = useTranslatedPath(lang as "en" | "fr")
 ---
 
 <Layout
@@ -71,7 +72,7 @@ const translatePath = useTranslatedPath(lang)
       <!-- CTA and Social Links -->
       <div class='text-subtitle flex flex-wrap items-center gap-4 md:gap-8'>
         <a
-          href={translatePath("resume", lang)}
+          href={translatePath("resume", lang as "en" | "fr")}
           class={cn(buttonVariants({ size: "xl" }), "group")}
         >
           {t("home.cta.resume")}
@@ -130,50 +131,63 @@ const translatePath = useTranslatedPath(lang)
     <div class='portfolio-grid grid'>
       {
         allPortfolio.map((portfolio) => (
-          <article class='portfolio-card group border-primary/50 relative flex space-y-2 border-b pt-2 first:border-t'>
-            <div class='border-primary relative mt-2 aspect-square size-16 min-w-16 overflow-hidden rounded-2xl border-2 shadow-2xl md:mt-0 md:size-32 md:rounded-3xl'>
-              <Image
-                src={portfolio.data.image}
-                alt={portfolio.data.title}
-                class='absolute inset-0 h-full w-full object-cover'
-                width={128}
-                height={128}
-              />
+          <a
+            href={portfolio.data.link}
+            target='_blank'
+            rel='noopener noreferrer'
+            class='border-b py-2 first:border-t'
+          >
+            <article class='portfolio-card group relative flex space-y-2'>
+              <div class='border-primary relative mt-2 aspect-square size-16 min-w-16 overflow-hidden rounded-xl border-2 shadow-2xl md:mt-2 md:size-16 md:rounded-2xl'>
+                <Image
+                  src={portfolio.data.image}
+                  alt={portfolio.data.title}
+                  class='absolute inset-0 h-full w-full object-cover'
+                  width={64}
+                  height={64}
+                />
 
-              <div class='pointer-events-none absolute inset-0 bg-gradient-to-bl from-black/50 via-transparent via-30% to-transparent' />
-
-              <a
-                href={portfolio.data.link}
-                target='_blank'
-                rel='noopener noreferrer'
-                class='text-accent absolute top-2 right-2 hidden size-8 items-center justify-center rounded-full bg-white/50 p-1 backdrop-blur-sm transition-colors group-hover:bg-white/75 md:flex'
-              >
-                <span class='sr-only'>
-                  {t("home.portoflio.cta", { portfolio: portfolio.data.title })}
-                </span>
-                <ArrowUpRightIcon className='size-5' />
-              </a>
-            </div>
-            <div class='flex flex-col p-4 pt-0'>
-              <a
-                href={portfolio.data.link}
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                <h3 class='text-2xl font-semibold'>{portfolio.data.title}</h3>
-              </a>
-              <p class='text-muted-foreground'>{portfolio.data.description}</p>
-              <div class='mt-auto flex flex-wrap gap-2'>
-                {portfolio.data.tags.map((tag: string) => (
-                  <Tag tag={tag} />
-                ))}
+                <div class='pointer-events-none absolute inset-0 bg-gradient-to-bl from-black/50 via-transparent via-30% to-transparent' />
               </div>
-            </div>
-          </article>
+              <div class='flex flex-col p-4 py-2 pt-0'>
+                <h3 class='text-2xl font-semibold'>{portfolio.data.title}</h3>
+
+                <p class='text-muted-foreground xl:max-w-4xl'>
+                  {portfolio.data.description}
+                </p>
+                <div class='mt-2 flex flex-wrap gap-2'>
+                  {portfolio.data.tags.map((tag: string) => (
+                    <Tag tag={tag} />
+                  ))}
+                </div>
+              </div>
+            </article>
+          </a>
         ))
       }
     </div>
   </section>
+
+  <FloatingCard
+    portfolioItems={allPortfolio.map((item) => ({
+      title: item.data.title,
+      description: item.data.description,
+      image: item.data.card.src
+    }))}
+  />
+
+  <script
+    define:vars={{
+      portfolioItems: allPortfolio.map((item) => ({
+        title: item.data.title,
+        description: item.data.description,
+        image: item.data.card.src
+      }))
+    }}
+  >
+    // Make portfolio items available to the client
+    ;(window as any).portfolioItems = portfolioItems
+  </script>
 
   <script>
     import { MotionPathPlugin } from "gsap/MotionPathPlugin"
@@ -299,7 +313,7 @@ const translatePath = useTranslatedPath(lang)
             scrub: 1,
             onEnter: () => desktopFloatingAnim?.pause(),
             onLeaveBack: () => desktopFloatingAnim?.play(),
-            onUpdate: (self) => {
+            onUpdate: (self: any) => {
               if (self.progress > 0) {
                 desktopFloatingAnim?.pause()
               } else {
@@ -333,48 +347,6 @@ const translatePath = useTranslatedPath(lang)
         })
       }
     }
-
-    // Portfolio cards hover animation
-    const portfolioCards = document.querySelectorAll(".portfolio-card")
-    portfolioCards.forEach((card) => {
-      if (!prefersReducedMotion) {
-        card.addEventListener("mouseenter", () => {
-          gsap.to(card, { scale: 1.02, duration: 0.3, ease: "power2.out" })
-        })
-
-        card.addEventListener("mouseleave", () => {
-          gsap.to(card, { scale: 1, duration: 0.3, ease: "power2.out" })
-        })
-      }
-
-      // Keyboard navigation
-      card.addEventListener("focus", () => {
-        if (!prefersReducedMotion) {
-          gsap.to(card, { scale: 1.02, duration: 0.3, ease: "power2.out" })
-        }
-      })
-
-      card.addEventListener("blur", () => {
-        if (!prefersReducedMotion) {
-          gsap.to(card, { scale: 1, duration: 0.3, ease: "power2.out" })
-        }
-      })
-    })
-
-    // Motion preference changes
-    window
-      .matchMedia("(prefers-reduced-motion: reduce)")
-      .addEventListener("change", (event) => {
-        if (event.matches) {
-          gsap.set("#hero-image", {
-            clearProps: "all",
-            y: 0,
-            rotationY: 0,
-            opacity: 1
-          })
-          gsap.set(".portfolio-card", { clearProps: "all" })
-        }
-      })
   </script>
 
   <style>

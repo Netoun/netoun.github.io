@@ -33,7 +33,7 @@ type Experience = CollectionEntry<"experience">
 type School = CollectionEntry<"school">
 ---
 
-<Layout title={t("resume.title")} description={t("resume.description")}>
+<Layout title={t("resume.title").toString()} description={t("resume.description").toString()}>
   <section
     id='resume'
     class='max-w [min-height:calc(100dvh-var(--height-footer)-var(--height-header))] space-y-10 pt-8 pb-16 print:m-0 print:p-0'
@@ -54,7 +54,7 @@ type School = CollectionEntry<"school">
               </h2>
               <h3 class='text-3xl print:text-xl'>
                 <span class='text-secondary font-medium print:text-[#4a4a4a]'>
-                  Frontend Developer
+                  Fullstack Developer
                 </span>
               </h3>
             </div>

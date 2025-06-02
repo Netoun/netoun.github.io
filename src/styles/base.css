@@ -132,13 +132,15 @@
   --text-title-xs--letter-spacing: -0.03em;
   --text-title-xs--font-weight: 500;
 
-  --text-shadow-title: color-mix(in oklch, var(--primary) 30%, transparent) 0px
-    0px 20px;
+  --text-shadow-title: color-mix(in oklch, var(--primary) 30%, transparent) 0px 0px 20px;
 
   --text-subtitle: 1.3rem;
   --text-subtitle--line-height: 1.65rem;
   --text-subtitle--letter-spacing: 0.03em;
   --text-subtitle--font-weight: 500;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
 
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
@@ -225,7 +227,8 @@ body {
   z-index: 9999;
   background: radial-gradient(circle, hsla(var(--primary) / 0.25), transparent);
   transform: translate(-50%, -50%);
-  pointer-events: none; /* Make sure the cursor does not block interactions */
+  pointer-events: none;
+  /* Make sure the cursor does not block interactions */
   border-radius: 50%;
   transition:
     transform 0.1s,
@@ -237,8 +240,10 @@ body {
   html {
     font-size: 10pt;
   }
+
   body {
     background: white;
+
     &:after {
       display: none;
     }
