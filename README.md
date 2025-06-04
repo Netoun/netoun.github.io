@@ -1,13 +1,13 @@
 # My Personal Website
 
-This project is my personal website, hosted on GitHub Pages and build it with [Astro](https://astro.build) and accessible on [netoun.com](https://netoun.com).
+This project is my personal website, hosted on GitHub Pages and built with [Astro](https://astro.build) and accessible on [netoun.com](https://netoun.com).
 
 ## Stacks Used
 
 This project utilizes the following tools:
 
 - **[Astro](https://astro.build)** - A new kind of static site generator.
-- **[Tailwind CSS](https://tailwindcss.com)** - A sutility-first CSS framework.
+- **[Tailwind CSS](https://tailwindcss.com)** - A utility-first CSS framework.
 
 ## Miscellaneous
 
