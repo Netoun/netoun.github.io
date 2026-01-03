@@ -7,11 +7,7 @@ export const welcomeSectionStyles = style({
 	height: '800px',
 	position: 'relative',
 	minHeight: 'min(100dvh, 68rem)',
-	'@media': {
-		'screen and (min-width: 1500px)': {
-			padding: '1vh',
-		},
-	},
+	
 });
 
 export const welcomeContainerStyle = style({
@@ -21,8 +17,7 @@ export const welcomeContainerStyle = style({
 	overflow: 'hidden',
 	borderRadius: vars.radius.md,
 	height: '100%',
-	padding: `${vars.spacing['2xl']} ${vars.spacing.lg}`,
-	backgroundColor: `color-mix(in srgb, ${vars.colors.foreground} 93%, ${vars.colors.accent})`,
+	backgroundColor: `color-mix(in srgb, ${vars.colors.foreground} 98%, ${vars.colors.accent})`,
 	backgroundSize: 'calc(0.5rem - 1px) calc(0.5rem - 1px)',
 	backgroundPosition: '-5px -5px',
 

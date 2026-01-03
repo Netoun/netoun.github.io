@@ -3,7 +3,6 @@ import { Section } from '@/components/layouts/sections/section.component';
 import { Button } from '@/components/primitives/button/button.component';
 import { useMousePosition } from '@/hooks/use-mouse-position';
 import { WelcomeHeroFilterBackground } from './components/backgound/welcome-hero-filter-background.component';
-import { WelcomeHeroComputerComponent } from './components/computer/welcome-hero-computer.component';
 import { useWelcomeHeroContentAnimation } from './hooks/use-welcome-hero-content-animation.hook';
 import * as styles from './welcome-hero.css';
 
@@ -13,6 +12,7 @@ export function WelcomeHeroSection() {
 	const descriptionRef = useRef<HTMLParagraphElement>(null);
 	const [container, setContainer] = useState<HTMLDivElement | null>(null);
 	const [isVisible, setIsVisible] = useState(true); // Start as true to avoid flash on initial load
+	const [isTextSelected, setIsTextSelected] = useState(false);
 	const mousePosition = useMousePosition({
 		container: container ?? undefined,
 	});
@@ -42,6 +42,93 @@ export function WelcomeHeroSection() {
 
 		return () => {
 			observer.disconnect();
+		};
+	}, []);
+
+	// Detect text selection in welcome-hero section (optimized for Chrome)
+	// Uses mouseup/keyup instead of selectionchange to avoid excessive events on Chrome
+	useEffect(() => {
+		if (!welcomeContainerRef.current) return;
+
+		const container = welcomeContainerRef.current;
+
+		const checkSelection = () => {
+			const selection = window.getSelection();
+			if (!selection || selection.rangeCount === 0) {
+				setIsTextSelected(false);
+				return;
+			}
+
+			const range = selection.getRangeAt(0);
+			if (range.collapsed) {
+				setIsTextSelected(false);
+				return;
+			}
+
+			// Use a simple check: verify if selection start/end nodes are within container
+			const startNode = range.startContainer;
+			const endNode = range.endContainer;
+
+			const getElementFromNode = (node: Node): Element | null => {
+				if (node.nodeType === Node.TEXT_NODE) {
+					return node.parentElement;
+				}
+				return node as Element;
+			};
+
+			const startElement = getElementFromNode(startNode);
+			const endElement = getElementFromNode(endNode);
+
+			const isStartInContainer = startElement ? container.contains(startElement) : false;
+			const isEndInContainer = endElement ? container.contains(endElement) : false;
+
+			setIsTextSelected(isStartInContainer || isEndInContainer);
+		};
+
+		// Check on mouseup (when selection ends)
+		const handleMouseUp = () => {
+			// Small delay to ensure selection is updated
+			requestAnimationFrame(() => {
+				requestAnimationFrame(checkSelection);
+			});
+		};
+
+		// Check on keyup (for keyboard selections like Shift+Arrow)
+		const handleKeyUp = (e: KeyboardEvent) => {
+			// Only check if selection-related keys are pressed
+			if (e.shiftKey || e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+				requestAnimationFrame(checkSelection);
+			}
+		};
+
+		// Check when clicking outside to clear selection
+		const handleClick = (e: MouseEvent) => {
+			const target = e.target as Node;
+			if (!container.contains(target)) {
+				setIsTextSelected(false);
+			}
+		};
+
+		// Fallback: check selectionchange but with heavy throttling (only for Chrome edge cases)
+		let lastCheck = 0;
+		const THROTTLE_MS = 150; // Only check every 150ms max
+		const handleSelectionChange = () => {
+			const now = performance.now();
+			if (now - lastCheck < THROTTLE_MS) return;
+			lastCheck = now;
+			requestAnimationFrame(checkSelection);
+		};
+
+		document.addEventListener('mouseup', handleMouseUp, { passive: true });
+		document.addEventListener('keyup', handleKeyUp, { passive: true });
+		document.addEventListener('click', handleClick, { passive: true });
+		document.addEventListener('selectionchange', handleSelectionChange, { passive: true });
+
+		return () => {
+			document.removeEventListener('mouseup', handleMouseUp);
+			document.removeEventListener('keyup', handleKeyUp);
+			document.removeEventListener('click', handleClick);
+			document.removeEventListener('selectionchange', handleSelectionChange);
 		};
 	}, []);
 
@@ -77,6 +164,7 @@ export function WelcomeHeroSection() {
 					<WelcomeHeroFilterBackground
 						container={container}
 						mousePosition={mousePosition}
+						disabled={isTextSelected}
 					/>
 				)}
 				<div className={styles.welcomeContentStyle}>

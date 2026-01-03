@@ -9,12 +9,14 @@ export const welcomeMeshContainerStyles = style({
 	height: '150%',
 	zIndex: 1,
 	pointerEvents: 'none',
+	transform: 'translate3d(var(--mouse-x, 0px), var(--mouse-y, 0px), 0px)',
 });
 
 // Individual mesh shape SVG (positioned absolutely within container)
 export const welcomeMeshShapeStyles = style({
 	position: 'absolute',
 	backfaceVisibility: 'hidden',
+	willChange: 'transform',
 });
 
 // Noise overlay covers entire container
@@ -32,13 +34,13 @@ export const welcomeMeshGradientPathStyles = style({
 	backfaceVisibility: 'hidden',
 	fill: 'currentColor',
 	selectors: {
-		['&[data-mesh-index="1"]']: {
+		'&[data-mesh-index="1"]': {
 			fill: `color-mix(in srgb, ${vars.colors.primary} 25%, transparent)`,
 		},
-		['&[data-mesh-index="2"]']: {
+		'&[data-mesh-index="2"]': {
 			fill: `color-mix(in srgb, ${vars.colors.secondary} 25%, transparent)`,
 		},
-		['&[data-mesh-index="3"]']: {
+		'&[data-mesh-index="3"]': {
 			fill: `color-mix(in srgb, ${vars.colors.tertiary} 25%, transparent)`,
 		},
 	},

@@ -1,4 +1,5 @@
-import { memo, useEffect, useState } from 'react';
+import { animate } from 'animejs';
+import { type CSSProperties, memo, useEffect, useRef, useState } from 'react';
 import { MousePathCanvas } from '@/components/misc/mouse-path-canvas/mouse-path-canvas.component';
 import { ClientOnly } from '@/components/primitives/client-only/client-only.component';
 import type { MousePosition } from '@/hooks/use-mouse-position';
@@ -9,7 +10,7 @@ import * as styles from './welcome-hero-filter-background.css';
 const MESH_SHAPES = [
 	{
 		id: 'mesh-1',
-		d: 'M25.5 -31.1C31.3 -25.6 33 -15.8 33.4 -6.8C33.9 2.2 33.1 10.4 29.3 16.7C25.4 23.1 18.5 27.4 11 30.3C3.4 33.1 -4.8 34.3 -11.4 31.7C-18 29.1 -23 22.6 -28.9 15.3C-34.8 7.9 -41.6 -0.3 -40.3 -7C-39 -13.7 -29.6 -18.9 -21.5 -24C-13.5 -29 -6.7 -34 1.6 -35.9C9.9 -37.8 19.8 -36.5 25.5 -31.1Z', 
+		d: 'M25.5 -31.1C31.3 -25.6 33 -15.8 33.4 -6.8C33.9 2.2 33.1 10.4 29.3 16.7C25.4 23.1 18.5 27.4 11 30.3C3.4 33.1 -4.8 34.3 -11.4 31.7C-18 29.1 -23 22.6 -28.9 15.3C-34.8 7.9 -41.6 -0.3 -40.3 -7C-39 -13.7 -29.6 -18.9 -21.5 -24C-13.5 -29 -6.7 -34 1.6 -35.9C9.9 -37.8 19.8 -36.5 25.5 -31.1Z',
 		viewBox: '-50 -50 100 100',
 		style: { top: '0%', left: '0%', width: '55%', height: '50%' },
 		pathIndex: 1,
@@ -47,7 +48,6 @@ const SharedDefsSVG = memo(function SharedDefsSVG() {
 				{/* Shared blur filter for all mesh shapes */}
 				<filter id="mesh-blur" x="-100%" y="-100%" width="300%" height="300%">
 					<feGaussianBlur in="SourceGraphic" stdDeviation="25" />
-					
 				</filter>
 
 				{/* Noise patterns */}
@@ -66,6 +66,33 @@ const SharedDefsSVG = memo(function SharedDefsSVG() {
 	);
 });
 
+// Animation config per mesh for varied organic movement
+const MESH_ANIMATION_CONFIG: Array<{
+	translateX: number[];
+	translateY: number[];
+	rotate: number[];
+	duration: number;
+}> = [
+	{
+		translateX: [0, 15, -10, 5, 0],
+		translateY: [0, -20, 10, -5, 0],
+		rotate: [0, 3, -2, 1, 0],
+		duration: 12000,
+	},
+	{
+		translateX: [0, -12, 8, -4, 0],
+		translateY: [0, 15, -18, 8, 0],
+		rotate: [0, -4, 3, -1, 0],
+		duration: 15000,
+	},
+	{
+		translateX: [0, 20, -15, 10, 0],
+		translateY: [0, -10, 25, -12, 0],
+		rotate: [0, 2, -3, 2, 0],
+		duration: 18000,
+	},
+];
+
 // Individual mesh SVG scoped to its bounding box (less blur work per shape)
 // References shared filter from SharedDefsSVG
 const MeshShapeSVG = memo(function MeshShapeSVG({
@@ -74,8 +101,33 @@ const MeshShapeSVG = memo(function MeshShapeSVG({
 	style,
 	pathIndex,
 }: (typeof MESH_SHAPES)[number]) {
+	const svgRef = useRef<SVGSVGElement>(null);
+
+	useEffect(() => {
+		const svg = svgRef.current;
+		if (!svg) return;
+
+		const config = MESH_ANIMATION_CONFIG[pathIndex - 1];
+		if (!config) return;
+
+		// Create looping floating animation
+		const animation = animate(svg, {
+			translateX: config.translateX,
+			translateY: config.translateY,
+			rotate: config.rotate,
+			duration: config.duration,
+			easing: 'easeInOutSine',
+			loop: true,
+		});
+
+		return () => {
+			animation.pause();
+		};
+	}, [pathIndex]);
+
 	return (
 		<svg
+			ref={svgRef}
 			xmlns="http://www.w3.org/2000/svg"
 			viewBox={viewBox}
 			preserveAspectRatio="none"
@@ -111,7 +163,6 @@ const NoiseOverlaySVG = memo(function NoiseOverlaySVG() {
 				filter="url(#noise)"
 				fill="currentColor"
 			/>
-			
 		</svg>
 	);
 });
@@ -119,11 +170,13 @@ const NoiseOverlaySVG = memo(function NoiseOverlaySVG() {
 interface WelcomeHeroFilterBackgroundProps {
 	container: HTMLElement | null;
 	mousePosition: MousePosition;
+	disabled?: boolean;
 }
 
 function WelcomeHeroFilterBackgroundComponent({
 	container,
 	mousePosition,
+	disabled = false,
 }: WelcomeHeroFilterBackgroundProps) {
 	const [shouldMountMousePath, setShouldMountMousePath] = useState(false);
 
@@ -152,12 +205,21 @@ function WelcomeHeroFilterBackgroundComponent({
 						key={container.id || 'mouse-path'}
 						container={container}
 						mousePosition={mousePosition}
+						disabled={disabled}
 					/>
 				)}
 			</ClientOnly>
 
 			{/* Mesh background container (shifted for overflow effect) */}
-			<div className={styles.welcomeMeshContainerStyles}>
+			<div
+				className={styles.welcomeMeshContainerStyles}
+				style={
+					{
+						'--mouse-x': mousePosition.x,
+						'--mouse-y': mousePosition.y,
+					} as CSSProperties
+				}
+			>
 				{/* Each mesh in its own SVG scoped to its bounds → smaller blur regions */}
 				{MESH_SHAPES.map((mesh) => (
 					<MeshShapeSVG key={mesh.id} {...mesh} />
@@ -170,6 +232,5 @@ function WelcomeHeroFilterBackgroundComponent({
 	);
 }
 
-export const WelcomeHeroFilterBackground = memo(
-	WelcomeHeroFilterBackgroundComponent,
-);
+export const WelcomeHeroFilterBackground = 
+	WelcomeHeroFilterBackgroundComponent

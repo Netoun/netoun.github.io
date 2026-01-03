@@ -4,9 +4,5 @@ import { vars } from '@/styles/theme.css';
 
 export const sectionStyle = style({
 	padding: vars.spacing.sm,
-	'@media': {
-		[breakpoints.lg]: {
-			padding: vars.spacing.md,
-		},
-	},
+	
 });
