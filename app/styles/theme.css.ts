@@ -3,8 +3,8 @@ import '@/styles/fonts.css';
 
 export const colors = {
 	// Couleurs sémantiques avec OKLCH
-	background: 'oklch(1 0 0)',
-	foreground: 'oklch(0.09 0 0)',
+	background: 'oklch(0.93 0.03 80)',
+	foreground: 'oklch(0.07 0 0)',
 
 	// Couleurs d'interface
 	muted: 'oklch(0.96 0 0)',

@@ -1,5 +1,6 @@
 import { globalStyle } from '@vanilla-extract/css';
-import { vars } from './theme.css';
+
+import { colors, vars } from './theme.css';
 
 // 1. Use a more-intuitive box-sizing model
 globalStyle('*, *::before, *::after', {
@@ -23,6 +24,7 @@ globalStyle('html', {
 globalStyle('body', {
 	lineHeight: 1.5,
 	WebkitFontSmoothing: 'antialiased',
+	backgroundColor: colors.background,
 });
 
 // 5. Improve media defaults

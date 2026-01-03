@@ -14,11 +14,13 @@ interface TrailPoint {
 interface MousePathCanvasProps {
 	container: HTMLElement;
 	mousePosition: MousePosition;
+	disabled?: boolean;
 }
 
 export function MousePathCanvas({
 	container,
 	mousePosition,
+	disabled = false,
 }: MousePathCanvasProps) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -85,6 +87,19 @@ export function MousePathCanvas({
 		const ctx = ctxRef.current;
 
 		if (!canvas || !ctx) return;
+
+		// Handle disabled state separately to avoid full re-initialization
+		if (disabled) {
+			// Clear canvas and stop animation when disabled
+			if (animationFrameRef.current) {
+				cancelAnimationFrame(animationFrameRef.current);
+				animationFrameRef.current = null;
+			}
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			trailPointsRef.current = [];
+			lastMousePosRef.current = null;
+			return;
+		}
 
 		const maxTrailLength = 25;
 		const trailDecay = 0.96;
@@ -226,7 +241,7 @@ export function MousePathCanvas({
 			}
 			container.removeEventListener('mouseleave', handleMouseLeave);
 		};
-	}, [container, mousePosition]);
+	}, [container, mousePosition, disabled]);
 
 	return <canvas ref={canvasRef} className={styles.mousePathCanvasStyles} />;
 }
