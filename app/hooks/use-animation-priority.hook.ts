@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
-export type AnimationPriority = 'high' | 'medium' | 'low';
+export type AnimationPriority = "high" | "medium" | "low";
 
 interface AnimationPriorityConfig {
-	priority: AnimationPriority;
-	isVisible: boolean;
+  priority: AnimationPriority;
+  isVisible: boolean;
 }
 
 /**
@@ -13,51 +13,48 @@ interface AnimationPriorityConfig {
  * - Medium priority: Animate when visible
  * - Low priority: Animate when visible and system is idle
  */
-export function useAnimationPriority({
-	priority,
-	isVisible,
-}: AnimationPriorityConfig): boolean {
-	const [shouldAnimate, setShouldAnimate] = useState(false);
+export function useAnimationPriority({ priority, isVisible }: AnimationPriorityConfig): boolean {
+  const [shouldAnimate, setShouldAnimate] = useState(false);
 
-	useEffect(() => {
-		// High priority: always animate
-		if (priority === 'high') {
-			setShouldAnimate(true);
-			return;
-		}
+  useEffect(() => {
+    // High priority: always animate
+    if (priority === "high") {
+      setShouldAnimate(true);
+      return;
+    }
 
-		// Medium priority: animate when visible
-		if (priority === 'medium') {
-			setShouldAnimate(isVisible);
-			return;
-		}
+    // Medium priority: animate when visible
+    if (priority === "medium") {
+      setShouldAnimate(isVisible);
+      return;
+    }
 
-		// Low priority: animate when visible and check for idle time
-		if (priority === 'low') {
-			if (!isVisible) {
-				setShouldAnimate(false);
-				return;
-			}
+    // Low priority: animate when visible and check for idle time
+    if (priority === "low") {
+      if (!isVisible) {
+        setShouldAnimate(false);
+        return;
+      }
 
-			// Check if browser is idle before starting low-priority animations
-			if ('requestIdleCallback' in window) {
-				const idleCallbackId = requestIdleCallback(
-					() => {
-						setShouldAnimate(true);
-					},
-					{ timeout: 1000 },
-				);
+      // Check if browser is idle before starting low-priority animations
+      if ("requestIdleCallback" in window) {
+        const idleCallbackId = requestIdleCallback(
+          () => {
+            setShouldAnimate(true);
+          },
+          { timeout: 1000 },
+        );
 
-				return () => {
-					cancelIdleCallback(idleCallbackId);
-					setShouldAnimate(false);
-				};
-			}
+        return () => {
+          cancelIdleCallback(idleCallbackId);
+          setShouldAnimate(false);
+        };
+      }
 
-			// Fallback: just use visibility
-			setShouldAnimate(isVisible);
-		}
-	}, [priority, isVisible]);
+      // Fallback: just use visibility
+      setShouldAnimate(isVisible);
+    }
+  }, [priority, isVisible]);
 
-	return shouldAnimate;
+  return shouldAnimate;
 }
