@@ -9,7 +9,6 @@ export const welcomeMeshContainerStyles = style({
 	height: '150%',
 	zIndex: 1,
 	pointerEvents: 'none',
-	transform: 'translate3d(var(--mouse-x, 0px), var(--mouse-y, 0px), 0px)',
 });
 
 // Individual mesh shape SVG (positioned absolutely within container)

@@ -1,0 +1,63 @@
+import type { Project, ProjectType } from '../hooks/use-projects.hook.types';
+
+export const projects: Project[] = [
+	{
+		slug: 'netoun-website-v3',
+		title: 'Netoun Website v3',
+		description:
+			'Mon portfolio personnel avec une DA néo-rétro futuriste, construit avec React Router v7 et Vanilla Extract.',
+		date: '2026-04-27',
+		tags: ['React', 'TypeScript', 'Vanilla Extract', 'React Router'],
+		image: '/images/projects/netoun-v3.png',
+		url: 'https://github.com/netoun/netoun-website-v3',
+		featured: true,
+		type: 'personal' as ProjectType,
+	},
+	{
+		slug: 'treashunt',
+		title: 'Treasure Hunt',
+		description:
+			'Un jeu de treasure hunt interactif avec une interface néo-rétro.',
+		date: '2025-12-01',
+		tags: ['Game', 'Interactive', 'Web'],
+		image: '/images/projects/treashunt.png',
+		url: 'https://www.treashunt.com/',
+		featured: false,
+		type: 'personal' as ProjectType,
+	},
+	{
+		slug: 'game-ntnh',
+		title: 'Game NTNH',
+		description: 'Jeu web expérimental avec mécaniques de gameplay innovantes.',
+		date: '2025-10-15',
+		tags: ['Game', 'Creative', 'Three.js'],
+		image: '/images/projects/game-ntnh.png',
+		url: 'https://game-ntnh.netoun.com',
+		featured: true,
+		type: 'personal' as ProjectType,
+	},
+	{
+		slug: 'nzoth',
+		title: 'Nzoth',
+		description:
+			"Projet open-source développé chez Lonestone, outil de gestion et d'orchestration.",
+		date: '2025-06-01',
+		tags: ['Open Source', 'TypeScript', 'Backend'],
+		image: '/images/projects/nzoth.png',
+		url: 'https://github.com/lonestone/nzoth',
+		featured: false,
+		type: 'project' as ProjectType,
+	},
+	{
+		slug: 'opencode',
+		title: 'OpenCode',
+		description:
+			"Un outil CLI conversationnel pour l'ingénierie logicielle, alimenté par l'IA.",
+		date: '2026-03-15',
+		tags: ['AI', 'CLI', 'TypeScript', 'Node.js'],
+		image: '/images/projects/opencode.png',
+		url: 'https://github.com/anomalyco/opencode',
+		featured: false,
+		type: 'project' as ProjectType,
+	},
+].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());

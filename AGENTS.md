@@ -1,54 +1,106 @@
-# Rules
+# CLAUDE.md
 
-## Misc
+This file provides guidance to ai (claude.ai/opencode) when working with code in this repository.
 
-- All comments is in english (no french)
-- files and folders in kebab-case
+## Project
 
-## Bun
+Portfolio personnel de Nicolas Coulonnier (Netoun), ingénieur full stack chez Lonestone. Cible : recruteurs et pairs techniques. Objectif : visibilité, téléchargement du CV, prise de contact. DA néo-rétro futuriste, 3D — voir @design.md.
 
-Default to using Bun instead of Node.js.
+**Ne jamais inventer de contenu** (bio, expériences, liens, textes légaux).
 
-- Use `bun <file>` instead of `node <file>` or `ts-node <file>`
-- Use `bun test` instead of `jest` or `vitest`
-- Use `bun build <file.html|file.ts|file.css>` instead of `webpack` or `esbuild`
-- Use `bun install` instead of `npm install` or `yarn install` or `pnpm install`
-- Use `bun run <script>` instead of `npm run <script>` or `yarn run <script>` or `pnpm run <script>`
-- Bun automatically loads .env, so don't use dotenv.
+## Stack
 
-### APIs
+React Router v7 · React 19 · TypeScript strict · Vite · Vanilla Extract CSS · Anime.js · React Aria Components · Biome · Vitest · Bun
 
-- `Bun.serve()` supports WebSockets, HTTPS, and routes. Don't use `express`.
-- `bun:sqlite` for SQLite. Don't use `better-sqlite3`.
-- `Bun.redis` for Redis. Don't use `ioredis`.
-- `Bun.sql` for Postgres. Don't use `pg` or `postgres.js`.
-- `WebSocket` is built-in. Don't use `ws`.
-- Prefer `Bun.file` over `node:fs`'s readFile/writeFile
-- Bun.$`ls` instead of execa.
+React Router **Framework Mode**, `ssr: false`, prerender statique de `/`. Pas de loaders/actions serveur.
 
-### Testing
+## Commands
 
-Use `bun test` to run tests.
+```bash
+bun run dev          # localhost:5173
+bun run build
+bun run typecheck    # react-router typegen + tsc
+bun run test         # vitest watch
+bun run biome:check  # lint
+bun run biome:fix    # lint + autofix
 
-```ts#index.test.ts
-import { test, expect } from "bun:test";
-
-test("hello world", () => {
-  expect(1).toBe(1);
-});
+bun run test app/components/primitives/button/button.test.tsx  # test ciblé
 ```
 
-## Styling
+**Après toute modification importante :** `bun run typecheck && bun run biome:check`
 
-Use Vanilla Extract for CSS-in-TS styling
-Use Vanilla Extract Recipe for primitives
-Use Sprinkles for class utility in styles/utils/\*-utils.css.ts
+## Structure
 
-## Components
+```
+app/
+  routes.ts                  # index → welcome.page, /misc → misc.page
+  root.tsx                   # Layout global, fonts, ErrorBoundary
+  components/
+    layouts/                 # Section, Container — wrappers structurels
+    primitives/              # UI de base (Button, Slider, Image, ClientOnly)
+    misc/                    # Composants décoratifs animés (Computer, Kirby, canvas…)
+  pages/<page>/
+    page/<page>.page.tsx     # export meta() + composant route
+    sections/                # sections + hooks locaux à la page
+  hooks/                     # hooks partagés (animation, scroll, souris)
+  styles/                    # tokens, global, responsive, animations, fonts
+```
 
-All react component is based in own folder like this :
+Aliases : `@/` → `app/`, `@components/`, `@primitives/`, `@styles/`.
 
-button/
-├── button.component.tsx
-├── button.css.ts
-└── button.test.tsx
+## Conventions
+
+- Chaque composant dans son propre dossier : `name.component.tsx` + `name.css.ts` + `name.test.tsx`
+- Kebab-case pour fichiers et dossiers, comments en anglais
+- TypeScript strict — pas de `any`, pas de `as` sauf nécessité absolue
+
+## Styling — Vanilla Extract
+
+Tout le CSS est en `.css.ts`. **Pas de Tailwind, pas de CSS classique, pas de `style=`.**
+
+- `vars.*` → CSS variables runtime
+- `colors`, `spacing`… importés directement → valeurs statiques (dans `globalStyle` ou hors runtime)
+- Variants → `recipe()` de `@vanilla-extract/recipes`
+- Breakpoints → `app/styles/responsive.css.ts`, mobile-first
+- Keyframes globaux → `app/styles/animations.css.ts`
+
+## Animations
+
+Toujours utiliser `use-animation-priority` pour les animations coûteuses :
+
+| Priorité | Comportement |
+|---|---|
+| `high` | Toujours animé |
+| `medium` | Animé si visible (IntersectionObserver) |
+| `low` | Animé si visible + browser idle (requestIdleCallback) |
+
+## SEO & accessibilité
+
+- Chaque page exporte `meta()` — format : `"Netoun - [page]"`, description unique
+- Open Graph absent — à ajouter sur toute nouvelle page
+- Une seule `<h1>` par page
+- Primitives interactives via React Aria Components — ne pas substituer par du HTML natif brut
+
+## Performance
+
+- Fonts woff2 locaux dans `/public/fonts/`, Google Fonts uniquement pour Inter et Doto
+- Images dans `app/pages/<page>/assets/` ou `public/`, format WebP/PNG, `alt` toujours renseigné
+- Ne pas ajouter de dépendance sans justification
+
+## Interdits
+
+- Modifier l'architecture des dossiers sans demander
+- Ajouter des librairies lourdes (Framer Motion, Tailwind…) sans accord
+- Écrire du CSS hors Vanilla Extract
+- Bypasser Biome (`--no-verify`)
+
+## Workflow
+
+1. Explorer le code avant toute proposition
+2. Proposer un plan si la modification touche plusieurs fichiers
+3. Implémenter → valider (`typecheck` + `biome:check`)
+4. Résumer ce qui a changé
+
+## Design system
+
+@design.md

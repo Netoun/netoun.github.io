@@ -1,6 +1,5 @@
 import { createTimeline, stagger, text } from 'animejs';
 import { useCallback } from 'react';
-import { vars } from '@/styles/theme.css';
 
 type WelcomeHeroContentAnimationProps = {
 	welcomeHeading: HTMLElement;

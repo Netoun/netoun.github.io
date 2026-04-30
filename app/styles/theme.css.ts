@@ -108,6 +108,9 @@ export const fontFamily = {
 };
 
 export const boxShadow = {
+	innerSm: 'inset 0 0 2px 0 oklch(0 0 0 / 0.05)',
+	innerMd: 'inset 0 0 4px 0 oklch(0 0 0 / 0.05)',
+	innerLg: 'inset 0 0 6px 0 oklch(0 0 0 / 0.05)',
 	sm: '0 1px 2px 0 oklch(0 0 0 / 0.05)',
 	md: '0 4px 6px -1px oklch(0 0 0 / 0.1), 0 2px 4px -2px oklch(0 0 0 / 0.1)',
 	lg: '0 10px 15px -3px oklch(0 0 0 / 0.1), 0 4px 6px -4px oklch(0 0 0 / 0.1)',
@@ -127,13 +130,13 @@ export const boxShadow = {
 	  0 0 82px color-mix(in srgb, ${colors.secondary} 20%, transparent);
 	`,
 	glow2xl: `
-	  0 0 7px color-mix(in srgb, ${colors.background} 50%, transparent), 
-	  0 0 10px color-mix(in srgb, ${colors.primary} 40%, transparent), 
-	  0 0 21px color-mix(in srgb, ${colors.primary} 30%, transparent), 
+	  0 0 7px color-mix(in srgb, ${colors.background} 50%, transparent),
+	  0 0 10px color-mix(in srgb, ${colors.primary} 40%, transparent),
+	  0 0 21px color-mix(in srgb, ${colors.primary} 30%, transparent),
 	  0 0 42px color-mix(in srgb, ${colors.primary} 30%, transparent),
-	  0 0 82px color-mix(in srgb, ${colors.secondary} 30%, transparent);
-	  0 0 130px color-mix(in srgb, ${colors.secondary} 20%, transparent);
-	  0 0 170px color-mix(in srgb, ${colors.secondary} 10%, transparent);
+	  0 0 82px color-mix(in srgb, ${colors.secondary} 30%, transparent),
+	  0 0 130px color-mix(in srgb, ${colors.secondary} 20%, transparent),
+	  0 0 170px color-mix(in srgb, ${colors.secondary} 10%, transparent)
 	`,
 };
 

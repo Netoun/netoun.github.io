@@ -11,4 +11,3 @@ export const mousePathCanvasStyles = style({
 	transform: 'translateZ(0)',
 	willChange: 'contents',
 });
-

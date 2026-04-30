@@ -86,40 +86,44 @@ const fragmentShaderSource = `
 	}
 `;
 
-function createShader(gl: WebGLRenderingContext, type: number, source: string): WebGLShader | null {
+function createShader(
+	gl: WebGLRenderingContext,
+	type: number,
+	source: string,
+): WebGLShader | null {
 	const shader = gl.createShader(type);
 	if (!shader) return null;
-	
+
 	gl.shaderSource(shader, source);
 	gl.compileShader(shader);
-	
+
 	if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
 		console.error('Shader compile error:', gl.getShaderInfoLog(shader));
 		gl.deleteShader(shader);
 		return null;
 	}
-	
+
 	return shader;
 }
 
 function createProgram(
 	gl: WebGLRenderingContext,
 	vertexShader: WebGLShader,
-	fragmentShader: WebGLShader
+	fragmentShader: WebGLShader,
 ): WebGLProgram | null {
 	const program = gl.createProgram();
 	if (!program) return null;
-	
+
 	gl.attachShader(program, vertexShader);
 	gl.attachShader(program, fragmentShader);
 	gl.linkProgram(program);
-	
+
 	if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
 		console.error('Program link error:', gl.getProgramInfoLog(program));
 		gl.deleteProgram(program);
 		return null;
 	}
-	
+
 	return program;
 }
 
@@ -152,7 +156,9 @@ export const DotsCanvas = memo(function DotsCanvas({
 	// Merge refs (canvas and intersection observer)
 	useEffect(() => {
 		if (canvasRef.current && intersectionRef.current !== canvasRef.current) {
-			(intersectionRef as React.MutableRefObject<HTMLCanvasElement | null>).current = canvasRef.current;
+			(
+				intersectionRef as React.MutableRefObject<HTMLCanvasElement | null>
+			).current = canvasRef.current;
 		}
 	}, [intersectionRef]);
 
@@ -161,8 +167,10 @@ export const DotsCanvas = memo(function DotsCanvas({
 		if (!canvas) return;
 
 		// Try to get WebGL context
-		const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl') as WebGLRenderingContext | null;
-		
+		const gl =
+			canvas.getContext('webgl') ||
+			(canvas.getContext('experimental-webgl') as WebGLRenderingContext | null);
+
 		if (!gl) {
 			console.warn('WebGL not supported, canvas will not render');
 			return;
@@ -176,8 +184,12 @@ export const DotsCanvas = memo(function DotsCanvas({
 
 		// Create shaders
 		const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-		const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
-		
+		const fragmentShader = createShader(
+			gl,
+			gl.FRAGMENT_SHADER,
+			fragmentShaderSource,
+		);
+
 		if (!vertexShader || !fragmentShader) {
 			console.error('Failed to create shaders');
 			return;
@@ -191,12 +203,24 @@ export const DotsCanvas = memo(function DotsCanvas({
 
 		// Get attribute and uniform locations
 		const positionLocation = gl.getAttribLocation(program, 'a_position');
-		const basePositionLocation = gl.getAttribLocation(program, 'a_basePosition');
+		const basePositionLocation = gl.getAttribLocation(
+			program,
+			'a_basePosition',
+		);
 		const radiusLocation = gl.getAttribLocation(program, 'a_radius');
 		const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
-		const mousePositionLocation = gl.getUniformLocation(program, 'u_mousePosition');
-		const magnetRadiusLocation = gl.getUniformLocation(program, 'u_magnetRadius');
-		const magnetStrengthLocation = gl.getUniformLocation(program, 'u_magnetStrength');
+		const mousePositionLocation = gl.getUniformLocation(
+			program,
+			'u_mousePosition',
+		);
+		const magnetRadiusLocation = gl.getUniformLocation(
+			program,
+			'u_magnetRadius',
+		);
+		const magnetStrengthLocation = gl.getUniformLocation(
+			program,
+			'u_magnetStrength',
+		);
 
 		// Create buffers
 		const positionBuffer = gl.createBuffer();
@@ -221,7 +245,7 @@ export const DotsCanvas = memo(function DotsCanvas({
 				for (let j = 0; j < rows; j++) {
 					const x = (i + 0.5) * dotSpacing;
 					const y = (j + 0.5) * dotSpacing;
-					
+
 					dotsRef.current.push({ x, y, baseX: x, baseY: y });
 					positions.push(x, y);
 					basePositions.push(x, y);
@@ -231,7 +255,11 @@ export const DotsCanvas = memo(function DotsCanvas({
 
 			// Upload base positions (these don't change)
 			gl.bindBuffer(gl.ARRAY_BUFFER, basePositionBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(basePositions), gl.STATIC_DRAW);
+			gl.bufferData(
+				gl.ARRAY_BUFFER,
+				new Float32Array(basePositions),
+				gl.STATIC_DRAW,
+			);
 
 			// Upload radii (these don't change)
 			gl.bindBuffer(gl.ARRAY_BUFFER, radiusBuffer);
@@ -286,7 +314,11 @@ export const DotsCanvas = memo(function DotsCanvas({
 
 			// Upload dynamic positions
 			gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.DYNAMIC_DRAW);
+			gl.bufferData(
+				gl.ARRAY_BUFFER,
+				new Float32Array(positions),
+				gl.DYNAMIC_DRAW,
+			);
 			gl.enableVertexAttribArray(positionLocation);
 			gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
