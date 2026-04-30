@@ -30,7 +30,6 @@ export const Slider: React.FC<SliderProps> = ({
 	maxValue = 100,
 	step = 1,
 	isDisabled = false,
-	isReadOnly = false,
 	orientation = 'horizontal',
 	formatOptions,
 	onChange,
