@@ -29,10 +29,7 @@ export function useMouseTrailAnimation({ container, mousePosition }: UseMouseTra
   const isFirstMove = useRef(true);
   const mousePositionRef = useRef(mousePosition);
 
-  // Update the ref when the prop changes (though the object reference should be stable)
-  useEffect(() => {
-    mousePositionRef.current = mousePosition;
-  }, [mousePosition]);
+  mousePositionRef.current = mousePosition;
 
   // Function to generate a smooth trail based on position history
   const generateTrailShape = useCallback(() => {

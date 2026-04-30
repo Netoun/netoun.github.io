@@ -7,6 +7,13 @@ import { WelcomeHeroComputerComponent } from "./components/computer/welcome-hero
 import { useWelcomeHeroContentAnimation } from "./hooks/use-welcome-hero-content-animation.hook";
 import * as styles from "./welcome-hero.css";
 
+function getElementFromNode(node: Node): Element | null {
+  if (node.nodeType === Node.TEXT_NODE) {
+    return node.parentElement;
+  }
+  return node as Element;
+}
+
 export function WelcomeHeroSection() {
   const welcomeContainerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -70,20 +77,17 @@ export function WelcomeHeroSection() {
       const startNode = range.startContainer;
       const endNode = range.endContainer;
 
-      const getElementFromNode = (node: Node): Element | null => {
-        if (node.nodeType === Node.TEXT_NODE) {
-          return node.parentElement;
-        }
-        return node as Element;
-      };
-
       const startElement = getElementFromNode(startNode);
       const endElement = getElementFromNode(endNode);
 
       const isStartInContainer = startElement ? container.contains(startElement) : false;
       const isEndInContainer = endElement ? container.contains(endElement) : false;
 
-      setIsTextSelected(isStartInContainer || isEndInContainer);
+      if (!isStartInContainer && !isEndInContainer) {
+        setIsTextSelected(false);
+        return;
+      }
+      setIsTextSelected(true);
     };
 
     // Check on mouseup (when selection ends)
