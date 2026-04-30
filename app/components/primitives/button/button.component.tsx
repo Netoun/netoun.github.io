@@ -9,7 +9,7 @@ export interface ButtonProps {
 }
 
 export const Button: React.FC<ButtonProps> = ({
-	id,
+	id: _id,
 	children,
 	onPress,
 	isDisabled = false,

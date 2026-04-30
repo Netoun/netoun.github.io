@@ -10,7 +10,7 @@ Portfolio personnel de Nicolas Coulonnier (Netoun), ingénieur full stack chez L
 
 ## Stack
 
-React Router v7 · React 19 · TypeScript strict · Vite · Vanilla Extract CSS · Anime.js · React Aria Components · Biome · Vitest · Bun
+React Router v7 · React 19 · TypeScript strict · Vite · Vanilla Extract CSS · Anime.js · React Aria Components · oxlint · Vitest · Bun
 
 React Router **Framework Mode**, `ssr: false`, prerender statique de `/`. Pas de loaders/actions serveur.
 
@@ -21,13 +21,13 @@ bun run dev          # localhost:5173
 bun run build
 bun run typecheck    # react-router typegen + tsc
 bun run test         # vitest watch
-bun run biome:check  # lint
-bun run biome:fix    # lint + autofix
+bun run lint  # oxlint
+bun run fmt   # oxfmt autofix
 
 bun run test app/components/primitives/button/button.test.tsx  # test ciblé
 ```
 
-**Après toute modification importante :** `bun run typecheck && bun run biome:check`
+**Après toute modification importante :** `bun run typecheck && bun run lint`
 
 ## Structure
 
@@ -92,13 +92,13 @@ Toujours utiliser `use-animation-priority` pour les animations coûteuses :
 - Modifier l'architecture des dossiers sans demander
 - Ajouter des librairies lourdes (Framer Motion, Tailwind…) sans accord
 - Écrire du CSS hors Vanilla Extract
-- Bypasser Biome (`--no-verify`)
+- Bypasser oxlint (`--no-verify`)
 
 ## Workflow
 
 1. Explorer le code avant toute proposition
 2. Proposer un plan si la modification touche plusieurs fichiers
-3. Implémenter → valider (`typecheck` + `biome:check`)
+3. Implémenter → valider (`typecheck` + `lint`)
 4. Résumer ce qui a changé
 
 ## Design system
