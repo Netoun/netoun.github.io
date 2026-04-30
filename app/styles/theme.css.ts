@@ -3,7 +3,7 @@ import "@/styles/fonts.css";
 
 export const colors = {
   // Couleurs sémantiques avec OKLCH
-  background: "oklch(0.93 0.03 80)",
+  background: "oklch(0.96 0.015 80)",
   foreground: "oklch(0.07 0 0)",
 
   // Couleurs d'interface
@@ -116,16 +116,16 @@ export const boxShadow = {
   lg: "0 10px 15px -3px oklch(0 0 0 / 0.1), 0 4px 6px -4px oklch(0 0 0 / 0.1)",
   xl: "0 20px 25px -5px oklch(0 0 0 / 0.1), 0 8px 10px -6px oklch(0 0 0 / 0.1)",
   glow: `
-	  0 0 7px color-mix(in srgb, ${colors.background} 40%, transparent), 
-	  0 0 10px color-mix(in srgb, ${colors.background} 30%, transparent), 
-	  0 0 21px color-mix(in srgb, ${colors.background} 20%, transparent), 
+	  0 0 7px color-mix(in srgb, ${colors.background} 40%, transparent),
+	  0 0 10px color-mix(in srgb, ${colors.background} 30%, transparent),
+	  0 0 21px color-mix(in srgb, ${colors.background} 20%, transparent),
 	  0 0 42px color-mix(in srgb, ${colors.primary} 20%, transparent),
 	  0 0 82px color-mix(in srgb, ${colors.secondary} 20%, transparent);
 	`,
   glowXl: `
-	  0 0 7px color-mix(in srgb, ${colors.background} 40%, transparent), 
-	  0 0 10px color-mix(in srgb, ${colors.primary} 30%, transparent), 
-	  0 0 21px color-mix(in srgb, ${colors.primary} 20%, transparent), 
+	  0 0 7px color-mix(in srgb, ${colors.background} 40%, transparent),
+	  0 0 10px color-mix(in srgb, ${colors.primary} 30%, transparent),
+	  0 0 21px color-mix(in srgb, ${colors.primary} 20%, transparent),
 	  0 0 42px color-mix(in srgb, ${colors.primary} 20%, transparent),
 	  0 0 82px color-mix(in srgb, ${colors.secondary} 20%, transparent);
 	`,
@@ -142,22 +142,22 @@ export const boxShadow = {
 
 export const textShadow = {
   glowSm: `
-    0 0 7px color-mix(in srgb, ${colors.background} 40%, transparent), 
-    0 0 10px color-mix(in srgb, ${colors.background} 30%, transparent), 
-    0 0 21px color-mix(in srgb, ${colors.primary} 20%, transparent), 
+    0 0 7px color-mix(in srgb, ${colors.background} 40%, transparent),
+    0 0 10px color-mix(in srgb, ${colors.background} 30%, transparent),
+    0 0 21px color-mix(in srgb, ${colors.primary} 20%, transparent),
     0 0 42px color-mix(in srgb, ${colors.secondary} 20%, transparent);
   `,
   glow: `
-    0 0 7px color-mix(in srgb, ${colors.background} 40%, transparent), 
-    0 0 10px color-mix(in srgb, ${colors.background} 30%, transparent), 
-    0 0 21px color-mix(in srgb, ${colors.background} 20%, transparent), 
+    0 0 7px color-mix(in srgb, ${colors.background} 40%, transparent),
+    0 0 10px color-mix(in srgb, ${colors.background} 30%, transparent),
+    0 0 21px color-mix(in srgb, ${colors.background} 20%, transparent),
     0 0 42px color-mix(in srgb, ${colors.primary} 20%, transparent),
     0 0 82px color-mix(in srgb, ${colors.secondary} 20%, transparent);
   `,
   glowPrimary: `
-    0 0 7px color-mix(in srgb, ${colors.primary} 40%, transparent), 
-    0 0 10px color-mix(in srgb, ${colors.primary} 30%, transparent), 
-    0 0 21px color-mix(in srgb, ${colors.secondary} 20%, transparent), 
+    0 0 7px color-mix(in srgb, ${colors.primary} 40%, transparent),
+    0 0 10px color-mix(in srgb, ${colors.primary} 30%, transparent),
+    0 0 21px color-mix(in srgb, ${colors.secondary} 20%, transparent),
     0 0 42px color-mix(in srgb, ${colors.secondary} 20%, transparent),
     0 0 82px color-mix(in srgb, ${colors.secondary} 20%, transparent);
   `,

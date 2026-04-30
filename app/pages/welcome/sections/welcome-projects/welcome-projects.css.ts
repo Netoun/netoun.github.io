@@ -5,7 +5,6 @@ import { style } from "@vanilla-extract/css";
 export const sectionStyle = style({
   position: "relative",
   overflow: "hidden",
-  backgroundColor: "oklch(0.96 0.015 80)",
   paddingTop: vars.spacing["3xl"],
   paddingBottom: vars.spacing["3xl"],
 });

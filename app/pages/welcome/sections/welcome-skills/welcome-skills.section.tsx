@@ -108,9 +108,6 @@ export function WelcomeSkillsSection() {
 
   return (
     <section className={styles.sectionStyle}>
-      <div className={`${styles.blobStyle} ${styles.blobGoldStyle}`} />
-      <div className={`${styles.blobStyle} ${styles.blobVioletStyle}`} />
-
       <Container className={styles.contentStyle}>
         <div ref={headerRef} className={styles.headerStyle}>
           <h2 className={styles.titleStyle}>
@@ -171,8 +168,16 @@ export function WelcomeSkillsSection() {
                         s.w === 0 && styles.skillCellEmptyStyle,
                       )}
                     >
-                      {s.w > 0 && <span className={styles.symWorkStyle}>{"⬡".repeat(s.w)}</span>}
-                      {s.w > 0 && <div className={styles.cellTooltipStyle}>{levelLabel(s.w)}</div>}
+                      {s.w > 0 && (
+                        <span className={styles.symWorkStyle}>
+                          {"⬡".repeat(s.w)}
+                        </span>
+                      )}
+                      {s.w > 0 && (
+                        <div className={styles.cellTooltipStyle}>
+                          {levelLabel(s.w)}
+                        </div>
+                      )}
                     </div>
                     <div
                       className={clsx(
@@ -180,8 +185,16 @@ export function WelcomeSkillsSection() {
                         s.p === 0 && styles.skillCellEmptyStyle,
                       )}
                     >
-                      {s.p > 0 && <span className={styles.symPersoStyle}>{"◈".repeat(s.p)}</span>}
-                      {s.p > 0 && <div className={styles.cellTooltipStyle}>{levelLabel(s.p)}</div>}
+                      {s.p > 0 && (
+                        <span className={styles.symPersoStyle}>
+                          {"◈".repeat(s.p)}
+                        </span>
+                      )}
+                      {s.p > 0 && (
+                        <div className={styles.cellTooltipStyle}>
+                          {levelLabel(s.p)}
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
