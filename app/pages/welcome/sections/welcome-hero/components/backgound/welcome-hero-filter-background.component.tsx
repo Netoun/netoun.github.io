@@ -143,14 +143,16 @@ function WelcomeHeroFilterBackgroundComponent({
 
       {/* MousePathCanvas must be outside the shifted mesh container for correct positioning */}
       <ClientOnly>
-        {container && shouldMountMousePath && (
-          <MousePathCanvas
-            key={container.id || "mouse-path"}
-            container={container}
-            mousePosition={mousePosition}
-            disabled={disabled}
-          />
-        )}
+        {shouldMountMousePath ? (
+          container ? (
+            <MousePathCanvas
+              key={container.id || "mouse-path"}
+              container={container}
+              mousePosition={mousePosition}
+              disabled={disabled}
+            />
+          ) : null
+        ) : null}
       </ClientOnly>
 
       {/* Mesh background container (shifted for overflow effect) */}
