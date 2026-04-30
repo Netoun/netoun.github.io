@@ -124,7 +124,10 @@ export function MousePathCanvas({
 				point.y,
 				radius,
 			);
-			gradient.addColorStop(0, `rgba(${baseR},${baseG},${baseB},${point.alpha})`);
+			gradient.addColorStop(
+				0,
+				`rgba(${baseR},${baseG},${baseB},${point.alpha})`,
+			);
 			gradient.addColorStop(
 				0.5,
 				`rgba(${baseR},${baseG},${baseB},${point.alpha * 0.6})`,
@@ -245,4 +248,3 @@ export function MousePathCanvas({
 
 	return <canvas ref={canvasRef} className={styles.mousePathCanvasStyles} />;
 }
-

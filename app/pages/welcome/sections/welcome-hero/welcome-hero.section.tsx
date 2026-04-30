@@ -3,6 +3,7 @@ import { Section } from '@/components/layouts/sections/section.component';
 import { Button } from '@/components/primitives/button/button.component';
 import { useMousePosition } from '@/hooks/use-mouse-position';
 import { WelcomeHeroFilterBackground } from './components/backgound/welcome-hero-filter-background.component';
+import { WelcomeHeroComputerComponent } from './components/computer/welcome-hero-computer.component';
 import { useWelcomeHeroContentAnimation } from './hooks/use-welcome-hero-content-animation.hook';
 import * as styles from './welcome-hero.css';
 
@@ -79,8 +80,12 @@ export function WelcomeHeroSection() {
 			const startElement = getElementFromNode(startNode);
 			const endElement = getElementFromNode(endNode);
 
-			const isStartInContainer = startElement ? container.contains(startElement) : false;
-			const isEndInContainer = endElement ? container.contains(endElement) : false;
+			const isStartInContainer = startElement
+				? container.contains(startElement)
+				: false;
+			const isEndInContainer = endElement
+				? container.contains(endElement)
+				: false;
 
 			setIsTextSelected(isStartInContainer || isEndInContainer);
 		};
@@ -96,7 +101,13 @@ export function WelcomeHeroSection() {
 		// Check on keyup (for keyboard selections like Shift+Arrow)
 		const handleKeyUp = (e: KeyboardEvent) => {
 			// Only check if selection-related keys are pressed
-			if (e.shiftKey || e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+			if (
+				e.shiftKey ||
+				e.key === 'ArrowLeft' ||
+				e.key === 'ArrowRight' ||
+				e.key === 'ArrowUp' ||
+				e.key === 'ArrowDown'
+			) {
 				requestAnimationFrame(checkSelection);
 			}
 		};
@@ -122,7 +133,9 @@ export function WelcomeHeroSection() {
 		document.addEventListener('mouseup', handleMouseUp, { passive: true });
 		document.addEventListener('keyup', handleKeyUp, { passive: true });
 		document.addEventListener('click', handleClick, { passive: true });
-		document.addEventListener('selectionchange', handleSelectionChange, { passive: true });
+		document.addEventListener('selectionchange', handleSelectionChange, {
+			passive: true,
+		});
 
 		return () => {
 			document.removeEventListener('mouseup', handleMouseUp);
@@ -153,20 +166,16 @@ export function WelcomeHeroSection() {
 			className={styles.welcomeSectionStyles}
 			data-section="welcome-hero"
 		>
-			
-
 			<div
 				ref={welcomeContainerRef}
 				id="welcome-container"
 				className={styles.welcomeContainerStyle}
 			>
-				{isVisible && (
-					<WelcomeHeroFilterBackground
-						container={container}
-						mousePosition={mousePosition}
-						disabled={isTextSelected}
-					/>
-				)}
+				<WelcomeHeroFilterBackground
+					container={container}
+					mousePosition={mousePosition}
+					disabled={isTextSelected || !isVisible}
+				/>
 				<div className={styles.welcomeContentStyle}>
 					<h1
 						id="welcome-heading"
@@ -193,21 +202,14 @@ export function WelcomeHeroSection() {
 						as a software engineer.
 						<span className={styles.welcomeDescriptionCursorStyles}>▐</span>
 					</p>
-					<Button
-						id="welcome-button"
-						className={styles.welcomeButtonStyles}
-					>
+					<Button id="welcome-button" className={styles.welcomeButtonStyles}>
 						_Get my resume_{' '}
 						<span className={styles.welcomeButtonArrowStyles}>⤘</span>
 					</Button>
 				</div>
 			</div>
 
-			{/* {isVisible && (
-				<div>
-					<WelcomeHeroComputerComponent mousePosition={mousePosition} />
-				</div>
-			)} */}
+			<WelcomeHeroComputerComponent mousePosition={mousePosition} />
 		</Section>
 	);
 }

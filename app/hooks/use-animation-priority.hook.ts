@@ -45,7 +45,7 @@ export function useAnimationPriority({
 					() => {
 						setShouldAnimate(true);
 					},
-					{ timeout: 1000 }
+					{ timeout: 1000 },
 				);
 
 				return () => {
@@ -61,4 +61,3 @@ export function useAnimationPriority({
 
 	return shouldAnimate;
 }
-

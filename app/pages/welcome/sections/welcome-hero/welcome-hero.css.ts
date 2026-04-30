@@ -7,7 +7,6 @@ export const welcomeSectionStyles = style({
 	height: '800px',
 	position: 'relative',
 	minHeight: 'min(100dvh, 68rem)',
-	
 });
 
 export const welcomeContainerStyle = style({
@@ -20,7 +19,8 @@ export const welcomeContainerStyle = style({
 	backgroundColor: `color-mix(in srgb, ${vars.colors.foreground} 98%, ${vars.colors.accent})`,
 	backgroundSize: 'calc(0.5rem - 1px) calc(0.5rem - 1px)',
 	backgroundPosition: '-5px -5px',
-
+	padding: vars.spacing.md,
+	paddingTop: vars.spacing.xl,
 	boxShadow: `inset 0 0 200px color-mix(in srgb, ${vars.colors.foreground} 80%, transparent), inset 0 0 40px color-mix(in srgb, ${vars.colors.foreground} 60%, transparent)`,
 
 	':after': {
@@ -145,7 +145,6 @@ export const welcomeButtonStyles = style([
 			[breakpoints.md]: {
 				fontSize: vars.fontSize['2xl'],
 			},
-			
 		},
 	},
 ]);

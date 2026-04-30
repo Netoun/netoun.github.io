@@ -1,14 +1,14 @@
-import { globalStyle } from '@vanilla-extract/css';
+import { globalKeyframes } from '@vanilla-extract/css';
 
 // Animations globales pour les keyframes CSS
-globalStyle('@keyframes blink', {
+globalKeyframes('blink', {
 	'0%': { opacity: 1 },
 	'50%': { opacity: 1 },
 	'51%': { opacity: 0 },
 	'100%': { opacity: 0 },
 });
 
-globalStyle('@keyframes float', {
+globalKeyframes('float', {
 	'0%': {
 		transform: 'translateY(100vh) rotate(0deg)',
 		opacity: 0,
@@ -21,7 +21,7 @@ globalStyle('@keyframes float', {
 	},
 });
 
-globalStyle('@keyframes bounce', {
+globalKeyframes('bounce', {
 	'0%, 20%, 50%, 80%, 100%': {
 		transform: 'translateY(0)',
 	},
@@ -33,7 +33,7 @@ globalStyle('@keyframes bounce', {
 	},
 });
 
-globalStyle('@keyframes glow', {
+globalKeyframes('glow', {
 	'0%': {
 		boxShadow:
 			'0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor',
@@ -48,7 +48,7 @@ globalStyle('@keyframes glow', {
 	},
 });
 
-globalStyle('@keyframes glowPulse', {
+globalKeyframes('glowPulse', {
 	'0%': {
 		boxShadow: '0 0 0 0 currentColor',
 	},

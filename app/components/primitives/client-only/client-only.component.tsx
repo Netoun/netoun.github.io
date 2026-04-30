@@ -21,4 +21,3 @@ export const ClientOnly: React.FC<ClientOnlyProps> = ({
 
 	return <>{children}</>;
 };
-

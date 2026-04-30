@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import * as styles from './computer-keyboard.css';
 
 const computerKeyboardLayout = [
@@ -8,20 +9,17 @@ const computerKeyboardLayout = [
 	'Ctrl ⌘ Alt Space Alt Fn1 Fn2 Ctrl',
 ];
 
-export function ComputerKeyboard() {
+export const ComputerKeyboard = memo(() => {
 	return (
 		<div className={styles.computerKeyboardStyle}>
-			{computerKeyboardLayout.map((row, rowIndex) => {
+			{computerKeyboardLayout.map((row) => {
 				const rowKeys = row.split(' ').filter((key) => key.length > 0);
 				return (
-					<div
-						key={rowKeys.join('-')}
-						className={styles.computerKeyboardRowStyle}
-					>
-						{rowKeys.map((key, keyIndex) => {
+					<div key={row} className={styles.computerKeyboardRowStyle}>
+						{rowKeys.map((key) => {
 							return (
 								<div
-									key={`${rowIndex}-${keyIndex}-${key}`}
+									key={key}
 									data-key={key}
 									className={styles.computerKeyboardKeyStyle}
 								>
@@ -34,4 +32,4 @@ export function ComputerKeyboard() {
 			})}
 		</div>
 	);
-}
+});

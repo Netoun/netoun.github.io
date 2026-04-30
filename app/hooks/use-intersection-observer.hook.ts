@@ -11,7 +11,7 @@ interface UseIntersectionObserverOptions {
  * Useful for pausing animations when elements are not visible
  */
 export function useIntersectionObserver(
-	options: UseIntersectionObserverOptions = {}
+	options: UseIntersectionObserverOptions = {},
 ) {
 	const { threshold = 0, rootMargin = '0px', enabled = true } = options;
 	const [isIntersecting, setIsIntersecting] = useState(false);
@@ -30,7 +30,7 @@ export function useIntersectionObserver(
 			{
 				threshold,
 				rootMargin,
-			}
+			},
 		);
 
 		observer.observe(element);
@@ -42,4 +42,3 @@ export function useIntersectionObserver(
 
 	return { ref: elementRef, isIntersecting, entry };
 }
-
