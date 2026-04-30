@@ -11,12 +11,11 @@ export function WelcomeProjectsSection() {
 
   return (
     <section className={styles.sectionStyle}>
-      <div className={`${styles.blobStyle} ${styles.blobGoldStyle}`} />
-      <div className={`${styles.blobStyle} ${styles.blobCyanStyle}`} />
-      <div className={`${styles.blobStyle} ${styles.blobVioletStyle}`} />
-
       <Container className={styles.contentStyle}>
-        <ProjectSectionHeader as="h2" subtitle="_SIDE PROJECTS · OPEN SOURCE · EXPERIMENTS_" />
+        <ProjectSectionHeader
+          as="h2"
+          subtitle="_SIDE PROJECTS · OPEN SOURCE · EXPERIMENTS_"
+        />
 
         <div className={styles.gridStyle}>
           {featured.map(({ slug, ...project }) => (

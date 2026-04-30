@@ -1,110 +1,11 @@
 import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
 import { globalStyle, keyframes, style } from "@vanilla-extract/css";
+import { recipe } from "@vanilla-extract/recipes";
 
 const ping = keyframes({
   "0%": { transform: "scale(1)", opacity: 0.8 },
   "75%, 100%": { transform: "scale(2.2)", opacity: 0 },
-});
-
-export const sectionStyle = style({
-  position: "relative",
-  overflow: "hidden",
-  paddingTop: vars.spacing["3xl"],
-  paddingBottom: vars.spacing["3xl"],
-});
-
-export const blobStyle = style({
-  position: "absolute",
-  borderRadius: "50%",
-  pointerEvents: "none",
-});
-
-export const blobCyanStyle = style({
-  width: "500px",
-  height: "420px",
-  bottom: "-120px",
-  right: "-60px",
-  background: vars.colors.secondary,
-  opacity: 0.1,
-  filter: "blur(110px)",
-});
-
-export const blobGoldStyle = style({
-  width: "380px",
-  height: "320px",
-  top: "-80px",
-  left: "30%",
-  background: vars.colors.primary,
-  opacity: 0.09,
-  filter: "blur(100px)",
-});
-
-export const contentStyle = style({
-  position: "relative",
-  zIndex: 1,
-});
-
-export const headerStyle = style({
-  marginBottom: vars.spacing["2xl"],
-  opacity: 0,
-});
-
-export const titleStyle = style({
-  fontSize: vars.fontSize["5xl"],
-  color: vars.colors.foreground,
-  marginBottom: vars.spacing.sm,
-  fontFamily: vars.fontFamily.ttAlientzGrotesk,
-  textShadow: `0 0 40px color-mix(in srgb, ${vars.colors.primary} 25%, transparent)`,
-});
-
-export const prefixStyle = style({
-  color: vars.colors.primary,
-  marginRight: vars.spacing.sm,
-  filter: "brightness(0.75)",
-});
-
-export const cursorStyle = style({
-  color: vars.colors.primary,
-  animation: "blink 1s step-end infinite",
-});
-
-export const subtitleStyle = style({
-  fontFamily: vars.fontFamily.doto,
-  fontSize: vars.fontSize.sm,
-  color: "oklch(0.5 0.04 80)",
-  letterSpacing: "0.22em",
-  textTransform: "uppercase",
-});
-
-export const timelineStyle = style({
-  position: "relative",
-  display: "flex",
-  flexDirection: "column",
-  gap: vars.spacing.xl,
-  paddingLeft: "32px",
-
-  "@media": {
-    [breakpoints.md]: {
-      paddingLeft: "48px",
-    },
-  },
-});
-
-export const timelineLineStyle = style({
-  position: "absolute",
-  left: "11px",
-  top: "12px",
-  bottom: "12px",
-  width: "2px",
-  backgroundColor: `color-mix(in srgb, ${vars.colors.primary} 30%, transparent)`,
-  borderRadius: vars.radius.full,
-
-  "@media": {
-    [breakpoints.md]: {
-      left: "19px",
-    },
-  },
 });
 
 export const entryStyle = style({
@@ -274,22 +175,6 @@ export const descriptionStyle = style({
   },
 });
 
-export const stackStyle = style({
-  display: "flex",
-  flexWrap: "wrap",
-  gap: "6px",
-});
-
-export const stackTagStyle = style({
-  fontFamily: vars.fontFamily.doto,
-  fontSize: "9.5px",
-  letterSpacing: "0.08em",
-  padding: "3px 10px",
-  borderRadius: vars.radius.full,
-  backgroundColor: `color-mix(in srgb, ${vars.colors.secondary} 18%, transparent)`,
-  color: "oklch(0.38 0.1 166)",
-});
-
 export const projectsStyle = style({
   display: "flex",
   flexDirection: "column",
@@ -340,3 +225,49 @@ export const projectStackStyle = style({
   gap: "4px",
   marginTop: "4px",
 });
+
+export const stackStyle = style({
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "6px",
+});
+
+const tagVariant = recipe({
+  base: {
+    fontFamily: vars.fontFamily.doto,
+    fontSize: "9.5px",
+    letterSpacing: "0.08em",
+    padding: "3px 10px",
+    borderRadius: vars.radius.full,
+  },
+  variants: {
+    color: {
+      pink: {
+        backgroundColor: `color-mix(in srgb, ${vars.colors.primary} 18%, transparent)`,
+        color: "oklch(0.38 0.1 166)",
+      },
+      green: {
+        backgroundColor: `color-mix(in srgb, #22c55e 18%, transparent)`,
+        color: "oklch(0.38 0.12 150)",
+      },
+      purple: {
+        backgroundColor: `color-mix(in srgb, ${vars.colors.tertiary} 18%, transparent)`,
+        color: "oklch(0.38 0.1 280)",
+      },
+      yellow: {
+        backgroundColor: `color-mix(in srgb, #eab308 18%, transparent)`,
+        color: "oklch(0.38 0.1 80)",
+      },
+      blue: {
+        backgroundColor: `color-mix(in srgb, #3b82f6 18%, transparent)`,
+        color: "oklch(0.38 0.1 220)",
+      },
+      default: {
+        backgroundColor: "oklch(0.92 0.02 80 / 0.5)",
+        color: "oklch(0.38 0.01 80)",
+      },
+    },
+  },
+});
+
+export const tagStyle = tagVariant;

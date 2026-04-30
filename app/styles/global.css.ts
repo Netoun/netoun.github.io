@@ -24,6 +24,7 @@ globalStyle("html", {
 globalStyle("body", {
   lineHeight: 1.5,
   WebkitFontSmoothing: "antialiased",
+  backgroundColor: vars.colors.background,
 });
 
 // 5. Improve media defaults
