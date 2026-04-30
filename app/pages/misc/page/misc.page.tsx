@@ -1,9 +1,9 @@
-import { ComputerSection } from '../sections/computer-section.component';
+import { ComputerSection } from "../sections/computer-section.component";
 
 export default function MiscPage() {
-	return (
-		<div>
-			<ComputerSection />
-		</div>
-	);
+  return (
+    <div>
+      <ComputerSection />
+    </div>
+  );
 }

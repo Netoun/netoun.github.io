@@ -68,11 +68,11 @@ Tout le CSS est en `.css.ts`. **Pas de Tailwind, pas de CSS classique, pas de `s
 
 Toujours utiliser `use-animation-priority` pour les animations coûteuses :
 
-| Priorité | Comportement |
-|---|---|
-| `high` | Toujours animé |
-| `medium` | Animé si visible (IntersectionObserver) |
-| `low` | Animé si visible + browser idle (requestIdleCallback) |
+| Priorité | Comportement                                          |
+| -------- | ----------------------------------------------------- |
+| `high`   | Toujours animé                                        |
+| `medium` | Animé si visible (IntersectionObserver)               |
+| `low`    | Animé si visible + browser idle (requestIdleCallback) |
 
 ## SEO & accessibilité
 
