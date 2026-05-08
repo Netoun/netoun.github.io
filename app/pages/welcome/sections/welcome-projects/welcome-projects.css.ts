@@ -1,4 +1,3 @@
-import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
 import { style } from "@vanilla-extract/css";
 
@@ -9,42 +8,6 @@ export const sectionStyle = style({
   paddingBottom: vars.spacing["3xl"],
 });
 
-export const blobStyle = style({
-  position: "absolute",
-  borderRadius: "50%",
-  pointerEvents: "none",
-});
-
-export const blobGoldStyle = style({
-  width: "600px",
-  height: "500px",
-  top: "-150px",
-  left: "-100px",
-  background: vars.colors.primary,
-  opacity: 0.15,
-  filter: "blur(100px)",
-});
-
-export const blobCyanStyle = style({
-  width: "450px",
-  height: "400px",
-  bottom: "-80px",
-  right: "5%",
-  background: vars.colors.secondary,
-  opacity: 0.12,
-  filter: "blur(100px)",
-});
-
-export const blobVioletStyle = style({
-  width: "380px",
-  height: "340px",
-  top: "30%",
-  right: "-60px",
-  background: vars.colors.tertiary,
-  opacity: 0.08,
-  filter: "blur(100px)",
-});
-
 export const contentStyle = style({
   position: "relative",
   zIndex: 1,
@@ -52,17 +15,8 @@ export const contentStyle = style({
 
 export const gridStyle = style({
   display: "grid",
-  gridTemplateColumns: "1fr",
+  gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
   gap: vars.spacing.xl,
-
-  "@media": {
-    [breakpoints.md]: {
-      gridTemplateColumns: "repeat(2, 1fr)",
-    },
-    [breakpoints.lg]: {
-      gridTemplateColumns: "repeat(3, 1fr)",
-    },
-  },
 });
 
 export const footerStyle = style({

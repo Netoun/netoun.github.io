@@ -9,67 +9,9 @@ export const sectionStyle = style({
   paddingBottom: vars.spacing["3xl"],
 });
 
-export const blobStyle = style({
-  position: "absolute",
-  borderRadius: "50%",
-  pointerEvents: "none",
-});
-
-export const blobGoldStyle = style({
-  width: "500px",
-  height: "400px",
-  top: "-100px",
-  right: "-80px",
-  background: vars.colors.primary,
-  opacity: 0.1,
-  filter: "blur(110px)",
-});
-
-export const blobVioletStyle = style({
-  width: "400px",
-  height: "350px",
-  bottom: "-80px",
-  left: "-60px",
-  background: vars.colors.tertiary,
-  opacity: 0.07,
-  filter: "blur(110px)",
-});
-
 export const contentStyle = style({
   position: "relative",
   zIndex: 1,
-});
-
-export const headerStyle = style({
-  marginBottom: vars.spacing.xl,
-  opacity: 0,
-});
-
-export const titleStyle = style({
-  fontFamily: vars.fontFamily.ttAlientzGrotesk,
-  fontSize: vars.fontSize["5xl"],
-  color: vars.colors.foreground,
-  marginBottom: vars.spacing.sm,
-  textShadow: `0 0 40px color-mix(in srgb, ${vars.colors.secondary} 30%, transparent)`,
-});
-
-export const prefixStyle = style({
-  color: vars.colors.secondary,
-  marginRight: vars.spacing.sm,
-  filter: "brightness(0.8)",
-});
-
-export const cursorStyle = style({
-  color: vars.colors.secondary,
-  animation: "blink 1s step-end infinite",
-});
-
-export const subtitleStyle = style({
-  fontFamily: vars.fontFamily.doto,
-  fontSize: vars.fontSize.sm,
-  color: "oklch(0.5 0.04 80)",
-  letterSpacing: "0.22em",
-  textTransform: "uppercase",
 });
 
 /* ── Legend / Key ── */

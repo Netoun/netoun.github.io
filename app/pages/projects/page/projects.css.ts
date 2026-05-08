@@ -56,38 +56,6 @@ export const pageStyle = style({
   width: "100%",
 });
 
-export const headerContainerStyle = style({
-  marginBottom: vars.spacing["2xl"],
-});
-
-export const headerStyle = style({
-  fontFamily: vars.fontFamily.ttAlientzGrotesk,
-  fontSize: vars.fontSize["5xl"],
-  color: vars.colors.foreground,
-  marginBottom: vars.spacing.sm,
-  textShadow: `0 0 40px color-mix(in srgb, ${vars.colors.primary} 25%, transparent)`,
-});
-
-export const terminalPrefixStyle = style({
-  fontFamily: vars.fontFamily.doto,
-  color: vars.colors.primary,
-  marginRight: vars.spacing.sm,
-  filter: "brightness(0.75)",
-});
-
-export const cursorStyle = style({
-  color: vars.colors.primary,
-  animation: "blink 1s step-end infinite",
-});
-
-export const subtitleStyle = style({
-  fontFamily: vars.fontFamily.doto,
-  fontSize: vars.fontSize.sm,
-  color: "oklch(0.55 0.05 80)",
-  letterSpacing: "0.22em",
-  textTransform: "uppercase",
-});
-
 export const gridStyle = style({
   display: "grid",
   gridTemplateColumns: "1fr",

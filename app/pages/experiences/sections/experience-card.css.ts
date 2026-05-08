@@ -11,25 +11,48 @@ const ping = keyframes({
 export const entryStyle = style({
   position: "relative",
   opacity: 0,
+  height: "100%",
+
+  "::after": {
+    content: "''",
+    position: "absolute",
+    height: "100%",
+    left: "-26px",
+    width: "1px",
+    top: 12,
+    background: `linear-gradient(${vars.colors.kirby}, ${vars.colors.primary}, ${vars.colors.kirby})`,
+  },
+
+  "@media": {
+    [breakpoints.md]: {
+      "::after": {
+        left: "-29px",
+      },
+    },
+  },
+});
+
+globalStyle(`${entryStyle}:last-child::after`, {
+  display: "none",
 });
 
 export const timelineDotStyle = style({
   position: "absolute",
-  left: "-32px",
+  left: "-26px",
   top: "16px",
   width: "12px",
   height: "12px",
   borderRadius: "50%",
-  backgroundColor: vars.colors.primary,
-  border: `2px solid oklch(0.96 0.015 80)`,
-  boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.colors.primary} 40%, transparent)`,
+  backgroundColor: vars.colors.kirby,
+  border: `2px solid color-mix(in srgb, ${vars.colors.kirby} 460%, transparent)`,
+  boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.colors.kirby} 40%, transparent)`,
 
   "@media": {
     [breakpoints.md]: {
-      left: "-48px",
+      left: "-35px",
       width: "14px",
       height: "14px",
-      top: "15px",
+      top: "12px",
     },
   },
 });
@@ -38,7 +61,7 @@ export const timelineDotPingStyle = style({
   position: "absolute",
   inset: "-2px",
   borderRadius: "50%",
-  backgroundColor: vars.colors.primary,
+  backgroundColor: vars.colors.kirby,
   opacity: 0.4,
   animation: `${ping} 2s cubic-bezier(0, 0, 0.2, 1) infinite`,
 });
@@ -47,11 +70,12 @@ export const cardStyle = style({
   borderRadius: vars.radius.md,
   border: "1px solid oklch(0.88 0.02 80 / 0.5)",
   backgroundColor: "oklch(1 0 0 / 0.55)",
-  backdropFilter: "blur(20px)",
-  WebkitBackdropFilter: "blur(20px)",
+  backdropFilter: "blur(10px)",
+  WebkitBackdropFilter: "blur(10px)",
   overflow: "hidden",
   boxShadow: `0 4px 24px color-mix(in srgb, ${vars.colors.primary} 10%, transparent), 0 1px 4px oklch(0 0 0 / 0.05)`,
   transition: "box-shadow 0.3s ease",
+  marginBottom: "2rem",
 });
 
 globalStyle(`${cardStyle}:hover`, {
@@ -77,33 +101,12 @@ export const cardBarLeftStyle = style({
   gap: "10px",
 });
 
-export const terminalButtonsStyle = style({
-  display: "flex",
-  gap: "5px",
-});
-
-export const terminalButtonStyle = style({
-  width: 10,
-  height: 10,
-  borderRadius: "50%",
-  backgroundColor: "oklch(0.85 0.04 80)",
-});
-
-globalStyle(`${terminalButtonsStyle} > ${terminalButtonStyle}:nth-child(1)`, {
-  backgroundColor: "#ff5f57",
-});
-globalStyle(`${terminalButtonsStyle} > ${terminalButtonStyle}:nth-child(2)`, {
-  backgroundColor: "#febc2e",
-});
-globalStyle(`${terminalButtonsStyle} > ${terminalButtonStyle}:nth-child(3)`, {
-  backgroundColor: "#28c840",
-});
-
 export const companyStyle = style({
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.xs,
   letterSpacing: "0.15em",
-  color: "oklch(0.35 0.04 80)",
+  color: vars.colors.foreground,
+  fontWeight: 500,
   textTransform: "uppercase",
 });
 
@@ -122,7 +125,7 @@ export const periodStyle = style({
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.xs,
   letterSpacing: "0.1em",
-  color: "oklch(0.6 0.03 80)",
+  color: vars.colors.foreground,
 });
 
 export const cardBodyStyle = style({

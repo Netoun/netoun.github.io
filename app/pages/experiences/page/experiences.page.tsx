@@ -1,7 +1,11 @@
 import { Container } from "@/components/layouts/container/container.component";
 import { Section } from "@/components/layouts/sections/section.component";
-import { ExperienceSectionHeader } from "../components/experience-section-header/experience-section-header.component";
-import { useExperiences } from "../hooks/use-experiences.hook";
+import {
+  FeatureHeader,
+  FeatureHeaderTitle,
+  FeatureHeaderDescription,
+} from "@/components/feature-header/feature-header.component";
+import { experiences } from "../data/experiences-data";
 import { ExperienceCard } from "../sections/experience-card.component";
 import * as styles from "./experiences.css";
 
@@ -16,27 +20,26 @@ export function meta() {
 }
 
 export default function ExperiencesPage() {
-  const { experiences } = useExperiences();
-
   return (
     <>
-      <div className={styles.blobLayerStyle}>
-        <div className={`${styles.blobStyle} ${styles.blobGoldStyle}`} />
-        <div className={`${styles.blobStyle} ${styles.blobCyanStyle}`} />
-      </div>
-
       <Section className={styles.pageStyle}>
         <Container>
-          <ExperienceSectionHeader />
+          <FeatureHeader as="page">
+            <FeatureHeaderTitle>EXPERIENCE</FeatureHeaderTitle>
+            <FeatureHeaderDescription>
+              _WORK HISTORY · PROFESSIONAL EXPERIENCE_
+            </FeatureHeaderDescription>
+          </FeatureHeader>
 
           {experiences.length === 0 ? (
             <div className={styles.emptyStateStyle}>
-              No experience entries yet. Add entries in app/pages/experiences/data/experiences-data.ts
+              No experience entries yet. Add entries in
+              app/pages/experiences/data/experiences-data.ts
             </div>
           ) : (
             <div className={styles.timelineStyle}>
-              {experiences.map(({ slug, ...experience }) => (
-                <ExperienceCard key={slug} {...experience} />
+              {experiences.map((experience) => (
+                <ExperienceCard key={experience.slug} experience={experience} />
               ))}
             </div>
           )}

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Section } from "@/components/layouts/sections/section.component";
 import { Button } from "@/components/primitives/button/button.component";
 import { useMousePosition } from "@/hooks/use-mouse-position";
+import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
 import { WelcomeHeroFilterBackground } from "./components/backgound/welcome-hero-filter-background.component";
 import { WelcomeHeroComputerComponent } from "./components/computer/welcome-hero-computer.component";
 import { useWelcomeHeroContentAnimation } from "./hooks/use-welcome-hero-content-animation.hook";
@@ -19,7 +20,9 @@ export function WelcomeHeroSection() {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
-  const [isVisible, setIsVisible] = useState(true); // Start as true to avoid flash on initial load
+  const { ref: sectionRef, isIntersecting: isVisible } = useIntersectionObserver<HTMLDivElement>({
+    threshold: 0.1,
+  });
   const [isTextSelected, setIsTextSelected] = useState(false);
   const mousePosition = useMousePosition({
     container: container ?? undefined,
@@ -29,28 +32,6 @@ export function WelcomeHeroSection() {
     if (welcomeContainerRef.current) {
       setContainer(welcomeContainerRef.current);
     }
-  }, []);
-
-  // IntersectionObserver to pause animations when section is not visible
-  useEffect(() => {
-    if (!welcomeContainerRef.current) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          setIsVisible(entry.isIntersecting);
-        });
-      },
-      {
-        threshold: 0.1, // Trigger when 10% of the section is visible
-      },
-    );
-
-    observer.observe(welcomeContainerRef.current);
-
-    return () => {
-      observer.disconnect();
-    };
   }, []);
 
   // Detect text selection in welcome-hero section (optimized for Chrome)
@@ -162,7 +143,7 @@ export function WelcomeHeroSection() {
   }, [startAnimation]);
 
   return (
-    <Section className={styles.welcomeSectionStyles} data-section="welcome-hero">
+    <Section ref={sectionRef} className={styles.welcomeSectionStyles} data-section="welcome-hero">
       <div
         ref={welcomeContainerRef}
         id="welcome-container"

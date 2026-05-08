@@ -1,7 +1,11 @@
 import { Container } from "@/components/layouts/container/container.component";
 import { Section } from "@/components/layouts/sections/section.component";
-import { ProjectSectionHeader } from "../components/project-section-header/project-section-header.component";
-import { useProjects } from "../hooks/use-projects.hook";
+import {
+  FeatureHeader,
+  FeatureHeaderTitle,
+  FeatureHeaderDescription,
+} from "@/components/feature-header/feature-header.component";
+import { projects } from "../data/projects-data";
 import { ProjectCard } from "../sections/project-card.component";
 import * as styles from "./projects.css";
 
@@ -16,8 +20,6 @@ export function meta() {
 }
 
 export default function ProjectsPage() {
-  const { projects } = useProjects();
-
   return (
     <>
       <div className={styles.blobLayerStyle}>
@@ -28,7 +30,12 @@ export default function ProjectsPage() {
 
       <Section className={styles.pageStyle}>
         <Container>
-          <ProjectSectionHeader />
+          <FeatureHeader as="page">
+            <FeatureHeaderTitle>MY PROJECTS</FeatureHeaderTitle>
+            <FeatureHeaderDescription>
+              _OPEN SOURCE TOOLS, GAMES & EXPERIMENTS_
+            </FeatureHeaderDescription>
+          </FeatureHeader>
 
           {projects.length === 0 ? (
             <div className={styles.emptyStateStyle}>

@@ -1,36 +1,11 @@
 import clsx from "clsx";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
+import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
+import { TerminalButtons } from "@/components/primitives/terminal-buttons/terminal-buttons.component";
+import { Tag } from "@/components/primitives/tag/tag.component";
 import type { ProjectType } from "../hooks/use-projects.hook.types";
 import * as styles from "./project-card.css";
-
-type TagColor = "pink" | "green" | "purple" | "yellow" | "blue" | "default";
-
-const TAG_COLOR_MAP: Record<string, TagColor> = {
-  React: "blue",
-  TypeScript: "blue",
-  TS: "blue",
-  JavaScript: "blue",
-  JS: "blue",
-  "React Router": "pink",
-  "Vanilla Extract": "purple",
-  Interactive: "purple",
-  Backend: "purple",
-  CLI: "green",
-  Game: "green",
-  "Open Source": "green",
-  "Node.js": "green",
-  "Three.js": "yellow",
-  "Nova.js": "yellow",
-  Next: "yellow",
-  AI: "yellow",
-  Web: "yellow",
-  Creative: "pink",
-};
-
-function getTagColor(tag: string): TagColor {
-  return TAG_COLOR_MAP[tag] ?? "default";
-}
 
 export interface ProjectCardProps {
   title: string;
@@ -53,29 +28,12 @@ export function ProjectCard({
   featured = false,
   type = "project",
 }: ProjectCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
+  const { ref: cardRef, isIntersecting } = useIntersectionObserver<HTMLDivElement>({
+    threshold: 0,
+    rootMargin: "0px 0px 80px 0px",
+  });
   const imageRef = useRef<HTMLImageElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  const shouldAnimate = useAnimationPriority({ priority: "medium", isVisible });
-
-  useEffect(() => {
-    const card = cardRef.current;
-    if (!card) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(card);
-        }
-      },
-      { threshold: 0.1 },
-    );
-
-    observer.observe(card);
-    return () => observer.disconnect();
-  }, []);
+  const shouldAnimate = useAnimationPriority({ priority: "medium", isVisible: isIntersecting });
 
   useEffect(() => {
     if (!shouldAnimate) return;
@@ -88,7 +46,8 @@ export function ProjectCard({
     const target = { x: 0, y: 0 };
     let currentX = 0;
     let currentY = 0;
-    let rafId: number;
+    let rafId = 0;
+    let isRunning = false;
 
     const lerpValue = (start: number, end: number, factor: number) =>
       start + (end - start) * factor;
@@ -106,7 +65,7 @@ export function ProjectCard({
       card.style.transform = `rotateX(${currentY}deg) rotateY(${currentX}deg) perspective(1000px) translateZ(0)`;
 
       const imageParallax = 30;
-      image.style.transform = `translateX(${-deltaX * imageParallax}px) translateY(${-deltaY * imageParallax}px) scale(1.1)`;
+      image.style.transform = `translateX(${-deltaX * imageParallax}px) translateY(${-deltaY * imageParallax}px) scale(1.15)`;
 
       if (tagsEl) {
         const tagsParallax = 2;
@@ -114,11 +73,21 @@ export function ProjectCard({
           `translateX(${-deltaX * tagsParallax}px) translateY(${-deltaY * tagsParallax}px)`;
       }
 
-      rafId = requestAnimationFrame(tick);
+      const settled =
+        Math.abs(currentX) < 0.01 &&
+        Math.abs(currentY) < 0.01 &&
+        Math.abs(target.x) < 0.01 &&
+        Math.abs(target.y) < 0.01;
+
+      if (settled) {
+        isRunning = false;
+        rafId = 0;
+      } else {
+        rafId = requestAnimationFrame(tick);
+      }
     };
 
     const handleMouseMove = (e: MouseEvent) => {
-      if (!shouldAnimate) return;
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
@@ -126,19 +95,26 @@ export function ProjectCard({
       const centerY = rect.height / 2;
       target.x = ((x - centerX) / centerX) * 25;
       target.y = ((y - centerY) / centerY) * -25;
+      if (!isRunning) {
+        isRunning = true;
+        rafId = requestAnimationFrame(tick);
+      }
     };
 
     const handleMouseLeave = () => {
       target.x = 0;
       target.y = 0;
+      if (!isRunning) {
+        isRunning = true;
+        rafId = requestAnimationFrame(tick);
+      }
     };
 
-    rafId = requestAnimationFrame(tick);
     card.addEventListener("mousemove", handleMouseMove);
     card.addEventListener("mouseleave", handleMouseLeave);
 
     return () => {
-      cancelAnimationFrame(rafId);
+      if (rafId) cancelAnimationFrame(rafId);
       card.removeEventListener("mousemove", handleMouseMove);
       card.removeEventListener("mouseleave", handleMouseLeave);
     };
@@ -152,15 +128,11 @@ export function ProjectCard({
   const typeLabel = type === "personal" ? "PERSONAL PROJECT" : "PROJECT";
 
   return (
-    <div ref={cardRef} className={clsx(styles.cardStyle, isVisible && styles.cardVisible)}>
+    <div ref={cardRef} className={clsx(styles.cardStyle, isIntersecting && styles.cardVisible)}>
       <a href={url} target="_blank" rel="noopener noreferrer" className={styles.linkStyle}>
         <div className={styles.terminalBarStyle}>
           <div className={styles.terminalLeftStyle}>
-            <div className={styles.terminalButtonsStyle}>
-              <span className={styles.terminalButtonStyle} />
-              <span className={styles.terminalButtonStyle} />
-              <span className={styles.terminalButtonStyle} />
-            </div>
+            <TerminalButtons />
             <span>{typeLabel}</span>
           </div>
           <span className={styles.terminalDateStyle}>{formattedDate}</span>
@@ -189,9 +161,7 @@ export function ProjectCard({
 
           <div data-tags className={styles.tagsStyle}>
             {tags.map((tag) => (
-              <span key={tag} className={styles.tagStyle({ color: getTagColor(tag) })}>
-                {tag}
-              </span>
+              <Tag key={tag}>{tag}</Tag>
             ))}
           </div>
         </div>

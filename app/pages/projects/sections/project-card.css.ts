@@ -4,10 +4,11 @@ import { recipe } from "@vanilla-extract/recipes";
 
 export const cardStyle = style({
   borderRadius: vars.radius.md,
+  height: "100%",
   border: "1px solid oklch(0.88 0.02 80 / 0.5)",
   backgroundColor: "oklch(1 0 0 / 0.55)",
-  backdropFilter: "blur(20px)",
-  WebkitBackdropFilter: "blur(20px)",
+  backdropFilter: "blur(10px)",
+  WebkitBackdropFilter: "blur(10px)",
   overflow: "hidden",
   display: "flex",
   flexDirection: "column",
@@ -63,27 +64,6 @@ export const terminalLeftStyle = style({
   gap: "10px",
 });
 
-export const terminalButtonsStyle = style({
-  display: "flex",
-  gap: "6px",
-});
-
-export const terminalButtonStyle = style({
-  width: 12,
-  height: 12,
-  borderRadius: "50%",
-});
-
-globalStyle(`${terminalButtonsStyle} > ${terminalButtonStyle}:nth-child(1)`, {
-  backgroundColor: "#ff5f57",
-});
-globalStyle(`${terminalButtonsStyle} > ${terminalButtonStyle}:nth-child(2)`, {
-  backgroundColor: "#febc2e",
-});
-globalStyle(`${terminalButtonsStyle} > ${terminalButtonStyle}:nth-child(3)`, {
-  backgroundColor: "#28c840",
-});
-
 export const terminalDateStyle = style({
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.xs,
@@ -103,11 +83,24 @@ export const imageStyle = style({
   width: "100%",
   height: "100%",
   objectFit: "cover",
+  transform: "scale(1.15)",
   transition: "transform 0.3s ease",
 });
 
 globalStyle(`${linkStyle}:hover ${imageStyle}`, {
-  transform: "scale(1.05)",
+  transform: "scale(1.15)",
+});
+
+globalStyle(`${imageContainerStyle}::after`, {
+  content: '""',
+  position: "absolute",
+  inset: 0,
+  background: [
+    "linear-gradient(oklch(1 0 0 / 0.18), oklch(1 0 0 / 0.18))",
+    "linear-gradient(135deg, oklch(0.8858 0.182 95.69 / 0.12) 0%, transparent 55%, oklch(0.5548 0.2575 312.98 / 0.09) 100%)",
+  ].join(", "),
+  pointerEvents: "none",
+  zIndex: 1,
 });
 
 export const contentStyle = style({

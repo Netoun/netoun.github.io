@@ -1,5 +1,3 @@
-export type ExperienceType = "personal" | "project";
-
 export interface SubExperience {
   title: string;
   description: string;
@@ -15,5 +13,5 @@ export interface Experience {
   description?: string;
   projects: SubExperience[];
   stack: string[];
-  type?: ExperienceType;
+  active?: boolean;
 }

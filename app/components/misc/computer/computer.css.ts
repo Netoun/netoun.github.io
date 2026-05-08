@@ -3,7 +3,7 @@ import { vars } from "@/styles/theme.css";
 
 // Backgrounds
 const getBackground = (opacity: number) =>
-  `linear-gradient(20deg, color-mix(in srgb, ${vars.colors.foreground} ${opacity}%, ${vars.colors.tertiary}), transparent), url(https://grainy-gradients.vercel.app/noise.svg)`;
+  `linear-gradient(20deg, color-mix(in srgb, ${vars.colors.foreground} ${opacity}%, ${vars.colors.tertiary}), transparent), url(/images/noise.svg)`;
 
 const backgroundLidComputer = getBackground(95);
 const backgroundChassisComputer = getBackground(90);
