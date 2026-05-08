@@ -20,6 +20,8 @@ export const cardStyle = style({
   transformStyle: "preserve-3d",
   perspective: "1000px",
   cursor: "pointer",
+  backfaceVisibility: "hidden",
+  WebkitBackfaceVisibility: "hidden",
   boxShadow: `0 4px 24px color-mix(in srgb, ${vars.colors.primary} 14%, transparent), 0 1px 4px oklch(0 0 0 / 0.06)`,
 });
 
@@ -47,6 +49,8 @@ export const linkStyle = style({
   height: "100%",
   position: "relative",
   zIndex: 2,
+  transform: "translateZ(0)",
+  transformStyle: "preserve-3d",
 });
 
 export const terminalBarStyle = style({
@@ -90,7 +94,7 @@ export const imageStyle = style({
   height: "100%",
   objectFit: "cover",
   transform: "scale(1.15)",
-  transition: "transform 0.3s ease",
+  transition: "transform 0.15s ease-out",
 });
 
 globalStyle(`${linkStyle}:hover ${imageStyle}`, {

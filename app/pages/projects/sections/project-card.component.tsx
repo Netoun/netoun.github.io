@@ -39,7 +39,9 @@ export function ProjectCard({
     if (!shouldAnimate) return;
 
     const card = cardRef.current;
-    if (!card) return;
+    const image = imageRef.current;
+    if (!card || !image) return;
+    const tagsEl = card.querySelector("[data-tags]");
 
     let boundingRect: DOMRect | null = null;
 
@@ -61,10 +63,22 @@ export function ProjectCard({
       card.style.setProperty("--y-rotation", `${xRotation}deg`);
       card.style.setProperty("--x", `${xPercentage * 100}%`);
       card.style.setProperty("--y", `${yPercentage * 100}%`);
+
+      const parallax = 0.4;
+      image.style.transform =
+        `translateX(${-xRotation * parallax}px) translateY(${-yRotation * parallax}px) scale(1.15)`;
+
+      if (tagsEl) {
+        const tagsParallax = 0.5;
+        (tagsEl as HTMLElement).style.transform =
+          `translateX(${-xRotation * tagsParallax}px) translateY(${-yRotation * tagsParallax}px) translateZ(16px)`;
+      }
     };
 
     const handleMouseLeave = () => {
       boundingRect = null;
+      image.style.transform = "";
+      if (tagsEl) (tagsEl as HTMLElement).style.transform = "";
     };
 
     card.addEventListener("mouseenter", handleMouseEnter);
