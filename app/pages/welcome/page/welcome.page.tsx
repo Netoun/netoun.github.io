@@ -14,9 +14,9 @@ export default function Welcome() {
   return (
     <main>
       <WelcomeHeroSection />
-      <WelcomeSkillsSection />
-      <WelcomeExperienceSection />
       <WelcomeProjectsSection />
+      <WelcomeExperienceSection />
+      <WelcomeSkillsSection />
     </main>
   );
 }

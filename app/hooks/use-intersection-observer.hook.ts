@@ -10,11 +10,13 @@ interface UseIntersectionObserverOptions {
  * Hook to detect when an element is visible in the viewport
  * Useful for pausing animations when elements are not visible
  */
-export function useIntersectionObserver(options: UseIntersectionObserverOptions = {}) {
+export function useIntersectionObserver<T extends HTMLElement = HTMLElement>(
+  options: UseIntersectionObserverOptions = {},
+) {
   const { threshold = 0, rootMargin = "0px", enabled = true } = options;
   const [isIntersecting, setIsIntersecting] = useState(false);
   const [entry, setEntry] = useState<IntersectionObserverEntry | null>(null);
-  const elementRef = useRef<HTMLElement>(null);
+  const elementRef = useRef<T>(null);
 
   useEffect(() => {
     const element = elementRef.current;

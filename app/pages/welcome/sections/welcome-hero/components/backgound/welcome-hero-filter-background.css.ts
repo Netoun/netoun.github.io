@@ -15,7 +15,6 @@ export const welcomeMeshContainerStyles = style({
 export const welcomeMeshShapeStyles = style({
   position: "absolute",
   backfaceVisibility: "hidden",
-  willChange: "transform",
 });
 
 // Noise overlay covers entire container

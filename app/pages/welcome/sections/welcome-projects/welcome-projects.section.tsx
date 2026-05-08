@@ -1,33 +1,35 @@
-import { Link } from "react-router";
 import { Container } from "@/components/layouts/container/container.component";
-import { ProjectSectionHeader } from "@/pages/projects/components/project-section-header/project-section-header.component";
-import { useProjects } from "@/pages/projects/hooks/use-projects.hook";
+import {
+  FeatureHeader,
+  FeatureHeaderTitle,
+  FeatureHeaderDescription,
+} from "@/components/feature-header/feature-header.component";
+import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
+import { projects } from "@/pages/projects/data/projects-data";
 import { ProjectCard } from "@/pages/projects/sections/project-card.component";
 import * as styles from "./welcome-projects.css";
 
 export function WelcomeProjectsSection() {
-  const { projects } = useProjects();
-  const featured = projects.slice(0, 3);
+  const { ref: sectionRef } = useIntersectionObserver<HTMLElement>({
+    threshold: 0,
+  });
 
   return (
-    <section className={styles.sectionStyle}>
+    <section ref={sectionRef} className={styles.sectionStyle}>
       <Container className={styles.contentStyle}>
-        <ProjectSectionHeader
-          as="h2"
-          subtitle="_SIDE PROJECTS · OPEN SOURCE · EXPERIMENTS_"
-        />
+        <FeatureHeader>
+          <FeatureHeaderTitle>PROJECTS</FeatureHeaderTitle>
+          <FeatureHeaderDescription>
+            _SIDE PROJECTS · OPEN SOURCE · EXPERIMENTS_
+          </FeatureHeaderDescription>
+        </FeatureHeader>
 
         <div className={styles.gridStyle}>
-          {featured.map(({ slug, ...project }) => (
-            <ProjectCard key={slug} {...project} />
+          {projects.map(({ slug, ...project }) => (
+            <div key={slug} data-card>
+              <ProjectCard {...project} />
+            </div>
           ))}
-        </div>
-
-        <div className={styles.footerStyle}>
-          <Link to="/projects" className={styles.viewAllStyle}>
-            _VIEW ALL PROJECTS_
-            <span className={styles.viewAllArrowStyle}>⤘</span>
-          </Link>
         </div>
       </Container>
     </section>

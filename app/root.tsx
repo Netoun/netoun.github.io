@@ -23,6 +23,7 @@ export const links: Route.LinksFunction = () => [
 ];
 
 import "@styles/global.css";
+import "@styles/fonts.css";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

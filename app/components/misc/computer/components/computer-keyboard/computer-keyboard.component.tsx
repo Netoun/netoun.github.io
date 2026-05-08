@@ -16,9 +16,13 @@ export const ComputerKeyboard = memo(() => {
         const rowKeys = row.split(" ").filter((key) => key.length > 0);
         return (
           <div key={row} className={styles.computerKeyboardRowStyle}>
-            {rowKeys.map((key) => {
+            {rowKeys.map((key, keyIndex) => {
               return (
-                <div key={key} data-key={key} className={styles.computerKeyboardKeyStyle}>
+                <div
+                  key={`${row}-${keyIndex}`}
+                  data-key={key}
+                  className={styles.computerKeyboardKeyStyle}
+                >
                   {key}
                 </div>
               );

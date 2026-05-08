@@ -1,8 +1,14 @@
 import { animate, stagger } from "animejs";
 import clsx from "clsx";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Container } from "@/components/layouts/container/container.component";
+import {
+  FeatureHeader,
+  FeatureHeaderTitle,
+  FeatureHeaderDescription,
+} from "@/components/feature-header/feature-header.component";
 import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
+import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
 import * as styles from "./welcome-skills.css";
 
 interface SkillItem {
@@ -61,36 +67,14 @@ const LEVEL_LABELS = ["NOTIONS", "À L'AISE", "CŒUR DE MÉTIER"];
 const levelLabel = (n: number) => LEVEL_LABELS[n - 1] ?? "";
 
 export function WelcomeSkillsSection() {
-  const headerRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-  const shouldAnimate = useAnimationPriority({ priority: "medium", isVisible });
+  const { ref: sectionRef, isIntersecting } = useIntersectionObserver<HTMLElement>({
+    threshold: 0.1,
+  });
+  const shouldAnimate = useAnimationPriority({ priority: "medium", isVisible: isIntersecting });
 
   useEffect(() => {
-    const section = gridRef.current?.closest("section");
-    if (!section) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 },
-    );
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!shouldAnimate || !headerRef.current || !gridRef.current) return;
-
-    animate(headerRef.current, {
-      opacity: [0, 1],
-      translateY: [20, 0],
-      ease: "outQuad",
-      duration: 600,
-    });
+    if (!shouldAnimate || !gridRef.current) return;
 
     animate(gridRef.current.querySelectorAll("[data-group]"), {
       opacity: [0, 1],
@@ -107,16 +91,12 @@ export function WelcomeSkillsSection() {
   }));
 
   return (
-    <section className={styles.sectionStyle}>
+    <section ref={sectionRef} className={styles.sectionStyle}>
       <Container className={styles.contentStyle}>
-        <div ref={headerRef} className={styles.headerStyle}>
-          <h2 className={styles.titleStyle}>
-            <span className={styles.prefixStyle}>_❯</span>
-            SKILLS
-            <span className={styles.cursorStyle}>▐</span>
-          </h2>
-          <p className={styles.subtitleStyle}>TECH STACK · TOOLS · EXPERTISE</p>
-        </div>
+        <FeatureHeader variant="secondary">
+          <FeatureHeaderTitle>SKILLS</FeatureHeaderTitle>
+          <FeatureHeaderDescription>TECH STACK · TOOLS · EXPERTISE</FeatureHeaderDescription>
+        </FeatureHeader>
 
         <div className={styles.keyStyle}>
           <div className={styles.keyItemStyle}>
@@ -142,7 +122,7 @@ export function WelcomeSkillsSection() {
               </span>
               <span className={styles.keyDotStyle}>·</span>
               <span className={styles.keyScaleRowStyle}>
-                <span className={styles.symWorkStyle}>⬡⬡⬡</span>
+                <span className={styles.symWorkStyle}>⬡⬡</span>
                 <span>CŒUR DE MÉTIER</span>
               </span>
             </span>
@@ -168,16 +148,8 @@ export function WelcomeSkillsSection() {
                         s.w === 0 && styles.skillCellEmptyStyle,
                       )}
                     >
-                      {s.w > 0 && (
-                        <span className={styles.symWorkStyle}>
-                          {"⬡".repeat(s.w)}
-                        </span>
-                      )}
-                      {s.w > 0 && (
-                        <div className={styles.cellTooltipStyle}>
-                          {levelLabel(s.w)}
-                        </div>
-                      )}
+                      {s.w > 0 && <span className={styles.symWorkStyle}>{"⬡".repeat(s.w)}</span>}
+                      {s.w > 0 && <div className={styles.cellTooltipStyle}>{levelLabel(s.w)}</div>}
                     </div>
                     <div
                       className={clsx(
@@ -185,16 +157,8 @@ export function WelcomeSkillsSection() {
                         s.p === 0 && styles.skillCellEmptyStyle,
                       )}
                     >
-                      {s.p > 0 && (
-                        <span className={styles.symPersoStyle}>
-                          {"◈".repeat(s.p)}
-                        </span>
-                      )}
-                      {s.p > 0 && (
-                        <div className={styles.cellTooltipStyle}>
-                          {levelLabel(s.p)}
-                        </div>
-                      )}
+                      {s.p > 0 && <span className={styles.symPersoStyle}>{"◈".repeat(s.p)}</span>}
+                      {s.p > 0 && <div className={styles.cellTooltipStyle}>{levelLabel(s.p)}</div>}
                     </div>
                   </div>
                 ))}

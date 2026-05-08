@@ -84,7 +84,7 @@ const MeshShapeSVG = memo(function MeshShapeSVG({
       className={styles.welcomeMeshShapeStyles}
       style={style}
     >
-      <title>Mesh {pathIndex}</title>
+      <title>{`Mesh ${pathIndex}`}</title>
       <path
         d={d}
         filter="url(#mesh-blur)"

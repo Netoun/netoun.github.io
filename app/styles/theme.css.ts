@@ -1,6 +1,4 @@
 import { createTheme } from "@vanilla-extract/css";
-import "@/styles/fonts.css";
-
 export const colors = {
   // Couleurs sémantiques avec OKLCH
   background: "oklch(0.96 0.015 80)",

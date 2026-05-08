@@ -53,10 +53,9 @@ function WelcomeHeroComputerComponentInner({ mousePosition }: { mousePosition: M
     rootMargin: "100px",
   });
 
-  // High priority animation (hero section is important)
-  // Store in ref to avoid rerenders when it changes
+  // Medium priority: pauses RAF and interval when hero is off-screen
   const shouldAnimate = useAnimationPriority({
-    priority: "high",
+    priority: "medium",
     isVisible: isIntersecting,
   });
   shouldAnimateRef.current = shouldAnimate;

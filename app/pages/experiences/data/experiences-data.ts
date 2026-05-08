@@ -1,4 +1,4 @@
-import type { Experience, ExperienceType } from "../hooks/use-experiences.hook.types";
+import type { Experience } from "../hooks/use-experiences.hook.types";
 
 export const experiences: Experience[] = [
   {
@@ -7,6 +7,7 @@ export const experiences: Experience[] = [
     role: "Software Developer",
     period: "2021 — Present",
     location: "Nantes, FR",
+    active: true,
     projects: [
       {
         title: "Desoutter",
@@ -26,7 +27,6 @@ export const experiences: Experience[] = [
       },
     ],
     stack: ["React", "Remix", "TypeScript", "NestJS", "Prisma", "PostgreSQL"],
-    type: "project" as ExperienceType,
   },
   {
     slug: "easilys",
@@ -38,7 +38,6 @@ export const experiences: Experience[] = [
       "Development and maintenance of a web application for collective catering management. New UI implementation with React.",
     projects: [],
     stack: ["React", "Node.js", "Vue", "PostgreSQL"],
-    type: "project" as ExperienceType,
   },
   {
     slug: "sogeti",
@@ -50,6 +49,5 @@ export const experiences: Experience[] = [
       "Innovation pole: GitFlow tool in ReactJS, chatbot with machine learning for emotion understanding.",
     projects: [],
     stack: ["React", "Python", "Rust", "TensorFlow", "DialogFlow"],
-    type: "project" as ExperienceType,
   },
 ];
