@@ -25,6 +25,12 @@ export const cardStyle = style({
 
 globalStyle(`${cardStyle}:hover`, {
   boxShadow: `0 24px 60px oklch(0 0 0 / 0.14), 0 0 0 1px color-mix(in srgb, ${vars.colors.primary} 30%, transparent), 0 8px 40px color-mix(in srgb, ${vars.colors.primary} 28%, transparent), 0 2px 12px color-mix(in srgb, ${vars.colors.secondary} 15%, transparent)`,
+  transform: "rotateX(var(--x-rotation, 0deg)) rotateY(var(--y-rotation, 0deg)) scale(1.02)",
+  transition: "transform 0.15s ease-out, box-shadow 0.35s cubic-bezier(.22,1,.36,1), opacity 0.5s ease",
+});
+
+export const perspectiveWrapper = style({
+  perspective: "1000px",
 });
 
 export const cardVisible = style({
@@ -213,6 +219,20 @@ export const linkLabelStyle = style({
 
 globalStyle(`${cardStyle}:hover ${linkLabelStyle}`, {
   color: vars.colors.foreground,
+});
+
+export const haloStyle = style({
+  position: "absolute",
+  inset: 0,
+  pointerEvents: "none",
+  zIndex: 1,
+  borderRadius: vars.radius.md,
+  opacity: 0,
+  transition: "opacity 0.3s ease",
+});
+
+globalStyle(`${cardStyle}:hover ${haloStyle}`, {
+  opacity: 1,
 });
 
 export const statusBadgeStyle = style({
