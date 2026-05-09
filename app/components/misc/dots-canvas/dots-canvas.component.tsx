@@ -256,7 +256,6 @@ export const DotsCanvas = memo(function DotsCanvas({
       gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
       // Use WebGL program
-      // biome-ignore lint/correctness/useHookAtTopLevel: gl.useProgram is a WebGL method, not a React hook
       gl.useProgram(program);
 
       // Get mouse position relative to canvas center
