@@ -1,5 +1,5 @@
 import { memo } from "react";
-import * as styles from "./character-grid.css";
+import * as styles from "./welcome-hero-computer-character-grid.css";
 
 interface CharacterGridProps {
   contentRef: React.RefObject<HTMLDivElement | null>;

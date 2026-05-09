@@ -4,7 +4,7 @@ import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
 import { TerminalButtons } from "@/components/primitives/terminal-buttons/terminal-buttons.component";
 import { Tag } from "@/components/primitives/tag/tag.component";
-import type { ProjectType } from "../hooks/use-projects.hook.types";
+import type { ProjectType } from "../../hooks/use-projects.hook.types";
 import * as styles from "./project-card.css";
 
 export interface ProjectCardProps {
@@ -65,8 +65,7 @@ export function ProjectCard({
       card.style.setProperty("--y", `${yPercentage * 100}%`);
 
       const parallax = 0.4;
-      image.style.transform =
-        `translateX(${-xRotation * parallax}px) translateY(${-yRotation * parallax}px) scale(1.15)`;
+      image.style.transform = `translateX(${-xRotation * parallax}px) translateY(${-yRotation * parallax}px) scale(1.15)`;
 
       if (tagsEl) {
         const tagsParallax = 0.5;
@@ -148,9 +147,12 @@ export function ProjectCard({
             )}
           </div>
         </a>
-        <div className={styles.haloStyle} style={{
-          background: `radial-gradient(at var(--x, 50%) var(--y, 50%), rgb(255 255 240 / 0.18) 0%, transparent 70%)`,
-        }} />
+        <div
+          className={styles.haloStyle}
+          style={{
+            background: `radial-gradient(at var(--x, 50%) var(--y, 50%), rgb(255 255 240 / 0.18) 0%, transparent 70%)`,
+          }}
+        />
       </div>
     </div>
   );

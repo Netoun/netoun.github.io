@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Section } from "@/components/layouts/sections/section.component";
 import { Button } from "@/components/primitives/button/button.component";
-import { useMousePosition } from "@/hooks/use-mouse-position";
+import { useMousePosition } from "@/hooks/use-mouse-position.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
-import { WelcomeHeroFilterBackground } from "./components/backgound/welcome-hero-filter-background.component";
+import { WelcomeHeroFilterBackground } from "./components/background/welcome-hero-filter-background.component";
 import { WelcomeHeroComputerComponent } from "./components/computer/welcome-hero-computer.component";
 import { useWelcomeHeroContentAnimation } from "./hooks/use-welcome-hero-content-animation.hook";
 import * as styles from "./welcome-hero.css";

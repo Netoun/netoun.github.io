@@ -5,7 +5,7 @@ import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook"
 import { TerminalButtons } from "@/components/primitives/terminal-buttons/terminal-buttons.component";
 import { Tag } from "@/components/primitives/tag/tag.component";
 import * as styles from "./experience-card.css";
-import type { Experience } from "../hooks/use-experiences.hook.types";
+import type { Experience } from "../../hooks/use-experiences.hook.types";
 
 export interface ExperienceCardProps {
   experience: Experience;

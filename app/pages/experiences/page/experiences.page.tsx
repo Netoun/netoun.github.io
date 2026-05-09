@@ -4,9 +4,9 @@ import {
   FeatureHeader,
   FeatureHeaderTitle,
   FeatureHeaderDescription,
-} from "@/components/feature-header/feature-header.component";
-import { experiences } from "../data/experiences-data";
-import { ExperienceCard } from "../sections/experience-card.component";
+} from "@/components/layouts/feature-header/feature-header.component";
+import { experiences } from "@/features/experiences/data/experiences-data";
+import { ExperienceCard } from "@/features/experiences/components/experience-card/experience-card.component";
 import * as styles from "./experiences.css";
 
 export function meta() {
@@ -34,7 +34,7 @@ export default function ExperiencesPage() {
           {experiences.length === 0 ? (
             <div className={styles.emptyStateStyle}>
               No experience entries yet. Add entries in
-              app/pages/experiences/data/experiences-data.ts
+              app/features/experiences/data/experiences-data.ts
             </div>
           ) : (
             <div className={styles.timelineStyle}>

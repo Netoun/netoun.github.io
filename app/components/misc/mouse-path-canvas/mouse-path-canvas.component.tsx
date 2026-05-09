@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import type { MousePosition } from "@/hooks/use-mouse-position";
+import type { MousePosition } from "@/hooks/use-mouse-position.hook";
 import * as styles from "./mouse-path-canvas.css";
 
 interface TrailPoint {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Computer } from "@/components/misc/computer/computer.component";
-import { MiscSettingsCard } from "@/components/misc/misc-settings-card/misc-settings-card.component";
+import { MiscSettingsCard } from "@/components/misc/settings-card/settings-card.component";
 import { Slider } from "@/components/primitives/slider/slider.component";
 import {
   computerSection,
@@ -11,7 +11,7 @@ import {
   computerSettingsValue,
   computerWrapper3DSection,
   computerWrapperBaseSection,
-} from "./computer-section.css";
+} from "./misc-computer.css";
 
 export function ComputerSection() {
   const [rotate, setRotate] = useState({

@@ -5,7 +5,7 @@ import {
   settingsCardContent,
   settingsCardHeader,
   settingsCardTitle,
-} from "./misc-settings-card.css";
+} from "./settings-card.css";
 
 interface MiscSettingsCardProps {
   title?: string;
