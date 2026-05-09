@@ -6,7 +6,7 @@ import {
   FeatureHeader,
   FeatureHeaderTitle,
   FeatureHeaderDescription,
-} from "@/components/feature-header/feature-header.component";
+} from "@/components/layouts/feature-header/feature-header.component";
 import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
 import * as styles from "./welcome-skills.css";

@@ -3,10 +3,10 @@ import {
   FeatureHeader,
   FeatureHeaderTitle,
   FeatureHeaderDescription,
-} from "@/components/feature-header/feature-header.component";
+} from "@/components/layouts/feature-header/feature-header.component";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
-import { projects } from "@/pages/projects/data/projects-data";
-import { ProjectCard } from "@/pages/projects/sections/project-card.component";
+import { projects } from "@/features/projects/data/projects-data";
+import { ProjectCard } from "@/features/projects/components/project-card/project-card.component";
 import * as styles from "./welcome-projects.css";
 
 export function WelcomeProjectsSection() {

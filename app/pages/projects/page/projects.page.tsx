@@ -4,9 +4,9 @@ import {
   FeatureHeader,
   FeatureHeaderTitle,
   FeatureHeaderDescription,
-} from "@/components/feature-header/feature-header.component";
-import { projects } from "../data/projects-data";
-import { ProjectCard } from "../sections/project-card.component";
+} from "@/components/layouts/feature-header/feature-header.component";
+import { projects } from "@/features/projects/data/projects-data";
+import { ProjectCard } from "@/features/projects/components/project-card/project-card.component";
 import * as styles from "./projects.css";
 
 export function meta() {
@@ -39,7 +39,7 @@ export default function ProjectsPage() {
 
           {projects.length === 0 ? (
             <div className={styles.emptyStateStyle}>
-              No projects yet. Add entries in app/pages/projects/data/projects-data.ts
+              No projects yet. Add entries in app/features/projects/data/projects-data.ts
             </div>
           ) : (
             <div className={styles.gridStyle}>

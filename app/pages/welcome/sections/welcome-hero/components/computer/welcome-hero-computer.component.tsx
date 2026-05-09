@@ -2,9 +2,9 @@ import { memo, useEffect, useRef, useState } from "react";
 import { Computer } from "@/components/misc/computer/computer.component";
 import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
-import type { MousePosition } from "@/hooks/use-mouse-position";
-import { CharacterGrid } from "./components/character-grid/character-grid.component";
-import { SquareGrid } from "./components/square-grid/square-grid.component";
+import type { MousePosition } from "@/hooks/use-mouse-position.hook";
+import { CharacterGrid } from "./components/character-grid/welcome-hero-computer-character-grid.component";
+import { SquareGrid } from "./components/square-grid/welcome-hero-computer-square-grid.component";
 import * as styles from "./welcome-hero-computer.css";
 
 // Generate random character: ., ▨, or random letter

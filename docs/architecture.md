@@ -19,13 +19,14 @@ app/
 
 ## Catégories de `app/components/`
 
-| Dossier       | Rôle                                           | Exemples                                  |
-| ------------- | ---------------------------------------------- | ----------------------------------------- |
-| `primitives/` | Atomes UI réutilisables, sans logique métier    | `button/`, `tag/`, `slider/`, `client-only/` |
-| `layouts/`    | Tout ce qui structure la page                   | `container/`, `sections/`, `feature-header/` |
-| `misc/`       | Composants complexes mais réutilisables (décoratifs, visuels) | `computer/`, `kirby/`, `dots-canvas/`    |
+| Dossier       | Rôle                                                          | Exemples                                     |
+| ------------- | ------------------------------------------------------------- | -------------------------------------------- |
+| `primitives/` | Atomes UI réutilisables, sans logique métier                  | `button/`, `tag/`, `slider/`, `client-only/` |
+| `layouts/`    | Tout ce qui structure la page                                 | `container/`, `sections/`, `feature-header/` |
+| `misc/`       | Composants complexes mais réutilisables (décoratifs, visuels) | `computer/`, `kirby/`, `dots-canvas/`        |
 
 ### Règles
+
 - **`feature-header/`** est un layout → dans `layouts/`, pas à la racine.
 - Usage unique d'une page → reste dans `pages/<feature>/components/` ou `pages/<feature>/sections/<section>/components/`.
 - UI générique utilisée par 2+ pages → monte dans `app/components/`.
@@ -62,6 +63,7 @@ app/features/
 ```
 
 ### Règles
+
 - Nom de domaine pluriel, aligné avec la page (`projects`, `experiences`).
 - Les fichiers dans `features/<domain>/components/` ne répètent pas le préfixe du domaine : `project-card.component.tsx`, pas `projects-project-card.component.tsx`.
 - Une page peut importer depuis `app/features/<domain>/`.
@@ -71,18 +73,19 @@ app/features/
 
 ## Conventions de nommage
 
-| Type        | Pattern                  | Exemple                                            |
-| ----------- | ------------------------ | -------------------------------------------------- |
-| Composant   | `*.component.tsx`        | `button.component.tsx`                             |
-| Section     | `*.section.tsx`          | `welcome-hero.section.tsx`                         |
-| Page        | `*.page.tsx`             | `welcome.page.tsx`                                 |
-| Styles      | `*.css.ts`               | `button.css.ts`                                    |
-| Hook        | `*.hook.ts`              | `use-intersection-observer.hook.ts`                |
-| Types       | `*.types.ts`             | `use-projects.hook.types.ts`                       |
-| Données     | `*-data.ts`              | `projects-data.ts`                                 |
-| Test        | `*.test.tsx`             | `button.test.tsx`                                  |
+| Type      | Pattern           | Exemple                             |
+| --------- | ----------------- | ----------------------------------- |
+| Composant | `*.component.tsx` | `button.component.tsx`              |
+| Section   | `*.section.tsx`   | `welcome-hero.section.tsx`          |
+| Page      | `*.page.tsx`      | `welcome.page.tsx`                  |
+| Styles    | `*.css.ts`        | `button.css.ts`                     |
+| Hook      | `*.hook.ts`       | `use-intersection-observer.hook.ts` |
+| Types     | `*.types.ts`      | `use-projects.hook.types.ts`        |
+| Données   | `*-data.ts`       | `projects-data.ts`                  |
+| Test      | `*.test.tsx`      | `button.test.tsx`                   |
 
 ### Règles générales
+
 - **kebab-case** dossiers et fichiers.
 - **named export** — pas de `export default` sauf pour les pages (`*.page.tsx`).
 
@@ -100,6 +103,7 @@ welcome-hero-button-icon         # sous-composant du composant
 **Pattern** : `<feature>-<parent>-<component-name>.component.tsx`
 
 Exemple concret :
+
 ```
 pages/welcome/sections/welcome-hero/components/computer/
   welcome-hero-computer.component.tsx          ✓
@@ -179,6 +183,7 @@ pages/welcome/
 ```
 
 ### Règles de composition
+
 - Une **page** est composée exclusivement de **sections**.
 - Une **section** peut avoir des sous-composants dans `components/`.
 - Un sous-composant peut lui-même avoir des sous-composants (imbrication infinie).
@@ -291,6 +296,7 @@ Pour les variantes : `recipe()` de `@vanilla-extract/recipes` (voir `button.css.
 Voir [`design.md`](./design.md) pour tokens, breakpoints, ombres, typographie.
 
 Rappels :
+
 - Toujours les tokens — pas de valeurs arbitraires.
 - Mobile-first : breakpoints via `@styles/responsive.css`.
 - Hover : `color-mix(in srgb, ${vars.colors.primary} 90%, transparent)`.

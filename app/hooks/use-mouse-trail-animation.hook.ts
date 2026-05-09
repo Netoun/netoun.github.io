@@ -1,6 +1,6 @@
 import type { animate } from "animejs";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { MousePosition } from "@/hooks/use-mouse-position";
+import type { MousePosition } from "@/hooks/use-mouse-position.hook";
 
 interface Velocity {
   x: number;

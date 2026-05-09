@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
-import * as styles from "./square-grid.css";
+import * as styles from "./welcome-hero-computer-square-grid.css";
 
 interface SquareGridProps {
   contentRef?: React.RefObject<HTMLDivElement | null>;
@@ -279,11 +279,7 @@ export const SquareGrid = ({
             : colIndex >= rowState.filledCount;
 
         return (
-          <div
-            key={index}
-            className={styles.squareGridItemStyles}
-            data-filled={isFilled}
-          >
+          <div key={index} className={styles.squareGridItemStyles} data-filled={isFilled}>
             {isFilled ? "■" : "□"}
           </div>
         );

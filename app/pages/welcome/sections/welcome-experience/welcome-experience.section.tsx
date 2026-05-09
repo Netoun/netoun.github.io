@@ -5,11 +5,11 @@ import {
   FeatureHeader,
   FeatureHeaderTitle,
   FeatureHeaderDescription,
-} from "@/components/feature-header/feature-header.component";
+} from "@/components/layouts/feature-header/feature-header.component";
 import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
-import { experiences } from "@/pages/experiences/data/experiences-data";
-import { ExperienceCard } from "@/pages/experiences/sections/experience-card.component";
+import { experiences } from "@/features/experiences/data/experiences-data";
+import { ExperienceCard } from "@/features/experiences/components/experience-card/experience-card.component";
 import * as styles from "./welcome-experience.css";
 
 export function WelcomeExperienceSection() {

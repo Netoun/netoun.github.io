@@ -1,7 +1,7 @@
 import { memo, useEffect, useRef, useState } from "react";
 import { MousePathCanvas } from "@/components/misc/mouse-path-canvas/mouse-path-canvas.component";
 import { ClientOnly } from "@/components/primitives/client-only/client-only.component";
-import type { MousePosition } from "@/hooks/use-mouse-position";
+import type { MousePosition } from "@/hooks/use-mouse-position.hook";
 import * as styles from "./welcome-hero-filter-background.css";
 
 // Each mesh has its own bounding box + blur padding for optimized rendering.

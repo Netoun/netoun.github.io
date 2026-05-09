@@ -1,7 +1,7 @@
 import { memo, useEffect, useRef } from "react";
 import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
-import type { MousePosition } from "@/hooks/use-mouse-position";
+import type { MousePosition } from "@/hooks/use-mouse-position.hook";
 import * as styles from "./dots-canvas.css";
 
 interface DotsCanvasProps {

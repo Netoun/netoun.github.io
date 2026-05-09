@@ -1,4 +1,4 @@
-import { ComputerSection } from "../sections/computer-section.component";
+import { ComputerSection } from "../sections/misc-computer.section";
 
 export default function MiscPage() {
   return (
