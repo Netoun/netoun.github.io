@@ -23,7 +23,6 @@ export const CharacterGrid = memo(function CharacterGrid({
       }
     >
       {characters.map((char, index) => (
-        // biome-ignore lint/suspicious/noArrayIndexKey: positions are stable, only values change
         <div key={index} className={styles.characterGridItemStyles}>
           {char}
         </div>

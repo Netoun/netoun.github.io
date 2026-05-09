@@ -192,7 +192,6 @@ export const SquareGrid = ({
   };
 
   // Check if all rows are complete and reverse if needed
-  // biome-ignore lint/correctness/useExhaustiveDependencies: startAnimation is defined inside component, adding it causes infinite loop
   useEffect(() => {
     if (rows === 0 || columns === 0) return;
     if (rowStates.length === 0) return;
@@ -225,7 +224,6 @@ export const SquareGrid = ({
   }, [rowStates, rows, columns, animationDelay]);
 
   // Start animation when component becomes visible
-  // biome-ignore lint/correctness/useExhaustiveDependencies: startAnimation/clearAllTimeouts are defined inside component, adding them causes infinite loop
   useEffect(() => {
     if (isIntersecting && rows > 0 && columns > 0 && rowStates.length === rows) {
       const hasStarted = rowStates.some((state) => state.isAnimating);
@@ -243,7 +241,6 @@ export const SquareGrid = ({
   }, [isIntersecting, rows, columns, rowStates.length]);
 
   // Cleanup on unmount
-  // biome-ignore lint/correctness/useExhaustiveDependencies: clearAllTimeouts only reads a stable ref
   useEffect(() => {
     return () => {
       clearAllTimeouts();
@@ -270,7 +267,6 @@ export const SquareGrid = ({
 
         if (!rowState) {
           return (
-            // biome-ignore lint/suspicious/noArrayIndexKey: grid positions are stable, only fill state changes
             <div key={index} className={styles.squareGridItemStyles}>
               □
             </div>
@@ -284,7 +280,6 @@ export const SquareGrid = ({
 
         return (
           <div
-            // biome-ignore lint/suspicious/noArrayIndexKey: grid positions are stable, only fill state changes
             key={index}
             className={styles.squareGridItemStyles}
             data-filled={isFilled}

@@ -58,7 +58,6 @@ export const Slider: React.FC<SliderProps> = ({
       <AriaSliderTrack className={sliderTrackStyle}>
         <AriaSliderThumb className={sliderThumbStyle} />
       </AriaSliderTrack>
-      {/* <AriaSliderOutput /> */}
     </AriaSlider>
   );
 };
