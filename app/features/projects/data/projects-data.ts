@@ -47,6 +47,17 @@ export const projects: Project[] = [
     type: "personal" as ProjectType,
   },
   {
+    slug: "lonestone-boilerplate",
+    title: "Lonestone Boilerplate",
+    description: "Starter kit for full-stack webapps, SaaS and websites with React and NestJS.",
+    date: "2025-03-04",
+    tags: ["Open Source", "TypeScript", "NestJS", "React", "Monorepo"],
+    image: "/images/projects/lonestone-boilerplate.webp",
+    url: "https://github.com/lonestone/lonestone-boilerplate",
+    featured: false,
+    type: "project" as ProjectType,
+  },
+  {
     slug: "nzoth",
     title: "Nzoth",
     description:
