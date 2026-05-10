@@ -9,6 +9,9 @@ export const welcomeMeshContainerStyles = style({
   height: "150%",
   zIndex: 1,
   pointerEvents: "none",
+  // Promote to own compositor layer to isolate repaints from foreground content
+  willChange: "transform",
+  contain: "layout style paint",
 });
 
 // Individual mesh shape SVG (positioned absolutely within container)

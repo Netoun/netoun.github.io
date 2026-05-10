@@ -44,7 +44,7 @@ export const welcomeHeroComputerStyles = style({
   fontFamily: vars.fontFamily.doto,
   fontWeight: vars.fontWeight.bold,
   display: "grid",
-  gridTemplateColumns: "repeat(3, 1fr)",∏
+  gridTemplateColumns: "repeat(3, 1fr)",
   gridTemplateRows: "repeat(3, 1fr)",
   width: "100%",
   height: "100%",
@@ -57,6 +57,7 @@ export const zone1Styles = style({
   ...gridBase,
   gridColumn: "1 / 3",
   gridRow: "1 / 2",
+  overflow: "hidden",
 });
 
 export const zone2Styles = style({
