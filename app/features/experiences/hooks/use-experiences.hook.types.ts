@@ -1,4 +1,4 @@
-export interface SubExperience {
+interface SubExperience {
   title: string;
   description: string;
   stack?: string[];

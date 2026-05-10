@@ -43,32 +43,22 @@ export function WelcomeHeroSection() {
 
     const checkSelection = () => {
       const selection = window.getSelection();
-      if (!selection || selection.rangeCount === 0) {
-        setIsTextSelected(false);
-        return;
+
+      let isSelected = false;
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        if (!range.collapsed) {
+          const startNode = range.startContainer;
+          const endNode = range.endContainer;
+          const startElement = getElementFromNode(startNode);
+          const endElement = getElementFromNode(endNode);
+          const isStartInContainer = startElement ? container.contains(startElement) : false;
+          const isEndInContainer = endElement ? container.contains(endElement) : false;
+          isSelected = isStartInContainer || isEndInContainer;
+        }
       }
 
-      const range = selection.getRangeAt(0);
-      if (range.collapsed) {
-        setIsTextSelected(false);
-        return;
-      }
-
-      // Use a simple check: verify if selection start/end nodes are within container
-      const startNode = range.startContainer;
-      const endNode = range.endContainer;
-
-      const startElement = getElementFromNode(startNode);
-      const endElement = getElementFromNode(endNode);
-
-      const isStartInContainer = startElement ? container.contains(startElement) : false;
-      const isEndInContainer = endElement ? container.contains(endElement) : false;
-
-      if (!isStartInContainer && !isEndInContainer) {
-        setIsTextSelected(false);
-        return;
-      }
-      setIsTextSelected(true);
+      setIsTextSelected(isSelected);
     };
 
     // Check on mouseup (when selection ends)
@@ -156,7 +146,7 @@ export function WelcomeHeroSection() {
         />
         <div className={styles.welcomeContentStyle}>
           <h1 id="welcome-heading" ref={headingRef} className={styles.welcomeHeadingStyles}>
-            Hi, I'm Nicolas — <br /> Full stack engineer creating clean, efficient web apps.
+            Hi, I'm Nicolas&nbsp;: <br /> Full stack engineer creating clean, efficient web apps.
           </h1>
           <p
             id="welcome-description"

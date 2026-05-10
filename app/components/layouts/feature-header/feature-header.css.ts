@@ -1,6 +1,13 @@
 import { vars } from "@styles/theme.css";
-import { style } from "@vanilla-extract/css";
+import { globalKeyframes, style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
+
+globalKeyframes("blink", {
+  "0%": { opacity: 1 },
+  "50%": { opacity: 1 },
+  "51%": { opacity: 0 },
+  "100%": { opacity: 0 },
+});
 
 const ACCENT_MAP = {
   primary: vars.colors.primary,

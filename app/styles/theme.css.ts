@@ -1,5 +1,5 @@
 import { createTheme } from "@vanilla-extract/css";
-export const colors = {
+const colors = {
   // Couleurs sémantiques avec OKLCH
   background: "oklch(0.96 0.015 80)",
   foreground: "oklch(0.07 0 0)",
@@ -45,7 +45,7 @@ export const colors = {
   ring: "oklch(0.7 0.15 264)",
 };
 
-export const spacing = {
+const spacing = {
   xs: "0.25rem",
   sm: "0.5rem",
   md: "1rem",
@@ -55,7 +55,7 @@ export const spacing = {
   "3xl": "4rem",
 };
 
-export const radius = {
+const radius = {
   none: "0",
   sm: "0.5rem",
   md: "1rem",
@@ -64,7 +64,7 @@ export const radius = {
   full: "9999px",
 };
 
-export const fontSize = {
+const fontSize = {
   xs: "0.75rem",
   sm: "0.875rem",
   base: "1rem",
@@ -81,14 +81,14 @@ export const fontSize = {
   "10xl": "10.5rem",
 };
 
-export const fontWeight = {
+const fontWeight = {
   normal: "400",
   medium: "500",
   semibold: "600",
   bold: "700",
 };
 
-export const lineHeight = {
+const lineHeight = {
   none: "1",
   tight: "1.25",
   snug: "1.375",
@@ -97,7 +97,7 @@ export const lineHeight = {
   loose: "2",
 };
 
-export const fontFamily = {
+const fontFamily = {
   inter: "Inter, system-ui, sans-serif",
   doto: "Doto, system-ui, sans-serif",
   ppNeueMontreal: "PPNeueMontreal, system-ui, sans-serif",
@@ -105,7 +105,7 @@ export const fontFamily = {
   mabeoVintage: "MabeoVintage, system-ui, sans-serif",
 };
 
-export const boxShadow = {
+const boxShadow = {
   innerSm: "inset 0 0 2px 0 oklch(0 0 0 / 0.05)",
   innerMd: "inset 0 0 4px 0 oklch(0 0 0 / 0.05)",
   innerLg: "inset 0 0 6px 0 oklch(0 0 0 / 0.05)",
@@ -138,7 +138,7 @@ export const boxShadow = {
 	`,
 };
 
-export const textShadow = {
+const textShadow = {
   glowSm: `
     0 0 7px color-mix(in srgb, ${colors.background} 40%, transparent),
     0 0 10px color-mix(in srgb, ${colors.background} 30%, transparent),

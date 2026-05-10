@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useReducer, useRef, useState } from "react";
 import { Computer } from "@/components/misc/computer/computer.component";
 import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
@@ -21,11 +21,26 @@ const getRandomCharacter = (): string => {
 const CHAR_POOL_SIZE = 1000;
 const CHAR_POOL: string[] = Array.from({ length: CHAR_POOL_SIZE }, () => getRandomCharacter());
 
+type GridInfo = {
+  itemCount: number;
+  gridColumns: number;
+  characters: string[];
+};
+
+function gridReducer(state: GridInfo, action: Partial<GridInfo>): GridInfo {
+  return { ...state, ...action };
+}
+
+const INITIAL_GRID: GridInfo = {
+  itemCount: 0,
+  gridColumns: 0,
+  characters: [],
+};
+
 function WelcomeHeroComputerComponentInner({ mousePosition }: { mousePosition: MousePosition }) {
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
-  const [itemCount, setItemCount] = useState(0);
-  const [gridColumns, setGridColumns] = useState(0);
-  const [characters, setCharacters] = useState<string[]>([]);
+  const [gridInfo, dispatchGridInfo] = useReducer(gridReducer, INITIAL_GRID);
+  const { itemCount, gridColumns, characters } = gridInfo;
   const contentRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -80,11 +95,11 @@ function WelcomeHeroComputerComponentInner({ mousePosition }: { mousePosition: M
       if (totalItems > 0) {
         if (totalItems !== itemCountRef.current) {
           itemCountRef.current = totalItems;
-          setItemCount(totalItems);
+          dispatchGridInfo({ itemCount: totalItems });
         }
         if (itemsPerRow !== gridColumnsRef.current) {
           gridColumnsRef.current = itemsPerRow;
-          setGridColumns(itemsPerRow);
+          dispatchGridInfo({ gridColumns: itemsPerRow });
         }
       }
     };
@@ -105,7 +120,7 @@ function WelcomeHeroComputerComponentInner({ mousePosition }: { mousePosition: M
 
     const initialChars = Array.from({ length: itemCount }, () => "▨");
     charsRef.current = initialChars;
-    setCharacters(initialChars);
+    dispatchGridInfo({ characters: initialChars });
   }, [itemCount]);
 
   // Optimized: Single batch timer to update random subset of characters
@@ -135,7 +150,7 @@ function WelcomeHeroComputerComponentInner({ mousePosition }: { mousePosition: M
       }
 
       // Single batch update to state (one re-render per interval tick)
-      setCharacters([...charsRef.current]);
+      dispatchGridInfo({ characters: [...charsRef.current] });
     }, 100);
 
     return () => {

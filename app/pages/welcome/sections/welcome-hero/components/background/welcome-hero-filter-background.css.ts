@@ -44,21 +44,3 @@ export const welcomeMeshGradientPathStyles = style({
   },
 });
 
-export const welcomeMousePathContainerStyles = style({
-  position: "absolute",
-  inset: 0,
-  zIndex: 10,
-  pointerEvents: "none", // Avoid blocking interactions
-});
-
-export const welcomeMousePathStyles = style({
-  fill: `color-mix(in srgb, ${vars.colors.foreground} 50%, transparent)`,
-  opacity: 1,
-  filter: "blur(10px)",
-  willChange: "d", // Helps when animating the path shape
-  selectors: {
-    ':global([data-quality="high"]) &': {
-      backdropFilter: "blur(10px)",
-    },
-  },
-});

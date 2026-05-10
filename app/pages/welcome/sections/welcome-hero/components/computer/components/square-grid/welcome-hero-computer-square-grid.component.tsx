@@ -23,8 +23,10 @@ export const SquareGrid = ({
   columns: fixedColumns,
   rows: fixedRows,
 }: SquareGridProps) => {
-  const [rows, setRows] = useState(fixedRows || 0);
-  const [columns, setColumns] = useState(fixedColumns || 0);
+  const [{ rows, columns }, updateDims] = useState({
+    rows: fixedRows || 0,
+    columns: fixedColumns || 0,
+  });
   const [rowStates, setRowStates] = useState<RowState[]>([]);
   const timeoutRefsRef = useRef<Array<ReturnType<typeof setTimeout> | null>>([]);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -58,13 +60,13 @@ export const SquareGrid = ({
     if (fixedColumns !== undefined) {
       if (fixedColumns !== prevColumnsRef.current) {
         prevColumnsRef.current = fixedColumns;
-        setColumns(fixedColumns);
+        updateDims((prev) => ({ ...prev, columns: fixedColumns }));
       }
     }
     if (fixedRows !== undefined) {
       if (fixedRows !== prevRowsRef.current) {
         prevRowsRef.current = fixedRows;
-        setRows(fixedRows);
+        updateDims((prev) => ({ ...prev, rows: fixedRows }));
       }
     }
 
@@ -83,7 +85,7 @@ export const SquareGrid = ({
         const itemsPerRow = Math.floor(containerWidth / squareSize);
         if (itemsPerRow > 0 && itemsPerRow !== prevColumnsRef.current) {
           prevColumnsRef.current = itemsPerRow;
-          setColumns(itemsPerRow);
+          updateDims((prev) => ({ ...prev, columns: itemsPerRow }));
         }
       }
 
@@ -91,7 +93,7 @@ export const SquareGrid = ({
         const itemsPerCol = Math.floor(containerHeight / squareSize);
         if (itemsPerCol > 0 && itemsPerCol !== prevRowsRef.current) {
           prevRowsRef.current = itemsPerCol;
-          setRows(itemsPerCol);
+          updateDims((prev) => ({ ...prev, rows: itemsPerCol }));
         }
       }
     };
@@ -199,6 +201,8 @@ export const SquareGrid = ({
 
     const allRowsComplete = rowStates.every((state) => !state.isAnimating);
 
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
     if (allRowsComplete && rowStates.length > 0) {
       const allFull = rowStates.every(
         (state) => state.filledCount === columns && state.direction === "forward",
@@ -209,18 +213,24 @@ export const SquareGrid = ({
 
       if (allFull) {
         transitionScheduledRef.current = true;
-        const timeoutId = setTimeout(() => {
+        timeoutId = setTimeout(() => {
           startAnimation("backward");
         }, animationDelay * 2);
         timeoutRefsRef.current.push(timeoutId);
       } else if (allEmpty) {
         transitionScheduledRef.current = true;
-        const timeoutId = setTimeout(() => {
+        timeoutId = setTimeout(() => {
           startAnimation("forward");
         }, animationDelay * 2);
         timeoutRefsRef.current.push(timeoutId);
       }
     }
+
+    return () => {
+      if (timeoutId !== null) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [rowStates, rows, columns, animationDelay]);
 
   // Start animation when component becomes visible
@@ -267,7 +277,7 @@ export const SquareGrid = ({
 
         if (!rowState) {
           return (
-            <div key={index} className={styles.squareGridItemStyles}>
+            <div key={`${rowIndex}-${colIndex}`} className={styles.squareGridItemStyles}>
               □
             </div>
           );
@@ -279,7 +289,7 @@ export const SquareGrid = ({
             : colIndex >= rowState.filledCount;
 
         return (
-          <div key={index} className={styles.squareGridItemStyles} data-filled={isFilled}>
+          <div key={`${rowIndex}-${colIndex}`} className={styles.squareGridItemStyles} data-filled={isFilled}>
             {isFilled ? "■" : "□"}
           </div>
         );

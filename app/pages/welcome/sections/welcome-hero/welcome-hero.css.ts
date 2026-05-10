@@ -107,7 +107,7 @@ export const welcomeDescriptionStyles = style({
   },
 });
 
-export const welcomeDescriptionCursorKeyframes = keyframes({
+const welcomeDescriptionCursorKeyframes = keyframes({
   "0%": {
     opacity: 1,
   },

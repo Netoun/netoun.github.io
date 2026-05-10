@@ -32,11 +32,11 @@ describe("Slider", () => {
   });
 
   it("calls onChange when value changes", () => {
-    const handleChange = (value: number) => {
+    const assertValue75 = (value: number) => {
       expect(value).toBe(75);
     };
 
-    render(<Slider label="Test Slider" value={50} onChange={handleChange} />);
+    render(<Slider label="Test Slider" value={50} onChange={assertValue75} />);
 
     const slider = screen.getByRole("slider");
     expect(slider).toBeDefined();

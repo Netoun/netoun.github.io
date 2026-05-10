@@ -90,9 +90,6 @@ export const computerScreenStyle = style({
   },
 });
 
-export const computerScreenContentStyle = style({
-  width: "100px",
-});
 
 // Lid frame
 export const computerFrameLidStyle = style([

@@ -76,16 +76,3 @@ export const computerKeyboardKeyStyle = style({
   },
 });
 
-export const computerKeyboardKeyWide2Style = style([
-  computerKeyboardKeyStyle,
-  {
-    gridColumn: "span 2",
-  },
-]);
-
-export const computerKeyboardKeyWide5Style = style([
-  computerKeyboardKeyStyle,
-  {
-    gridColumn: "span 5",
-  },
-]);

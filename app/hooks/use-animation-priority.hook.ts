@@ -1,58 +1,46 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 
-export type AnimationPriority = "high" | "medium" | "low";
+type AnimationPriority = "high" | "medium" | "low";
 
 interface AnimationPriorityConfig {
   priority: AnimationPriority;
   isVisible: boolean;
 }
 
-/**
- * Hook to manage animation priority based on visibility and priority level
- * - High priority: Always animate (even when not visible)
- * - Medium priority: Animate when visible
- * - Low priority: Animate when visible and system is idle
- */
+type Action = { type: "ANIMATE" } | { type: "STOP" };
+
+function shouldAnimateReducer(state: boolean, action: Action): boolean {
+  switch (action.type) {
+    case "ANIMATE":
+      return true;
+    case "STOP":
+      return false;
+  }
+}
+
 export function useAnimationPriority({ priority, isVisible }: AnimationPriorityConfig): boolean {
-  const [shouldAnimate, setShouldAnimate] = useState(false);
+  const [shouldAnimate, dispatch] = useReducer(shouldAnimateReducer, false);
 
   useEffect(() => {
-    // High priority: always animate
     if (priority === "high") {
-      setShouldAnimate(true);
-      return;
-    }
-
-    // Medium priority: animate when visible
-    if (priority === "medium") {
-      setShouldAnimate(isVisible);
-      return;
-    }
-
-    // Low priority: animate when visible and check for idle time
-    if (priority === "low") {
+      dispatch({ type: "ANIMATE" });
+    } else if (priority === "medium") {
+      dispatch(isVisible ? { type: "ANIMATE" } : { type: "STOP" });
+    } else if (priority === "low") {
       if (!isVisible) {
-        setShouldAnimate(false);
-        return;
-      }
-
-      // Check if browser is idle before starting low-priority animations
-      if ("requestIdleCallback" in window) {
-        const idleCallbackId = requestIdleCallback(
-          () => {
-            setShouldAnimate(true);
-          },
+        dispatch({ type: "STOP" });
+      } else if ("requestIdleCallback" in window) {
+        const id = requestIdleCallback(
+          () => dispatch({ type: "ANIMATE" }),
           { timeout: 1000 },
         );
-
         return () => {
-          cancelIdleCallback(idleCallbackId);
-          setShouldAnimate(false);
+          cancelIdleCallback(id);
+          dispatch({ type: "STOP" });
         };
+      } else {
+        dispatch({ type: "ANIMATE" });
       }
-
-      // Fallback: just use visibility
-      setShouldAnimate(isVisible);
     }
   }, [priority, isVisible]);
 
