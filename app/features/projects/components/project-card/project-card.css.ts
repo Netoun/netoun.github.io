@@ -88,6 +88,7 @@ export const imageContainerStyle = style({
   height: "140px",
   overflow: "hidden",
   position: "relative",
+  boxShadow: "inset 0 4px 24px 0px oklch(0 0 0)",
 });
 
 export const imageStyle = style({
@@ -96,6 +97,7 @@ export const imageStyle = style({
   objectFit: "cover",
   transform: "scale(1.15)",
   transition: "transform 0.15s ease-out",
+  // filter: "brightness(1.15)",
 });
 
 globalStyle(`${linkStyle}:hover ${imageStyle}`, {

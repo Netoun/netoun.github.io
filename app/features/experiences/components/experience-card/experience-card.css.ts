@@ -97,7 +97,7 @@ export const cardBarStyle = style({
 export const cardBarLeftStyle = style({
   display: "flex",
   alignItems: "center",
-  gap: "10px",
+  gap: vars.spacing.md,
 });
 
 export const companyStyle = style({
@@ -125,6 +125,7 @@ export const periodStyle = style({
   fontSize: vars.fontSize.xs,
   letterSpacing: "0.1em",
   color: vars.colors.foreground,
+  fontWeight: vars.fontWeight.bold,
 });
 
 export const cardBodyStyle = style({
@@ -144,6 +145,7 @@ export const roleRowStyle = style({
 export const promptStyle = style({
   fontFamily: vars.fontFamily.doto,
   color: vars.colors.primary,
+  fontWeight: vars.fontWeight.bold,
   fontSize: vars.fontSize.sm,
   flexShrink: 0,
 });
@@ -151,15 +153,16 @@ export const promptStyle = style({
 export const roleStyle = style({
   fontFamily: vars.fontFamily.ppNeueMontreal,
   fontWeight: vars.fontWeight.semibold,
-  fontSize: vars.fontSize.lg,
+  fontSize: vars.fontSize.xl,
   color: vars.colors.foreground,
 });
 
 export const locationStyle = style({
   fontFamily: vars.fontFamily.doto,
-  fontSize: vars.fontSize.xs,
+  fontSize: vars.fontSize.sm,
   letterSpacing: "0.1em",
-  color: "oklch(0.6 0.03 80)",
+  color: vars.colors.mutedForeground,
+  fontWeight: vars.fontWeight.bold,
   marginLeft: "auto",
 });
 
@@ -202,10 +205,10 @@ export const projectStyle = style({
 
 export const projectTitleStyle = style({
   fontFamily: vars.fontFamily.doto,
-  fontSize: vars.fontSize.xs,
+  fontSize: vars.fontSize.sm,
   letterSpacing: "0.1em",
-  color: vars.colors.secondary,
-  fontWeight: vars.fontWeight.medium,
+  fontWeight: 900,
+  color: `color-mix(in oklch, ${vars.colors.secondary} 80%, ${vars.colors.foreground})`,
 
   "@media": {
     [breakpoints.md]: {
