@@ -12,11 +12,7 @@ const OG_SOURCE = resolve(PUBLIC, "images/projects/website.webp");
 mkdirSync(PUBLIC, { recursive: true });
 
 // Clean old favicons (keep .ico for now, regenerate)
-const oldFavs = [
-  "browserconfig.xml",
-  "site.webmanifest",
-  "safari-pinned-tab.svg",
-];
+const oldFavs = ["browserconfig.xml", "site.webmanifest", "safari-pinned-tab.svg"];
 for (const f of oldFavs) {
   try {
     rmSync(resolve(PUBLIC, f));
