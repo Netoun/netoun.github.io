@@ -34,6 +34,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <script crossOrigin="anonymous" src="//unpkg.com/react-scan/dist/auto.global.js" />
         )}
         <meta charSet="utf-8" />
+        <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
