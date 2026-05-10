@@ -252,8 +252,7 @@ function HolographicOverlayComponent() {
       if (canvas.width !== width || canvas.height !== height) {
         canvas.width = width;
         canvas.height = height;
-        canvas.style.width = `${rect.width}px`;
-        canvas.style.height = `${rect.height}px`;
+        canvas.style.cssText = `width: ${rect.width}px; height: ${rect.height}px`;
       }
 
       gl.viewport(0, 0, width, height);

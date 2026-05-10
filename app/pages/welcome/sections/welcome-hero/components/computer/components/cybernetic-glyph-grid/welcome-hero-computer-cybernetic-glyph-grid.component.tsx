@@ -215,9 +215,7 @@ export const WelcomeHeroComputerCyberneticGlyphGrid = memo(
       };
     }, []);
 
-    const rootClassName = useMemo(() => {
-      return className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
-    }, [className]);
+    const rootClassName = className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
 
     const initialCells = useMemo(() => {
       const { values } = buildInitialValues(cellCount);
@@ -248,7 +246,7 @@ export const WelcomeHeroComputerCyberneticGlyphGrid = memo(
           {initialCells.map((cell, index) => {
             return (
               <span
-                key={`glyph-${index}`}
+                key={`glyph-${cell.pulseDelay}`}
                 ref={(element) => {
                   cellRefs.current[index] = element;
                 }}

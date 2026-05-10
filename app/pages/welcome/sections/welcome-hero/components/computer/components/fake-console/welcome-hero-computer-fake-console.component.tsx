@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import * as styles from "./welcome-hero-computer-fake-console.css";
 
 export interface WelcomeHeroComputerFakeConsoleProps {
@@ -57,20 +57,77 @@ const createLines = (seed: number, count: number): [string[], number] => {
   return [lines, current];
 };
 
+interface ConsoleState {
+  lines: string[];
+  seed: number;
+  pendingLine: string | null;
+  isShifting: boolean;
+}
+
+type ConsoleAction =
+  | { type: "INIT"; lines: string[]; seed: number }
+  | { type: "TICK" }
+  | { type: "SHIFT" }
+  | { type: "RESIZE"; rowsCount: number }
+  | { type: "STOP" };
+
+function consoleReducer(state: ConsoleState, action: ConsoleAction): ConsoleState {
+  switch (action.type) {
+    case "INIT":
+      return { ...state, lines: action.lines, seed: action.seed };
+    case "TICK": {
+      const [newLine, nextSeed] = generateLine(state.seed);
+      return { ...state, seed: nextSeed, pendingLine: newLine, isShifting: true };
+    }
+    case "SHIFT": {
+      if (!state.pendingLine) return state;
+      return {
+        ...state,
+        lines: [...state.lines.slice(1), state.pendingLine],
+        pendingLine: null,
+        isShifting: false,
+      };
+    }
+    case "RESIZE": {
+      const { rowsCount } = action;
+      if (state.lines.length === rowsCount) return state;
+      if (state.lines.length > rowsCount) {
+        return { ...state, lines: state.lines.slice(state.lines.length - rowsCount) };
+      }
+      const missingCount = rowsCount - state.lines.length;
+      const [newLines, nextSeed] = createLines(state.seed, missingCount);
+      return { ...state, lines: [...state.lines, ...newLines], seed: nextSeed };
+    }
+    case "STOP":
+      return { ...state, pendingLine: null, isShifting: false };
+    default:
+      return state;
+  }
+}
+
+const initialConsoleState: ConsoleState = {
+  lines: [],
+  seed: 0x1a2b3c4d,
+  pendingLine: null,
+  isShifting: false,
+};
+
 export const WelcomeHeroComputerFakeConsole = ({
   isAnimating,
   className,
 }: WelcomeHeroComputerFakeConsoleProps) => {
   const [rowsCount, setRowsCount] = useState(INITIAL_ROWS_COUNT);
-  const [{ lines }, setConsoleState] = useState(() => {
-    const [initialLines, initialSeed] = createLines(0x1a2b3c4d, INITIAL_ROWS_COUNT);
-    return { lines: initialLines, seed: initialSeed };
-  });
+  const [{ lines, pendingLine, isShifting }, dispatch] = useReducer(
+    consoleReducer,
+    initialConsoleState,
+    () => {
+      const [initialLines, initialSeed] = createLines(0x1a2b3c4d, INITIAL_ROWS_COUNT);
+      return { lines: initialLines, seed: initialSeed, pendingLine: null, isShifting: false };
+    },
+  );
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const reelRef = useRef<HTMLDivElement>(null);
-  const [pendingLine, setPendingLine] = useState<string | null>(null);
-  const [isShifting, setIsShifting] = useState(false);
   const shiftDistanceRef = useRef(0);
 
   useEffect(() => {
@@ -132,29 +189,10 @@ export const WelcomeHeroComputerFakeConsole = ({
   }, []);
 
   useEffect(() => {
-    setConsoleState((previousState) => {
-      if (previousState.lines.length === rowsCount) return previousState;
-
-      if (previousState.lines.length > rowsCount) {
-        return {
-          lines: previousState.lines.slice(previousState.lines.length - rowsCount),
-          seed: previousState.seed,
-        };
-      }
-
-      const missingLinesCount = rowsCount - previousState.lines.length;
-      const [newLines, nextSeed] = createLines(previousState.seed, missingLinesCount);
-
-      return {
-        lines: [...previousState.lines, ...newLines],
-        seed: nextSeed,
-      };
-    });
+    dispatch({ type: "RESIZE", rowsCount });
   }, [rowsCount]);
 
-  const rootClassName = useMemo(() => {
-    return className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
-  }, [className]);
+  const rootClassName = className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
 
   const shouldReelAnimate = isAnimating && !prefersReducedMotion;
 
@@ -168,15 +206,7 @@ export const WelcomeHeroComputerFakeConsole = ({
     }
 
     const tick = window.setTimeout(() => {
-      setConsoleState((previousState) => {
-        const [newLine, nextSeed] = generateLine(previousState.seed);
-        setPendingLine(newLine);
-        setIsShifting(true);
-        return {
-          lines: previousState.lines,
-          seed: nextSeed,
-        };
-      });
+      dispatch({ type: "TICK" });
     }, 340);
 
     return () => {
@@ -188,15 +218,7 @@ export const WelcomeHeroComputerFakeConsole = ({
     if (!isShifting) return;
 
     const finishShift = window.setTimeout(() => {
-      setConsoleState((previousState) => {
-        if (!pendingLine) return previousState;
-        return {
-          lines: [...previousState.lines.slice(1), pendingLine],
-          seed: previousState.seed,
-        };
-      });
-      setPendingLine(null);
-      setIsShifting(false);
+      dispatch({ type: "SHIFT" });
     }, 250);
 
     return () => {
@@ -206,8 +228,7 @@ export const WelcomeHeroComputerFakeConsole = ({
 
   useEffect(() => {
     if (shouldReelAnimate) return;
-    setPendingLine(null);
-    setIsShifting(false);
+    dispatch({ type: "STOP" });
   }, [shouldReelAnimate]);
 
   const renderLines = pendingLine ? [...lines, pendingLine] : lines;
@@ -222,8 +243,7 @@ export const WelcomeHeroComputerFakeConsole = ({
 
   useEffect(() => {
     return () => {
-      setPendingLine(null);
-      setIsShifting(false);
+      dispatch({ type: "STOP" });
       shiftDistanceRef.current = 0;
     };
   }, []);
@@ -249,7 +269,7 @@ export const WelcomeHeroComputerFakeConsole = ({
           {renderLines.map((line, index) => {
             const isDim = index < rowsCount - 3;
             return (
-              <p key={`${line}-${index}`} className={styles.lineStyles} data-dim={isDim}>
+              <p key={line} className={styles.lineStyles} data-dim={isDim}>
                 {line}
               </p>
             );

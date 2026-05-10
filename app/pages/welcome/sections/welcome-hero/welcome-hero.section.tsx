@@ -167,7 +167,7 @@ export function WelcomeHeroSection() {
           </div>
           <Button id="welcome-button" className={styles.welcomeButtonStyles}>
             <span className={styles.welcomeButtonLabelStyles}>_Get my resume_</span>
-            <span className={styles.welcomeButtonHoverLabelStyles}>_Downloading... █</span>{" "}
+            <span className={styles.welcomeButtonHoverLabelStyles}>_Downloading… █</span>{" "}
             <span className={styles.welcomeButtonArrowStyles}>⤘</span>
           </Button>
         </div>

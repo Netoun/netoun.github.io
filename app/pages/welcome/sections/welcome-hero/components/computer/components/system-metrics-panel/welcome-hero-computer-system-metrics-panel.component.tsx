@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import * as styles from "./welcome-hero-computer-system-metrics-panel.css";
 
 export interface WelcomeHeroComputerSystemMetricsPanelProps {
@@ -82,9 +82,7 @@ export const WelcomeHeroComputerSystemMetricsPanel = memo(
       };
     }, [prefersReducedMotion]);
 
-    const rootClassName = useMemo(() => {
-      return className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
-    }, [className]);
+    const rootClassName = className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
 
     const shouldPulse = isAnimating && !prefersReducedMotion;
 
