@@ -1,6 +1,7 @@
 import { globalStyle } from "@vanilla-extract/css";
 
 import { vars } from "./theme.css";
+import "./animations.css";
 
 // 1. Use a more-intuitive box-sizing model
 globalStyle("*, *::before, *::after", {

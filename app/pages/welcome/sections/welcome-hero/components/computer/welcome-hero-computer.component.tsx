@@ -3,6 +3,7 @@ import { Computer } from "@/components/misc/computer/computer.component";
 import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
 import type { MousePosition } from "@/hooks/use-mouse-position.hook";
+import { WelcomeHeroComputerFakeConsole } from "./components/fake-console/welcome-hero-computer-fake-console.component";
 import * as styles from "./welcome-hero-computer.css";
 
 function WelcomeHeroComputerComponentInner({ mousePosition }: { mousePosition: MousePosition }) {
@@ -25,13 +26,6 @@ function WelcomeHeroComputerComponentInner({ mousePosition }: { mousePosition: M
     isVisible: isIntersecting,
   });
   shouldAnimateRef.current = shouldAnimate;
-
-  useEffect(() => {
-    if (containerRef.current && intersectionRef.current !== containerRef.current) {
-      (intersectionRef as React.MutableRefObject<HTMLDivElement | null>).current =
-        containerRef.current;
-    }
-  }, [intersectionRef]);
 
   useEffect(() => {
     let frameId: number;
@@ -78,7 +72,13 @@ function WelcomeHeroComputerComponentInner({ mousePosition }: { mousePosition: M
   }, []);
 
   return (
-    <div ref={containerRef} className={styles.welcomeHeroComputerWrapperStyles}>
+    <div
+      ref={(element) => {
+        containerRef.current = element;
+        intersectionRef.current = element;
+      }}
+      className={styles.welcomeHeroComputerWrapperStyles}
+    >
       <div
         style={
           {
@@ -90,10 +90,12 @@ function WelcomeHeroComputerComponentInner({ mousePosition }: { mousePosition: M
       >
         <Computer>
           <div className={styles.welcomeHeroComputerStyles}>
-            <div className={styles.zone1Styles} />
-            <div className={styles.zone2Styles} />
-            <div className={styles.zone3Styles} />
-            <div className={styles.zone4Styles} />
+            <div id="hero-computer-zone1" className={styles.zone1Styles}>
+              <WelcomeHeroComputerFakeConsole isAnimating={shouldAnimate} />
+            </div>
+            <div id="hero-computer-zone2" className={styles.zone2Styles} />
+            <div id="hero-computer-zone3" className={styles.zone3Styles} />
+            <div id="hero-computer-zone4" className={styles.zone4Styles} />
           </div>
         </Computer>
       </div>
