@@ -132,6 +132,11 @@ export function ProjectCard({
               ref={imageRef}
               src={image}
               alt={title}
+              loading="lazy"
+              decoding="async"
+              fetchPriority="low"
+              width={1350}
+              height={760}
               className={styles.imageStyle}
               onError={(e) => {
                 (e.target as HTMLImageElement).src =

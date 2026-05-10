@@ -10,18 +10,7 @@ import {
 import { BodyGrainOverlay } from "@/components/misc/body-grain-overlay/body-grain-overlay.component";
 import type { Route } from "./+types/root";
 
-export const links: Route.LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-  },
-];
+export const links: Route.LinksFunction = () => [];
 
 import "@styles/global.css";
 import "@styles/fonts.css";
@@ -42,6 +31,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta property="og:image:height" content="630" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:image" content="/images/projects/website.webp" />
+        <link rel="preload" href="/fonts/PPNeueMontreal-Variable.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/TT_Alientz_Grotesque.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/MabeoVintage-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

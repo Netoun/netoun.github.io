@@ -6,4 +6,5 @@
 /build/
 .env
 .lab/tasks
-lighthouse-report*.html
+lighthouse*.html
+lighthouse*.json
