@@ -3,6 +3,7 @@ import { Computer } from "@/components/misc/computer/computer.component";
 import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
 import type { MousePosition } from "@/hooks/use-mouse-position.hook";
+import { WelcomeHeroComputerCyberneticGlyphGrid } from "./components/cybernetic-glyph-grid/welcome-hero-computer-cybernetic-glyph-grid.component";
 import { WelcomeHeroComputerFakeConsole } from "./components/fake-console/welcome-hero-computer-fake-console.component";
 import * as styles from "./welcome-hero-computer.css";
 
@@ -94,7 +95,9 @@ function WelcomeHeroComputerComponentInner({ mousePosition }: { mousePosition: M
               <WelcomeHeroComputerFakeConsole isAnimating={shouldAnimate} />
             </div>
             <div id="hero-computer-zone2" className={styles.zone2Styles} />
-            <div id="hero-computer-zone3" className={styles.zone3Styles} />
+            <div id="hero-computer-zone3" className={styles.zone3Styles}>
+              <WelcomeHeroComputerCyberneticGlyphGrid isAnimating={shouldAnimate} />
+            </div>
             <div id="hero-computer-zone4" className={styles.zone4Styles} />
           </div>
         </Computer>
