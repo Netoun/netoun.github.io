@@ -87,7 +87,7 @@ export function WelcomeSkillsSection() {
 
   const sortedGroups = SKILLS.map((g) => ({
     ...g,
-    items: [...g.items].sort((a, b) => b.w + b.p - (a.w + a.p)),
+    items: g.items.toSorted((a, b) => b.w + b.p - (a.w + a.p)),
   }));
 
   return (

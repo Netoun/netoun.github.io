@@ -34,6 +34,7 @@ globalStyle(`${cardStyle}:hover`, {
 
 export const perspectiveWrapper = style({
   perspective: "1000px",
+  height: "100%",
 });
 
 export const cardVisible = style({
@@ -157,48 +158,6 @@ export const tagsStyle = style({
   flexWrap: "wrap",
   gap: "5px",
   marginTop: vars.spacing.xs,
-});
-
-export const tagStyle = recipe({
-  base: {
-    fontFamily: vars.fontFamily.doto,
-    fontSize: "9.5px",
-    letterSpacing: "0.08em",
-    padding: `3px 9px`,
-    borderRadius: vars.radius.full,
-    fontWeight: vars.fontWeight.normal,
-  },
-  variants: {
-    color: {
-      pink: {
-        backgroundColor: "oklch(0.9 0.07 355)",
-        color: "oklch(0.45 0.12 355)",
-      },
-      green: {
-        backgroundColor: "oklch(0.88 0.08 166)",
-        color: "oklch(0.38 0.12 166)",
-      },
-      purple: {
-        backgroundColor: "oklch(0.88 0.07 313)",
-        color: "oklch(0.42 0.15 313)",
-      },
-      yellow: {
-        backgroundColor: "oklch(0.93 0.1 95)",
-        color: "oklch(0.45 0.13 85)",
-      },
-      blue: {
-        backgroundColor: "oklch(0.88 0.06 235)",
-        color: "oklch(0.42 0.1 235)",
-      },
-      default: {
-        backgroundColor: `color-mix(in srgb, ${vars.colors.primary} 20%, transparent)`,
-        color: vars.colors.foreground,
-      },
-    },
-  },
-  defaultVariants: {
-    color: "default",
-  },
 });
 
 export const footerStyle = style({

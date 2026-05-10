@@ -1,5 +1,5 @@
 import { animate } from "animejs";
-import { createContext, useContext, useEffect, useRef } from "react";
+import { createContext, useEffect, useRef, use } from "react";
 import * as styles from "./feature-header.css";
 
 type AccentVariant = "primary" | "secondary" | "tertiary";
@@ -53,7 +53,7 @@ interface FeatureHeaderTitleProps {
 }
 
 export function FeatureHeaderTitle({ children, size = "lg" }: FeatureHeaderTitleProps) {
-  const { variant } = useContext(FeatureHeaderContext);
+  const { variant } = use(FeatureHeaderContext);
 
   const Tag = size === "lg" ? "h1" : "h2";
 

@@ -62,8 +62,7 @@ export function MousePathCanvas({
       const rect = container.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
 
-      canvas.style.width = `${rect.width}px`;
-      canvas.style.height = `${rect.height}px`;
+      Object.assign(canvas.style, { width: `${rect.width}px`, height: `${rect.height}px` });
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
 

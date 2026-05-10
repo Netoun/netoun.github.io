@@ -273,4 +273,3 @@ const tagVariant = recipe({
   },
 });
 
-export const tagStyle = tagVariant;

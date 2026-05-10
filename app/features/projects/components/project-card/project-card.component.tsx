@@ -33,7 +33,10 @@ export function ProjectCard({
     rootMargin: "0px 0px 80px 0px",
   });
   const imageRef = useRef<HTMLImageElement>(null);
-  const shouldAnimate = useAnimationPriority({ priority: "medium", isVisible: isIntersecting });
+  const shouldAnimate = useAnimationPriority({
+    priority: "medium",
+    isVisible: isIntersecting,
+  });
 
   useEffect(() => {
     if (!shouldAnimate) return;

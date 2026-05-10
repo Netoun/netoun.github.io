@@ -22,11 +22,15 @@ export const CharacterGrid = memo(function CharacterGrid({
         } as React.CSSProperties
       }
     >
-      {characters.map((char, index) => (
-        <div key={index} className={styles.characterGridItemStyles}>
+      {characters.map((char, idx) => {
+        const row = Math.floor(idx / (gridColumns || 1));
+        const col = idx % (gridColumns || 1);
+        return (
+          <div key={`${row}-${col}`} className={styles.characterGridItemStyles}>
           {char}
         </div>
-      ))}
+      );
+      })}
     </div>
   );
 });

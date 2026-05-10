@@ -3,8 +3,8 @@ import { createVar, style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 
 // Variables CSS pour le slider
-export const sliderTrackHeight = createVar();
-export const sliderThumbSize = createVar();
+const sliderTrackHeight = createVar();
+const sliderThumbSize = createVar();
 
 export const sliderRecipe = recipe({
   base: {
