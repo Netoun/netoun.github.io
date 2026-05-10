@@ -47,13 +47,13 @@ export const titleStyle = recipe({
     },
     variant: {
       primary: {
-        textShadow: `0 0 40px color-mix(in srgb, ${ACCENT_MAP.primary} 25%, transparent)`,
+        textShadow: `0 0 40px color-mix(in srgb, ${ACCENT_MAP.primary} 30%, transparent)`,
       },
       secondary: {
         textShadow: `0 0 40px color-mix(in srgb, ${ACCENT_MAP.secondary} 30%, transparent)`,
       },
       tertiary: {
-        textShadow: `0 0 40px color-mix(in srgb, ${ACCENT_MAP.tertiary} 25%, transparent)`,
+        textShadow: `0 0 40px color-mix(in srgb, ${ACCENT_MAP.tertiary} 30%, transparent)`,
       },
     },
   },
@@ -70,16 +70,16 @@ export const prefixStyle = recipe({
   variants: {
     variant: {
       primary: {
-        color: ACCENT_MAP.primary,
-        filter: "brightness(0.75)",
+        color: `color-mix(in srgb, ${ACCENT_MAP.primary} 90%, ${vars.colors.foreground})`,
+        textShadow: `0 0 40px color-mix(in srgb, ${ACCENT_MAP.primary} 50%, transparent)`,
       },
       secondary: {
-        color: ACCENT_MAP.secondary,
-        filter: "brightness(0.8)",
+        color: `color-mix(in srgb, ${ACCENT_MAP.secondary} 90%, ${vars.colors.foreground})`,
+        textShadow: `0 0 40px color-mix(in srgb, ${ACCENT_MAP.secondary} 50%, transparent)`,
       },
       tertiary: {
-        color: ACCENT_MAP.tertiary,
-        filter: "brightness(0.8)",
+        color: `color-mix(in srgb, ${ACCENT_MAP.tertiary} 90%, ${vars.colors.foreground})`,
+        textShadow: `0 0 40px color-mix(in srgb, ${ACCENT_MAP.tertiary} 50%, transparent)`,
       },
     },
   },

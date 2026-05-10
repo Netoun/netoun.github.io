@@ -17,7 +17,7 @@ export function WelcomeProjectsSection() {
   return (
     <section ref={sectionRef} className={styles.sectionStyle}>
       <Container className={styles.contentStyle}>
-        <FeatureHeader>
+        <FeatureHeader variant="tertiary">
           <FeatureHeaderTitle>PROJECTS</FeatureHeaderTitle>
           <FeatureHeaderDescription>
             _SIDE PROJECTS · OPEN SOURCE · EXPERIMENTS_
