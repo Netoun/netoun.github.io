@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import { useEffect, useRef } from "react";
 import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
@@ -36,10 +35,18 @@ export function ProjectCard({
     rootMargin: "0px 0px 80px 0px",
   });
   const imageRef = useRef<HTMLImageElement>(null);
+  const hasAnimatedRef = useRef(false);
   const shouldAnimate = useAnimationPriority({
     priority: "medium",
     isVisible: isIntersecting,
   });
+
+  useEffect(() => {
+    if (isIntersecting && cardRef.current && !hasAnimatedRef.current) {
+      hasAnimatedRef.current = true;
+      cardRef.current.classList.add(styles.cardVisible);
+    }
+  }, [isIntersecting]);
 
   useEffect(() => {
     if (!shouldAnimate) return;
@@ -108,7 +115,7 @@ export function ProjectCard({
     <div className={styles.perspectiveWrapper}>
       <div
         ref={cardRef}
-        className={clsx(styles.cardStyle, isIntersecting && styles.cardVisible)}
+        className={styles.cardStyle}
         style={{ "--card-rotate": `${rotate}deg` } as React.CSSProperties}
       >
         <a href={url} target="_blank" rel="noopener noreferrer" className={styles.linkStyle}>

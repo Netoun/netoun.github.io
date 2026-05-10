@@ -63,8 +63,19 @@ export function ExperienceCard({ experience }: ExperienceCardProps) {
             <div className={styles.projectsStyle}>
               {experience.projects.map((project) => (
                 <div key={project.title} className={styles.projectStyle}>
-                  <span className={styles.projectTitleStyle}>{project.title}</span>
-                  <span className={styles.projectDescStyle}>{project.description}</span>
+                  {project.url ? (
+                    <a
+                      href={project.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={styles.projectTitleStyle}
+                    >
+                      {project.title}
+                    </a>
+                  ) : (
+                    <span className={styles.projectTitleStyle}>{project.title}</span>
+                  )}
+                  <p className={styles.projectDescStyle}>{project.description}</p>
                   {project.stack && project.stack.length > 0 && (
                     <div className={styles.projectStackStyle}>
                       {project.stack.map((tech) => (
@@ -76,11 +87,13 @@ export function ExperienceCard({ experience }: ExperienceCardProps) {
               ))}
             </div>
           )}
-          <div className={styles.stackStyle}>
-            {experience.stack.map((tech) => (
-              <Tag key={tech}>{tech}</Tag>
-            ))}
-          </div>
+          {experience.stack && experience.stack.length > 0 && (
+            <div className={styles.stackStyle}>
+              {experience.stack.map((tech) => (
+                <Tag key={tech}>{tech}</Tag>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

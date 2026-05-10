@@ -5,37 +5,46 @@ export const experiences: Experience[] = [
     slug: "lonestone",
     company: "Lonestone",
     role: "Software Developer",
-    period: "2021 — Present",
+    period: "Jul 2021 — ...",
     location: "Nantes, FR",
+    description:
+      "Successfully delivered numerous other projects, consistently meeting client requirements and technical challenges with innovative solutions.",
     active: true,
     projects: [
       {
         title: "Desoutter",
-        description: "Corporate website redesign with Next.js, Tailwind CSS, and TypeScript.",
+        description:
+          "Led the development of a modern corporate website using Next.js, Tailwind CSS, and TypeScript, delivering an enhanced digital presence for the company.",
+        stack: ["Next.js", "Tailwind CSS", "TypeScript"],
       },
       {
-        title: "Sit in Peace",
-        description: "Headless e-commerce platform using Shopify Hydrogen.",
-      },
-      {
-        title: "AB Formations",
-        description: "Professional training platform for OPCO-funded programs.",
+        title: "Cuevr",
+        description: "AI-powered platform for creating commercial proposals.",
+        stack: ["React", "NestJS", "AI", "Queue", "Streaming"],
       },
       {
         title: "Mon Rét@b' d'abord",
-        description: "Mental health support platform with self-assessment tools.",
+        description:
+          "Engineered a specialized web application to support mental health recovery, featuring self-assessment tools and wellness management features for individuals dealing with conditions like schizophrenia and bipolar disorder.",
+        stack: ["React", "NestJS", "MikroORM", "PostgreSQL", "Keycloak"],
+      },
+      {
+        title: "… and many more",
+        description:
+          "Contributed to a wide variety of additional projects across different industries, tackling diverse technical challenges and delivering tailored solutions for each client.",
+        stack: [],
       },
     ],
-    stack: ["React", "Remix", "TypeScript", "NestJS", "Prisma", "PostgreSQL"],
+    stack: [],
   },
   {
     slug: "easilys",
     company: "Easilys",
     role: "Full Stack Developer",
-    period: "2019 — 2021",
+    period: "Jul 2019 — Jul 2021",
     location: "Nantes, FR",
     description:
-      "Development and maintenance of a web application for collective catering management. New UI implementation with React.",
+      "Development and maintenance of a web application for collective catering management. Implementation of a new user interface with React and development of new features.",
     projects: [],
     stack: ["React", "Node.js", "Vue", "PostgreSQL"],
   },
@@ -43,10 +52,10 @@ export const experiences: Experience[] = [
     slug: "sogeti",
     company: "Sogeti",
     role: "Work-Study Program",
-    period: "2017 — 2019",
+    period: "Sep 2017 — Oct 2019",
     location: "Nantes, FR",
     description:
-      "Innovation pole: GitFlow tool in ReactJS, chatbot with machine learning for emotion understanding.",
+      "Development of new solutions within the innovation pole. Built a GitFlow tool in ReactJS and developed a chatbot using machine learning for emotion understanding.",
     projects: [],
     stack: ["React", "Python", "Rust", "TensorFlow", "DialogFlow"],
   },
