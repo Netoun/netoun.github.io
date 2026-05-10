@@ -14,6 +14,15 @@ export const welcomeMeshContainerStyles = style({
   contain: "layout style paint",
 });
 
+export const welcomeShaderCanvasStyles = style({
+  position: "absolute",
+  inset: 0,
+  width: "100%",
+  height: "100%",
+  pointerEvents: "none",
+  display: "block",
+});
+
 // Individual mesh shape SVG (positioned absolutely within container)
 export const welcomeMeshShapeStyles = style({
   position: "absolute",
@@ -46,4 +55,3 @@ export const welcomeMeshGradientPathStyles = style({
     },
   },
 });
-
