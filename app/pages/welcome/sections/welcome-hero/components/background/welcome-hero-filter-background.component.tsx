@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useId, useState } from "react";
 import { MousePathCanvas } from "@/components/misc/mouse-path-canvas/mouse-path-canvas.component";
 import { ClientOnly } from "@/components/primitives/client-only/client-only.component";
 import type { MousePosition } from "@/hooks/use-mouse-position.hook";
@@ -15,7 +15,6 @@ const MESH_SHAPES = [
   {
     id: "mesh-2",
     d: "M8.5,-5.6C14.5,-2.5,25.3,-1.3,25.5,0.2C25.8,1.8,15.5,3.5,9.5,6.2C3.5,8.9,1.8,12.5,-4.3,16.8C-10.4,21.1,-20.7,26.1,-24.1,23.4C-27.4,20.7,-23.8,10.4,-21.7,2.1C-19.6,-6.1,-19,-12.3,-15.6,-15.3C-12.3,-18.4,-6.1,-18.3,-2.4,-15.9C1.3,-13.5,2.5,-8.6,8.5,-5.6Z",
-    // Bounding box: 0→500, 0→300 + blur padding
     viewBox: "-50 -30 100 100",
     style: { bottom: "0", left: "0%", width: "20%", height: "30%" },
     pathIndex: 2,
@@ -23,14 +22,89 @@ const MESH_SHAPES = [
   {
     id: "mesh-3",
     d: "M649 279 847 298 871 427 712 390Z",
-    // Bounding box: x=649→871, y=279→427 + blur padding
     viewBox: "599 229 322 248",
     style: { top: "40%", left: "50%", width: "35%", height: "55%" },
     pathIndex: 3,
   },
 ] as const;
 
-const SharedDefsSVG = memo(function SharedDefsSVG() {
+const SHADER_CONFIG = {
+  animationSpeed: 0.06,
+  filmGrainFlickerBase: 0.98,
+  filmGrainFlickerRange: 0.02,
+  filmGrainJitter: 5.9,
+  filmGrainStrength: 0.21,
+  blob1: {
+    centerX: 0.16,
+    centerY: 0.14,
+    moveX: 0.012,
+    moveY: 0.01,
+    speedX: 0.9,
+    speedY: 0.8,
+    scaleX: 0.28,
+    scaleY: 0.24,
+    softness: 3.6,
+    color: [0.97, 0.78, 0.28],
+    intensity: 0.26,
+  },
+  blob2: {
+    centerX: 0.1,
+    centerY: 0.8,
+    moveX: 0.012,
+    moveY: 0.01,
+    speedX: 1.1,
+    speedY: 0.7,
+    scaleX: 0.14,
+    scaleY: 0.17,
+    softness: 4.2,
+    color: [0.33, 0.84, 0.56],
+    intensity: 0.33,
+  },
+  blob3: {
+    centerX: 0.7,
+    centerY: 0.62,
+    moveX: 0.014,
+    moveY: 0.012,
+    speedX: 0.6,
+    speedY: 1,
+    scaleX: 0.23,
+    scaleY: 0.29,
+    softness: 4,
+    color: [0.79, 0.29, 0.88],
+    intensity: 0.31,
+  },
+  vignetteStart: 0.38,
+  vignetteEnd: 0.92,
+  vignetteBase: 0.72,
+  vignetteStrength: 0.28,
+  baseColor: [0.02, 0.03, 0.05],
+  maxDevicePixelRatio: 2,
+  defaultQuality: 0.7,
+  highQuality: 1,
+  webgpuInitTimeoutMs: 250,
+} as const;
+
+const toGlslFloat = (value: number) =>
+  value.toFixed(8).replace(/0+$/, "").replace(/\.$/, ".0");
+const toWgslFloat = toGlslFloat;
+
+const glslVec3 = (value: readonly [number, number, number]) =>
+  `vec3(${value.map(toGlslFloat).join(", ")})`;
+
+const wgslVec3 = (value: readonly [number, number, number]) =>
+  `vec3f(${value.map(toWgslFloat).join(", ")})`;
+
+const normalizeSvgId = (id: string) => id.replace(/:/g, "-");
+
+interface SharedSvgIds {
+  meshBlurId: string;
+  noiseId: string;
+}
+
+const SharedDefsSVG = memo(function SharedDefsSVG({
+  meshBlurId,
+  noiseId,
+}: SharedSvgIds) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -38,16 +112,14 @@ const SharedDefsSVG = memo(function SharedDefsSVG() {
       height="0"
       style={{ position: "absolute", visibility: "hidden" }}
       aria-hidden="true"
+      focusable="false"
     >
       <defs>
-        {/* Shared blur filter for all mesh shapes */}
-        <filter id="mesh-blur" x="-100%" y="-100%" width="300%" height="300%">
+        <filter id={meshBlurId} x="-100%" y="-100%" width="300%" height="300%">
           <feGaussianBlur in="SourceGraphic" stdDeviation="25" />
         </filter>
 
-        {/* Noise patterns */}
-        <filter id="noise" x="0" y="0" width="100%" height="100%">
-          {/* Reduced baseFrequency from 1.25 to 0.8 for better performance */}
+        <filter id={noiseId} x="0" y="0" width="100%" height="100%">
           <feTurbulence
             type="fractalNoise"
             baseFrequency="1.26"
@@ -61,27 +133,30 @@ const SharedDefsSVG = memo(function SharedDefsSVG() {
   );
 });
 
+type MeshShapeSVGProps = (typeof MESH_SHAPES)[number] & {
+  meshBlurId: string;
+};
+
 const MeshShapeSVG = memo(function MeshShapeSVG({
   d,
   viewBox,
   style,
   pathIndex,
-}: (typeof MESH_SHAPES)[number]) {
-  const svgRef = useRef<SVGSVGElement>(null);
-
+  meshBlurId,
+}: MeshShapeSVGProps) {
   return (
     <svg
-      ref={svgRef}
       xmlns="http://www.w3.org/2000/svg"
       viewBox={viewBox}
       preserveAspectRatio="none"
       className={styles.welcomeMeshShapeStyles}
       style={style}
+      aria-hidden="true"
+      focusable="false"
     >
-      <title>{`Mesh ${pathIndex}`}</title>
       <path
         d={d}
-        filter="url(#mesh-blur)"
+        filter={`url(#${meshBlurId})`}
         data-mesh-index={pathIndex}
         className={styles.welcomeMeshGradientPathStyles}
       />
@@ -89,21 +164,24 @@ const MeshShapeSVG = memo(function MeshShapeSVG({
   );
 });
 
-const NoiseOverlaySVG = memo(function NoiseOverlaySVG() {
+const NoiseOverlaySVG = memo(function NoiseOverlaySVG({
+  noiseId,
+}: Pick<SharedSvgIds, "noiseId">) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 1000 500"
       preserveAspectRatio="none"
       className={styles.welcomeNoiseOverlayStyles}
+      aria-hidden="true"
+      focusable="false"
     >
-      <title>Noise Overlay</title>
       <rect
         x="0"
         y="0"
         width="1000"
         height="500"
-        filter="url(#noise)"
+        filter={`url(#${noiseId})`}
         fill="white"
         opacity="0.08"
       />
@@ -129,10 +207,11 @@ uniform vec2 u_resolution;
 uniform float u_time;
 uniform float u_quality;
 
-const float FILM_GRAIN_FLICKER_BASE = 0.98;
-const float FILM_GRAIN_FLICKER_RANGE = 0.02;
-const float FILM_GRAIN_JITTER = 1.2;
-const float FILM_GRAIN_STRENGTH = 0.09;
+const float ANIMATION_SPEED = ${toGlslFloat(SHADER_CONFIG.animationSpeed)};
+const float FILM_GRAIN_FLICKER_BASE = ${toGlslFloat(SHADER_CONFIG.filmGrainFlickerBase)};
+const float FILM_GRAIN_FLICKER_RANGE = ${toGlslFloat(SHADER_CONFIG.filmGrainFlickerRange)};
+const float FILM_GRAIN_JITTER = ${toGlslFloat(SHADER_CONFIG.filmGrainJitter)};
+const float FILM_GRAIN_STRENGTH = ${toGlslFloat(SHADER_CONFIG.filmGrainStrength)};
 
 float hash(vec2 p) {
   return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
@@ -172,30 +251,35 @@ float blob(vec2 uv, vec2 center, vec2 scale, float softness) {
 
 void main() {
   vec2 uv = v_uv;
-  float t = u_time * 0.06;
+  float t = u_time * ANIMATION_SPEED;
 
-  vec2 c1 = vec2(0.16 + sin(t * 0.9) * 0.012, 0.14 + cos(t * 0.8) * 0.01);
-  vec2 c2 = vec2(0.10 + cos(t * 1.1) * 0.012, 0.80 + sin(t * 0.7) * 0.01);
-  vec2 c3 = vec2(0.70 + sin(t * 0.6) * 0.014, 0.62 + cos(t * 1.0) * 0.012);
+  vec2 c1 = vec2(
+    ${toGlslFloat(SHADER_CONFIG.blob1.centerX)} + sin(t * ${toGlslFloat(SHADER_CONFIG.blob1.speedX)}) * ${toGlslFloat(SHADER_CONFIG.blob1.moveX)},
+    ${toGlslFloat(SHADER_CONFIG.blob1.centerY)} + cos(t * ${toGlslFloat(SHADER_CONFIG.blob1.speedY)}) * ${toGlslFloat(SHADER_CONFIG.blob1.moveY)}
+  );
+  vec2 c2 = vec2(
+    ${toGlslFloat(SHADER_CONFIG.blob2.centerX)} + cos(t * ${toGlslFloat(SHADER_CONFIG.blob2.speedX)}) * ${toGlslFloat(SHADER_CONFIG.blob2.moveX)},
+    ${toGlslFloat(SHADER_CONFIG.blob2.centerY)} + sin(t * ${toGlslFloat(SHADER_CONFIG.blob2.speedY)}) * ${toGlslFloat(SHADER_CONFIG.blob2.moveY)}
+  );
+  vec2 c3 = vec2(
+    ${toGlslFloat(SHADER_CONFIG.blob3.centerX)} + sin(t * ${toGlslFloat(SHADER_CONFIG.blob3.speedX)}) * ${toGlslFloat(SHADER_CONFIG.blob3.moveX)},
+    ${toGlslFloat(SHADER_CONFIG.blob3.centerY)} + cos(t * ${toGlslFloat(SHADER_CONFIG.blob3.speedY)}) * ${toGlslFloat(SHADER_CONFIG.blob3.moveY)}
+  );
 
-  float m1 = blob(uv, c1, vec2(0.28, 0.24), 3.6);
-  float m2 = blob(uv, c2, vec2(0.14, 0.17), 4.2);
-  float m3 = blob(uv, c3, vec2(0.23, 0.29), 4.0);
-
-  vec3 col1 = vec3(0.97, 0.78, 0.28);
-  vec3 col2 = vec3(0.33, 0.84, 0.56);
-  vec3 col3 = vec3(0.79, 0.29, 0.88);
+  float m1 = blob(uv, c1, vec2(${toGlslFloat(SHADER_CONFIG.blob1.scaleX)}, ${toGlslFloat(SHADER_CONFIG.blob1.scaleY)}), ${toGlslFloat(SHADER_CONFIG.blob1.softness)});
+  float m2 = blob(uv, c2, vec2(${toGlslFloat(SHADER_CONFIG.blob2.scaleX)}, ${toGlslFloat(SHADER_CONFIG.blob2.scaleY)}), ${toGlslFloat(SHADER_CONFIG.blob2.softness)});
+  float m3 = blob(uv, c3, vec2(${toGlslFloat(SHADER_CONFIG.blob3.scaleX)}, ${toGlslFloat(SHADER_CONFIG.blob3.scaleY)}), ${toGlslFloat(SHADER_CONFIG.blob3.softness)});
 
   vec3 color = vec3(0.0);
-  color += col1 * m1 * 0.26;
-  color += col2 * m2 * 0.33;
-  color += col3 * m3 * 0.31;
+  color += ${glslVec3(SHADER_CONFIG.blob1.color)} * m1 * ${toGlslFloat(SHADER_CONFIG.blob1.intensity)};
+  color += ${glslVec3(SHADER_CONFIG.blob2.color)} * m2 * ${toGlslFloat(SHADER_CONFIG.blob2.intensity)};
+  color += ${glslVec3(SHADER_CONFIG.blob3.color)} * m3 * ${toGlslFloat(SHADER_CONFIG.blob3.intensity)};
 
   float dist = distance(uv, vec2(0.5));
-  float vignette = 1.0 - smoothstep(0.38, 0.92, dist);
-  color *= (0.72 + 0.28 * vignette);
+  float vignette = 1.0 - smoothstep(${toGlslFloat(SHADER_CONFIG.vignetteStart)}, ${toGlslFloat(SHADER_CONFIG.vignetteEnd)}, dist);
+  color *= (${toGlslFloat(SHADER_CONFIG.vignetteBase)} + ${toGlslFloat(SHADER_CONFIG.vignetteStrength)} * vignette);
 
-  color += vec3(0.02, 0.03, 0.05);
+  color += ${glslVec3(SHADER_CONFIG.baseColor)};
 
   vec2 px = uv * u_resolution.xy;
   float flicker = FILM_GRAIN_FLICKER_BASE + sin(u_time * 1.8) * FILM_GRAIN_FLICKER_RANGE;
@@ -213,57 +297,16 @@ void main() {
 }
 `;
 
-const MeshShaderBackground = memo(function MeshShaderBackground() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [renderer, setRenderer] = useState<"pending" | "webgpu" | "webgl" | "svg">("pending");
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    let cleanup: (() => void) | null = null;
-    let cancelled = false;
-
-    const commonSetup = () => {
-      const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-      const reducedMotionRef = { current: mediaQuery.matches };
-      const qualityValue = document.documentElement.dataset.quality === "high" ? 1 : 0.7;
-      const handleMotion = () => {
-        reducedMotionRef.current = mediaQuery.matches;
-      };
-      mediaQuery.addEventListener("change", handleMotion);
-
-      return {
-        qualityValue,
-        reducedMotionRef,
-        dispose: () => mediaQuery.removeEventListener("change", handleMotion),
-      };
-    };
-
-    const initWebGPU = async () => {
-      const gpu = (navigator as { gpu?: any }).gpu;
-      if (!gpu) return null;
-
-      const adapter = await gpu.requestAdapter({ powerPreference: "high-performance" });
-      if (!adapter) return null;
-
-      const device = await adapter.requestDevice();
-      const context = canvas.getContext("webgpu") as GPUCanvasContext;
-      if (!context) return null;
-
-      const format = gpu.getPreferredCanvasFormat();
-      context.configure({ device, format, alphaMode: "premultiplied" });
-
-      const shader = device.createShaderModule({
-        code: `
+const WEBGPU_SHADER = `
 struct VertexOut { @builtin(position) pos : vec4f, @location(0) uv : vec2f };
 struct Uniforms { resolution : vec2f, time : f32, quality : f32 };
 @group(0) @binding(0) var<uniform> u : Uniforms;
 
-const FILM_GRAIN_FLICKER_BASE : f32 = 0.98;
-const FILM_GRAIN_FLICKER_RANGE : f32 = 0.02;
-const FILM_GRAIN_JITTER : f32 = 1.2;
-const FILM_GRAIN_STRENGTH : f32 = 0.09;
+const ANIMATION_SPEED : f32 = ${toWgslFloat(SHADER_CONFIG.animationSpeed)};
+const FILM_GRAIN_FLICKER_BASE : f32 = ${toWgslFloat(SHADER_CONFIG.filmGrainFlickerBase)};
+const FILM_GRAIN_FLICKER_RANGE : f32 = ${toWgslFloat(SHADER_CONFIG.filmGrainFlickerRange)};
+const FILM_GRAIN_JITTER : f32 = ${toWgslFloat(SHADER_CONFIG.filmGrainJitter)};
+const FILM_GRAIN_STRENGTH : f32 = ${toWgslFloat(SHADER_CONFIG.filmGrainStrength)};
 
 @vertex
 fn vsMain(@builtin(vertex_index) i : u32) -> VertexOut {
@@ -287,12 +330,12 @@ fn noise(p: vec2f) -> f32 {
 fn grainLayer(p: vec2f) -> f32 {
   let i = floor(p);
   let f = fract(p);
-  let u = f * f * (3.0 - 2.0 * f);
+  let v = f * f * (3.0 - 2.0 * f);
   let a = hash(i);
   let b = hash(i + vec2f(1.0, 0.0));
   let c = hash(i + vec2f(0.0, 1.0));
   let d = hash(i + vec2f(1.0, 1.0));
-  return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+  return mix(mix(a, b, v.x), mix(c, d, v.x), v.y);
 }
 fn blob(uv: vec2f, c: vec2f, s: vec2f, soft: f32) -> f32 {
   let d = (uv - c) / s;
@@ -302,21 +345,29 @@ fn blob(uv: vec2f, c: vec2f, s: vec2f, soft: f32) -> f32 {
 @fragment
 fn fsMain(in: VertexOut) -> @location(0) vec4f {
   let uv = in.uv;
-  let t = u.time * 0.06;
-  let c1 = vec2f(0.16 + sin(t * 0.9) * 0.012, 0.14 + cos(t * 0.8) * 0.01);
-  let c2 = vec2f(0.10 + cos(t * 1.1) * 0.012, 0.80 + sin(t * 0.7) * 0.01);
-  let c3 = vec2f(0.70 + sin(t * 0.6) * 0.014, 0.62 + cos(t * 1.0) * 0.012);
-  let m1 = blob(uv, c1, vec2f(0.28, 0.24), 3.6);
-  let m2 = blob(uv, c2, vec2f(0.14, 0.17), 4.2);
-  let m3 = blob(uv, c3, vec2f(0.23, 0.29), 4.0);
-  let col1 = vec3f(0.97, 0.78, 0.28);
-  let col2 = vec3f(0.33, 0.84, 0.56);
-  let col3 = vec3f(0.79, 0.29, 0.88);
-  var color = col1 * m1 * 0.26 + col2 * m2 * 0.33 + col3 * m3 * 0.31;
+  let t = u.time * ANIMATION_SPEED;
+  let c1 = vec2f(
+    ${toWgslFloat(SHADER_CONFIG.blob1.centerX)} + sin(t * ${toWgslFloat(SHADER_CONFIG.blob1.speedX)}) * ${toWgslFloat(SHADER_CONFIG.blob1.moveX)},
+    ${toWgslFloat(SHADER_CONFIG.blob1.centerY)} + cos(t * ${toWgslFloat(SHADER_CONFIG.blob1.speedY)}) * ${toWgslFloat(SHADER_CONFIG.blob1.moveY)}
+  );
+  let c2 = vec2f(
+    ${toWgslFloat(SHADER_CONFIG.blob2.centerX)} + cos(t * ${toWgslFloat(SHADER_CONFIG.blob2.speedX)}) * ${toWgslFloat(SHADER_CONFIG.blob2.moveX)},
+    ${toWgslFloat(SHADER_CONFIG.blob2.centerY)} + sin(t * ${toWgslFloat(SHADER_CONFIG.blob2.speedY)}) * ${toWgslFloat(SHADER_CONFIG.blob2.moveY)}
+  );
+  let c3 = vec2f(
+    ${toWgslFloat(SHADER_CONFIG.blob3.centerX)} + sin(t * ${toWgslFloat(SHADER_CONFIG.blob3.speedX)}) * ${toWgslFloat(SHADER_CONFIG.blob3.moveX)},
+    ${toWgslFloat(SHADER_CONFIG.blob3.centerY)} + cos(t * ${toWgslFloat(SHADER_CONFIG.blob3.speedY)}) * ${toWgslFloat(SHADER_CONFIG.blob3.moveY)}
+  );
+  let m1 = blob(uv, c1, vec2f(${toWgslFloat(SHADER_CONFIG.blob1.scaleX)}, ${toWgslFloat(SHADER_CONFIG.blob1.scaleY)}), ${toWgslFloat(SHADER_CONFIG.blob1.softness)});
+  let m2 = blob(uv, c2, vec2f(${toWgslFloat(SHADER_CONFIG.blob2.scaleX)}, ${toWgslFloat(SHADER_CONFIG.blob2.scaleY)}), ${toWgslFloat(SHADER_CONFIG.blob2.softness)});
+  let m3 = blob(uv, c3, vec2f(${toWgslFloat(SHADER_CONFIG.blob3.scaleX)}, ${toWgslFloat(SHADER_CONFIG.blob3.scaleY)}), ${toWgslFloat(SHADER_CONFIG.blob3.softness)});
+  var color = ${wgslVec3(SHADER_CONFIG.blob1.color)} * m1 * ${toWgslFloat(SHADER_CONFIG.blob1.intensity)}
+    + ${wgslVec3(SHADER_CONFIG.blob2.color)} * m2 * ${toWgslFloat(SHADER_CONFIG.blob2.intensity)}
+    + ${wgslVec3(SHADER_CONFIG.blob3.color)} * m3 * ${toWgslFloat(SHADER_CONFIG.blob3.intensity)};
   let dist = distance(uv, vec2f(0.5));
-  let vig = 1.0 - smoothstep(0.38, 0.92, dist);
-  color *= (0.72 + 0.28 * vig);
-  color += vec3f(0.02, 0.03, 0.05);
+  let vig = 1.0 - smoothstep(${toWgslFloat(SHADER_CONFIG.vignetteStart)}, ${toWgslFloat(SHADER_CONFIG.vignetteEnd)}, dist);
+  color *= (${toWgslFloat(SHADER_CONFIG.vignetteBase)} + ${toWgslFloat(SHADER_CONFIG.vignetteStrength)} * vig);
+  color += ${wgslVec3(SHADER_CONFIG.baseColor)};
   let px = uv * u.resolution;
   let flicker = FILM_GRAIN_FLICKER_BASE + sin(u.time * 1.8) * FILM_GRAIN_FLICKER_RANGE;
   let jitter = vec2f(
@@ -330,19 +381,105 @@ fn fsMain(in: VertexOut) -> @location(0) vec4f {
   color += vec3f(filmGrain * (FILM_GRAIN_STRENGTH * u.quality));
   return vec4f(max(color, vec3f(0.0)), 1.0);
 }
-`,
+`;
+
+type RendererType = "pending" | "webgpu" | "webgl" | "svg";
+
+type NavigatorWithGpu = Navigator & {
+  gpu?: GPU;
+};
+
+function getShaderQuality() {
+  return document.documentElement.dataset.quality === "high"
+    ? SHADER_CONFIG.highQuality
+    : SHADER_CONFIG.defaultQuality;
+}
+
+function getCanvasSize(canvas: HTMLCanvasElement) {
+  const rect = canvas.getBoundingClientRect();
+  const dpr = Math.min(
+    window.devicePixelRatio || 1,
+    SHADER_CONFIG.maxDevicePixelRatio,
+  );
+
+  return {
+    width: Math.max(1, Math.floor(rect.width * dpr)),
+    height: Math.max(1, Math.floor(rect.height * dpr)),
+  };
+}
+
+const MeshShaderBackground = memo(function MeshShaderBackground({
+  meshBlurId,
+  noiseId,
+}: SharedSvgIds) {
+  const canvasRef = useState<HTMLCanvasElement | null>(null);
+  const [canvas, setCanvas] = canvasRef;
+  const [renderer, setRenderer] = useState<RendererType>("pending");
+
+  useEffect(() => {
+    if (!canvas) return;
+
+    let cleanup: (() => void) | null = null;
+    let cancelled = false;
+
+    const commonSetup = (onMotionChange?: () => void) => {
+      const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const reducedMotionRef = { current: mediaQuery.matches };
+      const qualityValue = getShaderQuality();
+      const handleMotion = () => {
+        reducedMotionRef.current = mediaQuery.matches;
+        onMotionChange?.();
+      };
+
+      mediaQuery.addEventListener("change", handleMotion);
+
+      return {
+        qualityValue,
+        reducedMotionRef,
+        dispose: () => mediaQuery.removeEventListener("change", handleMotion),
+      };
+    };
+
+    const initWebGPU = async (shouldAbort: () => boolean) => {
+      const gpu = (navigator as NavigatorWithGpu).gpu;
+      if (!gpu || shouldAbort()) return null;
+
+      const adapter = await gpu.requestAdapter({
+        powerPreference: "high-performance",
       });
+      if (!adapter || shouldAbort()) return null;
+
+      const device = await adapter.requestDevice();
+      if (shouldAbort()) {
+        device.destroy();
+        return null;
+      }
+
+      const context = canvas.getContext("webgpu");
+      if (!context || shouldAbort()) {
+        device.destroy();
+        return null;
+      }
+
+      const format = gpu.getPreferredCanvasFormat();
+      context.configure({ device, format, alphaMode: "premultiplied" });
+
+      const shader = device.createShaderModule({ code: WEBGPU_SHADER });
 
       const pipeline = device.createRenderPipeline({
         layout: "auto",
         vertex: { module: shader, entryPoint: "vsMain" },
-        fragment: { module: shader, entryPoint: "fsMain", targets: [{ format }] },
+        fragment: {
+          module: shader,
+          entryPoint: "fsMain",
+          targets: [{ format }],
+        },
         primitive: { topology: "triangle-list" },
       });
 
       const uniformBuffer = device.createBuffer({
         size: 16,
-        usage: (window as any).GPUBufferUsage.UNIFORM | (window as any).GPUBufferUsage.COPY_DST,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       });
 
       const bindGroup = device.createBindGroup({
@@ -350,27 +487,35 @@ fn fsMain(in: VertexOut) -> @location(0) vec4f {
         entries: [{ binding: 0, resource: { buffer: uniformBuffer } }],
       });
 
-      const common = commonSetup();
+      let frameId = 0;
+      let isRendering = false;
+      const start = performance.now();
+
       const resize = () => {
-        const rect = canvas.getBoundingClientRect();
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        canvas.width = Math.max(1, Math.floor(rect.width * dpr));
-        canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+        const { width, height } = getCanvasSize(canvas);
+        if (canvas.width !== width || canvas.height !== height) {
+          canvas.width = width;
+          canvas.height = height;
+        }
       };
 
-      resize();
-      const resizeObserver = new ResizeObserver(resize);
-      resizeObserver.observe(canvas);
-      window.addEventListener("resize", resize, { passive: true });
-
-      const start = performance.now();
-      let frameId = 0;
       const render = (now: number) => {
-        const elapsed = common.reducedMotionRef.current ? 0 : (now - start) / 1000;
+        if (shouldAbort()) return;
+
+        isRendering = true;
+        const elapsed = common.reducedMotionRef.current
+          ? 0
+          : (now - start) / 1000;
+
         device.queue.writeBuffer(
           uniformBuffer,
           0,
-          new Float32Array([canvas.width, canvas.height, elapsed, common.qualityValue]),
+          new Float32Array([
+            canvas.width,
+            canvas.height,
+            elapsed,
+            common.qualityValue,
+          ]),
         );
 
         const encoder = device.createCommandEncoder();
@@ -384,20 +529,45 @@ fn fsMain(in: VertexOut) -> @location(0) vec4f {
             },
           ],
         });
+
         pass.setPipeline(pipeline);
         pass.setBindGroup(0, bindGroup);
         pass.draw(6);
         pass.end();
         device.queue.submit([encoder.finish()]);
+
+        if (common.reducedMotionRef.current) {
+          isRendering = false;
+          return;
+        }
+
         frameId = window.requestAnimationFrame(render);
       };
-      frameId = window.requestAnimationFrame(render);
+
+      const startRendering = () => {
+        if (!isRendering && !shouldAbort()) {
+          frameId = window.requestAnimationFrame(render);
+        }
+      };
+
+      const common = commonSetup(startRendering);
+
+      resize();
+      const resizeObserver = new ResizeObserver(() => {
+        resize();
+        startRendering();
+      });
+      resizeObserver.observe(canvas);
+      window.addEventListener("resize", resize, { passive: true });
+
+      startRendering();
 
       return () => {
         window.cancelAnimationFrame(frameId);
         resizeObserver.disconnect();
         window.removeEventListener("resize", resize);
         common.dispose();
+        device.destroy();
       };
     };
 
@@ -416,48 +586,97 @@ fn fsMain(in: VertexOut) -> @location(0) vec4f {
       const compileShader = (type: number, source: string) => {
         const shader = gl.createShader(type);
         if (!shader) return null;
+
         gl.shaderSource(shader, source);
         gl.compileShader(shader);
+
         if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          if (import.meta.env.DEV) {
+            console.warn(gl.getShaderInfoLog(shader));
+          }
           gl.deleteShader(shader);
           return null;
         }
+
         return shader;
       };
 
       const vertexShader = compileShader(gl.VERTEX_SHADER, VERTEX_SHADER);
       const fragmentShader = compileShader(gl.FRAGMENT_SHADER, FRAGMENT_SHADER);
-      if (!vertexShader || !fragmentShader) return null;
+      if (!vertexShader || !fragmentShader) {
+        if (vertexShader) gl.deleteShader(vertexShader);
+        if (fragmentShader) gl.deleteShader(fragmentShader);
+        return null;
+      }
 
       const program = gl.createProgram();
-      if (!program) return null;
+      if (!program) {
+        gl.deleteShader(vertexShader);
+        gl.deleteShader(fragmentShader);
+        return null;
+      }
+
       gl.attachShader(program, vertexShader);
       gl.attachShader(program, fragmentShader);
       gl.linkProgram(program);
-      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return null;
+
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        if (import.meta.env.DEV) {
+          console.warn(gl.getProgramInfoLog(program));
+        }
+        gl.deleteProgram(program);
+        gl.deleteShader(vertexShader);
+        gl.deleteShader(fragmentShader);
+        return null;
+      }
+
       gl.useProgram(program);
 
       const positionBuffer = gl.createBuffer();
+      if (!positionBuffer) {
+        gl.deleteProgram(program);
+        gl.deleteShader(vertexShader);
+        gl.deleteShader(fragmentShader);
+        return null;
+      }
+
       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
       gl.bufferData(
         gl.ARRAY_BUFFER,
         new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
         gl.STATIC_DRAW,
       );
+
       const positionLocation = gl.getAttribLocation(program, "a_position");
+      if (positionLocation === -1) {
+        gl.deleteBuffer(positionBuffer);
+        gl.deleteProgram(program);
+        gl.deleteShader(vertexShader);
+        gl.deleteShader(fragmentShader);
+        return null;
+      }
+
       gl.enableVertexAttribArray(positionLocation);
       gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
       const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
       const timeLocation = gl.getUniformLocation(program, "u_time");
       const qualityLocation = gl.getUniformLocation(program, "u_quality");
-      const common = commonSetup();
+
+      if (!resolutionLocation || !timeLocation || !qualityLocation) {
+        gl.deleteBuffer(positionBuffer);
+        gl.deleteProgram(program);
+        gl.deleteShader(vertexShader);
+        gl.deleteShader(fragmentShader);
+        return null;
+      }
+
+      let frameId = 0;
+      let isRendering = false;
+      const start = performance.now();
 
       const resize = () => {
-        const rect = canvas.getBoundingClientRect();
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        const width = Math.max(1, Math.floor(rect.width * dpr));
-        const height = Math.max(1, Math.floor(rect.height * dpr));
+        const { width, height } = getCanvasSize(canvas);
         if (canvas.width !== width || canvas.height !== height) {
           canvas.width = width;
           canvas.height = height;
@@ -467,20 +686,41 @@ fn fsMain(in: VertexOut) -> @location(0) vec4f {
         gl.uniform1f(qualityLocation, common.qualityValue);
       };
 
+      const render = (now: number) => {
+        if (cancelled) return;
+
+        isRendering = true;
+        const elapsed = common.reducedMotionRef.current
+          ? 0
+          : (now - start) / 1000;
+        gl.uniform1f(timeLocation, elapsed);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+        if (common.reducedMotionRef.current) {
+          isRendering = false;
+          return;
+        }
+
+        frameId = window.requestAnimationFrame(render);
+      };
+
+      const startRendering = () => {
+        if (!isRendering && !cancelled) {
+          frameId = window.requestAnimationFrame(render);
+        }
+      };
+
+      const common = commonSetup(startRendering);
+
       resize();
-      const resizeObserver = new ResizeObserver(resize);
+      const resizeObserver = new ResizeObserver(() => {
+        resize();
+        startRendering();
+      });
       resizeObserver.observe(canvas);
       window.addEventListener("resize", resize, { passive: true });
 
-      const start = performance.now();
-      let frameId = 0;
-      const render = (now: number) => {
-        const elapsed = common.reducedMotionRef.current ? 0 : (now - start) / 1000;
-        gl.uniform1f(timeLocation, elapsed);
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
-        frameId = window.requestAnimationFrame(render);
-      };
-      frameId = window.requestAnimationFrame(render);
+      startRendering();
 
       return () => {
         window.cancelAnimationFrame(frameId);
@@ -495,22 +735,30 @@ fn fsMain(in: VertexOut) -> @location(0) vec4f {
     };
 
     const init = async () => {
-      const WEBGPU_INIT_TIMEOUT_MS = 120;
+      let webgpuTimedOut = false;
 
       try {
-        const gpuCleanup = await Promise.race<ReturnType<typeof initWebGPU>>([
-          initWebGPU(),
+        const gpuCleanup = await Promise.race<
+          Awaited<ReturnType<typeof initWebGPU>>
+        >([
+          initWebGPU(() => cancelled || webgpuTimedOut),
           new Promise<null>((resolve) => {
-            window.setTimeout(() => resolve(null), WEBGPU_INIT_TIMEOUT_MS);
+            window.setTimeout(() => {
+              webgpuTimedOut = true;
+              resolve(null);
+            }, SHADER_CONFIG.webgpuInitTimeoutMs);
           }),
         ]);
+
         if (!cancelled && gpuCleanup) {
           setRenderer("webgpu");
           cleanup = gpuCleanup;
           return;
         }
-      } catch {
-        // fall through to webgl
+      } catch (error) {
+        if (import.meta.env.DEV) {
+          console.warn("WebGPU background initialization failed", error);
+        }
       }
 
       const glCleanup = initWebGL();
@@ -531,22 +779,26 @@ fn fsMain(in: VertexOut) -> @location(0) vec4f {
       cancelled = true;
       cleanup?.();
     };
-  }, []);
+  }, [canvas]);
 
   if (renderer === "svg") {
     return (
       <div className={styles.welcomeMeshContainerStyles}>
         {MESH_SHAPES.map((mesh) => (
-          <MeshShapeSVG key={mesh.id} {...mesh} />
+          <MeshShapeSVG key={mesh.id} {...mesh} meshBlurId={meshBlurId} />
         ))}
-        <NoiseOverlaySVG />
+        <NoiseOverlaySVG noiseId={noiseId} />
       </div>
     );
   }
 
   return (
     <div className={styles.welcomeMeshContainerStyles}>
-      <canvas ref={canvasRef} className={styles.welcomeShaderCanvasStyles} aria-hidden="true" />
+      <canvas
+        ref={setCanvas}
+        className={styles.welcomeShaderCanvasStyles}
+        aria-hidden="true"
+      />
     </div>
   );
 });
@@ -563,40 +815,36 @@ function WelcomeHeroFilterBackgroundComponent({
   disabled = false,
 }: WelcomeHeroFilterBackgroundProps) {
   const [shouldMountMousePath, setShouldMountMousePath] = useState(false);
+  const svgId = normalizeSvgId(useId());
+  const meshBlurId = `${svgId}-mesh-blur`;
+  const noiseId = `${svgId}-noise`;
 
   useEffect(() => {
-    // Only run on client side
-    if (typeof window === "undefined") return;
-
-    const timer = setTimeout(() => {
+    const timer = window.setTimeout(() => {
       setShouldMountMousePath(true);
     }, 2000);
 
     return () => {
-      clearTimeout(timer);
+      window.clearTimeout(timer);
     };
   }, []);
 
   return (
     <>
-      {/* Hidden SVG with shared defs (filter, patterns) - must be rendered first */}
-      <SharedDefsSVG />
+      <SharedDefsSVG meshBlurId={meshBlurId} noiseId={noiseId} />
 
-      {/* MousePathCanvas must be outside the shifted mesh container for correct positioning */}
       <ClientOnly>
-        {shouldMountMousePath ? (
-          container ? (
-            <MousePathCanvas
-              key={container.id || "mouse-path"}
-              container={container}
-              mousePosition={mousePosition}
-              disabled={disabled}
-            />
-          ) : null
+        {shouldMountMousePath && container ? (
+          <MousePathCanvas
+            key={container.id || "mouse-path"}
+            container={container}
+            mousePosition={mousePosition}
+            disabled={disabled}
+          />
         ) : null}
       </ClientOnly>
 
-      <MeshShaderBackground />
+      <MeshShaderBackground meshBlurId={meshBlurId} noiseId={noiseId} />
     </>
   );
 }
