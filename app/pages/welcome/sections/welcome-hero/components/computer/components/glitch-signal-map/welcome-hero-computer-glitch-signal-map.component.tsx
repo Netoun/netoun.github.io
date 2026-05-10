@@ -169,9 +169,7 @@ export const WelcomeHeroComputerGlitchSignalMap = memo(
       };
     }, []);
 
-    const rootClassName = useMemo(() => {
-      return className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
-    }, [className]);
+    const rootClassName = className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
 
     const initialBlocks = useMemo(() => {
       const { states } = buildBlockModel(blockCount);
@@ -201,7 +199,7 @@ export const WelcomeHeroComputerGlitchSignalMap = memo(
           {initialBlocks.map((block, index) => {
             return (
               <span
-                key={`signal-block-${index}`}
+                key={`signal-block-${block.delay}`}
                 ref={(element) => {
                   blockRefs.current[index] = element;
                 }}
@@ -222,7 +220,7 @@ export const WelcomeHeroComputerGlitchSignalMap = memo(
           {dots.map((dot, index) => {
             return (
               <span
-                key={`signal-dot-${index}`}
+                key={`signal-dot-${dot.top}-${dot.left}`}
                 className={styles.dotStyles}
                 data-accent={dot.accent ? "true" : "false"}
                 style={{ top: dot.top, left: dot.left }}
