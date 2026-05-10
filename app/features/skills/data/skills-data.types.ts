@@ -1,7 +1,7 @@
 export type AccentType = "primary" | "secondary" | "tertiary" | "kirby";
 export type ShapeType = "sparkle" | "diamond" | "cube" | "circle" | "hexagon" | "ring";
 
-export interface SkillTag {
+interface SkillTag {
   name: string;
   level: 1 | 2 | 3;
 }

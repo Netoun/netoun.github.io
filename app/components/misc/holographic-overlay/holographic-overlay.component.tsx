@@ -293,8 +293,7 @@ function setCanvasSize(
   if (canvas.width !== width) canvas.width = width;
   if (canvas.height !== height) canvas.height = height;
 
-  canvas.style.width = `${cssWidth}px`;
-  canvas.style.height = `${cssHeight}px`;
+  canvas.style.cssText = `width:${cssWidth}px;height:${cssHeight}px`;
 }
 
 async function tryWebGPU(canvas: HTMLCanvasElement, parent: HTMLElement): Promise<Backend | null> {
