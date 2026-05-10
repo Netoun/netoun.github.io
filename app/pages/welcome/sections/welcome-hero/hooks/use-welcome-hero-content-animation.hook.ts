@@ -39,12 +39,6 @@ export function useWelcomeHeroContentAnimation() {
         .add(
           charsDescription,
           {
-            display: {
-              from: "inline-block",
-              to: "unset",
-              duration: 10,
-              ease: "inOutSine",
-            },
             opacity: [0, 1],
             translateY: [4, 0],
             rotate: [0, 10, -10, 0],

@@ -27,6 +27,7 @@ export function MousePathCanvas({
   const trailPointsRef = useRef<TrailPoint[]>([]);
   const lastMousePosRef = useRef<{ x: number; y: number } | null>(null);
   const animationFrameRef = useRef<number | null>(null);
+  const containerRectRef = useRef<DOMRect | null>(null);
 
   // Initialize canvas context
   useEffect(() => {
@@ -60,6 +61,7 @@ export function MousePathCanvas({
 
     const resizeCanvas = () => {
       const rect = container.getBoundingClientRect();
+      containerRectRef.current = rect;
       const dpr = window.devicePixelRatio || 1;
 
       Object.assign(canvas.style, { width: `${rect.width}px`, height: `${rect.height}px` });
@@ -68,6 +70,7 @@ export function MousePathCanvas({
 
       const ctx = ctxRef.current;
       if (ctx) {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.scale(dpr, dpr);
       }
     };
@@ -77,6 +80,26 @@ export function MousePathCanvas({
 
     return () => {
       window.removeEventListener("resize", resizeCanvas);
+    };
+  }, [container]);
+
+  useEffect(() => {
+    const updateRect = () => {
+      containerRectRef.current = container.getBoundingClientRect();
+    };
+
+    updateRect();
+
+    const resizeObserver = new ResizeObserver(updateRect);
+    resizeObserver.observe(container);
+
+    window.addEventListener("resize", updateRect, { passive: true });
+    window.addEventListener("scroll", updateRect, { passive: true, capture: true });
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateRect);
+      window.removeEventListener("scroll", updateRect, true);
     };
   }, [container]);
 
@@ -103,9 +126,7 @@ export function MousePathCanvas({
     const maxTrailLength = 25;
     const trailDecay = 0.96;
 
-    let cachedRect = container.getBoundingClientRect();
-    let rectCacheTime = performance.now();
-    const RECT_CACHE_DURATION = 100;
+    containerRectRef.current ??= container.getBoundingClientRect();
 
     // Pre-calculate colors
     const baseR = 8;
@@ -129,11 +150,8 @@ export function MousePathCanvas({
     const render = () => {
       animationFrameRef.current = requestAnimationFrame(render);
 
-      const now = performance.now();
-      if (now - rectCacheTime > RECT_CACHE_DURATION) {
-        cachedRect = container.getBoundingClientRect();
-        rectCacheTime = now;
-      }
+      const cachedRect = containerRectRef.current;
+      if (!cachedRect) return;
 
       const mouseX = mousePosition.x - cachedRect.left;
       const mouseY = mousePosition.y - cachedRect.top;
