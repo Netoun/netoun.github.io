@@ -29,19 +29,50 @@ export const welcomeHeroComputerCapturesStyles = style({
   userSelect: "none",
   pointerEvents: "none",
   transformStyle: "preserve-3d",
-  transform: "rotateY(var(--mouse-position-x)) rotateX(var(--mouse-position-y)) translateZ(0)",
+  transform:
+    "rotateY(var(--mouse-position-x)) rotateX(var(--mouse-position-y)) translateZ(0)",
   willChange: "transform",
   backfaceVisibility: "hidden",
 });
+
+const gridBase = {
+  borderRadius: vars.radius.sm,
+  background: `color-mix(in srgb, ${vars.colors.background} 10%, transparent)`,
+};
 
 export const welcomeHeroComputerStyles = style({
   fontFamily: vars.fontFamily.doto,
   fontWeight: vars.fontWeight.bold,
   display: "grid",
-  gridTemplateColumns: "repeat(2, 1fr)",
-  gridTemplateRows: "repeat(2, 1fr)",
+  gridTemplateColumns: "repeat(3, 1fr)",∏
+  gridTemplateRows: "repeat(3, 1fr)",
   width: "100%",
   height: "100%",
   padding: vars.spacing.sm,
+  gap: vars.spacing.xs,
   background: `color-mix(in srgb, ${vars.colors.background} 10%, transparent)`,
+});
+
+export const zone1Styles = style({
+  ...gridBase,
+  gridColumn: "1 / 3",
+  gridRow: "1 / 2",
+});
+
+export const zone2Styles = style({
+  ...gridBase,
+  gridColumn: "3 / 4",
+  gridRow: "1 / 3",
+});
+
+export const zone3Styles = style({
+  ...gridBase,
+  gridColumn: "1 / 3",
+  gridRow: "2 / 4",
+});
+
+export const zone4Styles = style({
+  ...gridBase,
+  gridColumn: "3 / 4",
+  gridRow: "3 / 4",
 });
