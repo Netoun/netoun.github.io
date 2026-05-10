@@ -4,6 +4,7 @@ import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
 import { TerminalButtons } from "@/components/primitives/terminal-buttons/terminal-buttons.component";
 import { Tag } from "@/components/primitives/tag/tag.component";
+import { HolographicOverlay } from "@/components/misc/holographic-overlay/holographic-overlay.component";
 import type { ProjectType } from "../../hooks/use-projects.hook.types";
 import * as styles from "./project-card.css";
 
@@ -30,10 +31,11 @@ export function ProjectCard({
   type = "project",
   rotate = 0,
 }: ProjectCardProps) {
-  const { ref: cardRef, isIntersecting } = useIntersectionObserver<HTMLDivElement>({
-    threshold: 0,
-    rootMargin: "0px 0px 80px 0px",
-  });
+  const { ref: cardRef, isIntersecting } =
+    useIntersectionObserver<HTMLDivElement>({
+      threshold: 0,
+      rootMargin: "0px 0px 80px 0px",
+    });
   const imageRef = useRef<HTMLImageElement>(null);
   const shouldAnimate = useAnimationPriority({
     priority: "medium",
@@ -110,7 +112,12 @@ export function ProjectCard({
         className={clsx(styles.cardStyle, isIntersecting && styles.cardVisible)}
         style={{ "--card-rotate": `${rotate}deg` } as React.CSSProperties}
       >
-        <a href={url} target="_blank" rel="noopener noreferrer" className={styles.linkStyle}>
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.linkStyle}
+        >
           <div className={styles.terminalBarStyle}>
             <div className={styles.terminalLeftStyle}>
               <TerminalButtons />
@@ -130,6 +137,7 @@ export function ProjectCard({
                   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjE0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZThlNGRkIi8+PC9zdmc+";
               }}
             />
+            <HolographicOverlay />
           </div>
 
           <div className={styles.contentStyle}>

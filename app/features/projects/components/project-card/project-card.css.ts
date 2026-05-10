@@ -1,7 +1,6 @@
 import { vars } from "@styles/theme.css";
 import { globalStyle, style } from "@vanilla-extract/css";
 
-
 export const cardStyle = style({
   borderRadius: vars.radius.md,
   height: "100%",
@@ -41,7 +40,8 @@ export const perspectiveWrapper = style({
 export const cardVisible = style({
   opacity: 1,
   transform: "translateY(0) rotate(var(--card-rotate, 0deg))",
-  transition: "opacity 0.5s ease, transform 0.5s ease, box-shadow 0.35s cubic-bezier(.22,1,.36,1)",
+  transition:
+    "opacity 0.5s ease, transform 0.5s ease, box-shadow 0.35s cubic-bezier(.22,1,.36,1)",
 });
 
 export const linkStyle = style({
@@ -88,7 +88,6 @@ export const imageContainerStyle = style({
   width: "100%",
   height: "140px",
   overflow: "hidden",
-  backgroundColor: "oklch(0.91 0.025 80)",
   position: "relative",
 });
 
@@ -102,18 +101,6 @@ export const imageStyle = style({
 
 globalStyle(`${linkStyle}:hover ${imageStyle}`, {
   transform: "scale(1.15)",
-});
-
-globalStyle(`${imageContainerStyle}::after`, {
-  content: '""',
-  position: "absolute",
-  inset: 0,
-  background: [
-    "linear-gradient(oklch(1 0 0 / 0.18), oklch(1 0 0 / 0.18))",
-    "linear-gradient(135deg, oklch(0.8858 0.182 95.69 / 0.12) 0%, transparent 55%, oklch(0.5548 0.2575 312.98 / 0.09) 100%)",
-  ].join(", "),
-  pointerEvents: "none",
-  zIndex: 1,
 });
 
 export const contentStyle = style({
