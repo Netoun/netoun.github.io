@@ -110,18 +110,29 @@ export const WelcomeHeroComputerFakeConsole = ({
     const rootElement = rootRef.current;
     if (!rootElement) return;
 
-    const updateRowsCount = () => {
+    const lineGap = 2;
+    const lineHeightRef = { current: 12 };
+
+    const initializeLineHeight = () => {
       const lineElement = rootElement.querySelector("p");
-      const measuredLineHeight =
-        lineElement?.getBoundingClientRect().height ?? 12;
-      const lineGap = 2;
+      if (!lineElement) return;
+
+      const computed = window.getComputedStyle(lineElement);
+      const parsedLineHeight = Number.parseFloat(computed.lineHeight);
+
+      if (Number.isFinite(parsedLineHeight) && parsedLineHeight > 0) {
+        lineHeightRef.current = parsedLineHeight;
+      }
+    };
+
+    initializeLineHeight();
+
+    const updateRowsCount = (height: number) => {
       const nextRowsCount = Math.max(
         MIN_ROWS_COUNT,
         Math.min(
           MAX_ROWS_COUNT,
-          Math.floor(
-            rootElement.clientHeight / (measuredLineHeight + lineGap),
-          ) + 2,
+          Math.floor(height / (lineHeightRef.current + lineGap)) + 2,
         ),
       );
 
@@ -132,8 +143,13 @@ export const WelcomeHeroComputerFakeConsole = ({
       });
     };
 
-    updateRowsCount();
-    const resizeObserver = new ResizeObserver(updateRowsCount);
+    updateRowsCount(rootElement.clientHeight);
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (!entry) return;
+      updateRowsCount(entry.contentRect.height);
+    });
     resizeObserver.observe(rootElement);
 
     return () => {

@@ -4,6 +4,8 @@ import { vars } from "@/styles/theme.css";
 
 export const welcomeHeroComputerWrapperStyles = style({
   position: "absolute",
+  isolation: "isolate",
+  contain: "layout paint style",
   zIndex: 10,
   bottom: 0,
   right: "5vw",
