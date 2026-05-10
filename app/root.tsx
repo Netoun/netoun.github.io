@@ -7,6 +7,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import { BodyGrainOverlay } from "@/components/misc/body-grain-overlay/body-grain-overlay.component";
 import type { Route } from "./+types/root";
 
 export const links: Route.LinksFunction = () => [
@@ -46,9 +47,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
+        <BodyGrainOverlay />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          {children}
+          <ScrollRestoration />
+          <Scripts />
+        </div>
       </body>
     </html>
   );
