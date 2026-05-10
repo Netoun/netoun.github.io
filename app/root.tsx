@@ -34,16 +34,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <script crossOrigin="anonymous" src="//unpkg.com/react-scan/dist/auto.global.js" />
         )}
         <meta charSet="utf-8" />
-        <link rel="icon" href="/favicon.ico" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+        <link rel="icon" href="/logo.svg" />
+        {/* OG / Social */}
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="/images/projects/website.webp" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="/images/projects/website.webp" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           href="https://fonts.googleapis.com/css2?family=Doto:wght@100..900&display=swap"
           rel="stylesheet"
         />
-
         <Meta />
         <Links />
       </head>
