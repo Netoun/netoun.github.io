@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { Section } from "@/components/layouts/sections/section.component";
 import { Button } from "@/components/primitives/button/button.component";
 import { useMousePosition } from "@/hooks/use-mouse-position.hook";
@@ -23,7 +23,17 @@ export function WelcomeHeroSection() {
   const { ref: sectionRef, isIntersecting: isVisible } = useIntersectionObserver<HTMLDivElement>({
     threshold: 0.1,
   });
-  const [isTextSelected, setIsTextSelected] = useState(false);
+  const [isTextSelected, dispatch] = useReducer(
+    (_state: boolean, action: "select" | "deselect") => {
+      switch (action) {
+        case "select":
+          return true;
+        case "deselect":
+          return false;
+      }
+    },
+    false,
+  );
   const mousePosition = useMousePosition({
     container: container ?? undefined,
   });
@@ -58,7 +68,14 @@ export function WelcomeHeroSection() {
         }
       }
 
-      setIsTextSelected(isSelected);
+      dispatch(isSelected ? "select" : "deselect");
+    };
+
+    const handleSelectStart = (e: Event) => {
+      const target = e.target as Node;
+      if (container.contains(target)) {
+        dispatch("select");
+      }
     };
 
     // Check on mouseup (when selection ends)
@@ -83,11 +100,17 @@ export function WelcomeHeroSection() {
       }
     };
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.shiftKey) {
+        dispatch("select");
+      }
+    };
+
     // Check when clicking outside to clear selection
     const handleClick = (e: MouseEvent) => {
       const target = e.target as Node;
       if (!container.contains(target)) {
-        setIsTextSelected(false);
+        dispatch("deselect");
       }
     };
 
@@ -102,6 +125,8 @@ export function WelcomeHeroSection() {
     };
 
     document.addEventListener("mouseup", handleMouseUp, { passive: true });
+    document.addEventListener("selectstart", handleSelectStart, { passive: true });
+    document.addEventListener("keydown", handleKeyDown, { passive: true });
     document.addEventListener("keyup", handleKeyUp, { passive: true });
     document.addEventListener("click", handleClick, { passive: true });
     document.addEventListener("selectionchange", handleSelectionChange, {
@@ -110,6 +135,8 @@ export function WelcomeHeroSection() {
 
     return () => {
       document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("selectstart", handleSelectStart);
+      document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("keyup", handleKeyUp);
       document.removeEventListener("click", handleClick);
       document.removeEventListener("selectionchange", handleSelectionChange);
@@ -132,17 +159,21 @@ export function WelcomeHeroSection() {
     }
   }, [startAnimation]);
 
+  const shouldDisableHeroAnimations = isTextSelected || !isVisible;
+  const shouldDisableShader = !isVisible;
+
   return (
     <Section ref={sectionRef} className={styles.welcomeSectionStyles} data-section="welcome-hero">
       <div
         ref={welcomeContainerRef}
         id="welcome-container"
         className={styles.welcomeContainerStyle}
+        data-text-selected={isTextSelected ? "true" : "false"}
       >
         <WelcomeHeroFilterBackground
           container={container}
           mousePosition={mousePosition}
-          disabled={isTextSelected || !isVisible}
+          disabled={shouldDisableShader}
         />
         <div className={styles.welcomeContentStyle}>
           <h1 id="welcome-heading" ref={headingRef} className={styles.welcomeHeadingStyles}>
@@ -173,7 +204,10 @@ export function WelcomeHeroSection() {
         </div>
       </div>
 
-      <WelcomeHeroComputerComponent mousePosition={mousePosition} />
+      <WelcomeHeroComputerComponent
+        mousePosition={mousePosition}
+        disabled={shouldDisableHeroAnimations}
+      />
     </Section>
   );
 }

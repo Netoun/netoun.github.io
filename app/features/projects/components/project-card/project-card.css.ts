@@ -40,8 +40,7 @@ export const perspectiveWrapper = style({
 export const cardVisible = style({
   opacity: 1,
   transform: "translateY(0) rotate(var(--card-rotate, 0deg))",
-  transition:
-    "opacity 0.5s ease, transform 0.5s ease, box-shadow 0.35s cubic-bezier(.22,1,.36,1)",
+  transition: "opacity 0.5s ease, transform 0.5s ease, box-shadow 0.35s cubic-bezier(.22,1,.36,1)",
 });
 
 export const linkStyle = style({

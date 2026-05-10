@@ -77,6 +77,17 @@ export const welcomeHeadingStyles = style({
     0 0 42px color-mix(in srgb, ${vars.colors.secondary} 22%, transparent)
   `,
 
+  selectors: {
+    "&::selection": {
+      backgroundColor: vars.colors.primary,
+      color: vars.colors.foreground,
+      textShadow: "none",
+    },
+    '[data-text-selected="true"] &': {
+      textShadow: "none",
+    },
+  },
+
   "@media": {
     [breakpoints.sm]: {
       fontSize: vars.fontSize["5xl"],
@@ -195,6 +206,7 @@ export const welcomeButtonLabelStyles = style({
   selectors: {
     [`${welcomeButtonStyles}:hover &`]: {
       opacity: 0,
+      display: "none",
     },
   },
 });

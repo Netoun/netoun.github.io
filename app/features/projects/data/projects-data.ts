@@ -29,8 +29,7 @@ export const projects: Project[] = [
   {
     slug: "treashunt",
     title: "Treashunt",
-    description:
-      "Design unforgettable adventures. Take on exciting challenges.",
+    description: "Design unforgettable adventures. Take on exciting challenges.",
     date: "2025-12-01",
     tags: ["Remix", "Prisma", "PostgreSQL"],
     image: "/images/projects/treashunt.webp",
@@ -54,8 +53,7 @@ export const projects: Project[] = [
   {
     slug: "lonestone-boilerplate",
     title: "Lonestone Boilerplate",
-    description:
-      "Starter kit for full-stack web apps, SaaS and websites with React and NestJS.",
+    description: "Starter kit for full-stack web apps, SaaS and websites with React and NestJS.",
     date: "2025-03-04",
     tags: ["Open Source", "TypeScript", "NestJS", "React", "Monorepo"],
     image: "/images/projects/lonestone-boilerplate.webp",

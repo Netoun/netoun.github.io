@@ -84,8 +84,7 @@ const SHADER_CONFIG = {
   webgpuInitTimeoutMs: 250,
 } as const;
 
-const toGlslFloat = (value: number) =>
-  value.toFixed(8).replace(/0+$/, "").replace(/\.$/, ".0");
+const toGlslFloat = (value: number) => value.toFixed(8).replace(/0+$/, "").replace(/\.$/, ".0");
 const toWgslFloat = toGlslFloat;
 
 const glslVec3 = (value: readonly [number, number, number]) =>
@@ -101,10 +100,7 @@ interface SharedSvgIds {
   noiseId: string;
 }
 
-const SharedDefsSVG = memo(function SharedDefsSVG({
-  meshBlurId,
-  noiseId,
-}: SharedSvgIds) {
+const SharedDefsSVG = memo(function SharedDefsSVG({ meshBlurId, noiseId }: SharedSvgIds) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -164,9 +160,7 @@ const MeshShapeSVG = memo(function MeshShapeSVG({
   );
 });
 
-const NoiseOverlaySVG = memo(function NoiseOverlaySVG({
-  noiseId,
-}: Pick<SharedSvgIds, "noiseId">) {
+const NoiseOverlaySVG = memo(function NoiseOverlaySVG({ noiseId }: Pick<SharedSvgIds, "noiseId">) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -389,6 +383,20 @@ type NavigatorWithGpu = Navigator & {
   gpu?: GPU;
 };
 
+interface MinimalGPUCanvasContext {
+  configure(options: {
+    device: GPUDevice;
+    format: GPUTextureFormat;
+    alphaMode: "premultiplied";
+  }): void;
+  getCurrentTexture(): GPUTexture;
+}
+
+const GPU_BUFFER_USAGE = {
+  COPY_DST: 0x0008,
+  UNIFORM: 0x0040,
+} as const;
+
 function getShaderQuality() {
   return document.documentElement.dataset.quality === "high"
     ? SHADER_CONFIG.highQuality
@@ -397,10 +405,7 @@ function getShaderQuality() {
 
 function getCanvasSize(canvas: HTMLCanvasElement) {
   const rect = canvas.getBoundingClientRect();
-  const dpr = Math.min(
-    window.devicePixelRatio || 1,
-    SHADER_CONFIG.maxDevicePixelRatio,
-  );
+  const dpr = Math.min(window.devicePixelRatio || 1, SHADER_CONFIG.maxDevicePixelRatio);
 
   return {
     width: Math.max(1, Math.floor(rect.width * dpr)),
@@ -411,7 +416,8 @@ function getCanvasSize(canvas: HTMLCanvasElement) {
 const MeshShaderBackground = memo(function MeshShaderBackground({
   meshBlurId,
   noiseId,
-}: SharedSvgIds) {
+  disabled = false,
+}: SharedSvgIds & { disabled?: boolean }) {
   const canvasRef = useState<HTMLCanvasElement | null>(null);
   const [canvas, setCanvas] = canvasRef;
   const [renderer, setRenderer] = useState<RendererType>("pending");
@@ -455,7 +461,7 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
         return null;
       }
 
-      const context = canvas.getContext("webgpu");
+      const context = canvas.getContext("webgpu") as MinimalGPUCanvasContext | null;
       if (!context || shouldAbort()) {
         device.destroy();
         return null;
@@ -479,7 +485,7 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
 
       const uniformBuffer = device.createBuffer({
         size: 16,
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        usage: GPU_BUFFER_USAGE.UNIFORM | GPU_BUFFER_USAGE.COPY_DST,
       });
 
       const bindGroup = device.createBindGroup({
@@ -503,19 +509,12 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
         if (shouldAbort()) return;
 
         isRendering = true;
-        const elapsed = common.reducedMotionRef.current
-          ? 0
-          : (now - start) / 1000;
+        const elapsed = common.reducedMotionRef.current ? 0 : (now - start) / 1000;
 
         device.queue.writeBuffer(
           uniformBuffer,
           0,
-          new Float32Array([
-            canvas.width,
-            canvas.height,
-            elapsed,
-            common.qualityValue,
-          ]),
+          new Float32Array([canvas.width, canvas.height, elapsed, common.qualityValue]),
         );
 
         const encoder = device.createCommandEncoder();
@@ -690,9 +689,7 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
         if (cancelled) return;
 
         isRendering = true;
-        const elapsed = common.reducedMotionRef.current
-          ? 0
-          : (now - start) / 1000;
+        const elapsed = common.reducedMotionRef.current ? 0 : (now - start) / 1000;
         gl.uniform1f(timeLocation, elapsed);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
 
@@ -736,11 +733,11 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
 
     const init = async () => {
       let webgpuTimedOut = false;
+      let rendererType: RendererType | null = null;
+      let rendererCleanup: (() => void) | null = null;
 
       try {
-        const gpuCleanup = await Promise.race<
-          Awaited<ReturnType<typeof initWebGPU>>
-        >([
+        const gpuCleanup = await Promise.race<Awaited<ReturnType<typeof initWebGPU>>>([
           initWebGPU(() => cancelled || webgpuTimedOut),
           new Promise<null>((resolve) => {
             window.setTimeout(() => {
@@ -751,9 +748,8 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
         ]);
 
         if (!cancelled && gpuCleanup) {
-          setRenderer("webgpu");
-          cleanup = gpuCleanup;
-          return;
+          rendererType = "webgpu";
+          rendererCleanup = gpuCleanup;
         }
       } catch (error) {
         if (import.meta.env.DEV) {
@@ -761,15 +757,21 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
         }
       }
 
-      const glCleanup = initWebGL();
-      if (!cancelled && glCleanup) {
-        setRenderer("webgl");
-        cleanup = glCleanup;
-        return;
+      if (!rendererType) {
+        const glCleanup = initWebGL();
+        if (!cancelled && glCleanup) {
+          rendererType = "webgl";
+          rendererCleanup = glCleanup;
+        }
       }
 
-      if (!cancelled) {
-        setRenderer("svg");
+      if (!rendererType && !cancelled) {
+        rendererType = "svg";
+      }
+
+      if (rendererType) {
+        setRenderer(rendererType);
+        cleanup = rendererCleanup;
       }
     };
 
@@ -780,6 +782,10 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
       cleanup?.();
     };
   }, [canvas]);
+
+  if (disabled) {
+    return null;
+  }
 
   if (renderer === "svg") {
     return (
@@ -794,11 +800,7 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
 
   return (
     <div className={styles.welcomeMeshContainerStyles}>
-      <canvas
-        ref={setCanvas}
-        className={styles.welcomeShaderCanvasStyles}
-        aria-hidden="true"
-      />
+      <canvas ref={setCanvas} className={styles.welcomeShaderCanvasStyles} aria-hidden="true" />
     </div>
   );
 });
@@ -844,7 +846,7 @@ function WelcomeHeroFilterBackgroundComponent({
         ) : null}
       </ClientOnly>
 
-      <MeshShaderBackground meshBlurId={meshBlurId} noiseId={noiseId} />
+      <MeshShaderBackground meshBlurId={meshBlurId} noiseId={noiseId} disabled={disabled} />
     </>
   );
 }

@@ -209,11 +209,7 @@ function HolographicOverlayComponent() {
     const timeLocation = gl.getUniformLocation(program, "u_time");
     const mouseLocation = gl.getUniformLocation(program, "u_mouse");
 
-    if (
-      resolutionLocation === null ||
-      timeLocation === null ||
-      mouseLocation === null
-    ) {
+    if (resolutionLocation === null || timeLocation === null || mouseLocation === null) {
       console.warn("Missing WebGL uniform location", {
         resolutionLocation,
         timeLocation,
@@ -292,13 +288,7 @@ function HolographicOverlayComponent() {
     };
   }, []);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className={styles.holographicOverlayStyles}
-      aria-hidden="true"
-    />
-  );
+  return <canvas ref={canvasRef} className={styles.holographicOverlayStyles} aria-hidden="true" />;
 }
 
 export const HolographicOverlay = memo(HolographicOverlayComponent);

@@ -9,7 +9,15 @@ import { WelcomeHeroComputerGlitchSignalMap } from "./components/glitch-signal-m
 import { WelcomeHeroComputerSystemMetricsPanel } from "./components/system-metrics-panel/welcome-hero-computer-system-metrics-panel.component";
 import * as styles from "./welcome-hero-computer.css";
 
-function WelcomeHeroComputerComponentInner({ mousePosition }: { mousePosition: MousePosition }) {
+interface WelcomeHeroComputerComponentProps {
+  mousePosition: MousePosition;
+  disabled?: boolean;
+}
+
+function WelcomeHeroComputerComponentInner({
+  mousePosition,
+  disabled = false,
+}: WelcomeHeroComputerComponentProps) {
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -24,10 +32,11 @@ function WelcomeHeroComputerComponentInner({ mousePosition }: { mousePosition: M
     rootMargin: "100px",
   });
 
-  const shouldAnimate = useAnimationPriority({
-    priority: "medium",
-    isVisible: isIntersecting,
-  });
+  const shouldAnimate =
+    useAnimationPriority({
+      priority: "medium",
+      isVisible: isIntersecting,
+    }) && !disabled;
   shouldAnimateRef.current = shouldAnimate;
 
   useEffect(() => {
@@ -115,7 +124,8 @@ export const WelcomeHeroComputerComponent = memo(
     // Only rerender if mouse position values actually changed
     return (
       prevProps.mousePosition.x === nextProps.mousePosition.x &&
-      prevProps.mousePosition.y === nextProps.mousePosition.y
+      prevProps.mousePosition.y === nextProps.mousePosition.y &&
+      prevProps.disabled === nextProps.disabled
     );
   },
 );

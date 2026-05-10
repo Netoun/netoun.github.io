@@ -217,7 +217,7 @@ export const WelcomeHeroComputerGlitchSignalMap = memo(
         </div>
 
         <div className={styles.dotsLayerStyles}>
-          {dots.map((dot, index) => {
+          {dots.map((dot) => {
             return (
               <span
                 key={`signal-dot-${dot.top}-${dot.left}`}
