@@ -15,6 +15,8 @@ const bottomRevealKeyframes = keyframes({
 
 export const rootStyles = style({
   position: "relative",
+  isolation: "isolate",
+  contain: "layout paint style",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
@@ -133,14 +135,12 @@ export const reelStyles = style({
 const appearLines = keyframes({
   "0%": {
     opacity: 0,
-    maxHeight: 0,
     color: vars.colors.primary,
-    transform: "translate3d(-10px, 0, 0)",
+    transform: "translate3d(-10px, 0, 0) scaleY(0.8)",
   },
   "100%": {
     opacity: 1,
-    maxHeight: "80px",
-    transform: "translate3d(0, 0, 0)",
+    transform: "translate3d(0, 0, 0) scaleY(1)",
   },
 });
 
