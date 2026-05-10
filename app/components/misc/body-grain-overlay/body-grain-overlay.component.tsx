@@ -20,8 +20,7 @@ const GRAIN_CONFIG = {
   maxAlpha: 0.11,
 } as const;
 
-const toGlslFloat = (value: number) =>
-  value.toFixed(8).replace(/0+$/, "").replace(/\.$/, ".0");
+const toGlslFloat = (value: number) => value.toFixed(8).replace(/0+$/, "").replace(/\.$/, ".0");
 
 const VERTEX_SHADER = `
 attribute vec2 a_position;
@@ -101,10 +100,7 @@ void main() {
 `;
 
 function getCanvasSize() {
-  const dpr = Math.min(
-    window.devicePixelRatio || 1,
-    GRAIN_CONFIG.maxDevicePixelRatio,
-  );
+  const dpr = Math.min(window.devicePixelRatio || 1, GRAIN_CONFIG.maxDevicePixelRatio);
 
   return {
     width: Math.max(1, Math.floor(window.innerWidth * dpr)),
@@ -286,13 +282,7 @@ function BodyGrainOverlayComponent() {
     };
   }, []);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className={styles.bodyGrainOverlayStyles}
-      aria-hidden="true"
-    />
-  );
+  return <canvas ref={canvasRef} className={styles.bodyGrainOverlayStyles} aria-hidden="true" />;
 }
 
 export const BodyGrainOverlay = memo(BodyGrainOverlayComponent);

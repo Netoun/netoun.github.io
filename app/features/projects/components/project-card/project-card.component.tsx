@@ -31,11 +31,10 @@ export function ProjectCard({
   type = "project",
   rotate = 0,
 }: ProjectCardProps) {
-  const { ref: cardRef, isIntersecting } =
-    useIntersectionObserver<HTMLDivElement>({
-      threshold: 0,
-      rootMargin: "0px 0px 80px 0px",
-    });
+  const { ref: cardRef, isIntersecting } = useIntersectionObserver<HTMLDivElement>({
+    threshold: 0,
+    rootMargin: "0px 0px 80px 0px",
+  });
   const imageRef = useRef<HTMLImageElement>(null);
   const shouldAnimate = useAnimationPriority({
     priority: "medium",
@@ -112,12 +111,7 @@ export function ProjectCard({
         className={clsx(styles.cardStyle, isIntersecting && styles.cardVisible)}
         style={{ "--card-rotate": `${rotate}deg` } as React.CSSProperties}
       >
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.linkStyle}
-        >
+        <a href={url} target="_blank" rel="noopener noreferrer" className={styles.linkStyle}>
           <div className={styles.terminalBarStyle}>
             <div className={styles.terminalLeftStyle}>
               <TerminalButtons />
