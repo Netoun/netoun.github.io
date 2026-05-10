@@ -1,6 +1,7 @@
 interface SubExperience {
   title: string;
   description: string;
+  url?: string;
   stack?: string[];
 }
 

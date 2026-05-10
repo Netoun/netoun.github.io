@@ -183,22 +183,19 @@ export const descriptionStyle = style({
 export const projectsStyle = style({
   display: "flex",
   flexDirection: "column",
-  gap: vars.spacing.sm,
+  gap: vars.spacing.lg,
   padding: `${vars.spacing.sm} 0`,
   borderTop: "1px solid oklch(0.88 0.02 80 / 0.3)",
-  borderBottom: "1px solid oklch(0.88 0.02 80 / 0.3)",
 });
 
 export const projectStyle = style({
   display: "flex",
   flexDirection: "column",
-  gap: "2px",
+  gap: vars.spacing.xs,
 
   "@media": {
     [breakpoints.md]: {
-      flexDirection: "row",
       alignItems: "baseline",
-      gap: vars.spacing.md,
     },
   },
 });
@@ -221,6 +218,7 @@ export const projectDescStyle = style({
   fontFamily: vars.fontFamily.ppNeueMontreal,
   fontSize: vars.fontSize.sm,
   color: "oklch(0.42 0.01 80)",
+  maxWidth: "640px",
   lineHeight: vars.lineHeight.relaxed,
 });
 
