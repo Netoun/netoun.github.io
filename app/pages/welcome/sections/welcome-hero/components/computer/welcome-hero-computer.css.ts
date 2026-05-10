@@ -7,21 +7,25 @@ export const welcomeHeroComputerWrapperStyles = style({
   isolation: "isolate",
   contain: "layout paint style",
   zIndex: 10,
-  bottom: 0,
+  bottom: "0rem",
   right: "5vw",
-  filter: `drop-shadow(0 0 2.5rem color-mix(in srgb, ${vars.colors.secondary} 30%, transparent))`,
-  width: "300px",
+  opacity: 0.94,
+  filter: `drop-shadow(0 0 3rem color-mix(in srgb, ${vars.colors.secondary} 42%, transparent))`,
+  width: "340px",
   selectors: {
     ':global([data-quality="high"]) &': {
-      filter: `drop-shadow(0 0 3.5rem color-mix(in srgb, ${vars.colors.secondary} 70%, transparent))`,
+      opacity: 1,
+      filter: `drop-shadow(0 0 4.2rem color-mix(in srgb, ${vars.colors.secondary} 76%, transparent))`,
     },
   },
   "@media": {
     [breakpoints.md]: {
-      width: "400px",
+      bottom: "1.5rem",
+      width: "460px",
     },
     [breakpoints.xl]: {
-      width: "600px",
+      bottom: "3rem",
+      width: "640px",
     },
   },
 });
@@ -31,8 +35,7 @@ export const welcomeHeroComputerCapturesStyles = style({
   userSelect: "none",
   pointerEvents: "none",
   transformStyle: "preserve-3d",
-  transform:
-    "rotateY(var(--mouse-position-x)) rotateX(var(--mouse-position-y)) translateZ(0)",
+  transform: "rotateY(var(--mouse-position-x)) rotateX(var(--mouse-position-y)) translateZ(0)",
   willChange: "transform",
   backfaceVisibility: "hidden",
 });

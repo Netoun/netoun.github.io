@@ -10,26 +10,8 @@ const INITIAL_ROWS_COUNT = 10;
 const MIN_ROWS_COUNT = 6;
 const MAX_ROWS_COUNT = 30;
 
-const TOKENS_A = [
-  "PROCESS",
-  "GRID",
-  "SYNC",
-  "ION",
-  "RET",
-  "NODE",
-  "CORE",
-  "MUX",
-];
-const TOKENS_B = [
-  "ONLINE",
-  "IDLE",
-  "TRACE",
-  "LOCK",
-  "FLOW",
-  "READY",
-  "SHIFT",
-  "LINK",
-];
+const TOKENS_A = ["PROCESS", "GRID", "SYNC", "ION", "RET", "NODE", "CORE", "MUX"];
+const TOKENS_B = ["ONLINE", "IDLE", "TRACE", "LOCK", "FLOW", "READY", "SHIFT", "LINK"];
 const HEX = "0123456789ABCDEF";
 
 const lcg = (seed: number) => (seed * 1664525 + 1013904223) >>> 0;
@@ -81,10 +63,7 @@ export const WelcomeHeroComputerFakeConsole = ({
 }: WelcomeHeroComputerFakeConsoleProps) => {
   const [rowsCount, setRowsCount] = useState(INITIAL_ROWS_COUNT);
   const [{ lines }, setConsoleState] = useState(() => {
-    const [initialLines, initialSeed] = createLines(
-      0x1a2b3c4d,
-      INITIAL_ROWS_COUNT,
-    );
+    const [initialLines, initialSeed] = createLines(0x1a2b3c4d, INITIAL_ROWS_COUNT);
     return { lines: initialLines, seed: initialSeed };
   });
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -130,16 +109,11 @@ export const WelcomeHeroComputerFakeConsole = ({
     const updateRowsCount = (height: number) => {
       const nextRowsCount = Math.max(
         MIN_ROWS_COUNT,
-        Math.min(
-          MAX_ROWS_COUNT,
-          Math.floor(height / (lineHeightRef.current + lineGap)) + 2,
-        ),
+        Math.min(MAX_ROWS_COUNT, Math.floor(height / (lineHeightRef.current + lineGap)) + 2),
       );
 
       setRowsCount((previousRowsCount) => {
-        return previousRowsCount === nextRowsCount
-          ? previousRowsCount
-          : nextRowsCount;
+        return previousRowsCount === nextRowsCount ? previousRowsCount : nextRowsCount;
       });
     };
 
@@ -163,18 +137,13 @@ export const WelcomeHeroComputerFakeConsole = ({
 
       if (previousState.lines.length > rowsCount) {
         return {
-          lines: previousState.lines.slice(
-            previousState.lines.length - rowsCount,
-          ),
+          lines: previousState.lines.slice(previousState.lines.length - rowsCount),
           seed: previousState.seed,
         };
       }
 
       const missingLinesCount = rowsCount - previousState.lines.length;
-      const [newLines, nextSeed] = createLines(
-        previousState.seed,
-        missingLinesCount,
-      );
+      const [newLines, nextSeed] = createLines(previousState.seed, missingLinesCount);
 
       return {
         lines: [...previousState.lines, ...newLines],
@@ -280,11 +249,7 @@ export const WelcomeHeroComputerFakeConsole = ({
           {renderLines.map((line, index) => {
             const isDim = index < rowsCount - 3;
             return (
-              <p
-                key={`${line}-${index}`}
-                className={styles.lineStyles}
-                data-dim={isDim}
-              >
+              <p key={`${line}-${index}`} className={styles.lineStyles} data-dim={isDim}>
                 {line}
               </p>
             );

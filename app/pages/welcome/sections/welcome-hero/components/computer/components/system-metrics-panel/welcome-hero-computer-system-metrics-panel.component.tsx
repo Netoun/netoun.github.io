@@ -19,8 +19,7 @@ const DRIFT_SEQUENCES = [
 
 const UPDATE_INTERVAL_MS = 620;
 
-const clamp = (value: number, min: number, max: number) =>
-  Math.max(min, Math.min(max, value));
+const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
 const buildInitialValues = () => {
   return BASE_VALUES.map((value, index) => {
@@ -70,7 +69,7 @@ export const WelcomeHeroComputerSystemMetricsPanel = memo(
           return previous.map((value, index) => {
             const sequence = DRIFT_SEQUENCES[index % DRIFT_SEQUENCES.length] ?? [0];
             const drift = sequence[tick % sequence.length] ?? 0;
-            const pulse = ((tick + index * 3) % 12) === 0 ? 1 : 0;
+            const pulse = (tick + index * 3) % 12 === 0 ? 1 : 0;
             return clamp(value + drift + pulse, 8, 96);
           });
         });
@@ -100,7 +99,9 @@ export const WelcomeHeroComputerSystemMetricsPanel = memo(
 
         <div className={styles.headerStyles}>
           <span className={styles.headerLabelStyles}>SYS.M</span>
-          <span className={styles.headerTickStyles}>T+{String(112 + tickRef.current).padStart(3, "0")}</span>
+          <span className={styles.headerTickStyles}>
+            T+{String(112 + tickRef.current).padStart(3, "0")}
+          </span>
         </div>
 
         <div className={styles.metricsListStyles}>

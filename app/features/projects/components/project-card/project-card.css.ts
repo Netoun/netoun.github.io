@@ -1,6 +1,6 @@
 import { vars } from "@styles/theme.css";
 import { globalStyle, style } from "@vanilla-extract/css";
-import { recipe } from "@vanilla-extract/recipes";
+
 
 export const cardStyle = style({
   borderRadius: vars.radius.md,
@@ -15,7 +15,7 @@ export const cardStyle = style({
   transition:
     "transform 0.25s cubic-bezier(.22,1,.36,1), box-shadow 0.35s cubic-bezier(.22,1,.36,1)",
   opacity: 0,
-  transform: "translateY(20px)",
+  transform: "translateY(20px) rotate(var(--card-rotate, 0deg))",
   position: "relative",
   transformStyle: "preserve-3d",
   perspective: "1000px",
@@ -27,7 +27,8 @@ export const cardStyle = style({
 
 globalStyle(`${cardStyle}:hover`, {
   boxShadow: `0 24px 60px oklch(0 0 0 / 0.14), 0 0 0 1px color-mix(in srgb, ${vars.colors.primary} 30%, transparent), 0 8px 40px color-mix(in srgb, ${vars.colors.primary} 28%, transparent), 0 2px 12px color-mix(in srgb, ${vars.colors.secondary} 15%, transparent)`,
-  transform: "rotateX(var(--x-rotation, 0deg)) rotateY(var(--y-rotation, 0deg)) scale(1.02)",
+  transform:
+    "rotate(0deg) rotateX(var(--x-rotation, 0deg)) rotateY(var(--y-rotation, 0deg)) translateY(-4px) scale(1.02)",
   transition:
     "transform 0.15s ease-out, box-shadow 0.35s cubic-bezier(.22,1,.36,1), opacity 0.5s ease",
 });
@@ -39,7 +40,7 @@ export const perspectiveWrapper = style({
 
 export const cardVisible = style({
   opacity: 1,
-  transform: "translateY(0)",
+  transform: "translateY(0) rotate(var(--card-rotate, 0deg))",
   transition: "opacity 0.5s ease, transform 0.5s ease, box-shadow 0.35s cubic-bezier(.22,1,.36,1)",
 });
 
@@ -65,7 +66,7 @@ export const terminalBarStyle = style({
   borderBottom: "1px solid oklch(0.88 0.02 80 / 0.5)",
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.xs,
-  color: "oklch(0.5 0.03 80)",
+  color: "oklch(0.38 0.03 80)",
   letterSpacing: "0.12em",
   textTransform: "uppercase",
 });
@@ -80,7 +81,7 @@ export const terminalDateStyle = style({
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.xs,
   letterSpacing: "0.12em",
-  color: "oklch(0.6 0.03 80)",
+  color: "oklch(0.45 0.03 80)",
 });
 
 export const imageContainerStyle = style({
@@ -142,9 +143,9 @@ export const promptStyle = style({
 
 export const descriptionStyle = style({
   fontFamily: vars.fontFamily.ppNeueMontreal,
-  fontSize: vars.fontSize.xs,
-  lineHeight: "1.55",
-  color: "oklch(0.38 0.01 80)",
+  fontSize: "0.8125rem",
+  lineHeight: "1.45",
+  color: "oklch(0.25 0.01 80)",
   margin: 0,
   flex: 1,
   display: "-webkit-box",
@@ -179,6 +180,21 @@ export const linkLabelStyle = style({
   cursor: "pointer",
   padding: 0,
   transition: "color 0.2s",
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "2px",
+});
+
+export const linkArrowStyle = style({
+  display: "inline-block",
+  opacity: 0,
+  transform: "translateX(-4px)",
+  transition: "opacity 0.2s ease, transform 0.2s ease",
+});
+
+globalStyle(`${cardStyle}:hover ${linkArrowStyle}`, {
+  opacity: 1,
+  transform: "translateX(0)",
 });
 
 globalStyle(`${cardStyle}:hover ${linkLabelStyle}`, {

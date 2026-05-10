@@ -57,10 +57,7 @@ function WelcomeHeroComputerComponentInner({ mousePosition }: { mousePosition: M
         if (idleCallbackId) cancelIdleCallback(idleCallbackId);
 
         if ("requestIdleCallback" in window) {
-          idleCallbackId = requestIdleCallback(
-            () => setRotation(newRotation),
-            { timeout: 100 },
-          );
+          idleCallbackId = requestIdleCallback(() => setRotation(newRotation), { timeout: 100 });
         } else {
           setRotation(newRotation);
         }

@@ -71,6 +71,42 @@ export const gridStyle = style({
   },
 });
 
+export const filterContainerStyle = style({
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "8px",
+  justifyContent: "center",
+  marginBottom: vars.spacing.xl,
+});
+
+export const filterButtonBase = style({
+  fontFamily: vars.fontFamily.doto,
+  fontSize: vars.fontSize.sm,
+  letterSpacing: "0.12em",
+  textTransform: "uppercase",
+  padding: "6px 16px",
+  borderRadius: "999px",
+  border: "1px solid oklch(0.88 0.02 80 / 0.5)",
+  background: "oklch(1 0 0 / 0.4)",
+  color: "oklch(0.45 0.03 80)",
+  cursor: "pointer",
+  transition: "all 0.2s ease",
+  backdropFilter: "blur(8px)",
+  WebkitBackdropFilter: "blur(8px)",
+  ":hover": {
+    background: "oklch(1 0 0 / 0.7)",
+    color: vars.colors.foreground,
+    borderColor: vars.colors.primary,
+  },
+});
+
+export const filterButtonActive = style({
+  background: vars.colors.primary,
+  color: "oklch(0.2 0.05 85)",
+  borderColor: vars.colors.primary,
+  fontWeight: vars.fontWeight.bold,
+});
+
 export const emptyStateStyle = style({
   textAlign: "center",
   padding: `${vars.spacing["3xl"]} 0`,

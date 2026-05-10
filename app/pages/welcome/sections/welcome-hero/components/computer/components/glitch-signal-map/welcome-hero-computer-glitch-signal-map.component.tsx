@@ -136,11 +136,7 @@ export const WelcomeHeroComputerGlitchSignalMap = memo(
 
           const shouldRecalibrate = (nextSeed & 0x7f) <= 4;
           const isActive = !shouldRecalibrate && ((nextSeed >>> 4) & 0x0f) < 5;
-          const nextState = shouldRecalibrate
-            ? "recalibrating"
-            : isActive
-              ? "active"
-              : "idle";
+          const nextState = shouldRecalibrate ? "recalibrating" : isActive ? "active" : "idle";
 
           seedsRef.current[blockIndex] = nextSeed;
           statesRef.current[blockIndex] = nextState;
@@ -212,9 +208,11 @@ export const WelcomeHeroComputerGlitchSignalMap = memo(
                 className={styles.blockStyles}
                 data-state={block.state}
                 data-accent={block.accent ? "true" : "false"}
-                style={{
-                  "--block-delay": block.delay,
-                } as CSSProperties}
+                style={
+                  {
+                    "--block-delay": block.delay,
+                  } as CSSProperties
+                }
               />
             );
           })}

@@ -30,10 +30,7 @@ export function useAnimationPriority({ priority, isVisible }: AnimationPriorityC
       if (!isVisible) {
         dispatch({ type: "STOP" });
       } else if ("requestIdleCallback" in window) {
-        const id = requestIdleCallback(
-          () => dispatch({ type: "ANIMATE" }),
-          { timeout: 1000 },
-        );
+        const id = requestIdleCallback(() => dispatch({ type: "ANIMATE" }), { timeout: 1000 });
         return () => {
           cancelIdleCallback(id);
           dispatch({ type: "STOP" });

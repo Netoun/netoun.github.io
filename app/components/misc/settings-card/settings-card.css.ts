@@ -36,4 +36,3 @@ export const settingsCardContent = style({
   flexDirection: "column",
   gap: "16px",
 });
-
