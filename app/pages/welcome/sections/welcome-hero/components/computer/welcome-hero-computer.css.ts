@@ -66,6 +66,7 @@ export const zone2Styles = style({
   ...gridBase,
   gridColumn: "3 / 4",
   gridRow: "1 / 3",
+  pointerEvents: "auto",
 });
 
 export const zone3Styles = style({

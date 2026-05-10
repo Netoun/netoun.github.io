@@ -8,6 +8,45 @@ export interface WelcomeHeroComputerCyberneticGlyphGridProps {
 }
 
 const HEX = "0123456789ABCDEF";
+const GLYPH_GLITCH_TOKENS = [
+  "  ",
+  " .",
+  ". ",
+  "░░",
+  "▒▒",
+  "▓▓",
+  "██",
+  "█░",
+  "░█",
+  "▚▞",
+  "▞▚",
+  "▖▗",
+  "▘▝",
+  "▙▟",
+  "▛▜",
+  "◢◣",
+  "◤◥",
+  "◧◨",
+  "◩◪",
+  "▔▁",
+  "▁▔",
+  "▏▕",
+  "▕▏",
+  "╳╳",
+  "╱╲",
+  "╲╱",
+  "┇┇",
+  "┊┊",
+  "╍╍",
+  "⟦⟧",
+  "⟨⟩",
+  "◌◌",
+  "◍◍",
+  "◇◆",
+  "◆◇",
+  "◎◉",
+  "◉◎",
+];
 const BASE_SEED = 0x2f6a91c3;
 const LCG_A = 1664525;
 const LCG_C = 1013904223;
@@ -23,6 +62,11 @@ const hexPair = (seed: number): [string, number] => {
   const next = lcg(seed);
   const value = `${HEX[next & 0x0f]}${HEX[(next >>> 4) & 0x0f]}`;
   return [value, lcg(next)];
+};
+
+const glitchToken = (seed: number): [string, number] => {
+  const next = lcg(seed);
+  return [GLYPH_GLITCH_TOKENS[next % GLYPH_GLITCH_TOKENS.length] ?? "░░", lcg(next)];
 };
 
 const buildInitialValues = (count: number) => {
@@ -133,14 +177,37 @@ export const WelcomeHeroComputerCyberneticGlyphGrid = memo(
 
         for (let index = 0; index < batch; index += 1) {
           const cellIndex = (frameStep * 11 + index * 37 + 17) % count;
-          const [nextValue, nextSeed] = hexPair(seedsRef.current[cellIndex] ?? BASE_SEED);
+          const currentSeed = seedsRef.current[cellIndex] ?? BASE_SEED;
+          const cellNode = cellRefs.current[cellIndex];
+
+          const shouldGlitch = ((currentSeed >>> 1) & 0x1f) <= 2;
+
+          const [nextValue, nextSeed] = shouldGlitch
+            ? glitchToken(currentSeed)
+            : hexPair(currentSeed);
+
           valuesRef.current[cellIndex] = nextValue;
           seedsRef.current[cellIndex] = nextSeed;
 
-          const node = cellRefs.current[cellIndex];
-          if (!node) continue;
-          node.textContent = nextValue;
-          node.dataset.accent = ((nextSeed >>> 3) & 0x07) === 0 ? "true" : "false";
+          if (!cellNode) continue;
+          cellNode.textContent = nextValue;
+          cellNode.dataset.accent = ((nextSeed >>> 3) & 0x07) === 0 ? "true" : "false";
+          cellNode.dataset.glitch = shouldGlitch ? "true" : "false";
+
+          if (shouldGlitch) {
+            const settleSeed = lcg(nextSeed);
+            const [settleValue, stableSeed] = hexPair(settleSeed);
+
+            window.setTimeout(() => {
+              const liveNode = cellRefs.current[cellIndex];
+              if (!liveNode) return;
+              liveNode.textContent = settleValue;
+              liveNode.dataset.glitch = "false";
+              liveNode.dataset.accent = ((stableSeed >>> 4) & 0x07) === 0 ? "true" : "false";
+              valuesRef.current[cellIndex] = settleValue;
+              seedsRef.current[cellIndex] = stableSeed;
+            }, 92);
+          }
         }
       };
 
@@ -190,6 +257,7 @@ export const WelcomeHeroComputerCyberneticGlyphGrid = memo(
                 }}
                 className={styles.cellStyles}
                 data-accent={cell.accent ? "true" : "false"}
+                data-glitch="false"
                 style={{
                   "--pulse-delay": cell.pulseDelay,
                 } as CSSProperties}

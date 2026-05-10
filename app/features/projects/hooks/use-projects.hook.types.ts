@@ -10,4 +10,5 @@ export interface Project {
   url: string;
   featured?: boolean;
   type?: ProjectType;
+  rotate?: number;
 }
