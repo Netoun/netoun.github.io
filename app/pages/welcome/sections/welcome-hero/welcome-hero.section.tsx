@@ -20,9 +20,10 @@ export function WelcomeHeroSection() {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
-  const { ref: sectionRef, isIntersecting: isVisible } = useIntersectionObserver<HTMLDivElement>({
-    threshold: 0.1,
-  });
+  const { ref: sectionRef, isIntersecting: isVisible } =
+    useIntersectionObserver<HTMLDivElement>({
+      threshold: 0.1,
+    });
   const [isTextSelected, setIsTextSelected] = useState(false);
   const mousePosition = useMousePosition({
     container: container ?? undefined,
@@ -52,8 +53,12 @@ export function WelcomeHeroSection() {
           const endNode = range.endContainer;
           const startElement = getElementFromNode(startNode);
           const endElement = getElementFromNode(endNode);
-          const isStartInContainer = startElement ? container.contains(startElement) : false;
-          const isEndInContainer = endElement ? container.contains(endElement) : false;
+          const isStartInContainer = startElement
+            ? container.contains(startElement)
+            : false;
+          const isEndInContainer = endElement
+            ? container.contains(endElement)
+            : false;
           isSelected = isStartInContainer || isEndInContainer;
         }
       }
@@ -133,7 +138,11 @@ export function WelcomeHeroSection() {
   }, [startAnimation]);
 
   return (
-    <Section ref={sectionRef} className={styles.welcomeSectionStyles} data-section="welcome-hero">
+    <Section
+      ref={sectionRef}
+      className={styles.welcomeSectionStyles}
+      data-section="welcome-hero"
+    >
       <div
         ref={welcomeContainerRef}
         id="welcome-container"
@@ -145,24 +154,34 @@ export function WelcomeHeroSection() {
           disabled={isTextSelected || !isVisible}
         />
         <div className={styles.welcomeContentStyle}>
-          <h1 id="welcome-heading" ref={headingRef} className={styles.welcomeHeadingStyles}>
-            Hi, I'm Nicolas&nbsp;: <br /> Full stack engineer creating clean, efficient web apps.
+          <h1
+            id="welcome-heading"
+            ref={headingRef}
+            className={styles.welcomeHeadingStyles}
+          >
+            Hi, I'm Nicolas&nbsp;: <br /> Full stack engineer creating clean,
+            efficient web apps.
           </h1>
           <p
             id="welcome-description"
             ref={descriptionRef}
             className={styles.welcomeDescriptionStyles}
           >
-            <b>_</b>❯ I'm passionate about web technologies and I love to learn new things. I'm
-            always looking for new challenges and opportunities to grow. I'm currently working at{" "}
-            <a className={styles.welcomeLinkStyles} href="https://www.lonestone.io">
+            <b>_</b>❯ I'm passionate about web technologies and I love to learn
+            new things. I'm always looking for new challenges and opportunities
+            to grow. I'm currently working at{" "}
+            <a
+              className={styles.welcomeLinkStyles}
+              href="https://www.lonestone.io"
+            >
               Lonestone
             </a>{" "}
             as a software engineer.
             <span className={styles.welcomeDescriptionCursorStyles}>▐</span>
           </p>
           <Button id="welcome-button" className={styles.welcomeButtonStyles}>
-            _Get my resume_ <span className={styles.welcomeButtonArrowStyles}>⤘</span>
+            _Get my resume_{" "}
+            <span className={styles.welcomeButtonArrowStyles}>⤘</span>
           </Button>
         </div>
       </div>
