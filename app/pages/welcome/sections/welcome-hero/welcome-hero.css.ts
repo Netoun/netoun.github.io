@@ -51,7 +51,7 @@ export const welcomeContentStyle = style({
   color: vars.colors.background,
   display: "flex",
   flexDirection: "column",
-  gap: vars.spacing.xl,
+  gap: vars.spacing.lg,
 
   "@media": {
     [breakpoints.md]: {
@@ -71,7 +71,11 @@ export const welcomeHeadingStyles = style({
   letterSpacing: "-0.035em",
   lineHeight: "0.9",
 
-  textShadow: vars.textShadow.glow,
+  textShadow: `
+    0 0 10px color-mix(in srgb, ${vars.colors.background} 26%, transparent),
+    0 0 22px color-mix(in srgb, ${vars.colors.background} 18%, transparent),
+    0 0 42px color-mix(in srgb, ${vars.colors.secondary} 22%, transparent)
+  `,
 
   "@media": {
     [breakpoints.sm]: {
@@ -107,6 +111,20 @@ export const welcomeDescriptionStyles = style({
   },
 });
 
+export const welcomeMetaStyles = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: vars.spacing.xs,
+  marginTop: `-${vars.spacing.sm}`,
+  color: `color-mix(in srgb, ${vars.colors.background} 88%, ${vars.colors.secondary} 12%)`,
+  fontFamily: vars.fontFamily.doto,
+  fontSize: vars.fontSize.base,
+  letterSpacing: "0.04em",
+  textTransform: "uppercase",
+  opacity: 0.86,
+  textShadow: vars.textShadow.glowSm,
+});
+
 const welcomeDescriptionCursorKeyframes = keyframes({
   "0%": {
     opacity: 1,
@@ -135,7 +153,8 @@ export const welcomeButtonStyles = style([
     fontSize: vars.fontSize.xl,
     fontWeight: "900",
 
-    textShadow: vars.textShadow.glow,
+    marginTop: vars.spacing.sm,
+    textShadow: vars.textShadow.glowPrimary,
 
     ":hover": {
       textShadow: vars.textShadow.glowPrimary,
@@ -168,6 +187,23 @@ export const welcomeButtonArrowStyles = style({
   selectors: {
     [`${welcomeButtonStyles}:hover &`]: {
       animation: `${welcomeButtonArrowKeyframes} 800ms ease-in-out infinite`,
+    },
+  },
+});
+
+export const welcomeButtonLabelStyles = style({
+  selectors: {
+    [`${welcomeButtonStyles}:hover &`]: {
+      opacity: 0,
+    },
+  },
+});
+
+export const welcomeButtonHoverLabelStyles = style({
+  display: "none",
+  selectors: {
+    [`${welcomeButtonStyles}:hover &`]: {
+      display: "inline",
     },
   },
 });

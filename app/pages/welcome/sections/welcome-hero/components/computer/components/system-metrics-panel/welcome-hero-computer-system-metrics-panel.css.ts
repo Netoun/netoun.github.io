@@ -47,8 +47,7 @@ export const scanlineStyles = style({
   height: "40%",
   pointerEvents: "none",
   opacity: 0.2,
-  background:
-    "linear-gradient(180deg, transparent 0%, oklch(1 0 0 / 0.16) 52%, transparent 100%)",
+  background: "linear-gradient(180deg, transparent 0%, oklch(1 0 0 / 0.16) 52%, transparent 100%)",
   animation: `${scanlineKeyframes} 7.1s linear infinite`,
   selectors: {
     ':global([data-quality="high"]) &': {
@@ -155,8 +154,7 @@ export const metricBarStyles = style({
     left: 0,
     right: 0,
     bottom: 0,
-    background:
-      "linear-gradient(90deg, transparent 0%, oklch(1 0 0 / 0.22) 50%, transparent 100%)",
+    background: "linear-gradient(90deg, transparent 0%, oklch(1 0 0 / 0.22) 50%, transparent 100%)",
     opacity: 0.35,
     pointerEvents: "none",
   },

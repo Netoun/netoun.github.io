@@ -98,7 +98,15 @@ const NoiseOverlaySVG = memo(function NoiseOverlaySVG() {
       className={styles.welcomeNoiseOverlayStyles}
     >
       <title>Noise Overlay</title>
-      <rect x="0" y="0" width="1000" height="500" filter="url(#noise)" fill="white" opacity="0.08" />
+      <rect
+        x="0"
+        y="0"
+        width="1000"
+        height="500"
+        filter="url(#noise)"
+        fill="white"
+        opacity="0.08"
+      />
     </svg>
   );
 });
@@ -124,7 +132,7 @@ uniform float u_quality;
 const float FILM_GRAIN_FLICKER_BASE = 0.98;
 const float FILM_GRAIN_FLICKER_RANGE = 0.02;
 const float FILM_GRAIN_JITTER = 1.2;
-const float FILM_GRAIN_STRENGTH = 0.14;
+const float FILM_GRAIN_STRENGTH = 0.09;
 
 float hash(vec2 p) {
   return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
@@ -179,7 +187,7 @@ void main() {
   vec3 col3 = vec3(0.79, 0.29, 0.88);
 
   vec3 color = vec3(0.0);
-  color += col1 * m1 * 0.35;
+  color += col1 * m1 * 0.26;
   color += col2 * m2 * 0.33;
   color += col3 * m3 * 0.31;
 
@@ -240,7 +248,7 @@ const MeshShaderBackground = memo(function MeshShaderBackground() {
       if (!adapter) return null;
 
       const device = await adapter.requestDevice();
-      const context = canvas.getContext("webgpu");
+      const context = canvas.getContext("webgpu") as GPUCanvasContext;
       if (!context) return null;
 
       const format = gpu.getPreferredCanvasFormat();
@@ -255,7 +263,7 @@ struct Uniforms { resolution : vec2f, time : f32, quality : f32 };
 const FILM_GRAIN_FLICKER_BASE : f32 = 0.98;
 const FILM_GRAIN_FLICKER_RANGE : f32 = 0.02;
 const FILM_GRAIN_JITTER : f32 = 1.2;
-const FILM_GRAIN_STRENGTH : f32 = 0.14;
+const FILM_GRAIN_STRENGTH : f32 = 0.09;
 
 @vertex
 fn vsMain(@builtin(vertex_index) i : u32) -> VertexOut {
@@ -304,7 +312,7 @@ fn fsMain(in: VertexOut) -> @location(0) vec4f {
   let col1 = vec3f(0.97, 0.78, 0.28);
   let col2 = vec3f(0.33, 0.84, 0.56);
   let col3 = vec3f(0.79, 0.29, 0.88);
-  var color = col1 * m1 * 0.35 + col2 * m2 * 0.33 + col3 * m3 * 0.31;
+  var color = col1 * m1 * 0.26 + col2 * m2 * 0.33 + col3 * m3 * 0.31;
   let dist = distance(uv, vec2f(0.5));
   let vig = 1.0 - smoothstep(0.38, 0.92, dist);
   color *= (0.72 + 0.28 * vig);

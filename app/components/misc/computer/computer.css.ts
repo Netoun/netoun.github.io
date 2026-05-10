@@ -90,7 +90,6 @@ export const computerScreenStyle = style({
   },
 });
 
-
 // Lid frame
 export const computerFrameLidStyle = style([
   baseFrameStyle,

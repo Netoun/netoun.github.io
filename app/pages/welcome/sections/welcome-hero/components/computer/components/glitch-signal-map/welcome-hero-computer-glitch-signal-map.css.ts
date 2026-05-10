@@ -52,8 +52,7 @@ export const scanlineStyles = style({
   pointerEvents: "none",
   zIndex: 2,
   opacity: 0.2,
-  background:
-    "linear-gradient(180deg, transparent 0%, oklch(1 0 0 / 0.12) 50%, transparent 100%)",
+  background: "linear-gradient(180deg, transparent 0%, oklch(1 0 0 / 0.12) 50%, transparent 100%)",
   animation: `${scanKeyframes} 9.2s linear infinite`,
   selectors: {
     ':global([data-quality="high"]) &': {
@@ -90,7 +89,7 @@ export const blockStyles = style({
   animation: `${lanePulseKeyframes} 3.4s ease-in-out infinite`,
   animationDelay: "var(--block-delay)",
   selectors: {
-    '&:not(:hover)': {
+    "&:not(:hover)": {
       transitionDelay: "220ms",
     },
     '&[data-accent="true"]': {
@@ -104,13 +103,14 @@ export const blockStyles = style({
       background: `color-mix(in srgb, ${vars.colors.primary} 62%, ${vars.colors.tertiary} 38%)`,
       boxShadow: `0 0 10px color-mix(in srgb, ${vars.colors.primary} 22%, transparent)`,
     },
-    '&:hover, &[data-state="idle"]:hover, &[data-state="active"]:hover, &[data-state="recalibrating"]:hover': {
-      opacity: 0.9,
-      background: `color-mix(in srgb, ${vars.colors.primary} 54%, ${vars.colors.secondary} 46%)`,
-      boxShadow: `0 0 10px color-mix(in srgb, ${vars.colors.primary} 24%, transparent)`,
-      animation: "none",
-      transitionDelay: "0ms",
-    },
+    '&:hover, &[data-state="idle"]:hover, &[data-state="active"]:hover, &[data-state="recalibrating"]:hover':
+      {
+        opacity: 0.9,
+        background: `color-mix(in srgb, ${vars.colors.primary} 54%, ${vars.colors.secondary} 46%)`,
+        boxShadow: `0 0 10px color-mix(in srgb, ${vars.colors.primary} 24%, transparent)`,
+        animation: "none",
+        transitionDelay: "0ms",
+      },
     ':global([data-quality="high"]) &[data-state="active"]': {
       opacity: 0.66,
     },

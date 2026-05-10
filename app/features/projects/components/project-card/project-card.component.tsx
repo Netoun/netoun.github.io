@@ -104,8 +104,12 @@ export function ProjectCard({
   const typeLabel = type === "personal" ? "PERSONAL PROJECT" : "PROJECT";
 
   return (
-    <div className={styles.perspectiveWrapper} style={{ transform: `rotate(${rotate}deg)` }}>
-      <div ref={cardRef} className={clsx(styles.cardStyle, isIntersecting && styles.cardVisible)}>
+    <div className={styles.perspectiveWrapper}>
+      <div
+        ref={cardRef}
+        className={clsx(styles.cardStyle, isIntersecting && styles.cardVisible)}
+        style={{ "--card-rotate": `${rotate}deg` } as React.CSSProperties}
+      >
         <a href={url} target="_blank" rel="noopener noreferrer" className={styles.linkStyle}>
           <div className={styles.terminalBarStyle}>
             <div className={styles.terminalLeftStyle}>
@@ -144,7 +148,10 @@ export function ProjectCard({
           </div>
 
           <div className={styles.footerStyle}>
-            <span className={styles.linkLabelStyle}>_VIEW PROJECT_</span>
+            <span className={styles.linkLabelStyle}>
+              _VIEW PROJECT_
+              <span className={styles.linkArrowStyle}>→</span>
+            </span>
             {featured ? (
               <span className={styles.statusBadgeStyle}>ACTIVE</span>
             ) : (

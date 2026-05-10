@@ -1,7 +1,6 @@
 import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
 import { globalStyle, keyframes, style } from "@vanilla-extract/css";
-import { recipe } from "@vanilla-extract/recipes";
 
 const ping = keyframes({
   "0%": { transform: "scale(1)", opacity: 0.8 },
@@ -235,41 +234,4 @@ export const stackStyle = style({
   gap: "6px",
 });
 
-const tagVariant = recipe({
-  base: {
-    fontFamily: vars.fontFamily.doto,
-    fontSize: "9.5px",
-    letterSpacing: "0.08em",
-    padding: "3px 10px",
-    borderRadius: vars.radius.full,
-  },
-  variants: {
-    color: {
-      pink: {
-        backgroundColor: `color-mix(in srgb, ${vars.colors.primary} 18%, transparent)`,
-        color: "oklch(0.38 0.1 166)",
-      },
-      green: {
-        backgroundColor: `color-mix(in srgb, #22c55e 18%, transparent)`,
-        color: "oklch(0.38 0.12 150)",
-      },
-      purple: {
-        backgroundColor: `color-mix(in srgb, ${vars.colors.tertiary} 18%, transparent)`,
-        color: "oklch(0.38 0.1 280)",
-      },
-      yellow: {
-        backgroundColor: `color-mix(in srgb, #eab308 18%, transparent)`,
-        color: "oklch(0.38 0.1 80)",
-      },
-      blue: {
-        backgroundColor: `color-mix(in srgb, #3b82f6 18%, transparent)`,
-        color: "oklch(0.38 0.1 220)",
-      },
-      default: {
-        backgroundColor: "oklch(0.92 0.02 80 / 0.5)",
-        color: "oklch(0.38 0.01 80)",
-      },
-    },
-  },
-});
 

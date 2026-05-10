@@ -57,8 +57,8 @@ void main() {
   float fine = hash((px + jitter) * 2.7 + vec2(u_time * 41.0, u_time * 33.0));
   float grain = (coarse * 0.56 + mid * 0.29 + fine * 0.15) - 0.5;
 
-  float alpha = (0.075 + grain * 0.14) * flicker;
-  gl_FragColor = vec4(vec3(0.0), clamp(alpha, 0.01, 0.2));
+  float alpha = (0.048 + grain * 0.085) * flicker;
+  gl_FragColor = vec4(vec3(0.0), clamp(alpha, 0.006, 0.11));
 }
 `;
 

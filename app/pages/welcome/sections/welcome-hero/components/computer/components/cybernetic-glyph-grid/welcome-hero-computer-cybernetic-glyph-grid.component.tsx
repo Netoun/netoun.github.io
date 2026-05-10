@@ -118,10 +118,7 @@ export const WelcomeHeroComputerCyberneticGlyphGrid = memo(
 
       const updateGrid = () => {
         const { width, height } = element.getBoundingClientRect();
-        const cols = Math.max(
-          8,
-          Math.floor((width - GRID_GAP_PX) / (CELL_WIDTH_PX + GRID_GAP_PX)),
-        );
+        const cols = Math.max(8, Math.floor((width - GRID_GAP_PX) / (CELL_WIDTH_PX + GRID_GAP_PX)));
         const rows = Math.max(
           6,
           Math.floor((height - GRID_GAP_PX) / (CELL_HEIGHT_PX + GRID_GAP_PX)),
@@ -258,9 +255,11 @@ export const WelcomeHeroComputerCyberneticGlyphGrid = memo(
                 className={styles.cellStyles}
                 data-accent={cell.accent ? "true" : "false"}
                 data-glitch="false"
-                style={{
-                  "--pulse-delay": cell.pulseDelay,
-                } as CSSProperties}
+                style={
+                  {
+                    "--pulse-delay": cell.pulseDelay,
+                  } as CSSProperties
+                }
               >
                 {cell.value}
               </span>
