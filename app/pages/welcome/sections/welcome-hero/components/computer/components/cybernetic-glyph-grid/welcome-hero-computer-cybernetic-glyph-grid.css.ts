@@ -8,6 +8,13 @@ const pulseKeyframes = keyframes({
   "100%": { opacity: 0.54, transform: "translate3d(0, 0, 0)" },
 });
 
+const glitchFlashKeyframes = keyframes({
+  "0%": { opacity: 0.48, transform: "translate3d(0, 0, 0)" },
+  "20%": { opacity: 0.95, transform: "translate3d(-0.45px, 0, 0)" },
+  "55%": { opacity: 0.72, transform: "translate3d(0.35px, 0, 0)" },
+  "100%": { opacity: 0.58, transform: "translate3d(0, 0, 0)" },
+});
+
 const scanlineKeyframes = keyframes({
   "0%": { transform: "translateY(-130%)" },
   "100%": { transform: "translateY(200%)" },
@@ -84,17 +91,22 @@ export const cellStyles = style({
   lineHeight: vars.lineHeight.none,
   fontSize: "clamp(0.46rem, 0.72vw, 0.78rem)",
   letterSpacing: "0.08em",
-  color: `color-mix(in srgb, ${vars.colors.secondary} 64%, ${vars.colors.muted} 36%)`,
-  textShadow: `0 0 7px color-mix(in srgb, ${vars.colors.secondary} 12%, transparent)`,
+  color: `color-mix(in srgb, ${vars.colors.secondary} 64%, ${vars.colors.primary} 36%)`,
+  textShadow: `0 0 7px color-mix(in srgb, ${vars.colors.primary} 12%, transparent)`,
   opacity: 0.62,
   transform: "translate3d(0, 0, 0)",
   animation: `${pulseKeyframes} 2.9s ease-in-out infinite`,
   animationDelay: "var(--pulse-delay)",
   selectors: {
     '&[data-accent="true"]': {
-      color: `color-mix(in srgb, ${vars.colors.primary} 46%, ${vars.colors.secondary} 54%)`,
+      color: `color-mix(in srgb, ${vars.colors.tertiary} 46%, ${vars.colors.kirby} 54%)`,
       opacity: 0.85,
       textShadow: `0 0 10px color-mix(in srgb, ${vars.colors.primary} 18%, transparent)`,
+    },
+    '&[data-glitch="true"]': {
+      animation: `${glitchFlashKeyframes} 190ms steps(2, end)`,
+      color: `color-mix(in srgb, ${vars.colors.tertiary} 34%, ${vars.colors.primary} 66%)`,
+      textShadow: `0 0 12px color-mix(in srgb, ${vars.colors.tertiary} 20%, transparent)`,
     },
   },
   "@media": {

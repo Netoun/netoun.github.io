@@ -5,6 +5,8 @@ import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook"
 import type { MousePosition } from "@/hooks/use-mouse-position.hook";
 import { WelcomeHeroComputerCyberneticGlyphGrid } from "./components/cybernetic-glyph-grid/welcome-hero-computer-cybernetic-glyph-grid.component";
 import { WelcomeHeroComputerFakeConsole } from "./components/fake-console/welcome-hero-computer-fake-console.component";
+import { WelcomeHeroComputerGlitchSignalMap } from "./components/glitch-signal-map/welcome-hero-computer-glitch-signal-map.component";
+import { WelcomeHeroComputerSystemMetricsPanel } from "./components/system-metrics-panel/welcome-hero-computer-system-metrics-panel.component";
 import * as styles from "./welcome-hero-computer.css";
 
 function WelcomeHeroComputerComponentInner({ mousePosition }: { mousePosition: MousePosition }) {
@@ -94,11 +96,15 @@ function WelcomeHeroComputerComponentInner({ mousePosition }: { mousePosition: M
             <div id="hero-computer-zone1" className={styles.zone1Styles}>
               <WelcomeHeroComputerFakeConsole isAnimating={shouldAnimate} />
             </div>
-            <div id="hero-computer-zone2" className={styles.zone2Styles} />
+            <div id="hero-computer-zone2" className={styles.zone2Styles}>
+              <WelcomeHeroComputerGlitchSignalMap isAnimating={shouldAnimate} />
+            </div>
             <div id="hero-computer-zone3" className={styles.zone3Styles}>
               <WelcomeHeroComputerCyberneticGlyphGrid isAnimating={shouldAnimate} />
             </div>
-            <div id="hero-computer-zone4" className={styles.zone4Styles} />
+            <div id="hero-computer-zone4" className={styles.zone4Styles}>
+              <WelcomeHeroComputerSystemMetricsPanel isAnimating={shouldAnimate} />
+            </div>
           </div>
         </Computer>
       </div>

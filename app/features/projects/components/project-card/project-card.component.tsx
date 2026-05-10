@@ -16,6 +16,7 @@ export interface ProjectCardProps {
   url: string;
   featured?: boolean;
   type?: ProjectType;
+  rotate?: number;
 }
 
 export function ProjectCard({
@@ -27,6 +28,7 @@ export function ProjectCard({
   url,
   featured = false,
   type = "project",
+  rotate = 0,
 }: ProjectCardProps) {
   const { ref: cardRef, isIntersecting } = useIntersectionObserver<HTMLDivElement>({
     threshold: 0,
@@ -102,7 +104,7 @@ export function ProjectCard({
   const typeLabel = type === "personal" ? "PERSONAL PROJECT" : "PROJECT";
 
   return (
-    <div className={styles.perspectiveWrapper}>
+    <div className={styles.perspectiveWrapper} style={{ transform: `rotate(${rotate}deg)` }}>
       <div ref={cardRef} className={clsx(styles.cardStyle, isIntersecting && styles.cardVisible)}>
         <a href={url} target="_blank" rel="noopener noreferrer" className={styles.linkStyle}>
           <div className={styles.terminalBarStyle}>
