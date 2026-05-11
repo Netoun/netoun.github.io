@@ -18,7 +18,6 @@ export const timelineStyle = style({
   position: "relative",
   display: "flex",
   flexDirection: "column",
-  paddingLeft: "32px",
 
   "@media": {
     [breakpoints.md]: {

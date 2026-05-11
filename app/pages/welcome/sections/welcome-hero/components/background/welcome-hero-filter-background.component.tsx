@@ -535,6 +535,10 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
         pass.end();
         device.queue.submit([encoder.finish()]);
 
+        if (!canvas.dataset.ready) {
+          canvas.dataset.ready = "true";
+        }
+
         if (common.reducedMotionRef.current) {
           isRendering = false;
           return;
@@ -693,6 +697,10 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
         gl.uniform1f(timeLocation, elapsed);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
 
+        if (!canvas.dataset.ready) {
+          canvas.dataset.ready = "true";
+        }
+
         if (common.reducedMotionRef.current) {
           isRendering = false;
           return;
@@ -787,20 +795,15 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
     return null;
   }
 
-  if (renderer === "svg") {
-    return (
-      <div className={styles.welcomeMeshContainerStyles}>
-        {MESH_SHAPES.map((mesh) => (
-          <MeshShapeSVG key={mesh.id} {...mesh} meshBlurId={meshBlurId} />
-        ))}
-        <NoiseOverlaySVG noiseId={noiseId} />
-      </div>
-    );
-  }
-
   return (
     <div className={styles.welcomeMeshContainerStyles}>
-      <canvas ref={setCanvas} className={styles.welcomeShaderCanvasStyles} aria-hidden="true" />
+      {MESH_SHAPES.map((mesh) => (
+        <MeshShapeSVG key={mesh.id} {...mesh} meshBlurId={meshBlurId} />
+      ))}
+      <NoiseOverlaySVG noiseId={noiseId} />
+      {renderer !== "svg" && (
+        <canvas ref={setCanvas} className={styles.welcomeShaderCanvasStyles} aria-hidden="true" />
+      )}
     </div>
   );
 });

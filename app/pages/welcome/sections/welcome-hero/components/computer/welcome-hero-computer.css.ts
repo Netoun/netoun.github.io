@@ -11,7 +11,8 @@ export const welcomeHeroComputerWrapperStyles = style({
   right: "5vw",
   opacity: 0.94,
   filter: `drop-shadow(0 0 3rem color-mix(in srgb, ${vars.colors.secondary} 42%, transparent))`,
-  width: "340px",
+  width: "max(100%, 400px)",
+  maxWidth: "100%",
   selectors: {
     ':global([data-quality="high"]) &': {
       opacity: 1,

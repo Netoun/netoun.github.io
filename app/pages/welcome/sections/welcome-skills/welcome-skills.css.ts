@@ -17,10 +17,11 @@ export const contentStyle = style({
 export const skillsGridStyle = style({
   display: "grid",
   gridTemplateColumns: "1fr",
-  gap: vars.spacing.xl,
+  gap: vars.spacing.md,
 
   "@media": {
     [breakpoints.md]: {
+      gap: vars.spacing.xl,
       gridTemplateColumns: "repeat(2, 1fr)",
     },
   },

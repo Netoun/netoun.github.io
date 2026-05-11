@@ -13,7 +13,6 @@ export const entryStyle = style({
   height: "100%",
 
   "::after": {
-    content: "''",
     position: "absolute",
     height: "100%",
     left: "-26px",
@@ -25,6 +24,7 @@ export const entryStyle = style({
   "@media": {
     [breakpoints.md]: {
       "::after": {
+        content: "''",
         left: "-29px",
       },
     },
@@ -37,6 +37,7 @@ globalStyle(`${entryStyle}:last-child::after`, {
 
 export const timelineDotStyle = style({
   position: "absolute",
+  display: "none",
   left: "-26px",
   top: "16px",
   width: "12px",
