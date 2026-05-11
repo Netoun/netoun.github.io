@@ -40,14 +40,18 @@ function WelcomeHeroComputerComponentInner({
   shouldAnimateRef.current = shouldAnimate;
 
   useEffect(() => {
-    let frameId: number;
+    let frameId: number | null = null;
     let idleCallbackId: number | undefined;
     let lastUpdateTime = 0;
-    const updateInterval = 16;
+    const updateInterval = 32; // Reduced from 16ms to 32ms (30fps instead of 60fps)
 
     const animate = (currentTime: number) => {
+      if (!shouldAnimateRef.current) {
+        frameId = null;
+        return;
+      }
+
       frameId = requestAnimationFrame(animate);
-      if (!shouldAnimateRef.current) return;
       if (currentTime - lastUpdateTime < updateInterval) return;
       lastUpdateTime = currentTime;
 
@@ -58,27 +62,31 @@ function WelcomeHeroComputerComponentInner({
       };
 
       if (
-        Math.abs(newRotation.x - lastRotationRef.current.x) > 0.0001 ||
-        Math.abs(newRotation.y - lastRotationRef.current.y) > 0.0001
+        Math.abs(newRotation.x - lastRotationRef.current.x) > 0.001 ||
+        Math.abs(newRotation.y - lastRotationRef.current.y) > 0.001
       ) {
         lastRotationRef.current = newRotation;
 
         if (idleCallbackId) cancelIdleCallback(idleCallbackId);
 
         if ("requestIdleCallback" in window) {
-          idleCallbackId = requestIdleCallback(() => setRotation(newRotation), { timeout: 100 });
+          idleCallbackId = requestIdleCallback(() => setRotation(newRotation), { timeout: 50 });
         } else {
           setRotation(newRotation);
         }
       }
     };
-    frameId = requestAnimationFrame(animate);
+
+    // Only start animation if component is visible
+    if (shouldAnimateRef.current) {
+      frameId = requestAnimationFrame(animate);
+    }
 
     return () => {
       if (frameId) cancelAnimationFrame(frameId);
       if (idleCallbackId) cancelIdleCallback(idleCallbackId);
     };
-  }, []);
+  }, [shouldAnimate]);
 
   return (
     <div

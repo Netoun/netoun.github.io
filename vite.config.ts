@@ -18,5 +18,22 @@ export default defineConfig({
   },
   build: {
     cssMinify: "esbuild",
+    minify: "esbuild",
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          // Separate vendor chunks for better caching
+          if (id.includes("node_modules/react") || id.includes("node_modules/react-dom")) {
+            return "vendor-react";
+          }
+          if (id.includes("node_modules/animejs")) {
+            return "vendor-anime";
+          }
+        },
+      },
+    },
+  },
+  esbuild: {
+    drop: ["console", "debugger"],
   },
 });

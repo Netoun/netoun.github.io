@@ -1,0 +1,83 @@
+# llms.txt
+# AI-Readable Information about Nicolas (Netoun)
+
+## About
+Nicolas is a Full Stack Engineer and Creative Developer based in Nantes, France.
+Currently working at Lonestone as a Software Engineer.
+
+## Contact & Links
+- Website: https://www.netoun.com
+- GitHub: https://github.com/netoun
+- LinkedIn: https://www.linkedin.com/in/nicolas-garnier
+- Location: Nantes, France
+
+## Expertise
+### Frontend Development
+- React, TypeScript, Next.js
+- React Router, Vanilla Extract, Tailwind CSS
+- React Aria, shadcn/ui
+- anime.js, Motion
+
+### Backend Development
+- NestJS, Node.js
+- PostgreSQL, Drizzle, MikroORM
+- Bun, Elysia
+
+### Real-time Systems
+- WebSockets, Server-Sent Events (SSE)
+- Queues, Streaming
+
+### Creative & Game Development
+- Three.js, Canvas 2D, WebGL
+- Rust, Bevy, WebGPU
+
+### Infrastructure
+- Docker, Cloudflare
+- Keycloak, Ansible
+
+## Projects
+### Treashunt
+- URL: https://github.com/Netoun/treashunt
+- Description: Personal project - Adventure design platform with exciting challenges
+- Tech: React, Drizzle, Cloudflare, Bun, Elysia
+
+### Game NTNH
+- URL: https://game-ntnh.netoun.com/
+- Description: Experimental procedural game built with Rust and Bevy
+- Tech: Rust, Bevy, WebGPU
+
+### Procedural Maps
+- URL: https://r-noise-map.vercel.app/
+- Description: Random map generation with procedural algorithms
+- Tech: TypeScript, React, Three.js, Canvas
+
+### Nzoth
+- URL: https://github.com/lonestone/nzoth
+- Description: NestJS utilities for building RESTful APIs with filtering, pagination, sorting, and Zod validation
+- Tech: TypeScript, NestJS, Zod
+
+### Lonestone Boilerplate
+- URL: https://github.com/lonestone/lonestone-boilerplate
+- Description: Starter kit for full-stack web apps, SaaS and websites
+- Tech: TypeScript, NestJS, React, Monorepo
+
+## Professional Experience
+### Lonestone (Jul 2021 - Present)
+- Role: Software Developer
+- Location: Nantes, FR
+- Projects: Desoutter, Cuevr, Mon Rét@b' d'abord
+
+### Easilys (Jul 2019 - Jul 2021)
+- Role: Full Stack Developer
+- Location: Nantes, FR
+
+### Sogeti (Sep 2017 - Oct 2019)
+- Role: Work-Study Program
+- Location: Nantes, FR
+
+## Languages
+- French (Native)
+- English (Professional)
+
+## Education
+- Master's degree in Computer Science
