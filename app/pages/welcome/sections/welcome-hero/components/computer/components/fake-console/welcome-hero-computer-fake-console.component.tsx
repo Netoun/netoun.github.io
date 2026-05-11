@@ -230,9 +230,10 @@ export const WelcomeHeroComputerFakeConsole = ({
       shiftDistanceRef.current = cachedShiftDistanceRef.current;
     }
 
+    // Increased tick interval from 340ms to 500ms to reduce main thread work
     const tick = window.setTimeout(() => {
       dispatch({ type: "TICK" });
-    }, 340);
+    }, 500);
 
     return () => {
       window.clearTimeout(tick);

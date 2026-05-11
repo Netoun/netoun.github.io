@@ -5,7 +5,7 @@ export const projects: Project[] = [
     slug: "My website",
     title: "My website",
     description:
-      "Mon portfolio personnel avec une DA néo-rétro futuriste, construit avec React Router v7 et Vanilla Extract.",
+      "My personal portfolio with a neo-retro futuristic design system, built with React Router v7 and Vanilla Extract.",
     date: "2026-04-27",
     tags: ["React", "TypeScript", "Vanilla Extract", "React Router"],
     image: "/images/projects/website-card.webp",

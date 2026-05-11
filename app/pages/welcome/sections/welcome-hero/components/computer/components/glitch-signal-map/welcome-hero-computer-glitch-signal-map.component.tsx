@@ -112,13 +112,19 @@ export const WelcomeHeroComputerGlitchSignalMap = memo(
       let frameId = 0;
       let lastTick = 0;
       let frameStep = 0;
+      let isRunning = false;
 
       const animate = (currentTime: number) => {
+        // Only run animation if component is animating and visible
+        if (!shouldAnimateRef.current || prefersReducedMotionRef.current) {
+          isRunning = false;
+          return;
+        }
+
         frameId = requestAnimationFrame(animate);
 
-        if (!shouldAnimateRef.current) return;
-        if (prefersReducedMotionRef.current) return;
-        if (currentTime - lastTick < TICK_MS) return;
+        // Reduce tick rate to every 250ms instead of 180ms
+        if (currentTime - lastTick < 250) return;
 
         lastTick = currentTime;
         frameStep += 1;
@@ -126,13 +132,16 @@ export const WelcomeHeroComputerGlitchSignalMap = memo(
         const count = seedsRef.current.length;
         if (count === 0) return;
 
-        const batch = Math.max(2, Math.floor(count * UPDATE_RATIO));
+        // Reduce batch size to minimize DOM updates
+        const batch = Math.max(1, Math.floor(count * 0.04));
+
+        // Use DocumentFragment pattern to batch DOM reads/writes
+        const updates: Array<{ index: number; state: string; accent: string; seed: number }> = [];
 
         for (let index = 0; index < batch; index += 1) {
           const blockIndex = (frameStep * 7 + index * 19 + 5) % count;
           const currentSeed = seedsRef.current[blockIndex] ?? BASE_SEED;
           const nextSeed = lcg(currentSeed);
-          const node = blockRefs.current[blockIndex];
 
           const shouldRecalibrate = (nextSeed & 0x7f) <= 4;
           const isActive = !shouldRecalibrate && ((nextSeed >>> 4) & 0x0f) < 5;
@@ -141,33 +150,51 @@ export const WelcomeHeroComputerGlitchSignalMap = memo(
           seedsRef.current[blockIndex] = nextSeed;
           statesRef.current[blockIndex] = nextState;
 
-          if (!node) continue;
-
-          node.dataset.state = nextState;
-          node.dataset.accent = ((nextSeed >>> 8) & 0x0f) === 0 ? "true" : "false";
-
-          if (shouldRecalibrate) {
-            const settleSeed = lcg(nextSeed);
-            window.setTimeout(() => {
-              const liveNode = blockRefs.current[blockIndex];
-              if (!liveNode) return;
-
-              const settledState = ((settleSeed >>> 3) & 0x0f) < 4 ? "active" : "idle";
-              liveNode.dataset.state = settledState;
-              liveNode.dataset.accent = ((settleSeed >>> 7) & 0x0f) === 0 ? "true" : "false";
-              seedsRef.current[blockIndex] = settleSeed;
-              statesRef.current[blockIndex] = settledState;
-            }, 120);
-          }
+          updates.push({
+            index: blockIndex,
+            state: nextState,
+            accent: ((nextSeed >>> 8) & 0x0f) === 0 ? "true" : "false",
+            seed: nextSeed,
+          });
         }
+
+        // Batch DOM updates
+        requestAnimationFrame(() => {
+          for (const update of updates) {
+            const node = blockRefs.current[update.index];
+            if (!node) continue;
+
+            node.dataset.state = update.state;
+            node.dataset.accent = update.accent;
+
+            if (update.state === "recalibrating") {
+              const settleSeed = lcg(update.seed);
+              setTimeout(() => {
+                const liveNode = blockRefs.current[update.index];
+                if (!liveNode) return;
+
+                const settledState = ((settleSeed >>> 3) & 0x0f) < 4 ? "active" : "idle";
+                liveNode.dataset.state = settledState;
+                liveNode.dataset.accent = ((settleSeed >>> 7) & 0x0f) === 0 ? "true" : "false";
+                seedsRef.current[update.index] = settleSeed;
+                statesRef.current[update.index] = settledState;
+              }, 120);
+            }
+          }
+        });
       };
 
-      frameId = requestAnimationFrame(animate);
+      // Start animation only when isAnimating becomes true
+      if (isAnimating && !isRunning) {
+        isRunning = true;
+        frameId = requestAnimationFrame(animate);
+      }
 
       return () => {
+        isRunning = false;
         if (frameId) cancelAnimationFrame(frameId);
       };
-    }, []);
+    }, [isAnimating]);
 
     const rootClassName = className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
 

@@ -18,8 +18,30 @@ const WelcomeSkillsSection = lazy(async () => {
 
 export function meta() {
   return [
-    { title: "Netoun - Full stack engineer" },
-    { name: "description", content: "Welcome to my personal website" },
+    { title: "Netoun - Full Stack Engineer & Creative Developer" },
+    {
+      name: "description",
+      content:
+        "Nicolas - Full-stack engineer crafting fast, clean web experiences. Specialized in React, TypeScript, Next.js, NestJS and creative frontend development.",
+    },
+    {
+      name: "keywords",
+      content:
+        "Full Stack Engineer, React Developer, TypeScript, Next.js, NestJS, Creative Developer, Frontend Engineer, Nantes",
+    },
+    { name: "author", content: "Nicolas" },
+    { name: "robots", content: "index, follow" },
+    { property: "og:title", content: "Netoun - Full Stack Engineer & Creative Developer" },
+    {
+      property: "og:description",
+      content: "Nicolas - Full-stack engineer crafting fast, clean web experiences.",
+    },
+    { property: "og:type", content: "website" },
+    { name: "twitter:title", content: "Netoun - Full Stack Engineer & Creative Developer" },
+    {
+      name: "twitter:description",
+      content: "Nicolas - Full-stack engineer crafting fast, clean web experiences.",
+    },
   ];
 }
 
