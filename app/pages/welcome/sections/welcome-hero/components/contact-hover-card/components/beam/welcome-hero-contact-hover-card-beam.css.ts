@@ -45,9 +45,11 @@ export const beamStyles = style({
     },
     "[data-open=true] &": {
       opacity: 1,
+      display: "block",
     },
     "[data-open=false] &:hover": {
       opacity: 0.3,
+      display: "block",
     },
     "[data-mobile=true] &": {
       top: "auto",
@@ -57,9 +59,11 @@ export const beamStyles = style({
       height: "1.25rem",
       transform: "translateX(-50%)",
       opacity: 0,
+      display: "none",
     },
     "[data-mobile=true][data-open=true] &": {
       opacity: 0.7,
+      display: "block",
     },
   },
 

@@ -8,6 +8,14 @@ type WelcomeHeroContentAnimationProps = {
 };
 
 /**
+ * Batch DOM writes using a document fragment approach
+ * to avoid interleaving reads and writes
+ */
+const batchStyleMutations = (elements: HTMLElement[], applyStyles: (el: HTMLElement) => void) => {
+  elements.forEach(applyStyles);
+};
+
+/**
  * Optimise les spans créées par text.split() pour éviter les forced reflows
  * Utilise cssText pour batcher les modifications DOM
  */
@@ -36,8 +44,9 @@ export function useWelcomeHeroContentAnimation() {
         optimizeSpansForAnimation(welcomeDescription);
 
         // Mark elements for GPU acceleration - batch DOM writes
-        welcomeHeading.style.cssText += "will-change: transform, opacity;";
-        welcomeButton.style.cssText += "will-change: transform, opacity;";
+        batchStyleMutations([welcomeHeading, welcomeButton], (el) => {
+          el.style.cssText += "will-change: transform, opacity;";
+        });
 
         const timeline = createTimeline({
           defaults: { ease: "inQuint", duration: 300 },
@@ -76,8 +85,12 @@ export function useWelcomeHeroContentAnimation() {
         // Handle completion callback
         timeline.then(() => {
           // Cleanup will-change after animation completes - batch DOM writes
-          welcomeHeading.style.cssText = welcomeHeading.style.cssText.replace(/will-change:[^;]+;?/g, "");
-          welcomeButton.style.cssText = welcomeButton.style.cssText.replace(/will-change:[^;]+;?/g, "");
+          const cleanupRegex = /will-change:[^;]+;?/g;
+          const headingCss = welcomeHeading.style.cssText.replace(cleanupRegex, "");
+          const buttonCss = welcomeButton.style.cssText.replace(cleanupRegex, "");
+          batchStyleMutations([welcomeHeading, welcomeButton], (el, index) => {
+            el.style.cssText = index === 0 ? headingCss : buttonCss;
+          });
           const spans = welcomeDescription.querySelectorAll("span");
           spans.forEach((span) => {
             span.style.cssText = span.style.cssText.replace(/will-change:[^;]+;?/g, "");

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useReducer } from "react";
 import { WelcomeHeroSection } from "../sections/welcome-hero/welcome-hero.section";
 
 const WelcomeProjectsSection = lazy(async () => {
@@ -23,15 +23,30 @@ export function meta() {
   ];
 }
 
+type State = { showDeferredSections: boolean };
+type Action = { type: "SHOW_DEFERRED_SECTIONS" };
+
+const initialState: State = { showDeferredSections: false };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "SHOW_DEFERRED_SECTIONS":
+      return { ...state, showDeferredSections: true };
+    default:
+      return state;
+  }
+}
+
 export default function Welcome() {
-  const [showDeferredSections, setShowDeferredSections] = useState(false);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { showDeferredSections } = state;
 
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
     if ("requestIdleCallback" in window) {
       const idleId = window.requestIdleCallback(() => {
-        setShowDeferredSections(true);
+        dispatch({ type: "SHOW_DEFERRED_SECTIONS" });
       });
 
       return () => {
@@ -40,7 +55,7 @@ export default function Welcome() {
     }
 
     timeoutId = setTimeout(() => {
-      setShowDeferredSections(true);
+      dispatch({ type: "SHOW_DEFERRED_SECTIONS" });
     }, 600);
 
     return () => {
