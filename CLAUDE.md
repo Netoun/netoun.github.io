@@ -4,15 +4,15 @@ This file provides guidance to ai (claude.ai/opencode) when working with code in
 
 ## Project
 
-Portfolio personnel de Nicolas Coulonnier (Netoun), ingénieur full stack chez Lonestone. Cible : recruteurs et pairs techniques. Objectif : visibilité, téléchargement du CV, prise de contact. DA néo-rétro futuriste, 3D — voir [design.md](docs/design.md).
+Personal portfolio of Nicolas Coulonnier (Netoun), full stack engineer at Lonestone. Target: recruiters and technical peers. Goal: visibility, CV download, contact. Neo-retro futuristic, 3D art direction — see [design.md](docs/design.md).
 
-**Ne jamais inventer de contenu** (bio, expériences, liens, textes légaux).
+**Never invent content** (bio, experiences, links, legal text).
 
 ## Stack
 
 React Router v7 · React 19 · TypeScript strict · Vite · Vanilla Extract CSS · Anime.js · React Aria Components · oxlint · Vitest · Bun
 
-React Router **Framework Mode**, `ssr: false`, prerender statique de `/`. Pas de loaders/actions serveur.
+React Router **Framework Mode**, `ssr: false`, static prerender of `/`. No server loaders/actions.
 
 ## Commands
 
@@ -24,87 +24,87 @@ bun run test         # vitest watch
 bun run lint  # oxlint
 bun run fmt   # oxfmt autofix
 
-bun run test app/components/primitives/button/button.test.tsx  # test ciblé
+bun run test app/components/primitives/button/button.test.tsx  # targeted test
 ```
 
-**Après toute modification importante :** `bun run typecheck && bun run lint`
+**After any significant change:** `bun run typecheck && bun run lint`
 
 ## Structure
 
 ```
 app/
   routes.ts                  # index → welcome.page, /misc → misc.page
-  root.tsx                   # Layout global, fonts, ErrorBoundary
+  root.tsx                   # Global layout, fonts, ErrorBoundary
   components/
-    layouts/                 # Section, Container — wrappers structurels
-    primitives/              # UI de base (Button, Slider, Image, ClientOnly)
-    misc/                    # Composants décoratifs animés (Computer, Kirby, canvas…)
+    layouts/                 # Section, Container — structural wrappers
+    primitives/              # Base UI (Button, Slider, Image, ClientOnly)
+    misc/                    # Animated decorative components (Computer, Kirby, canvas…)
   pages/<page>/
-    page/<page>.page.tsx     # export meta() + composant route
-    sections/                # sections + hooks locaux à la page
-  hooks/                     # hooks partagés (animation, scroll, souris)
+    page/<page>.page.tsx     # export meta() + route component
+    sections/                # sections + page-local hooks
+  hooks/                     # shared hooks (animation, scroll, mouse)
   styles/                    # tokens, global, responsive, animations, fonts
 ```
 
-Aliases : `@/` → `app/`, `@components/`, `@primitives/`, `@styles/`.
+Aliases: `@/` → `app/`, `@components/`, `@primitives/`, `@styles/`.
 
 ## Conventions
 
-- Chaque composant dans son propre dossier : `name.component.tsx` + `name.css.ts` + `name.test.tsx`
-- Kebab-case pour fichiers et dossiers, comments en anglais
-- TypeScript strict — pas de `any`, pas de `as` sauf nécessité absolue
+- Each component in its own folder: `name.component.tsx` + `name.css.ts` + `name.test.tsx`
+- Kebab-case for files and folders, comments in English
+- TypeScript strict — no `any`, no `as` unless absolutely necessary
 
 ## Styling — Vanilla Extract
 
-Tout le CSS est en `.css.ts`. **Pas de Tailwind, pas de CSS classique, pas de `style=`.**
+All CSS is in `.css.ts`. **No Tailwind, no plain CSS, no `style=`.**
 
-- `vars.*` → CSS variables runtime
-- `colors`, `spacing`… importés directement → valeurs statiques (dans `globalStyle` ou hors runtime)
-- Variants → `recipe()` de `@vanilla-extract/recipes`
+- `vars.*` → runtime CSS variables
+- `colors`, `spacing`… imported directly → static values (in `globalStyle` or outside runtime)
+- Variants → `recipe()` from `@vanilla-extract/recipes`
 - Breakpoints → `app/styles/responsive.css.ts`, mobile-first
-- Keyframes globaux → `app/styles/animations.css.ts`
+- Global keyframes → `app/styles/animations.css.ts`
 
 ## Animations
 
-Toujours utiliser `use-animation-priority` pour les animations coûteuses :
+Always use `use-animation-priority` for expensive animations:
 
-| Priorité | Comportement                                          |
-| -------- | ----------------------------------------------------- |
-| `high`   | Toujours animé                                        |
-| `medium` | Animé si visible (IntersectionObserver)               |
-| `low`    | Animé si visible + browser idle (requestIdleCallback) |
+| Priority | Behavior                                                 |
+| -------- | -------------------------------------------------------- |
+| `high`   | Always animating                                         |
+| `medium` | Animates if visible (IntersectionObserver)               |
+| `low`    | Animates if visible + browser idle (requestIdleCallback) |
 
-## SEO & accessibilité
+## SEO & Accessibility
 
-- Chaque page exporte `meta()` — format : `"Netoun - [page]"`, description unique
-- Open Graph absent — à ajouter sur toute nouvelle page
-- Une seule `<h1>` par page
-- Primitives interactives via React Aria Components — ne pas substituer par du HTML natif brut
+- Each page exports `meta()` — format: `"Netoun - [page]"`, unique description
+- Open Graph absent — to add on any new page
+- One `<h1>` per page
+- Interactive primitives via React Aria Components — do not substitute with raw native HTML
 
 ## Performance
 
-- Fonts woff2 locaux dans `/public/fonts/`, Google Fonts uniquement pour Inter et Doto
-- Images dans `app/pages/<page>/assets/` ou `public/`, format WebP/PNG, `alt` toujours renseigné
-- Ne pas ajouter de dépendance sans justification
+- Local woff2 fonts in `/public/fonts/`, Google Fonts only for Inter and Doto
+- Images in `app/pages/<page>/assets/` or `public/`, WebP/PNG format, `alt` always provided
+- Do not add dependencies without justification
 
-## Interdits
+## Forbidden
 
-- Modifier l'architecture des dossiers sans demander
-- Ajouter des librairies lourdes (Framer Motion, Tailwind…) sans accord
-- Écrire du CSS hors Vanilla Extract
-- Bypasser oxlint (`--no-verify`)
+- Modify folder architecture without asking
+- Add heavy libraries (Framer Motion, Tailwind…) without approval
+- Write CSS outside Vanilla Extract
+- Bypass oxlint (`--no-verify`)
 
 ## Workflow
 
-1. Explorer le code avant toute proposition
-2. Proposer un plan si la modification touche plusieurs fichiers
-3. Implémenter → valider (`typecheck` + `lint`)
-4. Résumer ce qui a changé
+1. Explore the code before any proposal
+2. Propose a plan if the change touches multiple files
+3. Implement → validate (`typecheck` + `lint`)
+4. Summarize what changed
 
-## Design system
+## Design System
 
 See [design.md](docs/design.md).
 
-## Architecture des composants
+## Component Architecture
 
-See [architecture.md](docs/architecture.md) — règles de nommage, organisation des pages/sections/composants, templates.
+See [architecture.md](docs/architecture.md) — naming rules, page/section/component organization, templates.

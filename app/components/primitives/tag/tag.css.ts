@@ -1,14 +1,19 @@
 import { vars } from "@styles/theme.css";
 import { recipe } from "@vanilla-extract/recipes";
 
-export type TagColor = "pink" | "green" | "purple" | "yellow" | "blue" | "default";
+export type TagColor =
+  | "pink"
+  | "green"
+  | "purple"
+  | "yellow"
+  | "blue"
+  | "default";
+export type TagSize = "small" | "medium" | "large";
 
 export const tagStyle = recipe({
   base: {
     fontFamily: vars.fontFamily.doto,
-    fontSize: "9.5px",
     letterSpacing: "0.08em",
-    padding: "3px 10px",
     borderRadius: vars.radius.full,
     fontWeight: 500,
   },
@@ -19,7 +24,7 @@ export const tagStyle = recipe({
         color: vars.colors.foreground,
       },
       green: {
-        backgroundColor: `color-mix(in srgb, #22c55e 18%, transparent)`,
+        backgroundColor: `color-mix(in srgb, ${vars.colors.secondary} 18%, transparent)`,
         color: vars.colors.foreground,
       },
       purple: {
@@ -27,17 +32,34 @@ export const tagStyle = recipe({
         color: vars.colors.foreground,
       },
       yellow: {
-        backgroundColor: `color-mix(in srgb, #eab308 18%, transparent)`,
+        backgroundColor: `color-mix(in srgb, ${vars.colors.primary} 14%, transparent)`,
         color: vars.colors.foreground,
       },
       blue: {
-        backgroundColor: `color-mix(in srgb, #3b82f6 18%, transparent)`,
+        backgroundColor: `color-mix(in srgb, ${vars.colors.secondary} 8%, transparent)`,
         color: vars.colors.foreground,
       },
       default: {
-        backgroundColor: "oklch(0.92 0.02 80 / 0.5)",
+        backgroundColor: `color-mix(in srgb, ${vars.colors.muted} 50%, transparent)`,
         color: vars.colors.foreground,
       },
     },
+    size: {
+      small: {
+        fontSize: vars.fontSize["2xs"],
+        padding: `calc(${vars.spacing.xs} * 0.5) calc(${vars.spacing.sm} * 0.75)`,
+      },
+      medium: {
+        fontSize: vars.fontSize["xs"],
+        padding: `calc(${vars.spacing.xs} * 0.75) calc(${vars.spacing.sm} * 1.25)`,
+      },
+      large: {
+        fontSize: vars.fontSize.sm,
+        padding: `${vars.spacing.xs} calc(${vars.spacing.sm} * 1.5)`,
+      },
+    },
+  },
+  defaultVariants: {
+    size: "small",
   },
 });

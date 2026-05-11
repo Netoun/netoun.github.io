@@ -82,7 +82,7 @@ export const computerScreenStyle = style({
       content: "",
       position: "absolute",
       inset: 0,
-      backgroundImage: "linear-gradient(to top, transparent, transparent, #333333, #333333)",
+      backgroundImage: `linear-gradient(to top, transparent, transparent, color-mix(in srgb, ${vars.colors.foreground} 20%, transparent), color-mix(in srgb, ${vars.colors.foreground} 20%, transparent))`,
       backgroundSize: "100% 4px",
       backgroundPosition: "100% 92%",
       opacity: 0.5,

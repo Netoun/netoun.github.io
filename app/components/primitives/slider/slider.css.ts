@@ -66,15 +66,15 @@ export const sliderRecipe = recipe({
 export const sliderTrackStyle = style({
   height: sliderTrackHeight,
   backgroundColor: vars.colors.muted,
-  borderRadius: "4px",
+  borderRadius: vars.radius.xs,
 });
 
 export const sliderThumbStyle = style({
   width: sliderThumbSize,
   height: sliderThumbSize,
   backgroundColor: vars.colors.primary,
-  borderRadius: "50%",
+  borderRadius: vars.radius.full,
   border: `2px solid ${vars.colors.background}`,
   boxShadow: vars.boxShadow.sm,
-  marginTop: "2.5px",
+  marginTop: `calc(${vars.spacing.xs} * 0.625)`,
 });

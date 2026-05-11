@@ -10,8 +10,6 @@ export interface WelcomeHeroComputerGlitchSignalMapProps {
 const BASE_SEED = 0x5e2d91af;
 const LCG_A = 1664525;
 const LCG_C = 1013904223;
-const TICK_MS = 180;
-const UPDATE_RATIO = 0.08;
 
 const lcg = (seed: number): number => (seed * LCG_A + LCG_C) >>> 0;
 
@@ -113,6 +111,7 @@ export const WelcomeHeroComputerGlitchSignalMap = memo(
       let lastTick = 0;
       let frameStep = 0;
       let isRunning = false;
+      const timeoutIds: number[] = [];
 
       const animate = (currentTime: number) => {
         // Only run animation if component is animating and visible
@@ -136,7 +135,12 @@ export const WelcomeHeroComputerGlitchSignalMap = memo(
         const batch = Math.max(1, Math.floor(count * 0.04));
 
         // Use DocumentFragment pattern to batch DOM reads/writes
-        const updates: Array<{ index: number; state: string; accent: string; seed: number }> = [];
+        const updates: Array<{
+          index: number;
+          state: string;
+          accent: string;
+          seed: number;
+        }> = [];
 
         for (let index = 0; index < batch; index += 1) {
           const blockIndex = (frameStep * 7 + index * 19 + 5) % count;
@@ -169,7 +173,7 @@ export const WelcomeHeroComputerGlitchSignalMap = memo(
 
             if (update.state === "recalibrating") {
               const settleSeed = lcg(update.seed);
-              setTimeout(() => {
+              const timeoutId = window.setTimeout(() => {
                 const liveNode = blockRefs.current[update.index];
                 if (!liveNode) return;
 
@@ -179,9 +183,12 @@ export const WelcomeHeroComputerGlitchSignalMap = memo(
                 seedsRef.current[update.index] = settleSeed;
                 statesRef.current[update.index] = settledState;
               }, 120);
+              timeoutIds.push(timeoutId);
             }
           }
         });
+
+        return () => {};
       };
 
       // Start animation only when isAnimating becomes true
@@ -193,6 +200,9 @@ export const WelcomeHeroComputerGlitchSignalMap = memo(
       return () => {
         isRunning = false;
         if (frameId) cancelAnimationFrame(frameId);
+        for (const timeoutId of timeoutIds) {
+          clearTimeout(timeoutId);
+        }
       };
     }, [isAnimating]);
 

@@ -4,8 +4,8 @@ import { globalStyle, style } from "@vanilla-extract/css";
 export const cardStyle = style({
   borderRadius: vars.radius.md,
   height: "100%",
-  border: "1px solid oklch(0.88 0.02 80 / 0.5)",
-  backgroundColor: "oklch(1 0 0 / 0.55)",
+  border: `1px solid color-mix(in srgb, ${vars.colors.cardBorder} 50%, transparent)`,
+  backgroundColor: vars.colors.card,
   backdropFilter: "blur(10px)",
   WebkitBackdropFilter: "blur(10px)",
   overflow: "hidden",
@@ -21,11 +21,19 @@ export const cardStyle = style({
   cursor: "pointer",
   backfaceVisibility: "hidden",
   WebkitBackfaceVisibility: "hidden",
-  boxShadow: `0 4px 24px color-mix(in srgb, ${vars.colors.primary} 14%, transparent), 0 1px 4px oklch(0 0 0 / 0.06)`,
+  boxShadow: `
+    0 4px 24px color-mix(in srgb, ${vars.colors.primary} 14%, transparent),
+    0 1px 4px color-mix(in srgb, ${vars.colors.foreground} 6%, transparent)
+  `,
 });
 
 globalStyle(`${cardStyle}:hover`, {
-  boxShadow: `0 24px 60px oklch(0 0 0 / 0.14), 0 0 0 1px color-mix(in srgb, ${vars.colors.primary} 30%, transparent), 0 8px 40px color-mix(in srgb, ${vars.colors.primary} 28%, transparent), 0 2px 12px color-mix(in srgb, ${vars.colors.secondary} 15%, transparent)`,
+  boxShadow: `
+    0 24px 60px color-mix(in srgb, ${vars.colors.foreground} 14%, transparent),
+    0 0 0 1px color-mix(in srgb, ${vars.colors.primary} 30%, transparent),
+    0 8px 40px color-mix(in srgb, ${vars.colors.primary} 28%, transparent),
+    0 2px 12px color-mix(in srgb, ${vars.colors.secondary} 15%, transparent)
+  `,
   transform:
     "rotate(0deg) rotateX(var(--x-rotation, 0deg)) rotateY(var(--y-rotation, 0deg)) translateY(-4px) scale(1.02)",
   transition:
@@ -59,13 +67,13 @@ export const terminalBarStyle = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  gap: vars.spacing.sm,
-  padding: `10px 14px 8px`,
-  backgroundColor: "oklch(1 0 0 / 0.3)",
-  borderBottom: "1px solid oklch(0.88 0.02 80 / 0.5)",
+  gap: `calc(${vars.spacing.sm} * 1.25)`,
+  padding: `calc(${vars.spacing.sm} * 1.25) calc(${vars.spacing.sm} * 1.75) calc(${vars.spacing.sm} * 1)`,
+  backgroundColor: `color-mix(in srgb, ${vars.colors.card} 55%, transparent)`,
+  borderBottom: `1px solid color-mix(in srgb, ${vars.colors.cardBorder} 50%, transparent)`,
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.xs,
-  color: "oklch(0.38 0.03 80)",
+  color: vars.colors.mutedForeground,
   letterSpacing: "0.12em",
   textTransform: "uppercase",
 });
@@ -73,14 +81,14 @@ export const terminalBarStyle = style({
 export const terminalLeftStyle = style({
   display: "flex",
   alignItems: "center",
-  gap: "10px",
+  gap: `calc(${vars.spacing.sm} * 1.25)`,
 });
 
 export const terminalDateStyle = style({
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.xs,
   letterSpacing: "0.12em",
-  color: "oklch(0.45 0.03 80)",
+  color: vars.colors.mutedForeground,
 });
 
 export const imageContainerStyle = style({
@@ -88,7 +96,7 @@ export const imageContainerStyle = style({
   height: "140px",
   overflow: "hidden",
   position: "relative",
-  boxShadow: "inset 0 4px 24px 0px oklch(0 0 0)",
+  boxShadow: vars.boxShadow.innerLg,
 });
 
 export const imageStyle = style({
@@ -105,7 +113,7 @@ globalStyle(`${linkStyle}:hover ${imageStyle}`, {
 });
 
 export const contentStyle = style({
-  padding: `16px 16px 14px`,
+  padding: `${vars.spacing.md} ${vars.spacing.md} calc(${vars.spacing.sm} * 1.75)`,
   display: "flex",
   flexDirection: "column",
   gap: vars.spacing.sm,
@@ -120,7 +128,7 @@ export const titleStyle = style({
   margin: 0,
   display: "flex",
   alignItems: "center",
-  gap: "6px",
+  gap: `calc(${vars.spacing.sm} * 0.75)`,
 });
 
 export const promptStyle = style({
@@ -131,9 +139,9 @@ export const promptStyle = style({
 
 export const descriptionStyle = style({
   fontFamily: vars.fontFamily.ppNeueMontreal,
-  fontSize: "0.8125rem",
+  fontSize: vars.fontSize.sm,
   lineHeight: "1.45",
-  color: "oklch(0.25 0.01 80)",
+  color: vars.colors.foreground,
   margin: 0,
   flex: 1,
   display: "-webkit-box",
@@ -145,15 +153,15 @@ export const descriptionStyle = style({
 export const tagsStyle = style({
   display: "flex",
   flexWrap: "wrap",
-  gap: "5px",
-  marginTop: vars.spacing.xs,
+  gap: `calc(${vars.spacing.xs} * 1.25)`,
+  marginTop: `calc(${vars.spacing.xs} * 1.25)`,
 });
 
 export const footerStyle = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  padding: `10px 16px 13px`,
+  padding: `calc(${vars.spacing.sm} * 1.25) ${vars.spacing.md} calc(${vars.spacing.sm} * 1.625)`,
   borderTop: `1px solid ${vars.colors.border}`,
 });
 
@@ -162,7 +170,7 @@ export const linkLabelStyle = style({
   fontSize: vars.fontSize.xs,
   letterSpacing: "0.18em",
   textTransform: "uppercase",
-  color: "oklch(0.5 0.04 80)",
+  color: vars.colors.mutedForeground,
   background: "none",
   border: "none",
   cursor: "pointer",
@@ -170,7 +178,7 @@ export const linkLabelStyle = style({
   transition: "color 0.2s",
   display: "inline-flex",
   alignItems: "center",
-  gap: "2px",
+  gap: `calc(${vars.spacing.xs} / 2)`,
 });
 
 export const linkArrowStyle = style({
@@ -208,8 +216,8 @@ export const statusBadgeStyle = style({
   fontSize: vars.fontSize.xs,
   letterSpacing: "0.14em",
   backgroundColor: vars.colors.primary,
-  color: "oklch(0.25 0.05 85)",
-  padding: `3px 8px`,
+  color: vars.colors.primaryForeground,
+  padding: `calc(${vars.spacing.xs} / 2) ${vars.spacing.sm}`,
   borderRadius: vars.radius.sm,
   fontWeight: vars.fontWeight.bold,
 });

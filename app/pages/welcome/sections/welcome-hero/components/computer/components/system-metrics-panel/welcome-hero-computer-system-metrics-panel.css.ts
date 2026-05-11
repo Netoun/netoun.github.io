@@ -18,7 +18,7 @@ export const rootStyles = style({
   isolation: "isolate",
   contain: "layout paint style",
   height: "100%",
-  padding: "6px",
+  padding: vars.spacing.sm,
   display: "grid",
   gridTemplateRows: "auto 1fr",
   overflow: "hidden",
@@ -30,7 +30,7 @@ export const rootStyles = style({
   color: `color-mix(in srgb, ${vars.colors.secondary} 76%, ${vars.colors.foreground})`,
   "@media": {
     [breakpoints.md]: {
-      gap: "6px",
+      gap: vars.spacing.xs,
     },
   },
 });

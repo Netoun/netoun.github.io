@@ -5,7 +5,7 @@ import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook"
 import { WelcomeHeroFilterBackground } from "./components/background/welcome-hero-filter-background.component";
 import { WelcomeHeroComputerComponent } from "./components/computer/welcome-hero-computer.component";
 import { useWelcomeHeroContentAnimation } from "./hooks/use-welcome-hero-content-animation.hook";
-import { ContactHoverCard } from "./components/contact-hover-card/welcome-hero-contact-hover-card.component";
+import { WelcomeHeroContactHoverCard } from "./components/contact-hover-card/welcome-hero-contact-hover-card.component";
 import * as styles from "./welcome-hero.css";
 
 function getElementFromNode(node: Node): Element | null {
@@ -192,7 +192,7 @@ export function WelcomeHeroSection() {
           <div className={styles.welcomeMetaStyles}>
             <span>Focused on performance, UX, and clean architecture</span>
           </div>
-          <ContactHoverCard />
+          <WelcomeHeroContactHoverCard />
         </div>
       </div>
 

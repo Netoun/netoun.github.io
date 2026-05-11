@@ -112,10 +112,10 @@ const initialConsoleState: ConsoleState = {
   isShifting: false,
 };
 
-export const WelcomeHeroComputerFakeConsole = ({
+export function WelcomeHeroComputerFakeConsole({
   isAnimating,
   className,
-}: WelcomeHeroComputerFakeConsoleProps) => {
+}: WelcomeHeroComputerFakeConsoleProps) {
   const [rowsCount, setRowsCount] = useState(INITIAL_ROWS_COUNT);
   const [{ lines, pendingLine, isShifting }, dispatch] = useReducer(
     consoleReducer,
@@ -311,4 +311,4 @@ export const WelcomeHeroComputerFakeConsole = ({
       </div>
     </div>
   );
-};
+}

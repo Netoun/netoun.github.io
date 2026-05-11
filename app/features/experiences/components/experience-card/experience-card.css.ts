@@ -39,10 +39,10 @@ export const timelineDotStyle = style({
   position: "absolute",
   display: "none",
   left: "-26px",
-  top: "16px",
+  top: vars.spacing.md,
   width: "12px",
   height: "12px",
-  borderRadius: "50%",
+  borderRadius: vars.radius.full,
   backgroundColor: vars.colors.kirby,
   border: `2px solid color-mix(in srgb, ${vars.colors.kirby} 460%, transparent)`,
   boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.colors.kirby} 40%, transparent)`,
@@ -61,7 +61,7 @@ export const timelineDotStyle = style({
 export const timelineDotPingStyle = style({
   position: "absolute",
   inset: "-2px",
-  borderRadius: "50%",
+  borderRadius: vars.radius.full,
   backgroundColor: vars.colors.kirby,
   opacity: 0.4,
   animation: `${ping} 2s cubic-bezier(0, 0, 0.2, 1) infinite`,
@@ -69,14 +69,17 @@ export const timelineDotPingStyle = style({
 
 export const cardStyle = style({
   borderRadius: vars.radius.md,
-  border: "1px solid oklch(0.88 0.02 80 / 0.5)",
-  backgroundColor: "oklch(1 0 0 / 0.55)",
+  border: `1px solid color-mix(in srgb, ${vars.colors.cardBorder} 50%, transparent)`,
+  backgroundColor: vars.colors.card,
   backdropFilter: "blur(10px)",
   WebkitBackdropFilter: "blur(10px)",
   overflow: "hidden",
-  boxShadow: `0 4px 24px color-mix(in srgb, ${vars.colors.primary} 10%, transparent), 0 1px 4px oklch(0 0 0 / 0.05)`,
+  boxShadow: `
+    0 4px 24px color-mix(in srgb, ${vars.colors.primary} 10%, transparent),
+    0 1px 4px color-mix(in srgb, ${vars.colors.foreground} 5%, transparent)
+  `,
   transition: "box-shadow 0.3s ease",
-  marginBottom: "2rem",
+  marginBottom: vars.spacing["2xl"],
 });
 
 globalStyle(`${cardStyle}:hover`, {
@@ -88,9 +91,12 @@ export const cardBarStyle = style({
   alignItems: "center",
   justifyContent: "space-between",
   gap: vars.spacing.sm,
-  padding: "10px 16px 8px",
-  backgroundColor: "oklch(1 0 0 / 0.3)",
-  borderBottom: "1px solid oklch(0.88 0.02 80 / 0.5)",
+  padding: `
+    calc(${vars.spacing.sm} * 1.25)
+    ${vars.spacing.md}
+    calc(${vars.spacing.sm} * 1)
+  `,
+  borderBottom: `1px solid color-mix(in srgb, ${vars.colors.cardBorder} 50%, transparent)`,
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.xs,
   letterSpacing: "0.12em",
@@ -113,11 +119,11 @@ export const companyStyle = style({
 
 export const currentBadgeStyle = style({
   fontFamily: vars.fontFamily.doto,
-  fontSize: "9px",
+  fontSize: vars.fontSize["2xs"],
   letterSpacing: "0.14em",
   backgroundColor: vars.colors.primary,
-  color: "oklch(0.25 0.05 85)",
-  padding: "2px 7px",
+  color: vars.colors.primaryForeground,
+  padding: `calc(${vars.spacing.xs} / 2) calc(${vars.spacing.sm} * 0.875)`,
   borderRadius: vars.radius.sm,
   fontWeight: vars.fontWeight.bold,
 });
@@ -131,7 +137,7 @@ export const periodStyle = style({
 });
 
 export const cardBodyStyle = style({
-  padding: "16px 18px 18px",
+  padding: `${vars.spacing.md} ${vars.spacing.md} ${vars.spacing.md}`,
   display: "flex",
   flexDirection: "column",
   gap: vars.spacing.md,
@@ -140,7 +146,7 @@ export const cardBodyStyle = style({
 export const roleRowStyle = style({
   display: "flex",
   alignItems: "center",
-  gap: "8px",
+  gap: vars.spacing.sm,
   flexWrap: "wrap",
 });
 
@@ -172,7 +178,7 @@ export const descriptionStyle = style({
   fontFamily: vars.fontFamily.ppNeueMontreal,
   fontSize: vars.fontSize.sm,
   lineHeight: vars.lineHeight.relaxed,
-  color: "oklch(0.38 0.01 80)",
+  color: vars.colors.mutedForeground,
   margin: 0,
 
   "@media": {
@@ -187,7 +193,7 @@ export const projectsStyle = style({
   flexDirection: "column",
   gap: vars.spacing.lg,
   padding: `${vars.spacing.sm} 0`,
-  borderTop: "1px solid oklch(0.88 0.02 80 / 0.3)",
+  borderTop: `1px solid color-mix(in srgb, ${vars.colors.cardBorder} 30%, transparent)`,
 });
 
 export const projectStyle = style({
@@ -219,7 +225,7 @@ export const projectTitleStyle = style({
 export const projectDescStyle = style({
   fontFamily: vars.fontFamily.ppNeueMontreal,
   fontSize: vars.fontSize.sm,
-  color: "oklch(0.42 0.01 80)",
+  color: vars.colors.mutedForeground,
   maxWidth: "640px",
   lineHeight: vars.lineHeight.relaxed,
 });
@@ -227,12 +233,12 @@ export const projectDescStyle = style({
 export const projectStackStyle = style({
   display: "flex",
   flexWrap: "wrap",
-  gap: "4px",
-  marginTop: "4px",
+  gap: vars.spacing.xs,
+  marginTop: vars.spacing.xs,
 });
 
 export const stackStyle = style({
   display: "flex",
   flexWrap: "wrap",
-  gap: "6px",
+  gap: `calc(${vars.spacing.sm} * 0.75)`,
 });

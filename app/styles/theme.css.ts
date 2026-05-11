@@ -1,15 +1,17 @@
 import { createTheme } from "@vanilla-extract/css";
 const colors = {
   // Couleurs sémantiques avec OKLCH
-  background: "oklch(0.96 0.015 80)",
+  background: "oklch(0.93 0.03 80)",
   foreground: "oklch(0.07 0 0)",
 
   // Couleurs d'interface
   muted: "oklch(0.96 0 0)",
   mutedForeground: "oklch(0.45 0 0)",
+  card: "oklch(1 0 0 / 0.55)",
 
   // Bordures
   border: "oklch(0.9 0 0)",
+  cardBorder: "oklch(0.88 0.02 80)",
   input: "oklch(0.9 0 0)",
 
   // Couleurs primaires
@@ -57,6 +59,7 @@ const spacing = {
 
 const radius = {
   none: "0",
+  xs: "0.25rem",
   sm: "0.5rem",
   md: "1rem",
   lg: "1.5rem",
@@ -65,6 +68,7 @@ const radius = {
 };
 
 const fontSize = {
+  "2xs": "0.6rem",
   xs: "0.75rem",
   sm: "0.875rem",
   base: "1rem",

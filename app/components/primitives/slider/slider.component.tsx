@@ -22,7 +22,7 @@ export interface SliderProps {
   className?: string;
 }
 
-export const Slider: React.FC<SliderProps> = ({
+export function Slider({
   label,
   value,
   defaultValue,
@@ -36,7 +36,7 @@ export const Slider: React.FC<SliderProps> = ({
   onChangeEnd,
   className,
   ...props
-}) => {
+}: SliderProps) {
   return (
     <AriaSlider
       value={value}
@@ -60,4 +60,4 @@ export const Slider: React.FC<SliderProps> = ({
       </AriaSliderTrack>
     </AriaSlider>
   );
-};
+}

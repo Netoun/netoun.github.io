@@ -8,17 +8,17 @@ export interface ButtonProps {
   className?: string;
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export function Button({
   id: _id,
   children,
   onPress,
   isDisabled = false,
   className,
   ...props
-}) => {
+}: ButtonProps) {
   return (
     <AriaButton onPress={onPress} isDisabled={isDisabled} className={className} {...props}>
       {children}
     </AriaButton>
   );
-};
+}
