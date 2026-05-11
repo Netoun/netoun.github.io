@@ -18,6 +18,8 @@ const ACCENT_MAP = {
 export const containerStyle = recipe({
   base: {
     opacity: 0,
+    willChange: "transform, opacity",
+    contain: "layout paint",
   },
   variants: {
     variant: {

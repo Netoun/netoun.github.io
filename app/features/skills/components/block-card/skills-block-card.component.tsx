@@ -30,7 +30,6 @@ export function BlockCard({ block }: BlockCardProps) {
             <Tag key={tag.name}>{tag.name}</Tag>
           ))}
         </div>
-
         <ShapeShader shape={block.shape} accent={block.accent} />
       </div>
     </div>

@@ -90,13 +90,16 @@ export const WelcomeHeroComputerCyberneticGlyphGrid = memo(
     const cellRefs = useRef<Array<HTMLSpanElement | null>>([]);
     const valuesRef = useRef<string[]>([]);
     const seedsRef = useRef<number[]>([]);
-    const shouldAnimateRef = useRef(isAnimating);
     const prefersReducedMotionRef = useRef(false);
+    // Track active timeouts for cleanup
+    const timeoutIdsRef = useRef<number[]>([]);
+    // Track RAF frame ID
+    const frameIdRef = useRef<number>(0);
+    // Track if component is mounted
+    const isMountedRef = useRef(true);
 
     const [grid, setGrid] = useState({ cols: 12, rows: 8 });
     const [cellCount, setCellCount] = useState(96);
-
-    shouldAnimateRef.current = isAnimating;
 
     useEffect(() => {
       const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -150,17 +153,37 @@ export const WelcomeHeroComputerCyberneticGlyphGrid = memo(
       valuesRef.current = values;
       seedsRef.current = seeds;
       cellRefs.current = cellRefs.current.slice(0, cellCount);
+
+      // Cleanup refs on unmount
+      return () => {
+        cellRefs.current = [];
+        valuesRef.current = [];
+        seedsRef.current = [];
+      };
     }, [cellCount]);
 
     useEffect(() => {
-      let frameId = 0;
+      // Only start animation when active
+      if (!isAnimating) {
+        // Cleanup any pending timeouts when animation stops
+        timeoutIdsRef.current.forEach((id) => clearTimeout(id));
+        timeoutIdsRef.current = [];
+        return;
+      }
+
       let lastTick = 0;
       let frameStep = 0;
+      isMountedRef.current = true;
 
       const animate = (currentTime: number) => {
-        frameId = requestAnimationFrame(animate);
+        // Stop RAF if component unmounted or animation stopped
+        if (!isMountedRef.current || !isAnimating) {
+          return;
+        }
 
-        if (!shouldAnimateRef.current) return;
+        // Schedule next frame first
+        frameIdRef.current = requestAnimationFrame(animate);
+
         if (prefersReducedMotionRef.current) return;
         if (currentTime - lastTick < TICK_MS) return;
 
@@ -195,7 +218,11 @@ export const WelcomeHeroComputerCyberneticGlyphGrid = memo(
             const settleSeed = lcg(nextSeed);
             const [settleValue, stableSeed] = hexPair(settleSeed);
 
-            window.setTimeout(() => {
+            // Track timeout ID for cleanup
+            const timeoutId = window.setTimeout(() => {
+              // Remove this ID from tracked timeouts
+              timeoutIdsRef.current = timeoutIdsRef.current.filter((id) => id !== timeoutId);
+
               const liveNode = cellRefs.current[cellIndex];
               if (!liveNode) return;
               liveNode.textContent = settleValue;
@@ -204,16 +231,25 @@ export const WelcomeHeroComputerCyberneticGlyphGrid = memo(
               valuesRef.current[cellIndex] = settleValue;
               seedsRef.current[cellIndex] = stableSeed;
             }, 92);
+
+            timeoutIdsRef.current.push(timeoutId);
           }
         }
       };
 
-      frameId = requestAnimationFrame(animate);
+      frameIdRef.current = requestAnimationFrame(animate);
 
       return () => {
-        if (frameId) cancelAnimationFrame(frameId);
+        isMountedRef.current = false;
+        if (frameIdRef.current) {
+          cancelAnimationFrame(frameIdRef.current);
+          frameIdRef.current = 0;
+        }
+        // Cleanup all tracked timeouts
+        timeoutIdsRef.current.forEach((id) => clearTimeout(id));
+        timeoutIdsRef.current = [];
       };
-    }, []);
+    }, [isAnimating]);
 
     const rootClassName = className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
 
@@ -244,9 +280,11 @@ export const WelcomeHeroComputerCyberneticGlyphGrid = memo(
           }}
         >
           {initialCells.map((cell, index) => {
+            // Create a stable unique key based on cell properties
+            const cellKey = `glyph-${cell.value}-${cell.pulseDelay}-${index}`;
             return (
               <span
-                key={`glyph-${cell.pulseDelay}`}
+                key={cellKey}
                 ref={(element) => {
                   cellRefs.current[index] = element;
                 }}

@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import type { AccentType, ShapeType } from "../../data/skills-data.types";
 import { ACCENT_RGB, SHAPE_INDEX } from "../../data/skills-data";
 import { VERTEX_SOURCE, getFragmentSource } from "@/components/misc/shaders/shape/shape.shader";
+import { useIntersectionPause } from "@/hooks/use-intersection-pause.hook";
 import * as styles from "./skills-shape-shader.css";
 
 const SHAPE_CLASSES: Record<ShapeType, string> = {
@@ -21,13 +22,23 @@ interface ShapeShaderProps {
 export function ShapeShader({ shape, accent }: ShapeShaderProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fallbackClass = `${styles.shapeBaseStyle} ${SHAPE_CLASSES[shape]}`;
+  const { ref: intersectionRef, isVisible } = useIntersectionPause<HTMLDivElement>({
+    threshold: 0,
+    rootMargin: "100px",
+  });
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || !isVisible) return;
 
     let raf = 0;
     let stop = false;
+    let needsResize = true;
+    let gl: WebGLRenderingContext | null = null;
+    let vertex: WebGLShader | null = null;
+    let fragment: WebGLShader | null = null;
+    let program: WebGLProgram | null = null;
+    let buffer: WebGLBuffer | null = null;
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -36,12 +47,18 @@ export function ShapeShader({ shape, accent }: ShapeShaderProps) {
       canvas.height = Math.max(1, Math.floor(rect.height * dpr));
     };
 
+    // ResizeObserver to detect size changes without forcing reflow in the loop
+    const resizeObserver = new ResizeObserver(() => {
+      needsResize = true;
+    });
+    resizeObserver.observe(canvas);
+
     const startWebGL = () => {
-      const gl = canvas.getContext("webgl", { alpha: true, antialias: true });
+      gl = canvas.getContext("webgl", { alpha: true, antialias: true });
       if (!gl) return false;
 
-      const vertex = gl.createShader(gl.VERTEX_SHADER);
-      const fragment = gl.createShader(gl.FRAGMENT_SHADER);
+      vertex = gl.createShader(gl.VERTEX_SHADER);
+      fragment = gl.createShader(gl.FRAGMENT_SHADER);
       if (!vertex || !fragment) return false;
 
       const fragmentSource = getFragmentSource(ACCENT_RGB[accent], SHAPE_INDEX[shape]);
@@ -53,14 +70,14 @@ export function ShapeShader({ shape, accent }: ShapeShaderProps) {
       if (!gl.getShaderParameter(vertex, gl.COMPILE_STATUS)) return false;
       if (!gl.getShaderParameter(fragment, gl.COMPILE_STATUS)) return false;
 
-      const program = gl.createProgram();
+      program = gl.createProgram();
       if (!program) return false;
       gl.attachShader(program, vertex);
       gl.attachShader(program, fragment);
       gl.linkProgram(program);
       if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return false;
 
-      const buffer = gl.createBuffer();
+      buffer = gl.createBuffer();
       if (!buffer) return false;
       gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
       gl.bufferData(
@@ -80,9 +97,18 @@ export function ShapeShader({ shape, accent }: ShapeShaderProps) {
       const shapeIndex = SHAPE_INDEX[shape];
       const start = performance.now();
 
+      // Initial resize
+      resize();
+
       const draw = () => {
-        if (stop) return;
-        resize();
+        if (stop || !gl) return;
+
+        // Resize only when necessary (not every frame!)
+        if (needsResize) {
+          resize();
+          needsResize = false;
+        }
+
         gl.viewport(0, 0, canvas.width, canvas.height);
         gl.useProgram(program);
         gl.enableVertexAttribArray(posLoc);
@@ -105,14 +131,25 @@ export function ShapeShader({ shape, accent }: ShapeShaderProps) {
 
     return () => {
       stop = true;
+      resizeObserver.disconnect();
       if (raf) cancelAnimationFrame(raf);
+
+      // Clean up WebGL resources to prevent GPU memory leaks
+      if (gl) {
+        if (buffer) gl.deleteBuffer(buffer);
+        if (program) gl.deleteProgram(program);
+        if (vertex) gl.deleteShader(vertex);
+        if (fragment) gl.deleteShader(fragment);
+      }
     };
-  }, [accent, shape]);
+  }, [accent, shape, isVisible]);
 
   return (
-    <>
-      <div className={fallbackClass} aria-hidden />
-      <canvas ref={canvasRef} className={styles.shapeShaderCanvasStyle} aria-hidden />
-    </>
+    <div className={styles.shapeShaderContainerStyle}>
+      <div ref={intersectionRef} className={styles.shapeShaderIntersectionStyle}>
+        <div className={fallbackClass} aria-hidden />
+        <canvas ref={canvasRef} className={styles.shapeShaderCanvasStyle} aria-hidden />
+      </div>
+    </div>
   );
 }

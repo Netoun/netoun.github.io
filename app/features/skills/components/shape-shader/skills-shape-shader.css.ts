@@ -1,12 +1,32 @@
 import { style } from "@vanilla-extract/css";
 
+export const shapeShaderContainerStyle = style({
+  position: "relative",
+  width: "100%",
+  height: "100%",
+  marginTop: "auto",
+  display: "flex",
+  alignItems: "end",
+});
+
+export const shapeShaderIntersectionStyle = style({
+  position: "relative",
+  width: "100%",
+  height: "100%",
+  willChange: "transform",
+  contain: "layout",
+  display: "grid",
+  justifyContent: "end",
+  alignContent: "end",
+});
+
 export const shapeBaseStyle = style({
-  position: "absolute",
+  gridArea: "1/1",
   right: "1rem",
-  bottom: "1rem",
+  bottom: "0rem",
   width: "2rem",
   height: "2rem",
-  opacity: 0.38,
+  opacity: 0.5,
   pointerEvents: "none",
   filter: "drop-shadow(0 0 10px color-mix(in srgb, var(--block-accent) 35%, transparent))",
   boxShadow: "inset 0 0 8px color-mix(in srgb, white 24%, transparent)",
@@ -16,9 +36,10 @@ export const shapeBaseStyle = style({
 });
 
 export const shapeShaderCanvasStyle = style({
-  position: "absolute",
+  gridArea: "1/1",
+
   right: "1rem",
-  bottom: "1rem",
+  bottom: "0rem",
   width: "2rem",
   height: "2rem",
   pointerEvents: "none",

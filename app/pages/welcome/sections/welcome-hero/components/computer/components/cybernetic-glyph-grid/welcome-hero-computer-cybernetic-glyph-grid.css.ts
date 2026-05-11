@@ -96,6 +96,8 @@ export const cellStyles = style({
   transform: "translate3d(0, 0, 0)",
   animation: `${pulseKeyframes} 2.9s ease-in-out infinite`,
   animationDelay: "var(--pulse-delay)",
+  willChange: "transform, opacity",
+  contain: "layout paint style",
   selectors: {
     '&[data-accent="true"]': {
       color: `color-mix(in srgb, ${vars.colors.tertiary} 46%, ${vars.colors.kirby} 54%)`,
