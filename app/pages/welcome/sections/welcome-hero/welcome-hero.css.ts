@@ -4,9 +4,9 @@ import { breakpoints } from "@/styles/responsive.css";
 import { vars } from "@/styles/theme.css";
 
 export const welcomeSectionStyles = style({
-  height: "800px",
+  height: "100dvh",
   position: "relative",
-  minHeight: "min(100dvh, 68rem)",
+  maxHeight: "68rem",
 });
 
 export const welcomeContainerStyle = style({
