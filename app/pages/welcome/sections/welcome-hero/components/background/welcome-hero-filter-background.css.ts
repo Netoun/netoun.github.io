@@ -21,6 +21,14 @@ export const welcomeShaderCanvasStyles = style({
   height: "100%",
   pointerEvents: "none",
   display: "block",
+  zIndex: 5,
+  opacity: 0,
+  transition: "opacity 0.5s ease-in",
+  selectors: {
+    '&[data-ready="true"]': {
+      opacity: 1,
+    },
+  },
 });
 
 // Individual mesh shape SVG (positioned absolutely within container)

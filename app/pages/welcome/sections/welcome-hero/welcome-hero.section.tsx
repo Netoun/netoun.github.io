@@ -160,7 +160,6 @@ export function WelcomeHeroSection() {
   }, [startAnimation]);
 
   const shouldDisableHeroAnimations = isTextSelected || !isVisible;
-  const shouldDisableShader = !isVisible;
 
   return (
     <Section ref={sectionRef} className={styles.welcomeSectionStyles} data-section="welcome-hero">
@@ -170,11 +169,7 @@ export function WelcomeHeroSection() {
         className={styles.welcomeContainerStyle}
         data-text-selected={isTextSelected ? "true" : "false"}
       >
-        <WelcomeHeroFilterBackground
-          container={container}
-          mousePosition={mousePosition}
-          disabled={shouldDisableShader}
-        />
+        <WelcomeHeroFilterBackground container={container} mousePosition={mousePosition} />
         <div className={styles.welcomeContentStyle}>
           <h1 id="welcome-heading" ref={headingRef} className={styles.welcomeHeadingStyles}>
             Hi, I'm Nicolas&nbsp;: <br /> Full-stack engineer crafting fast, clean web experiences.

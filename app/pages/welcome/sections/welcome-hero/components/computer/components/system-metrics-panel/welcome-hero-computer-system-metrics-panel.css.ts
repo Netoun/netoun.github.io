@@ -1,5 +1,6 @@
 import { keyframes, style } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css";
+import { breakpoints } from "@/styles/responsive.css";
 
 const scanlineKeyframes = keyframes({
   "0%": { transform: "translateY(-120%)" },
@@ -20,7 +21,6 @@ export const rootStyles = style({
   padding: "6px",
   display: "grid",
   gridTemplateRows: "auto 1fr",
-  gap: "6px",
   overflow: "hidden",
   borderRadius: vars.radius.sm,
   fontFamily: vars.fontFamily.doto,
@@ -28,6 +28,11 @@ export const rootStyles = style({
     "linear-gradient(180deg, oklch(0.14 0.02 227 / 0.94) 0%, oklch(0.1 0.015 232 / 0.96) 100%)",
   boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${vars.colors.secondary} 22%, transparent), inset 0 0 18px color-mix(in srgb, ${vars.colors.secondary} 10%, transparent)`,
   color: `color-mix(in srgb, ${vars.colors.secondary} 76%, ${vars.colors.foreground})`,
+  "@media": {
+    [breakpoints.md]: {
+      gap: "6px",
+    },
+  },
 });
 
 export const textureStyles = style({
@@ -73,7 +78,7 @@ export const headerStyles = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  fontSize: "0.54rem",
+  fontSize: "clamp(0.3rem, 0.54rem + 0.2vw, 0.64rem)",
   letterSpacing: "0.08em",
   lineHeight: 1,
 });
@@ -84,7 +89,7 @@ export const headerLabelStyles = style({
 
 export const headerTickStyles = style({
   opacity: 0.58,
-  fontSize: "0.5rem",
+  fontSize: "clamp(0.3rem, 0.5rem + 0.2vw, 0.6rem)",
 });
 
 export const metricsListStyles = style({
@@ -92,25 +97,33 @@ export const metricsListStyles = style({
   zIndex: 1,
   display: "grid",
   alignContent: "start",
-  gap: "3px",
+  "@media": {
+    [breakpoints.md]: {
+      gap: "3px",
+    },
+  },
 });
 
 export const metricRowStyles = style({
   display: "grid",
   gridTemplateColumns: "28px 26px 1fr",
-  gap: "4px",
   alignItems: "center",
   minHeight: "12px",
+  "@media": {
+    [breakpoints.md]: {
+      gap: "4px",
+    },
+  },
 });
 
 export const metricKeyStyles = style({
-  fontSize: "0.5rem",
+  fontSize: "clamp(0.2rem, 0.5rem + 0.2vw, 0.6rem)",
   letterSpacing: "0.09em",
   opacity: 0.75,
 });
 
 export const metricValueStyles = style({
-  fontSize: "0.52rem",
+  fontSize: "clamp(0.2rem, 0.52rem + 0.2vw, 0.64rem)",
   textAlign: "right",
   letterSpacing: "0.05em",
   color: `color-mix(in srgb, ${vars.colors.secondary} 82%, ${vars.colors.foreground} 18%)`,
@@ -119,7 +132,7 @@ export const metricValueStyles = style({
 export const metricBarStyles = style({
   position: "relative",
   display: "block",
-  height: "5px",
+  height: "2px",
   borderRadius: "2px",
   background: "oklch(0.24 0.02 230 / 0.75)",
   overflow: "hidden",
@@ -159,6 +172,9 @@ export const metricBarStyles = style({
     pointerEvents: "none",
   },
   "@media": {
+    [breakpoints.md]: {
+      height: "5px",
+    },
     "(prefers-reduced-motion: reduce)": {
       selectors: {
         '&[data-pulse="true"]::after': {
