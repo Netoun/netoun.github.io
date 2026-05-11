@@ -14,7 +14,9 @@ export function BlockCard({ block }: BlockCardProps) {
     <div
       data-block
       className={styles.blockStyle}
-      style={{ "--block-accent": ACCENT_VARS[block.accent] } as React.CSSProperties}
+      style={
+        { "--block-accent": ACCENT_VARS[block.accent] } as React.CSSProperties
+      }
     >
       <div className={styles.blockBarStyle}>
         <TerminalButtons />
@@ -27,7 +29,9 @@ export function BlockCard({ block }: BlockCardProps) {
       <div className={styles.blockBodyStyle}>
         <div className={styles.tagsWrapStyle}>
           {block.tags.map((tag) => (
-            <Tag key={tag.name}>{tag.name}</Tag>
+            <Tag size="medium" key={tag.name}>
+              {tag.name}
+            </Tag>
           ))}
         </div>
         <ShapeShader shape={block.shape} accent={block.accent} />

@@ -1,3 +1,4 @@
+import { vars } from "@styles/theme.css";
 import { style } from "@vanilla-extract/css";
 
 export const shapeShaderContainerStyle = style({
@@ -29,7 +30,7 @@ export const shapeBaseStyle = style({
   opacity: 0.5,
   pointerEvents: "none",
   filter: "drop-shadow(0 0 10px color-mix(in srgb, var(--block-accent) 35%, transparent))",
-  boxShadow: "inset 0 0 8px color-mix(in srgb, white 24%, transparent)",
+  boxShadow: `inset 0 0 8px color-mix(in srgb, ${vars.colors.background} 24%, transparent)`,
   backgroundImage:
     "radial-gradient(circle at 28% 24%, color-mix(in srgb, white 40%, transparent) 0%, transparent 45%)",
   backgroundBlendMode: "screen",
@@ -60,12 +61,12 @@ export const shapeDiamondStyle = style({
 });
 
 export const shapeCubeStyle = style({
-  borderRadius: "6px",
+  borderRadius: `calc(${vars.radius.sm} * 0.75)`,
   backgroundColor: "var(--block-accent)",
 });
 
 export const shapeCircleStyle = style({
-  borderRadius: "50%",
+  borderRadius: vars.radius.full,
   backgroundColor: "var(--block-accent)",
 });
 
@@ -75,7 +76,7 @@ export const shapeHexagonStyle = style({
 });
 
 export const shapeRingStyle = style({
-  borderRadius: "50%",
+  borderRadius: vars.radius.full,
   border: "3px solid var(--block-accent)",
   backgroundColor: "transparent",
 });

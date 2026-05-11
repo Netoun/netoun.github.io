@@ -1,81 +1,81 @@
 # Design System
 
-## Direction artistique
+## Art Direction
 
-**Néo-rétro futuriste** — esthétique cinématique dark inspirée des interfaces terminal des années 90, revisitée en haute définition. Le site est sobre côté global (fond beige, typo propre) mais le hero impose une atmosphère immersive et sombre générée entièrement en CSS/SVG.
+**Neo-retro futuristic** — dark cinematic aesthetic inspired by 90s terminal interfaces, revisited in high definition. The site is sober globally (beige background, clean typography) but the hero imposes an immersive dark atmosphere generated entirely in CSS/SVG.
 
-### Atmosphère hero (`WelcomeHeroFilterBackground`)
+### Hero Atmosphere (`WelcomeHeroFilterBackground`)
 
-| Couche      | Technique                                                           | Détail                                                           |
-| ----------- | ------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| Fond sombre | CSS                                                                 | Masque le beige global                                           |
-| Mesh blobs  | SVG `feGaussianBlur` stdDeviation=25                                | Or haut-gauche · Cyan bas-gauche · Violet haut-droit             |
-| Film grain  | SVG `feTurbulence` fractalNoise baseFrequency=1.26, blend `overlay` | Texture granuleuse sur tout le hero                              |
-| Mouse trail | Canvas (monté après 2s, client-only)                                | Trace le chemin curseur                                          |
-| Laptop 3D   | CSS 3D — composant `Computer`                                       | Boîte à faces multiples (lid + chassis), perspective isométrique |
+| Layer       | Technique                                                           | Detail                                                |
+| ----------- | ------------------------------------------------------------------- | ----------------------------------------------------- |
+| Dark base   | CSS                                                                 | Masks the global beige                                |
+| Mesh blobs  | SVG `feGaussianBlur` stdDeviation=25                                | Gold top-left · Cyan bottom-left · Violet top-right   |
+| Film grain  | SVG `feTurbulence` fractalNoise baseFrequency=1.26, blend `overlay` | Grainy texture over the entire hero                   |
+| Mouse trail | Canvas (mounted after 2s, client-only)                              | Traces cursor path                                    |
+| Laptop 3D   | CSS 3D — `Computer` component                                       | Multi-face box (lid + chassis), isometric perspective |
 
-### Typographie
+### Typography
 
-| Rôle               | Font             | Note                                        |
-| ------------------ | ---------------- | ------------------------------------------- |
-| H1 display         | TTAlientzGrotesk | Très grande, blanc crème, `textShadow.glow` |
-| Body / UI          | PPNeueMontreal   | Police par défaut du body                   |
-| Terminal / boutons | Doto (monospace) | Labels style écran                          |
-| Décoratif          | MabeoVintage     | Accents ponctuels                           |
+| Role               | Font             | Note                                       |
+| ------------------ | ---------------- | ------------------------------------------ |
+| H1 display         | TTAlientzGrotesk | Very large, cream white, `textShadow.glow` |
+| Body / UI          | PPNeueMontreal   | Default body font                          |
+| Terminal / buttons | Doto (monospace) | Screen-style labels                        |
+| Decorative         | MabeoVintage     | Occasional accents                         |
 
-Micro-détails terminaux à préserver : préfixe `_❯`, curseur `▐`, underscores autour des labels (`_GET MY RESUME_`), flèche `⤘`.
+Terminal micro-details to preserve: `_❯` prefix, `▐` cursor, underscores around labels (`_GET MY RESUME_`), `⤘` arrow.
 
-### Invariants — ne pas casser
+### Invariants — Do Not Break
 
-- Le grain SVG reste en overlay sur tout le hero
-- Les 3 couleurs de mesh blobs (or, cyan, violet) définissent l'identité visuelle de l'accueil
-- TTAlientzGrotesk sur le H1 — ne pas substituer
-- Les glows restent subtils — pas de néon agressif
+- SVG grain stays as overlay on the entire hero
+- The 3 mesh blob colors (gold, cyan, violet) define the home page visual identity
+- TTAlientzGrotesk on the H1 — do not substitute
+- Glows remain subtle — no aggressive neon
 
 ---
 
-## Couleurs (OKLCH)
+## Colors (OKLCH)
 
-Définies dans `app/styles/theme.css.ts`, accessibles via `vars.colors.*`.
+Defined in `app/styles/theme.css.ts`, accessible via `vars.colors.*`.
 
-| Token         | Valeur                      | Usage                                    |
-| ------------- | --------------------------- | ---------------------------------------- |
-| `background`  | oklch(0.93 0.03 80)         | Fond général (beige chaud)               |
-| `foreground`  | oklch(0.07 0 0)             | Texte principal                          |
-| `primary`     | oklch(0.8858 0.182 95.69)   | Jaune/or — CTA, accents principaux       |
-| `secondary`   | oklch(0.7906 0.1573 166.87) | Vert menthe — accents secondaires        |
-| `tertiary`    | oklch(0.5548 0.2575 312.98) | Violet                                   |
-| `kirby`       | oklch(0.8455 0.0872 355.09) | Rose — usage exclusif au composant Kirby |
-| `muted`       | oklch(0.96 0 0)             | Fonds secondaires, hover subtil          |
-| `border`      | oklch(0.9 0 0)              | Bordures                                 |
-| `destructive` | oklch(0.55 0.22 29)         | Erreurs, actions dangereuses             |
+| Token         | Value                       | Usage                                   |
+| ------------- | --------------------------- | --------------------------------------- |
+| `background`  | oklch(0.93 0.03 80)         | General background (warm beige)         |
+| `foreground`  | oklch(0.07 0 0)             | Main text                               |
+| `primary`     | oklch(0.8858 0.182 95.69)   | Yellow/gold — CTAs, main accents        |
+| `secondary`   | oklch(0.7906 0.1573 166.87) | Mint green — secondary accents          |
+| `tertiary`    | oklch(0.5548 0.2575 312.98) | Violet                                  |
+| `kirby`       | oklch(0.8455 0.0872 355.09) | Pink — exclusive to the Kirby component |
+| `muted`       | oklch(0.96 0 0)             | Secondary backgrounds, subtle hover     |
+| `border`      | oklch(0.9 0 0)              | Borders                                 |
+| `destructive` | oklch(0.55 0.22 29)         | Errors, dangerous actions               |
 
-États hover : `color-mix(in srgb, ${vars.colors.primary} 90%, transparent)` — jamais de valeurs en dur.
+Hover states: `color-mix(in srgb, ${vars.colors.primary} 90%, transparent)` — never hardcoded values.
 
-## Typographie
+## Typography
 
-| Font             | Fichier local                   | Usage              |
+| Font             | Local file                      | Usage              |
 | ---------------- | ------------------------------- | ------------------ |
-| PPNeueMontreal   | `PPNeueMontreal-Variable.woff2` | Body, UI général   |
-| TTAlientzGrotesk | `TT_Alientz_Grotesque.woff2`    | Titres display     |
-| MabeoVintage     | `MabeoVintage-Regular.woff2`    | Accents décoratifs |
-| Doto             | Google Fonts                    | Terminal / boutons |
+| PPNeueMontreal   | `PPNeueMontreal-Variable.woff2` | Body, general UI   |
+| TTAlientzGrotesk | `TT_Alientz_Grotesque.woff2`    | Display titles     |
+| MabeoVintage     | `MabeoVintage-Regular.woff2`    | Decorative accents |
+| Doto             | Google Fonts                    | Terminal / buttons |
 | Inter            | Google Fonts                    | Fallback           |
 
-Fichiers locaux dans `/public/fonts/`. Tailles via `vars.fontSize.*` (`xs` 0.75rem → `10xl` 10.5rem). Poids via `vars.fontWeight.*`.
+Local files in `/public/fonts/`. Sizes via `vars.fontSize.*` (`xs` 0.75rem → `10xl` 10.5rem). Weights via `vars.fontWeight.*`.
 
-## Espacements & Radius
+## Spacing & Radius
 
-**Spacing** `vars.spacing.*` : `xs` 0.25 · `sm` 0.5 · `md` 1 · `lg` 1.5 · `xl` 2 · `2xl` 3 · `3xl` 4rem — pas de valeurs arbitraires.
+**Spacing** `vars.spacing.*`: `xs` 0.25 · `sm` 0.5 · `md` 1 · `lg` 1.5 · `xl` 2 · `2xl` 3 · `3xl` 4rem — no arbitrary values.
 
-**Radius** `vars.radius.*` : `sm` 0.5 · `md` 1 · `lg` 1.5 · `xl` 2 · `full` 9999px.
+**Radius** `vars.radius.*`: `sm` 0.5 · `md` 1 · `lg` 1.5 · `xl` 2 · `full` 9999px.
 
-## Ombres & Glows
+## Shadows & Glows
 
-`vars.boxShadow` : `glow` / `glowXl` / `glow2xl` — halos combinant `primary` et `secondary`.
-`vars.textShadow` : `glow` / `glowPrimary` — même logique pour le texte.
+`vars.boxShadow`: `glow` / `glowXl` / `glow2xl` — halos combining `primary` and `secondary`.
+`vars.textShadow`: `glow` / `glowPrimary` — same logic for text.
 
-Réservés aux CTA et éléments hero. Utilisés en excès, l'effet disparaît.
+Reserved for CTAs and hero elements. Overused, the effect disappears.
 
 ## Breakpoints (mobile-first)
 
@@ -91,10 +91,10 @@ style({
 });
 ```
 
-## Règles visuelles
+## Visual Rules
 
-- Une seule `<h1>` par page, hiérarchie stricte
-- Espacement via tokens uniquement
-- Contraste `foreground`/`background` WCAG AA
-- Animations hors viewport toujours pausées (`use-animation-priority`)
-- Glows réservés aux CTA et hero — pas d'usage décoratif généralisé
+- One `<h1>` per page, strict hierarchy
+- Spacing via tokens only
+- `foreground`/`background` contrast WCAG AA
+- Animations out of viewport always paused (`use-animation-priority`)
+- Glows reserved for CTAs and hero — no general decorative use

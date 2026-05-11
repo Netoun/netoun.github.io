@@ -1,13 +1,14 @@
+import { vars } from "@styles/theme.css";
 import { style } from "@vanilla-extract/css";
 
 export const iconGradientStartStopStyles = style({
-  stopColor: "#00f0ff",
+  stopColor: vars.colors.secondary,
 });
 
 export const iconGradientMiddleStopStyles = style({
-  stopColor: "#ffffff",
+  stopColor: vars.colors.background,
 });
 
 export const iconGradientEndStopStyles = style({
-  stopColor: "#7c3cff",
+  stopColor: vars.colors.tertiary,
 });

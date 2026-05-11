@@ -21,7 +21,10 @@ export const welcomeContainerStyle = style({
   backgroundPosition: "-5px -5px",
   padding: vars.spacing.md,
   paddingTop: vars.spacing.xl,
-  boxShadow: `inset 0 0 200px color-mix(in srgb, ${vars.colors.foreground} 80%, transparent), inset 0 0 40px color-mix(in srgb, ${vars.colors.foreground} 60%, transparent)`,
+  boxShadow: `
+    inset 0 0 200px color-mix(in srgb, ${vars.colors.foreground} 80%, transparent),
+    inset 0 0 40px color-mix(in srgb, ${vars.colors.foreground} 60%, transparent)
+  `,
 
   ":after": {
     content: "",
@@ -40,7 +43,7 @@ export const welcomeContainerStyle = style({
       borderRadius: vars.radius.xl,
     },
     [breakpoints.lg]: {
-      padding: "4rem",
+      padding: vars.spacing["3xl"],
     },
   },
 });
@@ -71,11 +74,7 @@ export const welcomeHeadingStyles = style({
   letterSpacing: "-0.035em",
   lineHeight: "0.9",
 
-  textShadow: `
-    0 0 10px color-mix(in srgb, ${vars.colors.background} 26%, transparent),
-    0 0 22px color-mix(in srgb, ${vars.colors.background} 18%, transparent),
-    0 0 42px color-mix(in srgb, ${vars.colors.secondary} 22%, transparent)
-  `,
+  textShadow: vars.textShadow.glow,
 
   selectors: {
     "&::selection": {
@@ -137,7 +136,7 @@ export const welcomeMetaStyles = style({
   WebkitBackgroundClip: "text",
   WebkitTextFillColor: "transparent",
   color: "transparent",
-  textShadow: `0 0 12px color-mix(in srgb, ${vars.colors.primary} 30%, transparent), 0 0 24px color-mix(in srgb, ${vars.colors.secondary} 20%, transparent)`,
+  textShadow: vars.textShadow.glowPrimary,
 });
 
 const welcomeDescriptionCursorKeyframes = keyframes({

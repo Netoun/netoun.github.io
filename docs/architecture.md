@@ -1,42 +1,42 @@
-# Architecture des composants
+# Component Architecture
 
-## Arborescence globale
+## Global Tree
 
 ```
 app/
-  components/          # Composants partagés (réutilisables dans toutes les pages)
-  features/<domain>/   # Métier partagé (UI + data + hooks + types réutilisés)
-  pages/<feature>/     # Module d'une page
-    page/              # Fichier de route (<feature>.page.tsx)
-    sections/          # Sections propres à cette page
-    components/        # Sous-composants propres à la page
-    hooks/             # Hooks propres à la page
-    data/              # Données statiques de la page
-    assets/            # Assets de la page
+  components/          # Shared components (reusable across all pages)
+  features/<domain>/   # Shared business logic (UI + data + hooks + types reused)
+  pages/<feature>/     # Page module
+    page/              # Route file (<feature>.page.tsx)
+    sections/          # Page-specific sections
+    components/        # Page-specific sub-components
+    hooks/             # Page-specific hooks
+    data/              # Page static data
+    assets/            # Page assets
 ```
 
 ---
 
-## Catégories de `app/components/`
+## `app/components/` Categories
 
-| Dossier       | Rôle                                                          | Exemples                                     |
-| ------------- | ------------------------------------------------------------- | -------------------------------------------- |
-| `primitives/` | Atomes UI réutilisables, sans logique métier                  | `button/`, `tag/`, `slider/`, `client-only/` |
-| `layouts/`    | Tout ce qui structure la page                                 | `container/`, `sections/`, `feature-header/` |
-| `misc/`       | Composants complexes mais réutilisables (décoratifs, visuels) | `computer/`, `kirby/`, `dots-canvas/`        |
+| Directory     | Role                                                 | Examples                                     |
+| ------------- | ---------------------------------------------------- | -------------------------------------------- |
+| `primitives/` | Reusable UI atoms, no business logic                 | `button/`, `tag/`, `slider/`, `client-only/` |
+| `layouts/`    | Everything that structures the page                  | `container/`, `sections/`, `feature-header/` |
+| `misc/`       | Complex but reusable components (decorative, visual) | `computer/`, `kirby/`, `dots-canvas/`        |
 
-### Règles
+### Rules
 
-- **`feature-header/`** est un layout → dans `layouts/`, pas à la racine.
-- Usage unique d'une page → reste dans `pages/<feature>/components/` ou `pages/<feature>/sections/<section>/components/`.
-- UI générique utilisée par 2+ pages → monte dans `app/components/`.
-- UI/data/hooks/types métier utilisés par 2+ pages → montent dans `app/features/<domain>/`.
+- **`feature-header/`** is a layout → in `layouts/`, not at root.
+- Single page usage → stays in `pages/<feature>/components/` or `pages/<feature>/sections/<section>/components/`.
+- Generic UI used by 2+ pages → moves up to `app/components/`.
+- UI/data/hooks/types business logic used by 2+ pages → moves up to `app/features/<domain>/`.
 
 ---
 
-## Catégories de `app/features/`
+## `app/features/` Categories
 
-`app/features/` contient le code métier partagé entre plusieurs pages. Les dossiers de domaine suivent les noms de pages au pluriel.
+`app/features/` contains business code shared between multiple pages. Domain folders use plural page names.
 
 ```
 app/features/
@@ -62,47 +62,47 @@ app/features/
       use-experiences.hook.types.ts
 ```
 
-### Règles
+### Rules
 
-- Nom de domaine pluriel, aligné avec la page (`projects`, `experiences`).
-- Les fichiers dans `features/<domain>/components/` ne répètent pas le préfixe du domaine : `project-card.component.tsx`, pas `projects-project-card.component.tsx`.
-- Une page peut importer depuis `app/features/<domain>/`.
-- Une feature métier ne doit pas importer depuis `app/pages/`.
+- Plural domain name, aligned with the page (`projects`, `experiences`).
+- Files in `features/<domain>/components/` do not repeat the domain prefix: `project-card.component.tsx`, not `projects-project-card.component.tsx`.
+- A page may import from `app/features/<domain>/`.
+- A business feature must not import from `app/pages/`.
 
 ---
 
-## Conventions de nommage
+## Naming Conventions
 
-| Type      | Pattern           | Exemple                             |
+| Type      | Pattern           | Example                             |
 | --------- | ----------------- | ----------------------------------- |
-| Composant | `*.component.tsx` | `button.component.tsx`              |
+| Component | `*.component.tsx` | `button.component.tsx`              |
 | Section   | `*.section.tsx`   | `welcome-hero.section.tsx`          |
 | Page      | `*.page.tsx`      | `welcome.page.tsx`                  |
 | Styles    | `*.css.ts`        | `button.css.ts`                     |
 | Hook      | `*.hook.ts`       | `use-intersection-observer.hook.ts` |
 | Types     | `*.types.ts`      | `use-projects.hook.types.ts`        |
-| Données   | `*-data.ts`       | `projects-data.ts`                  |
+| Data      | `*-data.ts`       | `projects-data.ts`                  |
 | Test      | `*.test.tsx`      | `button.test.tsx`                   |
 
-### Règles générales
+### General Rules
 
-- **kebab-case** dossiers et fichiers.
-- **named export** — pas de `export default` sauf pour les pages (`*.page.tsx`).
+- **kebab-case** for folders and files.
+- **named export** — no `export default` except for pages (`*.page.tsx`).
 
-### Règle `app/pages/<feature>/` : 1 fichier = 1 composant, préfixé par la feature
+### `app/pages/<feature>/` Rule: 1 file = 1 component, prefixed by feature
 
-Dans `app/pages/`, chaque fichier = un seul composant. Le nom du fichier porte le préfixe complet de la feature, du parent, du grand-parent, etc.
+In `app/pages/`, each file = one component. The filename carries the full feature prefix, parent, grandparent, etc.
 
 ```
 welcome                          # feature
 welcome-hero                     # section
-welcome-hero-button              # composant dans la section
-welcome-hero-button-icon         # sous-composant du composant
+welcome-hero-button              # component in section
+welcome-hero-button-icon         # sub-component of component
 ```
 
-**Pattern** : `<feature>-<parent>-<component-name>.component.tsx`
+**Pattern**: `<feature>-<parent>-<component-name>.component.tsx`
 
-Exemple concret :
+Concrete example:
 
 ```
 pages/welcome/sections/welcome-hero/components/computer/
@@ -117,11 +117,11 @@ pages/welcome/sections/welcome-hero/components/computer/
       welcome-hero-computer-square-grid.css.ts             ✓
 ```
 
-Tout fichier dans `app/pages/` qui ne respecte pas ce préfixe est hors architecture cible.
+Any file in `app/pages/` that does not respect this prefix is outside the target architecture.
 
-### Cas `app/components/` : composition, pas de préfixe
+### `app/components/` Case: composition, no prefix
 
-Dans `app/components/`, les composants sont rangés par dossier et n'ont pas de préfixe :
+In `app/components/`, components are organized by folder and have no prefix:
 
 ```
 app/components/layouts/
@@ -135,18 +135,18 @@ app/components/layouts/
 
 ---
 
-## Conventions TypeScript
+## TypeScript Conventions
 
-- Interface des props : `export interface <Name>Props`.
-- Types partagés : fichier `*.types.ts` dédié.
-- Imports type-only : `import type { ... }`.
-- Props = `interface` (pas `type`).
-- Fonctions = `export function` (pas d'arrow).
-- `React.memo` pour les composants visuels lourds.
+- Props interface: `export interface <Name>Props`.
+- Shared types: dedicated `*.types.ts` file.
+- Type-only imports: `import type { ... }`.
+- Props = `interface` (not `type`).
+- Functions = `export function` (no arrow).
+- `React.memo` for heavy visual components.
 
 ---
 
-## Composition d'une page
+## Page Composition
 
 ```
 pages/welcome/
@@ -182,40 +182,40 @@ pages/welcome/
       welcome-skills.css.ts
 ```
 
-### Règles de composition
+### Composition Rules
 
-- Une **page** est composée exclusivement de **sections**.
-- Une **section** peut avoir des sous-composants dans `components/`.
-- Un sous-composant peut lui-même avoir des sous-composants (imbrication infinie).
-- Hooks et données propres à une section restent dans son dossier.
-- Une section importe depuis `app/components/`, `app/features/<domain>/` ou depuis ses propres sous-composants.
-- Une section ne doit pas importer depuis les sections d'une autre page.
-- Si un sous-composant est utilisé par 2+ pages, il monte dans `app/components/` ou `app/features/<domain>/` selon sa nature.
-
----
-
-## Règles d'import
-
-- `app/pages/<feature>/` peut importer depuis `app/components/`, `app/features/` et ses propres sous-dossiers.
-- `app/features/<domain>/` peut importer depuis `app/components/` et ses propres sous-dossiers.
-- `app/components/` ne doit pas importer depuis `app/pages/` ni `app/features/`.
-- Import cross-page interdit : aucun import depuis `app/pages/<other-feature>/`.
-- Import entre domaines métier interdit par défaut (`app/features/projects/` → `app/features/experiences/`). Extraire dans `app/components/` si c'est générique, ou demander une décision architecture si c'est réellement métier partagé.
+- A **page** is composed exclusively of **sections**.
+- A **section** may have sub-components in `components/`.
+- A sub-component may itself have sub-components (infinite nesting).
+- Hooks and data specific to a section stay in its folder.
+- A section imports from `app/components/`, `app/features/<domain>/` or from its own sub-components.
+- A section must not import from another page's sections.
+- If a sub-component is used by 2+ pages, it moves up to `app/components/` or `app/features/<domain>/` depending on its nature.
 
 ---
 
-## Règles de review
+## Import Rules
 
-Cette architecture décrit la cible, pas l'état transitoire du code.
-
-- Toute violation de cette architecture est bloquante en review.
-- La conformité est évaluée sur tout le repo, pas seulement sur le diff.
-- Ne pas accepter de nouveau code qui dépend d'un import cross-page, d'un mauvais dossier, ou d'un fichier mal nommé.
-- Les templates de ce document utilisent les chemins cibles, même si le repo courant n'est pas encore migré.
+- `app/pages/<feature>/` may import from `app/components/`, `app/features/` and its own sub-folders.
+- `app/features/<domain>/` may import from `app/components/` and its own sub-folders.
+- `app/components/` must not import from `app/pages/` or `app/features/`.
+- Cross-page import forbidden: no import from `app/pages/<other-feature>/`.
+- Cross-business-domain import forbidden by default (`app/features/projects/` → `app/features/experiences/`). Extract into `app/components/` if generic, or request an architecture decision if truly shared business logic.
 
 ---
 
-## Template section
+## Review Rules
+
+This architecture describes the target, not the transient state of the code.
+
+- Any violation of this architecture is blocking in review.
+- Compliance is assessed on the entire repo, not just the diff.
+- Do not accept new code that depends on a cross-page import, a wrong folder, or a misnamed file.
+- Templates in this document use target paths, even if the current repo hasn't been migrated yet.
+
+---
+
+## Section Template
 
 ```tsx
 // <feature>-<name>.section.tsx
@@ -242,7 +242,7 @@ export function <Feature><Name>Section({ children }: <Feature><Name>SectionProps
 
 ---
 
-## Template sous-composant de section
+## Section Sub-Component Template
 
 ```tsx
 // <feature>-<parent>-<child>.component.tsx
@@ -257,7 +257,7 @@ export function <Feature><Parent><Child>({}: <Feature><Parent><Child>Props) {
 
 ---
 
-## Template composant partagé (dans `app/components/`)
+## Shared Component Template (in `app/components/`)
 
 ```tsx
 // <name>.component.tsx
@@ -275,7 +275,7 @@ export function <Name>({ className, children }: <Name>Props) {
 
 ---
 
-## Template styles
+## Styles Template
 
 ```ts
 // <name>.css.ts
@@ -287,33 +287,33 @@ export const root = style({
 });
 ```
 
-Pour les variantes : `recipe()` de `@vanilla-extract/recipes` (voir `button.css.ts`).
+For variants: `recipe()` from `@vanilla-extract/recipes` (see `button.css.ts`).
 
 ---
 
-## Règles de style
+## Style Rules
 
-Voir [`design.md`](./design.md) pour tokens, breakpoints, ombres, typographie.
+See [`design.md`](./design.md) for tokens, breakpoints, shadows, typography.
 
-Rappels :
+Reminders:
 
-- Toujours les tokens — pas de valeurs arbitraires.
-- Mobile-first : breakpoints via `@styles/responsive.css`.
-- Hover : `color-mix(in srgb, ${vars.colors.primary} 90%, transparent)`.
-- Animations hors viewport : `useAnimationPriority`.
+- Always tokens — no arbitrary values.
+- Mobile-first: breakpoints via `@styles/responsive.css`.
+- Hover: `color-mix(in srgb, ${vars.colors.primary} 90%, transparent)`.
+- Animations out of viewport: `useAnimationPriority`.
 
 ---
 
-## Checklist création
+## Creation Checklist
 
-1. [ ] Déterminer : page-local / layout / primitive / misc / feature métier
-2. [ ] Usage unique → `pages/`, UI générique réutilisée → `app/components/`, métier réutilisé → `app/features/`
-3. [ ] Dans `pages/` : préfixer le fichier du nom complet de la feature
-4. [ ] Créer `*.component.tsx` (ou `*.section.tsx`) + `*.css.ts`
-5. [ ] Définir l'interface des props
-6. [ ] Named export (pas de default sauf page)
-7. [ ] Tokens `vars.*` partout
-8. [ ] Sous-composants → `components/` dans le même dossier
-9. [ ] Hooks/data page-local → `pages/<feature>/hooks/` ou `pages/<feature>/data/`
-10. [ ] Hooks/data métier partagé → `app/features/<domain>/hooks/` ou `app/features/<domain>/data/`
-11. [ ] Vérifier pas de doublon dans `app/components/` ou `app/features/`
+1. [ ] Determine: page-local / layout / primitive / misc / business feature
+2. [ ] Single use → `pages/`, reusable generic UI → `app/components/`, reusable business → `app/features/`
+3. [ ] In `pages/`: prefix file with full feature name
+4. [ ] Create `*.component.tsx` (or `*.section.tsx`) + `*.css.ts`
+5. [ ] Define props interface
+6. [ ] Named export (no default except page)
+7. [ ] `vars.*` tokens everywhere
+8. [ ] Sub-components → `components/` in same folder
+9. [ ] Page-local hooks/data → `pages/<feature>/hooks/` or `pages/<feature>/data/`
+10. [ ] Shared business hooks/data → `app/features/<domain>/hooks/` or `app/features/<domain>/data/`
+11. [ ] Verify no duplicate in `app/components/` or `app/features/`

@@ -133,7 +133,11 @@ export const popoverStyles = style({
   borderRadius: vars.radius.lg,
   backdropFilter: "blur(3px)",
   background: `color-mix(in srgb, ${vars.colors.background} 20%, transparent)`,
-  boxShadow: `0 16px 44px color-mix(in srgb, ${vars.colors.foreground} 60%, transparent), 0 0 24px color-mix(in srgb, ${vars.colors.primary} 14%, transparent), inset 0 0 0 1px color-mix(in srgb, ${vars.colors.background} 18%, transparent)`,
+  boxShadow: `
+    0 16px 44px color-mix(in srgb, ${vars.colors.foreground} 60%, transparent),
+    0 0 24px color-mix(in srgb, ${vars.colors.primary} 14%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, ${vars.colors.background} 18%, transparent)
+  `,
   outline: "none",
   transformOrigin: "left center",
   willChange: "transform, opacity, filter",
@@ -247,15 +251,15 @@ export const iconStyles = style({
 });
 
 globalStyle(`.${linkStyles}:hover .${iconGradientStartStopStyles}`, {
-  stopColor: `color-mix(in srgb, ${vars.colors.secondary} 78%, #00f0ff)`,
+  stopColor: `color-mix(in srgb, ${vars.colors.secondary} 78%, ${vars.colors.background})`,
 });
 
 globalStyle(`.${linkStyles}:hover .${iconGradientMiddleStopStyles}`, {
-  stopColor: `color-mix(in srgb, ${vars.colors.secondary} 34%, #ffffff)`,
+  stopColor: `color-mix(in srgb, ${vars.colors.secondary} 34%, ${vars.colors.background})`,
 });
 
 globalStyle(`.${linkStyles}:hover .${iconGradientEndStopStyles}`, {
-  stopColor: `color-mix(in srgb, ${vars.colors.secondary} 92%, #7c3cff)`,
+  stopColor: `color-mix(in srgb, ${vars.colors.secondary} 92%, ${vars.colors.tertiary})`,
 });
 
 globalStyle(`${iconStyles} svg`, {

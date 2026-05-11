@@ -22,7 +22,7 @@ export const settingsCard = style({
 });
 
 export const settingsCardHeader = style({
-  marginBottom: "16px",
+  marginBottom: vars.spacing.md,
 });
 
 export const settingsCardTitle = style({
@@ -34,5 +34,5 @@ export const settingsCardTitle = style({
 export const settingsCardContent = style({
   display: "flex",
   flexDirection: "column",
-  gap: "16px",
+  gap: vars.spacing.md,
 });

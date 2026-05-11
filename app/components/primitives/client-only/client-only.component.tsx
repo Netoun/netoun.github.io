@@ -9,7 +9,7 @@ const subscribe = () => () => {};
 const getClientSnapshot = () => true;
 const getServerSnapshot = () => false;
 
-export const ClientOnly: React.FC<ClientOnlyProps> = ({ children, fallback = null }) => {
+export function ClientOnly({ children, fallback = null }: ClientOnlyProps) {
   const hasMounted = useSyncExternalStore(subscribe, getClientSnapshot, getServerSnapshot);
 
   if (!hasMounted) {
@@ -17,4 +17,4 @@ export const ClientOnly: React.FC<ClientOnlyProps> = ({ children, fallback = nul
   }
 
   return <>{children}</>;
-};
+}

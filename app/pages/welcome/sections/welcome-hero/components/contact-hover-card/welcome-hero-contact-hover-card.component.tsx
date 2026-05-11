@@ -7,7 +7,7 @@ import { WelcomeHeroContactHoverCardBeam } from "./components/beam/welcome-hero-
 import * as buttonStyles from "../../welcome-hero.css";
 import * as styles from "./welcome-hero-contact-hover-card.css";
 
-export function ContactHoverCard() {
+export function WelcomeHeroContactHoverCard() {
   const [isMobile, setIsMobile] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 

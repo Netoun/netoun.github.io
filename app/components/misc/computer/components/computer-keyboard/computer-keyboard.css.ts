@@ -21,7 +21,10 @@ export const computerKeyboardKeyStyle = style({
   background: `color-mix(in srgb, ${vars.colors.foreground} 95%, ${vars.colors.tertiary})`,
   border: `0.05rem solid color-mix(in srgb, ${vars.colors.foreground} 70%, ${vars.colors.tertiary})`,
   borderRadius: "0.15rem",
-  boxShadow: `inset 0 0.05rem 0.1rem rgba(0, 0, 0, 0.3), 0 0.05rem 0 rgba(255, 255, 255, 0.1)`,
+  boxShadow: `
+    inset 0 0.05rem 0.1rem color-mix(in srgb, ${vars.colors.foreground} 30%, transparent),
+    0 0.05rem 0 color-mix(in srgb, ${vars.colors.background} 10%, transparent)
+  `,
   position: "relative",
 
   fontSize: "0.18rem",

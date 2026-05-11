@@ -1,4 +1,4 @@
-import { tagStyle, type TagColor } from "./tag.css";
+import { tagStyle, type TagColor, type TagSize } from "./tag.css";
 
 const TAG_COLOR_MAP: Record<string, TagColor> = {
   // blue — frontend / React ecosystem
@@ -11,6 +11,7 @@ const TAG_COLOR_MAP: Record<string, TagColor> = {
   "Tailwind CSS": "blue",
   MDX: "blue",
   Accessibility: "blue",
+  "shadcn/ui": "blue",
 
   // pink — creative / animation / realtime
   Remix: "pink",
@@ -21,6 +22,7 @@ const TAG_COLOR_MAP: Record<string, TagColor> = {
   WebSockets: "pink",
   Elysia: "pink",
   "Canvas 2D": "pink",
+  "anime.js": "pink",
 
   // green — runtime / infra / tooling
   Node: "green",
@@ -35,17 +37,24 @@ const TAG_COLOR_MAP: Record<string, TagColor> = {
   Ansible: "green",
   Bevy: "green",
   "Git / CI/CD": "green",
+  "Git + CI/CD": "green",
   Vite: "green",
   Vitest: "green",
   Turbo: "green",
   Monorepo: "green",
+  Monorepos: "green",
   Queue: "green",
+  Queues: "green",
+  Agile: "green",
+  Notion: "green",
+  Collaboration: "green",
 
   // purple — backend / architecture / API
   NestJS: "purple",
   Backend: "purple",
   "Vanilla Extract": "purple",
   "CSS / Vanilla Extract": "purple",
+  "CSS + Vanilla Extract": "purple",
   PostgreSQL: "purple",
   Prisma: "purple",
   Drizzle: "purple",
@@ -54,6 +63,7 @@ const TAG_COLOR_MAP: Record<string, TagColor> = {
   Zod: "purple",
   "REST / GraphQL": "purple",
   "Design Systems": "purple",
+  SSE: "purple",
 
   // yellow — creative coding / design / AI / misc
   Python: "yellow",
@@ -65,10 +75,12 @@ const TAG_COLOR_MAP: Record<string, TagColor> = {
   Next: "yellow",
   "Next.js": "yellow",
   AI: "yellow",
+  "AI Workflow": "yellow",
   TensorFlow: "yellow",
   DialogFlow: "yellow",
   Streaming: "yellow",
   Figma: "yellow",
+  "Product Thinking": "yellow",
   Web: "yellow",
 };
 
@@ -79,10 +91,11 @@ function getTagColor(tag: string): TagColor {
 export interface TagProps {
   children: string;
   color?: TagColor;
+  size?: TagSize;
 }
 
-export const Tag: React.FC<TagProps> = ({ children, color }) => {
+export function Tag({ children, color, size }: TagProps) {
   const resolvedColor = color ?? getTagColor(children);
 
-  return <span className={tagStyle({ color: resolvedColor })}>{children}</span>;
-};
+  return <span className={tagStyle({ color: resolvedColor, size })}>{children}</span>;
+}
