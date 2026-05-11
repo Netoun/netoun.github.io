@@ -20,9 +20,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <html className={theme} lang="en">
       <head>
         {import.meta.env.DEV && (
-          <script crossOrigin="anonymous" src="//unpkg.com/react-scan/dist/auto.global.js" />
+          <script
+            crossOrigin="anonymous"
+            src="//unpkg.com/react-scan/dist/auto.global.js"
+          />
         )}
         <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
         <link rel="icon" href="/logo.svg" />
         {/* OG / Social */}
         <meta property="og:type" content="website" />
@@ -53,7 +57,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
           crossOrigin="anonymous"
         />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         <link
           href="https://fonts.googleapis.com/css2?family=Doto:wght@100..900&display=swap"
           rel="stylesheet"
@@ -85,7 +93,9 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   if (isRouteErrorResponse(error)) {
     message = error.status === 404 ? "404" : "Error";
     details =
-      error.status === 404 ? "The requested page could not be found." : error.statusText || details;
+      error.status === 404
+        ? "The requested page could not be found."
+        : error.statusText || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
     stack = error.stack;
