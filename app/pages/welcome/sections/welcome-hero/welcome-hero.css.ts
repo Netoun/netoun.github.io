@@ -127,13 +127,17 @@ export const welcomeMetaStyles = style({
   flexDirection: "column",
   gap: vars.spacing.xs,
   marginTop: `-${vars.spacing.sm}`,
-  color: `color-mix(in srgb, ${vars.colors.background} 88%, ${vars.colors.secondary} 12%)`,
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.base,
   letterSpacing: "0.04em",
   textTransform: "uppercase",
   opacity: 0.86,
-  textShadow: vars.textShadow.glowSm,
+  backgroundImage: `linear-gradient(90deg, color-mix(in srgb, ${vars.colors.primary} 70%, ${vars.colors.background}), color-mix(in srgb, ${vars.colors.kirby} 70%, ${vars.colors.background}), color-mix(in srgb, ${vars.colors.tertiary} 70%, ${vars.colors.background}), color-mix(in srgb, ${vars.colors.secondary} 70%, ${vars.colors.background}), color-mix(in srgb, ${vars.colors.primary} 70%, ${vars.colors.background}))`,
+  backgroundClip: "text",
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  color: "transparent",
+  textShadow: `0 0 12px color-mix(in srgb, ${vars.colors.primary} 30%, transparent), 0 0 24px color-mix(in srgb, ${vars.colors.secondary} 20%, transparent)`,
 });
 
 const welcomeDescriptionCursorKeyframes = keyframes({
@@ -202,23 +206,7 @@ export const welcomeButtonArrowStyles = style({
   },
 });
 
-export const welcomeButtonLabelStyles = style({
-  selectors: {
-    [`${welcomeButtonStyles}:hover &`]: {
-      opacity: 0,
-      display: "none",
-    },
-  },
-});
-
-export const welcomeButtonHoverLabelStyles = style({
-  display: "none",
-  selectors: {
-    [`${welcomeButtonStyles}:hover &`]: {
-      display: "inline",
-    },
-  },
-});
+export const welcomeButtonLabelStyles = style({});
 
 export const welcomeLinkStyles = style({
   color: vars.colors.primary,

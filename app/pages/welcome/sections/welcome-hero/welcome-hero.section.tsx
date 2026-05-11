@@ -1,11 +1,11 @@
 import { useEffect, useReducer, useRef, useState } from "react";
 import { Section } from "@/components/layouts/sections/section.component";
-import { Button } from "@/components/primitives/button/button.component";
 import { useMousePosition } from "@/hooks/use-mouse-position.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
 import { WelcomeHeroFilterBackground } from "./components/background/welcome-hero-filter-background.component";
 import { WelcomeHeroComputerComponent } from "./components/computer/welcome-hero-computer.component";
 import { useWelcomeHeroContentAnimation } from "./hooks/use-welcome-hero-content-animation.hook";
+import { ContactHoverCard } from "./components/contact-hover-card/welcome-hero-contact-hover-card.component";
 import * as styles from "./welcome-hero.css";
 
 function getElementFromNode(node: Node): Element | null {
@@ -125,7 +125,9 @@ export function WelcomeHeroSection() {
     };
 
     document.addEventListener("mouseup", handleMouseUp, { passive: true });
-    document.addEventListener("selectstart", handleSelectStart, { passive: true });
+    document.addEventListener("selectstart", handleSelectStart, {
+      passive: true,
+    });
     document.addEventListener("keydown", handleKeyDown, { passive: true });
     document.addEventListener("keyup", handleKeyUp, { passive: true });
     document.addEventListener("click", handleClick, { passive: true });
@@ -189,13 +191,8 @@ export function WelcomeHeroSection() {
           </p>
           <div className={styles.welcomeMetaStyles}>
             <span>Focused on performance, UX, and clean architecture</span>
-            <span>React - TypeScript - NestJS - WebGL</span>
           </div>
-          <Button id="welcome-button" className={styles.welcomeButtonStyles}>
-            <span className={styles.welcomeButtonLabelStyles}>_Get my resume_</span>
-            <span className={styles.welcomeButtonHoverLabelStyles}>_Downloading… █</span>{" "}
-            <span className={styles.welcomeButtonArrowStyles}>⤘</span>
-          </Button>
+          <ContactHoverCard />
         </div>
       </div>
 

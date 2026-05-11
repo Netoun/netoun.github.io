@@ -70,15 +70,15 @@ export const prefixStyle = recipe({
   variants: {
     variant: {
       primary: {
-        color: `color-mix(in srgb, ${ACCENT_MAP.primary} 35%, ${vars.colors.foreground})`,
+        color: `color-mix(in srgb, ${ACCENT_MAP.primary} 50%, ${vars.colors.foreground})`,
         textShadow: `0 0 40px color-mix(in srgb, ${ACCENT_MAP.primary} 50%, transparent)`,
       },
       secondary: {
-        color: `color-mix(in srgb, ${ACCENT_MAP.secondary} 35%, ${vars.colors.foreground})`,
+        color: `color-mix(in srgb, ${ACCENT_MAP.secondary} 50%, ${vars.colors.foreground})`,
         textShadow: `0 0 40px color-mix(in srgb, ${ACCENT_MAP.secondary} 50%, transparent)`,
       },
       tertiary: {
-        color: `color-mix(in srgb, ${ACCENT_MAP.tertiary} 35%, ${vars.colors.foreground})`,
+        color: `color-mix(in srgb, ${ACCENT_MAP.tertiary} 50%, ${vars.colors.foreground})`,
         textShadow: `0 0 40px color-mix(in srgb, ${ACCENT_MAP.tertiary} 50%, transparent)`,
       },
     },
