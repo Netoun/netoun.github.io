@@ -49,6 +49,7 @@ export const timelineDotStyle = style({
 
   "@media": {
     [breakpoints.md]: {
+      display: "block",
       left: "-35px",
       width: "14px",
       height: "14px",

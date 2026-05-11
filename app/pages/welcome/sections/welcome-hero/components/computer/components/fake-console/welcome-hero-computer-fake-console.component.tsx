@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState, useCallback } from "react";
 import * as styles from "./welcome-hero-computer-fake-console.css";
 
 export interface WelcomeHeroComputerFakeConsoleProps {
@@ -142,26 +142,22 @@ export const WelcomeHeroComputerFakeConsole = ({
     };
   }, []);
 
+  // Cache for line height - initialized once
+  const lineHeightRef = useRef(12);
+  const rafIdRef = useRef<number | null>(null);
+  const shiftRafIdRef = useRef<number | null>(null);
+
+  const calculateLineHeight = useCallback((lineElement: Element): number => {
+    const computed = window.getComputedStyle(lineElement);
+    const parsedLineHeight = Number.parseFloat(computed.lineHeight);
+    return Number.isFinite(parsedLineHeight) && parsedLineHeight > 0 ? parsedLineHeight : 12;
+  }, []);
+
   useEffect(() => {
     const rootElement = rootRef.current;
     if (!rootElement) return;
 
     const lineGap = 2;
-    const lineHeightRef = { current: 12 };
-
-    const initializeLineHeight = () => {
-      const lineElement = rootElement.querySelector("p");
-      if (!lineElement) return;
-
-      const computed = window.getComputedStyle(lineElement);
-      const parsedLineHeight = Number.parseFloat(computed.lineHeight);
-
-      if (Number.isFinite(parsedLineHeight) && parsedLineHeight > 0) {
-        lineHeightRef.current = parsedLineHeight;
-      }
-    };
-
-    initializeLineHeight();
 
     const updateRowsCount = (height: number) => {
       const nextRowsCount = Math.max(
@@ -174,19 +170,36 @@ export const WelcomeHeroComputerFakeConsole = ({
       });
     };
 
-    updateRowsCount(rootElement.clientHeight);
+    // Batch DOM reads in requestAnimationFrame
+    const initializeLayout = () => {
+      rafIdRef.current = requestAnimationFrame(() => {
+        const lineElement = rootElement.querySelector("p");
+        if (lineElement) {
+          lineHeightRef.current = calculateLineHeight(lineElement);
+        }
+        updateRowsCount(rootElement.clientHeight);
+      });
+    };
+
+    initializeLayout();
 
     const resizeObserver = new ResizeObserver((entries) => {
       const entry = entries[0];
       if (!entry) return;
-      updateRowsCount(entry.contentRect.height);
+      // Batch resize in RAF as well
+      rafIdRef.current = requestAnimationFrame(() => {
+        updateRowsCount(entry.contentRect.height);
+      });
     });
     resizeObserver.observe(rootElement);
 
     return () => {
       resizeObserver.disconnect();
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
     };
-  }, []);
+  }, [calculateLineHeight]);
 
   useEffect(() => {
     dispatch({ type: "RESIZE", rowsCount });
@@ -196,13 +209,25 @@ export const WelcomeHeroComputerFakeConsole = ({
 
   const shouldReelAnimate = isAnimating && !prefersReducedMotion;
 
+  // Cache for shift distance - recalculated only when necessary
+  const cachedShiftDistanceRef = useRef<number | null>(null);
+
   useEffect(() => {
     if (!shouldReelAnimate || isShifting) return;
 
-    const lineElement = reelRef.current?.querySelector("p");
-    if (lineElement) {
-      const lineHeight = lineElement.getBoundingClientRect().height;
-      shiftDistanceRef.current = lineHeight + 2;
+    // Recalculate shift distance only if not cached
+    if (cachedShiftDistanceRef.current === null) {
+      const lineElement = reelRef.current?.querySelector("p");
+      if (lineElement) {
+        // Batch in RAF to avoid forced reflow
+        shiftRafIdRef.current = requestAnimationFrame(() => {
+          const lineHeight = lineElement.getBoundingClientRect().height;
+          cachedShiftDistanceRef.current = lineHeight + 2;
+          shiftDistanceRef.current = cachedShiftDistanceRef.current;
+        });
+      }
+    } else {
+      shiftDistanceRef.current = cachedShiftDistanceRef.current;
     }
 
     const tick = window.setTimeout(() => {
@@ -211,6 +236,10 @@ export const WelcomeHeroComputerFakeConsole = ({
 
     return () => {
       window.clearTimeout(tick);
+      if (shiftRafIdRef.current) {
+        cancelAnimationFrame(shiftRafIdRef.current);
+        shiftRafIdRef.current = null;
+      }
     };
   }, [shouldReelAnimate, isShifting]);
 
@@ -229,6 +258,8 @@ export const WelcomeHeroComputerFakeConsole = ({
   useEffect(() => {
     if (shouldReelAnimate) return;
     dispatch({ type: "STOP" });
+    // Reset cache when animation stops to allow recalculation on next start
+    cachedShiftDistanceRef.current = null;
   }, [shouldReelAnimate]);
 
   const renderLines = pendingLine ? [...lines, pendingLine] : lines;
@@ -245,6 +276,7 @@ export const WelcomeHeroComputerFakeConsole = ({
     return () => {
       dispatch({ type: "STOP" });
       shiftDistanceRef.current = 0;
+      cachedShiftDistanceRef.current = null;
     };
   }, []);
 

@@ -1,5 +1,5 @@
 import { animate, stagger } from "animejs";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { Container } from "@/components/layouts/container/container.component";
 import {
   FeatureHeader,
@@ -14,22 +14,37 @@ import * as styles from "./welcome-skills.css";
 
 export function WelcomeSkillsSection() {
   const gridRef = useRef<HTMLDivElement>(null);
+  // Cache NodeList to avoid repeated querySelectorAll
+  const blocksRef = useRef<NodeListOf<Element> | null>(null);
+  const hasAnimatedRef = useRef(false);
+
   const { ref: sectionRef, isIntersecting } = useIntersectionObserver<HTMLElement>({
     threshold: 0.1,
   });
   const shouldAnimate = useAnimationPriority({ priority: "medium", isVisible: isIntersecting });
 
-  useEffect(() => {
-    if (!shouldAnimate || !gridRef.current) return;
+  // Initialize blocks ref once when grid is available
+  const initializeBlocks = useCallback(() => {
+    if (gridRef.current && !blocksRef.current) {
+      blocksRef.current = gridRef.current.querySelectorAll("[data-block]");
+    }
+  }, []);
 
-    animate(gridRef.current.querySelectorAll("[data-block]"), {
+  useEffect(() => {
+    initializeBlocks();
+
+    if (!shouldAnimate || !blocksRef.current || hasAnimatedRef.current) return;
+
+    hasAnimatedRef.current = true;
+
+    animate(blocksRef.current, {
       opacity: [0, 1],
       translateY: [20, 0],
       ease: "outQuart",
       duration: 450,
       delay: stagger(80, { start: 200 }),
     });
-  }, [shouldAnimate]);
+  }, [shouldAnimate, initializeBlocks]);
 
   return (
     <section ref={sectionRef} className={styles.sectionStyle}>

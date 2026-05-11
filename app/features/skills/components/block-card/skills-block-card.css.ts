@@ -12,6 +12,8 @@ export const blockStyle = style({
   boxShadow: `0 4px 20px color-mix(in srgb, ${vars.colors.primary} 8%, transparent)`,
   transition: "box-shadow 0.3s ease, border-color 0.3s ease",
   height: "100%",
+  display: "flex",
+  flexDirection: "column",
 });
 
 globalStyle(`${blockStyle}:hover`, {
@@ -47,10 +49,14 @@ export const blockTitlePromptStyle = style({
 });
 
 export const blockBodyStyle = style({
-  paddingInline: `${vars.spacing.md} ${vars.spacing["3xl"]}`,
+  paddingInline: `${vars.spacing.md} ${vars.spacing.md}`,
   paddingBlock: `${vars.spacing.md} ${vars.spacing.md}`,
   position: "relative",
   minHeight: "5.625rem",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  flex: 1,
 });
 
 export const tagsWrapStyle = style({
@@ -59,5 +65,6 @@ export const tagsWrapStyle = style({
   gap: vars.spacing.xs,
   alignItems: "center",
   position: "relative",
+  flex: 1,
   zIndex: 1,
 });

@@ -34,16 +34,19 @@ async function generateFavicons() {
     { name: "mstile-150x150.png", w: 150, h: 150 },
   ];
 
-  for (const s of sizes) {
-    await sharp(FAVICON_SVG)
-      .resize(s.w, s.h, {
-        fit: "contain",
-        background: { r: 0, g: 0, b: 0, alpha: 0 },
-      })
-      .png()
-      .toFile(resolve(PUBLIC, s.name));
-    console.log(`  ✅ ${s.name} (${s.w}x${s.h})`);
-  }
+  // Process favicons in parallel for better performance
+  await Promise.all(
+    sizes.map(async (s) => {
+      await sharp(FAVICON_SVG)
+        .resize(s.w, s.h, {
+          fit: "contain",
+          background: { r: 0, g: 0, b: 0, alpha: 0 },
+        })
+        .png()
+        .toFile(resolve(PUBLIC, s.name));
+      console.log(`  ✅ ${s.name} (${s.w}x${s.h})`);
+    }),
+  );
 
   // Multi-resolution ICO (bundled 16, 24, 32, 48, 64, 128, 256)
   const icoRes = [16, 24, 32, 48, 64, 128, 256];
@@ -160,13 +163,16 @@ async function generateOG() {
     { name: "og-image-600x315.webp", w: 600, h: 315 }, // Twitter summary
   ];
 
-  for (const f of formats) {
-    await sharp(OG_SOURCE)
-      .resize(f.w, f.h, { fit: "cover" })
-      .webp({ quality: 90 })
-      .toFile(resolve(PUBLIC, f.name));
-    console.log(`  ✅ ${f.name} (${f.w}x${f.h})`);
-  }
+  // Process OG images in parallel for better performance
+  await Promise.all(
+    formats.map(async (f) => {
+      await sharp(OG_SOURCE)
+        .resize(f.w, f.h, { fit: "cover" })
+        .webp({ quality: 90 })
+        .toFile(resolve(PUBLIC, f.name));
+      console.log(`  ✅ ${f.name} (${f.w}x${f.h})`);
+    }),
+  );
 
   // Also generate PNG fallback
   const pngFormat = { name: "og-image-1200x630.png", w: 1200, h: 630 };
@@ -216,8 +222,7 @@ async function generateConfig() {
 }
 
 (async () => {
-  await generateFavicons();
-  await generateOG();
-  await generateConfig();
+  // Run independent generation tasks in parallel
+  await Promise.all([generateFavicons(), generateOG(), generateConfig()]);
   console.log("\n✅ All assets generated successfully!");
 })();

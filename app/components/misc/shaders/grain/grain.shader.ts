@@ -1,6 +1,6 @@
 const toGlslFloat = (value: number) => value.toFixed(8).replace(/0+$/, "").replace(/\.$/, ".0");
 
-export const GRAIN_CONFIG = {
+const GRAIN_CONFIG = {
   maxDevicePixelRatio: 2,
   flickerBase: 0.98,
   flickerRange: 0.02,
