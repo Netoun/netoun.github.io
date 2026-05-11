@@ -10,5 +10,5 @@ export const contactLinks: ContactLink[] = [
     url: "https://www.linkedin.com/in/nicolas-coulonnier-66416813b/",
   },
   { label: "Twitter / X", url: "https://x.com/netoun" },
-  { label: "Email", url: "mailto:placeholder@email.com" },
+  { label: "Email", url: "mailto:netoun@proton.me" },
 ];
