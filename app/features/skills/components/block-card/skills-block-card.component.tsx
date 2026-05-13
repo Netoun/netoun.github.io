@@ -1,5 +1,6 @@
 import { TerminalButtons } from "@/components/primitives/terminal-buttons/terminal-buttons.component";
 import { Tag } from "@/components/primitives/tag/tag.component";
+import { memo, useMemo } from "react";
 import type { SkillBlock } from "../../data/skills-data.types";
 import { ACCENT_VARS } from "../../data/skills-data";
 import { ShapeShader } from "../shape-shader/skills-shape-shader.component";
@@ -9,14 +10,22 @@ interface BlockCardProps {
   block: SkillBlock;
 }
 
-export function BlockCard({ block }: BlockCardProps) {
+function BlockCardComponent({ block }: BlockCardProps) {
+  const tags = useMemo(
+    () =>
+      block.tags.map((tag) => (
+        <Tag size="medium" key={tag.name}>
+          {tag.name}
+        </Tag>
+      )),
+    [block.tags],
+  );
+
   return (
     <div
       data-block
       className={styles.blockStyle}
-      style={
-        { "--block-accent": ACCENT_VARS[block.accent] } as React.CSSProperties
-      }
+      style={{ "--block-accent": ACCENT_VARS[block.accent] } as React.CSSProperties}
     >
       <div className={styles.blockBarStyle}>
         <TerminalButtons />
@@ -27,15 +36,11 @@ export function BlockCard({ block }: BlockCardProps) {
       </div>
 
       <div className={styles.blockBodyStyle}>
-        <div className={styles.tagsWrapStyle}>
-          {block.tags.map((tag) => (
-            <Tag size="medium" key={tag.name}>
-              {tag.name}
-            </Tag>
-          ))}
-        </div>
-        <ShapeShader shape={block.shape} accent={block.accent} />
+        <div className={styles.tagsWrapStyle}>{tags}</div>
+        <ShapeShader shape={block.shape} />
       </div>
     </div>
   );
 }
+
+export const BlockCard = memo(BlockCardComponent);

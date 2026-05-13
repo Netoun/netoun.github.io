@@ -1,5 +1,3 @@
-import { animate } from "animejs";
-import { useEffect, useRef } from "react";
 import { Container } from "@/components/layouts/container/container.component";
 import {
   FeatureHeader,
@@ -13,8 +11,6 @@ import { ExperienceCard } from "@/features/experiences/components/experience-car
 import * as styles from "./welcome-experience.css";
 
 export function WelcomeExperienceSection() {
-  const timelineRef = useRef<HTMLDivElement>(null);
-  const hasAnimated = useRef(false);
   const { ref: sectionRef, isIntersecting } = useIntersectionObserver<HTMLElement>({
     threshold: 0,
   });
@@ -23,20 +19,12 @@ export function WelcomeExperienceSection() {
     isVisible: isIntersecting,
   });
 
-  useEffect(() => {
-    if (!shouldAnimate || !timelineRef.current || hasAnimated.current) return;
-    hasAnimated.current = true;
-
-    animate(timelineRef.current, {
-      opacity: [0, 1],
-      translateY: [20, 0],
-      ease: "outQuad",
-      duration: 600,
-    });
-  }, [shouldAnimate]);
-
   return (
-    <section ref={sectionRef} className={styles.sectionStyle}>
+    <section
+      ref={sectionRef}
+      className={styles.sectionStyle}
+      data-anim-disabled={shouldAnimate ? "false" : "true"}
+    >
       <Container className={styles.contentStyle}>
         <FeatureHeader>
           <FeatureHeaderTitle>EXPERIENCE</FeatureHeaderTitle>
@@ -47,7 +35,11 @@ export function WelcomeExperienceSection() {
 
         <div className={styles.timelineStyle}>
           {experiences.map((experience) => (
-            <ExperienceCard key={experience.slug} experience={experience} data-entry />
+            <ExperienceCard
+              key={experience.slug}
+              experience={experience}
+              animationsEnabled={shouldAnimate}
+            />
           ))}
         </div>
       </Container>

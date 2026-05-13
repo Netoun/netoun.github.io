@@ -67,7 +67,7 @@ export const rackWrapperStyle = style({
   justifyContent: "flex-start",
   alignItems: "center",
   transformStyle: "preserve-3d",
-  transform: "rotateX(4deg) rotateY(-24deg)",
+  transform: "rotateX(4deg) rotateY(24deg)",
 
   "@media": {
     "screen and (max-width: 767px)": {
@@ -93,26 +93,27 @@ export const headingStyle = style({
   fontFamily: vars.fontFamily.ppNeueMontreal,
   fontSize: vars.fontSize["2xl"],
   fontWeight: vars.fontWeight.semibold,
-  color: vars.colors.foreground,
+  color: vars.colors.background,
   margin: 0,
 });
 
 export const sparkleStyle = style({
   color: vars.colors.primary,
   marginLeft: vars.spacing.xs,
+
   display: "inline-block",
   animation: `${pulse} 2s ease-in-out infinite`,
 });
 
 export const subtextStyle = style({
-  fontFamily: vars.fontFamily.inter,
+  fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.base,
-  color: vars.colors.mutedForeground,
+  color: vars.colors.kirby,
   margin: 0,
 });
 
 export const copyrightStyle = style({
-  fontFamily: vars.fontFamily.inter,
+  fontFamily: vars.fontFamily.ppNeueMontreal,
   fontSize: vars.fontSize.sm,
   color: vars.colors.mutedForeground,
   margin: 0,

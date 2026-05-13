@@ -8,7 +8,7 @@ export const blockStyle = style({
   backdropFilter: "blur(20px)",
   WebkitBackdropFilter: "blur(20px)",
   overflow: "hidden",
-  opacity: 0,
+  opacity: 1,
   boxShadow: `0 4px 20px color-mix(in srgb, ${vars.colors.primary} 8%, transparent)`,
   transition: "box-shadow 0.3s ease, border-color 0.3s ease",
   height: "100%",

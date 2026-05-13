@@ -1,5 +1,4 @@
 import { style } from "@vanilla-extract/css";
-import { vars } from "@/styles/theme.css";
 
 // Container for mesh background layers
 export const welcomeMeshContainerStyles = style({
@@ -27,39 +26,6 @@ export const welcomeShaderCanvasStyles = style({
   selectors: {
     '&[data-ready="true"]': {
       opacity: 1,
-    },
-  },
-});
-
-// Individual mesh shape SVG (positioned absolutely within container)
-export const welcomeMeshShapeStyles = style({
-  position: "absolute",
-  backfaceVisibility: "hidden",
-});
-
-// Noise overlay covers entire container
-export const welcomeNoiseOverlayStyles = style({
-  position: "absolute",
-  inset: 0,
-  width: "100%",
-  zIndex: 10,
-  height: "100%",
-  pointerEvents: "none",
-  opacity: 0.25,
-});
-
-export const welcomeMeshGradientPathStyles = style({
-  backfaceVisibility: "hidden",
-  fill: "currentColor",
-  selectors: {
-    '&[data-mesh-index="1"]': {
-      fill: `color-mix(in srgb, ${vars.colors.primary} 25%, transparent)`,
-    },
-    '&[data-mesh-index="2"]': {
-      fill: `color-mix(in srgb, ${vars.colors.secondary} 25%, transparent)`,
-    },
-    '&[data-mesh-index="3"]': {
-      fill: `color-mix(in srgb, ${vars.colors.tertiary} 25%, transparent)`,
     },
   },
 });

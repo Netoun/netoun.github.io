@@ -9,7 +9,7 @@ const ping = keyframes({
 
 export const entryStyle = style({
   position: "relative",
-  opacity: 0,
+  opacity: 1,
   height: "100%",
 
   "::after": {
@@ -65,6 +65,10 @@ export const timelineDotPingStyle = style({
   backgroundColor: vars.colors.kirby,
   opacity: 0.4,
   animation: `${ping} 2s cubic-bezier(0, 0, 0.2, 1) infinite`,
+});
+
+globalStyle(`${entryStyle}[data-anim-disabled='true'] ${timelineDotPingStyle}`, {
+  animation: "none",
 });
 
 export const cardStyle = style({

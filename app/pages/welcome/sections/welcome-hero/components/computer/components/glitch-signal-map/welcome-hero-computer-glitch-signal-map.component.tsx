@@ -1,5 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
-import type { CSSProperties } from "react";
+import { memo, useEffect, useRef } from "react";
 import * as styles from "./welcome-hero-computer-glitch-signal-map.css";
 
 export interface WelcomeHeroComputerGlitchSignalMapProps {
@@ -11,267 +10,602 @@ const BASE_SEED = 0x5e2d91af;
 const LCG_A = 1664525;
 const LCG_C = 1013904223;
 
+const PAD_PX = 4;
+const GAP_PX = 2;
+
+const MAX_DPR = 1.5;
+const TARGET_FRAME_MS = 1000 / 30;
+
+const TICK_MS = 250;
+const UPDATE_RATIO = 0.04;
+const RECALIBRATE_DURATION_MS = 120;
+
+const DOT_COUNT = 12;
+
+const PULSE_PERIOD_S = 3.4;
+const PULSE_RADIANS_PER_SECOND = (Math.PI * 2) / PULSE_PERIOD_S;
+
+const STATE_IDLE = 0;
+const STATE_ACTIVE = 1;
+const STATE_RECALIBRATING = 2;
+
+type BlockState = typeof STATE_IDLE | typeof STATE_ACTIVE | typeof STATE_RECALIBRATING;
+
+interface BlockCell {
+  state: BlockState;
+  seed: number;
+  accent: boolean;
+  recalUntil: number;
+  settleState: BlockState;
+  settleSeed: number;
+  pulseDelay: number;
+}
+
+interface DotMeta {
+  topPct: number;
+  leftPct: number;
+  accent: boolean;
+}
+
+interface DotCell {
+  x: number;
+  y: number;
+  accent: boolean;
+}
+
+interface RectCell {
+  x: number;
+  y: number;
+}
+
+interface GridLayout {
+  cols: number;
+  rows: number;
+  bx: number;
+  by: number;
+  bw: number;
+  bh: number;
+}
+
 const lcg = (seed: number): number => (seed * LCG_A + LCG_C) >>> 0;
 
-const buildBlockModel = (count: number) => {
-  const seeds: number[] = [];
-  const states: Array<"idle" | "active" | "recalibrating"> = [];
+const buildBlocks = (count: number): BlockCell[] => {
+  const cells: BlockCell[] = [];
   let current = BASE_SEED;
 
   for (let index = 0; index < count; index += 1) {
     current = lcg(current ^ (index * 2654435761));
-    seeds.push(current);
-    states.push((current & 0x0f) < 2 ? "active" : "idle");
+
+    cells[index] = {
+      state: (current & 0x0f) < 2 ? STATE_ACTIVE : STATE_IDLE,
+      seed: current,
+      accent: ((current >>> 8) & 0x0f) === 0,
+      recalUntil: 0,
+      settleState: STATE_IDLE,
+      settleSeed: current,
+      pulseDelay: ((index * 11) % 240) / 80,
+    };
   }
 
-  return { seeds, states };
+  return cells;
 };
 
-const buildDots = (count: number) => {
-  const dots: Array<{ top: string; left: string; accent: boolean }> = [];
+const buildDots = (count: number): DotMeta[] => {
+  const dots: DotMeta[] = [];
   let seed = BASE_SEED ^ 0x00abc123;
 
   for (let index = 0; index < count; index += 1) {
     seed = lcg(seed);
-    const top = `${8 + (seed % 84)}%`;
+    const topPct = 8 + (seed % 84);
+
     seed = lcg(seed);
-    const left = `${10 + (seed % 78)}%`;
-    const accent = ((seed >>> 5) & 0x07) === 0;
-    dots.push({ top, left, accent });
+    const leftPct = 10 + (seed % 78);
+
+    dots[index] = {
+      topPct,
+      leftPct,
+      accent: ((seed >>> 5) & 0x07) === 0,
+    };
   }
 
   return dots;
 };
 
-export const WelcomeHeroComputerGlitchSignalMap = memo(
-  ({ isAnimating, className }: WelcomeHeroComputerGlitchSignalMapProps) => {
-    const rootRef = useRef<HTMLDivElement>(null);
-    const blockRefs = useRef<Array<HTMLSpanElement | null>>([]);
-    const seedsRef = useRef<number[]>([]);
-    const statesRef = useRef<Array<"idle" | "active" | "recalibrating">>([]);
-    const shouldAnimateRef = useRef(isAnimating);
-    const prefersReducedMotionRef = useRef(false);
+const DOT_META = buildDots(DOT_COUNT);
 
-    const [grid, setGrid] = useState({ cols: 4, rows: 18 });
-    const [blockCount, setBlockCount] = useState(72);
+const computeLayout = (width: number, height: number): GridLayout => {
+  const innerW = Math.max(1, width - PAD_PX * 2);
+  const innerH = Math.max(1, height - PAD_PX * 2);
 
-    shouldAnimateRef.current = isAnimating;
+  const cols = Math.max(3, Math.min(6, Math.floor(innerW / 16)));
+  const rows = Math.max(14, Math.floor(innerH / 10));
 
-    useEffect(() => {
-      const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-      const updateMotion = () => {
-        prefersReducedMotionRef.current = mediaQuery.matches;
+  const bw = (innerW - GAP_PX * (cols - 1)) / cols;
+  const bh = (innerH - GAP_PX * (rows - 1)) / rows;
+
+  return {
+    cols,
+    rows,
+    bx: PAD_PX,
+    by: PAD_PX,
+    bw,
+    bh,
+  };
+};
+
+const buildRects = ({ cols, rows, bx, by, bw, bh }: GridLayout): RectCell[] => {
+  const rects: RectCell[] = [];
+
+  for (let row = 0; row < rows; row += 1) {
+    for (let col = 0; col < cols; col += 1) {
+      rects[row * cols + col] = {
+        x: bx + col * (bw + GAP_PX),
+        y: by + row * (bh + GAP_PX),
       };
+    }
+  }
 
-      updateMotion();
-      mediaQuery.addEventListener("change", updateMotion);
+  return rects;
+};
 
-      return () => {
-        mediaQuery.removeEventListener("change", updateMotion);
-      };
-    }, []);
+const buildDotCells = (width: number, height: number): DotCell[] => {
+  const innerW = Math.max(1, width - PAD_PX * 2);
+  const innerH = Math.max(1, height - PAD_PX * 2);
 
-    useEffect(() => {
-      const element = rootRef.current;
-      if (!element) return;
+  return DOT_META.map((dot) => ({
+    x: PAD_PX + (innerW * dot.leftPct) / 100,
+    y: PAD_PX + (innerH * dot.topPct) / 100,
+    accent: dot.accent,
+  }));
+};
 
-      const updateGrid = () => {
-        const { width, height } = element.getBoundingClientRect();
+export const WelcomeHeroComputerGlitchSignalMap = memo(function WelcomeHeroComputerGlitchSignalMap({
+  isAnimating,
+  className,
+}: WelcomeHeroComputerGlitchSignalMapProps) {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
 
-        const cols = Math.max(3, Math.min(6, Math.floor(width / 16)));
-        const rows = Math.max(14, Math.floor(height / 10));
-        const nextCount = cols * rows;
+  const isAnimatingRef = useRef(isAnimating);
+  const runningRef = useRef(false);
+  const reducedMotionRef = useRef(false);
 
-        setGrid((previous) => {
-          if (previous.cols === cols && previous.rows === rows) return previous;
-          return { cols, rows };
-        });
-        setBlockCount((previous) => (previous === nextCount ? previous : nextCount));
-      };
+  const layoutRef = useRef<GridLayout>({
+    cols: 4,
+    rows: 18,
+    bx: PAD_PX,
+    by: PAD_PX,
+    bw: 10,
+    bh: 6,
+  });
 
-      updateGrid();
+  const blocksRef = useRef<BlockCell[]>(buildBlocks(4 * 18));
+  const rectsRef = useRef<RectCell[]>(buildRects(layoutRef.current));
+  const dotsRef = useRef<DotCell[]>([]);
 
-      const resizeObserver = new ResizeObserver(updateGrid);
-      resizeObserver.observe(element);
+  const cssWidthRef = useRef(0);
+  const cssHeightRef = useRef(0);
+  const dprRef = useRef(1);
 
-      return () => {
-        resizeObserver.disconnect();
-      };
-    }, []);
+  const rafRef = useRef<number | null>(null);
+  const resizeRafRef = useRef<number | null>(null);
 
-    useEffect(() => {
-      const { seeds, states } = buildBlockModel(blockCount);
-      seedsRef.current = seeds;
-      statesRef.current = states;
-      blockRefs.current = blockRefs.current.slice(0, blockCount);
-    }, [blockCount]);
+  const animStartRef = useRef(0);
+  const lastFrameRef = useRef(0);
+  const lastTickRef = useRef(0);
+  const tickStepRef = useRef(0);
 
-    useEffect(() => {
-      let frameId = 0;
-      let lastTick = 0;
-      let frameStep = 0;
-      let isRunning = false;
-      const timeoutIds: number[] = [];
+  const hoverIdxRef = useRef(-1);
+  const needsDrawRef = useRef(true);
 
-      const animate = (currentTime: number) => {
-        // Only run animation if component is animating and visible
-        if (!shouldAnimateRef.current || prefersReducedMotionRef.current) {
-          isRunning = false;
-          return;
-        }
+  const startLoopRef = useRef<() => void>(() => {});
+  const stopLoopRef = useRef<() => void>(() => {});
+  const drawOnceRef = useRef<() => void>(() => {});
 
-        frameId = requestAnimationFrame(animate);
+  isAnimatingRef.current = isAnimating;
 
-        // Reduce tick rate to every 250ms instead of 180ms
-        if (currentTime - lastTick < 250) return;
+  useEffect(() => {
+    const root = rootRef.current;
+    const canvas = canvasRef.current;
 
-        lastTick = currentTime;
-        frameStep += 1;
+    if (!root || !canvas) return;
 
-        const count = seedsRef.current.length;
-        if (count === 0) return;
+    const ctx = canvas.getContext("2d", {
+      alpha: true,
+      desynchronized: true,
+    } as CanvasRenderingContext2DSettings);
 
-        // Reduce batch size to minimize DOM updates
-        const batch = Math.max(1, Math.floor(count * 0.04));
+    if (!ctx) return;
 
-        // Use DocumentFragment pattern to batch DOM reads/writes
-        const updates: Array<{
-          index: number;
-          state: string;
-          accent: string;
-          seed: number;
-        }> = [];
+    ctxRef.current = ctx;
 
-        for (let index = 0; index < batch; index += 1) {
-          const blockIndex = (frameStep * 7 + index * 19 + 5) % count;
-          const currentSeed = seedsRef.current[blockIndex] ?? BASE_SEED;
-          const nextSeed = lcg(currentSeed);
+    const cancelMainRaf = () => {
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+    };
 
-          const shouldRecalibrate = (nextSeed & 0x7f) <= 4;
-          const isActive = !shouldRecalibrate && ((nextSeed >>> 4) & 0x0f) < 5;
-          const nextState = shouldRecalibrate ? "recalibrating" : isActive ? "active" : "idle";
+    const cancelResizeRaf = () => {
+      if (resizeRafRef.current !== null) {
+        cancelAnimationFrame(resizeRafRef.current);
+        resizeRafRef.current = null;
+      }
+    };
 
-          seedsRef.current[blockIndex] = nextSeed;
-          statesRef.current[blockIndex] = nextState;
+    const shouldRun = () => isAnimatingRef.current && !reducedMotionRef.current;
 
-          updates.push({
-            index: blockIndex,
-            state: nextState,
-            accent: ((nextSeed >>> 8) & 0x0f) === 0 ? "true" : "false",
-            seed: nextSeed,
-          });
-        }
+    const computeHoverIndex = (mx: number, my: number) => {
+      const { cols, rows, bx, by, bw, bh } = layoutRef.current;
 
-        // Batch DOM updates
-        requestAnimationFrame(() => {
-          for (const update of updates) {
-            const node = blockRefs.current[update.index];
-            if (!node) continue;
+      const innerX = mx - bx;
+      const innerY = my - by;
 
-            node.dataset.state = update.state;
-            node.dataset.accent = update.accent;
+      const col = Math.floor(innerX / (bw + GAP_PX));
+      const row = Math.floor(innerY / (bh + GAP_PX));
 
-            if (update.state === "recalibrating") {
-              const settleSeed = lcg(update.seed);
-              const timeoutId = window.setTimeout(() => {
-                const liveNode = blockRefs.current[update.index];
-                if (!liveNode) return;
-
-                const settledState = ((settleSeed >>> 3) & 0x0f) < 4 ? "active" : "idle";
-                liveNode.dataset.state = settledState;
-                liveNode.dataset.accent = ((settleSeed >>> 7) & 0x0f) === 0 ? "true" : "false";
-                seedsRef.current[update.index] = settleSeed;
-                statesRef.current[update.index] = settledState;
-              }, 120);
-              timeoutIds.push(timeoutId);
-            }
-          }
-        });
-
-        return () => {};
-      };
-
-      // Start animation only when isAnimating becomes true
-      if (isAnimating && !isRunning) {
-        isRunning = true;
-        frameId = requestAnimationFrame(animate);
+      if (col < 0 || col >= cols || row < 0 || row >= rows) {
+        return -1;
       }
 
-      return () => {
-        isRunning = false;
-        if (frameId) cancelAnimationFrame(frameId);
-        for (const timeoutId of timeoutIds) {
-          clearTimeout(timeoutId);
+      const localX = innerX - col * (bw + GAP_PX);
+      const localY = innerY - row * (bh + GAP_PX);
+
+      if (localX < 0 || localX > bw || localY < 0 || localY > bh) {
+        return -1;
+      }
+
+      return row * cols + col;
+    };
+
+    const resizeCanvas = () => {
+      const rect = root.getBoundingClientRect();
+      const width = rect.width;
+      const height = rect.height;
+
+      if (width <= 0 || height <= 0) return;
+
+      const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+
+      cssWidthRef.current = width;
+      cssHeightRef.current = height;
+      dprRef.current = dpr;
+
+      const pixelWidth = Math.max(1, Math.round(width * dpr));
+      const pixelHeight = Math.max(1, Math.round(height * dpr));
+
+      if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
+        canvas.width = pixelWidth;
+        canvas.height = pixelHeight;
+      }
+
+      canvas.style.cssText = `width:${width}px;height:${height}px`;
+
+      const layout = computeLayout(width, height);
+      layoutRef.current = layout;
+
+      const count = layout.cols * layout.rows;
+
+      if (blocksRef.current.length !== count) {
+        blocksRef.current = buildBlocks(count);
+      }
+
+      rectsRef.current = buildRects(layout);
+      dotsRef.current = buildDotCells(width, height);
+
+      needsDrawRef.current = true;
+      drawOnceRef.current();
+    };
+
+    const updateBlocks = (now: number) => {
+      if (now - lastTickRef.current < TICK_MS) return;
+
+      lastTickRef.current = now;
+      tickStepRef.current += 1;
+
+      const blocks = blocksRef.current;
+      const count = blocks.length;
+
+      if (count === 0) return;
+
+      const batch = Math.max(1, Math.floor(count * UPDATE_RATIO));
+      const step = tickStepRef.current;
+
+      for (let index = 0; index < batch; index += 1) {
+        const blockIndex = (step * 7 + index * 19 + 5) % count;
+        const block = blocks[blockIndex];
+
+        if (!block) continue;
+
+        const nextSeed = lcg(block.seed);
+        const shouldRecalibrate = (nextSeed & 0x7f) <= 4;
+        const isActive = !shouldRecalibrate && ((nextSeed >>> 4) & 0x0f) < 5;
+
+        block.seed = nextSeed;
+        block.state = shouldRecalibrate
+          ? STATE_RECALIBRATING
+          : isActive
+            ? STATE_ACTIVE
+            : STATE_IDLE;
+
+        block.accent = ((nextSeed >>> 8) & 0x0f) === 0;
+
+        if (shouldRecalibrate) {
+          const settleSeed = lcg(nextSeed);
+
+          block.recalUntil = now + RECALIBRATE_DURATION_MS;
+          block.settleState = ((settleSeed >>> 3) & 0x0f) < 4 ? STATE_ACTIVE : STATE_IDLE;
+          block.settleSeed = settleSeed;
+        } else {
+          block.recalUntil = 0;
         }
-      };
-    }, [isAnimating]);
+      }
 
-    const rootClassName = className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
+      needsDrawRef.current = true;
+    };
 
-    const initialBlocks = useMemo(() => {
-      const { states } = buildBlockModel(blockCount);
-      return states.map((state, index) => {
-        const accent = (((BASE_SEED + index * 17) >>> 5) & 0x0f) === 0;
-        const delay = `${((index * 11) % 240) / 80}s`;
-        return { state, accent, delay };
+    const draw = (now: number) => {
+      const width = cssWidthRef.current;
+      const height = cssHeightRef.current;
+      const dpr = dprRef.current;
+
+      if (width <= 0 || height <= 0) return;
+
+      const { bw, bh } = layoutRef.current;
+      const blocks = blocksRef.current;
+      const rects = rectsRef.current;
+      const dots = dotsRef.current;
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "oklch(0.105 0.022 225 / 0.96)";
+      ctx.fillRect(0, 0, width, height);
+
+      const running = shouldRun();
+      const elapsed = running ? (now - animStartRef.current) / 1000 : 0;
+      const hoverIdx = hoverIdxRef.current;
+
+      for (let index = 0; index < blocks.length; index += 1) {
+        const block = blocks[index];
+        const rect = rects[index];
+
+        if (!block || !rect) continue;
+
+        if (block.recalUntil > 0 && now >= block.recalUntil) {
+          block.state = block.settleState;
+          block.seed = block.settleSeed;
+          block.recalUntil = 0;
+        }
+
+        const isHovered = index === hoverIdx;
+        const isRecalibrating = block.recalUntil > 0;
+
+        let alpha = 0.4;
+        let ox = 0;
+
+        if (isHovered) {
+          alpha = 0.95;
+          ctx.fillStyle = "oklch(0.84 0.17 128)";
+        } else if (isRecalibrating) {
+          const phase = (now * 0.0043 + index * 0.617) % 1;
+
+          alpha = 0.72 + 0.2 * Math.abs(Math.sin(phase * Math.PI));
+          ox = Math.sin(phase * 9.3) * 0.45;
+
+          ctx.fillStyle = "oklch(0.76 0.21 178)";
+        } else if (block.accent) {
+          const pulse = running
+            ? Math.sin((elapsed + block.pulseDelay) * PULSE_RADIANS_PER_SECOND - Math.PI / 2) *
+                0.5 +
+              0.5
+            : 0.5;
+
+          alpha = 0.48 + 0.24 * pulse;
+          ctx.fillStyle = "oklch(0.71 0.17 335)";
+        } else if (block.state === STATE_ACTIVE) {
+          const pulse = running
+            ? Math.sin((elapsed + block.pulseDelay) * PULSE_RADIANS_PER_SECOND - Math.PI / 2) *
+                0.5 +
+              0.5
+            : 0.5;
+
+          alpha = 0.48 + 0.2 * pulse;
+          ctx.fillStyle = "oklch(0.79 0.16 167)";
+        } else {
+          alpha = 0.34;
+          ctx.fillStyle = "oklch(0.79 0.16 167)";
+        }
+
+        ctx.globalAlpha = alpha;
+        ctx.fillRect(rect.x + ox, rect.y, bw, bh);
+      }
+
+      if (hoverIdx >= 0) {
+        const hoverRect = rects[hoverIdx];
+
+        if (hoverRect) {
+          ctx.globalAlpha = 0.75;
+          ctx.strokeStyle = "oklch(0.8858 0.182 95.69 / 0.75)";
+          ctx.lineWidth = 1;
+          ctx.strokeRect(hoverRect.x - 1, hoverRect.y - 1, bw + 2, bh + 2);
+        }
+      }
+
+      ctx.globalAlpha = 1;
+
+      for (let index = 0; index < dots.length; index += 1) {
+        const dot = dots[index];
+
+        if (!dot) continue;
+
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, 1.35, 0, Math.PI * 2);
+        ctx.globalAlpha = dot.accent ? 0.66 : 0.3;
+        ctx.fillStyle = dot.accent ? "oklch(0.68 0.19 331)" : "oklch(0.47 0.09 167)";
+        ctx.fill();
+      }
+
+      ctx.globalAlpha = 1;
+      needsDrawRef.current = false;
+    };
+
+    const loop = (now: number) => {
+      rafRef.current = null;
+
+      if (!runningRef.current) return;
+
+      if (!shouldRun()) {
+        runningRef.current = false;
+        draw(now);
+        return;
+      }
+
+      const shouldDrawFrame = now - lastFrameRef.current >= TARGET_FRAME_MS;
+
+      if (shouldDrawFrame) {
+        lastFrameRef.current = now;
+
+        updateBlocks(now);
+        draw(now);
+      }
+
+      rafRef.current = requestAnimationFrame(loop);
+    };
+
+    const startLoop = () => {
+      if (!shouldRun()) {
+        runningRef.current = false;
+        cancelMainRaf();
+        draw(performance.now());
+        return;
+      }
+
+      if (runningRef.current) return;
+
+      runningRef.current = true;
+      animStartRef.current = performance.now();
+      lastFrameRef.current = 0;
+      lastTickRef.current = 0;
+
+      cancelMainRaf();
+      rafRef.current = requestAnimationFrame(loop);
+    };
+
+    const stopLoop = () => {
+      runningRef.current = false;
+      cancelMainRaf();
+      draw(performance.now());
+    };
+
+    const drawOnce = () => {
+      if (runningRef.current) return;
+
+      cancelMainRaf();
+      rafRef.current = requestAnimationFrame((now) => {
+        rafRef.current = null;
+        draw(now);
       });
-    }, [blockCount]);
+    };
 
-    const dots = useMemo(() => {
-      return buildDots(12);
-    }, []);
+    startLoopRef.current = startLoop;
+    stopLoopRef.current = stopLoop;
+    drawOnceRef.current = drawOnce;
 
-    return (
-      <div ref={rootRef} className={rootClassName} aria-hidden="true">
-        <div className={styles.textureStyles} />
-        <div className={styles.scanlineStyles} />
+    const resizeObserver = new ResizeObserver(() => {
+      cancelResizeRaf();
 
-        <div
-          className={styles.lanesStyles}
-          style={{
-            gridTemplateColumns: `repeat(${grid.cols}, minmax(0, 1fr))`,
-            gridTemplateRows: `repeat(${grid.rows}, minmax(0, 1fr))`,
-          }}
-        >
-          {initialBlocks.map((block, index) => {
-            return (
-              <span
-                key={`signal-block-${block.delay}`}
-                ref={(element) => {
-                  blockRefs.current[index] = element;
-                }}
-                className={styles.blockStyles}
-                data-state={block.state}
-                data-accent={block.accent ? "true" : "false"}
-                style={
-                  {
-                    "--block-delay": block.delay,
-                  } as CSSProperties
-                }
-              />
-            );
-          })}
-        </div>
+      resizeRafRef.current = requestAnimationFrame(() => {
+        resizeRafRef.current = null;
+        resizeCanvas();
+      });
+    });
 
-        <div className={styles.dotsLayerStyles}>
-          {dots.map((dot) => {
-            return (
-              <span
-                key={`signal-dot-${dot.top}-${dot.left}`}
-                className={styles.dotStyles}
-                data-accent={dot.accent ? "true" : "false"}
-                style={{ top: dot.top, left: dot.left }}
-              />
-            );
-          })}
-        </div>
-      </div>
-    );
-  },
-  (previousProps, nextProps) => {
-    return (
-      previousProps.isAnimating === nextProps.isAnimating &&
-      previousProps.className === nextProps.className
-    );
-  },
-);
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const updateReducedMotion = () => {
+      reducedMotionRef.current = motionQuery.matches;
+      needsDrawRef.current = true;
+
+      if (motionQuery.matches) {
+        stopLoop();
+      } else {
+        startLoop();
+      }
+    };
+
+    const handleMouseMove = (event: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = event.clientX - rect.left;
+      const my = event.clientY - rect.top;
+      const hoverIndex = computeHoverIndex(mx, my);
+
+      if (hoverIndex === hoverIdxRef.current) return;
+
+      hoverIdxRef.current = hoverIndex;
+      needsDrawRef.current = true;
+
+      if (!runningRef.current) {
+        drawOnce();
+      }
+    };
+
+    const handleMouseLeave = () => {
+      if (hoverIdxRef.current === -1) return;
+
+      hoverIdxRef.current = -1;
+      needsDrawRef.current = true;
+
+      if (!runningRef.current) {
+        drawOnce();
+      }
+    };
+
+    resizeCanvas();
+
+    resizeObserver.observe(root);
+
+    motionQuery.addEventListener("change", updateReducedMotion);
+    canvas.addEventListener("mousemove", handleMouseMove, { passive: true });
+    canvas.addEventListener("mouseleave", handleMouseLeave);
+
+    updateReducedMotion();
+
+    return () => {
+      startLoopRef.current = () => {};
+      stopLoopRef.current = () => {};
+      drawOnceRef.current = () => {};
+
+      runningRef.current = false;
+
+      resizeObserver.disconnect();
+      motionQuery.removeEventListener("change", updateReducedMotion);
+      canvas.removeEventListener("mousemove", handleMouseMove);
+      canvas.removeEventListener("mouseleave", handleMouseLeave);
+
+      cancelMainRaf();
+      cancelResizeRaf();
+
+      ctxRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isAnimating) return;
+    startLoopRef.current();
+    return () => {
+      stopLoopRef.current();
+    };
+  }, [isAnimating]);
+
+  const rootClassName = className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
+
+  return (
+    <div ref={rootRef} className={rootClassName} aria-hidden="true">
+      <canvas ref={canvasRef} className={styles.canvasStyles} />
+      <div className={styles.textureStyles} />
+    </div>
+  );
+});

@@ -14,15 +14,9 @@ const baseFaceStyle = style({
   position: "absolute",
 });
 
-const baseFullFaceStyle = style([
-  baseFaceStyle,
-  { width: "100%", height: "100%" },
-]);
+const baseFullFaceStyle = style([baseFaceStyle, { width: "100%", height: "100%" }]);
 
-const baseEdgeFaceStyle = style([
-  baseFaceStyle,
-  { width: `${serverDepth}px`, height: "100%" },
-]);
+const baseEdgeFaceStyle = style([baseFaceStyle, { width: `${serverDepth}px`, height: "100%" }]);
 
 const baseHorizontalEdgeStyle = style([
   baseFaceStyle,
@@ -30,10 +24,7 @@ const baseHorizontalEdgeStyle = style([
 ]);
 
 const faceWithBackground = (transform?: string) =>
-  style([
-    baseFullFaceStyle,
-    { background: backgroundServer, ...(transform && { transform }) },
-  ]);
+  style([baseFullFaceStyle, { background: backgroundServer, ...(transform && { transform }) }]);
 
 export const serverUnitContainerStyle = style({
   width: "100%",
@@ -213,9 +204,7 @@ export const serverHandleStyle = style({
   },
 });
 
-export const serverFaceBackStyle = faceWithBackground(
-  `translateZ(-${serverDepth}px)`,
-);
+export const serverFaceBackStyle = faceWithBackground(`translateZ(-${serverDepth}px)`);
 
 export const serverFaceTopStyle = style([
   baseHorizontalEdgeStyle,
@@ -252,19 +241,6 @@ export const serverFaceRightStyle = style([
   },
 ]);
 
-const blink = keyframes({
-  "0%, 100%": {
-    opacity: 0.35,
-    boxShadow:
-      "inset 0 0 1px rgba(255,255,255,0.22), inset 0 -1px 1px rgba(0,0,0,0.45)",
-  },
-  "50%": {
-    opacity: 0.5,
-    boxShadow:
-      "inset 0 0 1px rgba(255,255,255,0.3), inset 0 -1px 1px rgba(0,0,0,0.55)",
-  },
-});
-
 const blinkSlow = keyframes({
   "0%, 100%": {
     opacity: 0.45,
@@ -274,8 +250,7 @@ const blinkSlow = keyframes({
   "50%": {
     opacity: 0.72,
     transform: "scale(1)",
-    boxShadow:
-      "inset 0 0 1px rgba(255,255,255,.18), inset 0 -1px 1px rgba(0,0,0,.5)",
+    boxShadow: "inset 0 0 1px rgba(255,255,255,.18), inset 0 -1px 1px rgba(0,0,0,.5)",
   },
 });
 
@@ -323,40 +298,6 @@ export const ledGridVariantBStyle = style({
 export const ledGridVariantCStyle = style({
   background: `linear-gradient(180deg, color-mix(in srgb, ${vars.colors.foreground} 50%, transparent), color-mix(in srgb, ${vars.colors.primary} 10%, ${vars.colors.foreground}))`,
 });
-
-export const ledStyle = style({
-  borderRadius: "50%",
-  width: "var(--led-size, 4px)",
-  height: "var(--led-size, 4px)",
-  background: `radial-gradient(circle at 35% 35%, color-mix(in srgb, currentColor 40%, white), currentColor 55%, color-mix(in srgb, currentColor 55%, black) 100%)`,
-  border: "0.5px solid color-mix(in srgb, currentColor 45%, black)",
-  boxShadow:
-    "inset 0 0 1px rgba(255,255,255,0.22), inset 0 -1px 1px rgba(0,0,0,0.45)",
-  animation: `${blink} calc(2.2s + var(--seed) * 2.8s) ease-in-out infinite`,
-  animationDelay: `calc(var(--seed) * -2s)`,
-  alignSelf: "center",
-  justifySelf: "center",
-  selectors: {
-    "&[data-dead='true']": {
-      animation: "none",
-      opacity: 0.14,
-      filter: "saturate(.3)",
-      boxShadow: "inset 0 -1px 1px rgba(0,0,0,0.6)",
-    },
-    "&[data-bright='true']": {
-      opacity: 0.68,
-      boxShadow:
-        "inset 0 0 1px rgba(255,255,255,0.32), inset 0 -1px 1px rgba(0,0,0,0.5)",
-    },
-  },
-  "@media": {
-    "(prefers-reduced-motion: reduce)": {
-      animation: "none",
-      opacity: 0.25,
-    },
-  },
-});
-
 export const driveBayStyle = style({
   height: "11px",
   margin: "0 4px",
@@ -400,8 +341,7 @@ export const statusBarStyle = style({
   zIndex: 1,
   background: `color-mix(in srgb, ${vars.colors.foreground} 52%, transparent)`,
   border: `1px solid color-mix(in srgb, ${vars.colors.foreground} 15%, transparent)`,
-  boxShadow:
-    "inset 0 1px 0 rgba(255,255,255,.06), inset 0 -1px 0 rgba(0,0,0,.35)",
+  boxShadow: "inset 0 1px 0 rgba(255,255,255,.06), inset 0 -1px 0 rgba(0,0,0,.35)",
 });
 
 export const accentStripStyle = style({

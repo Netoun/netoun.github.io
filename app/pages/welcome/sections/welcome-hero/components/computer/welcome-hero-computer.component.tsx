@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useReducer, useRef } from "react";
 import { Computer } from "@/components/misc/computer/computer.component";
 import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
@@ -7,22 +7,55 @@ import { WelcomeHeroComputerCyberneticGlyphGrid } from "./components/cybernetic-
 import { WelcomeHeroComputerFakeConsole } from "./components/fake-console/welcome-hero-computer-fake-console.component";
 import { WelcomeHeroComputerGlitchSignalMap } from "./components/glitch-signal-map/welcome-hero-computer-glitch-signal-map.component";
 import { WelcomeHeroComputerSystemMetricsPanel } from "./components/system-metrics-panel/welcome-hero-computer-system-metrics-panel.component";
+import { WelcomeHeroComputerSplash } from "./components/splash/welcome-hero-computer-splash.component";
 import * as styles from "./welcome-hero-computer.css";
+
+const BASE_ROTATION_X = 3;
+const BASE_ROTATION_Y = -3;
 
 interface WelcomeHeroComputerComponentProps {
   mousePosition: MousePosition;
   disabled?: boolean;
 }
 
+const HERO_COMPUTER_ZONES = [
+  {
+    id: "hero-computer-zone1",
+    className: styles.zone1Styles,
+    render: (isAnimating: boolean) => <WelcomeHeroComputerFakeConsole isAnimating={isAnimating} />,
+  },
+  {
+    id: "hero-computer-zone2",
+    className: styles.zone2Styles,
+    render: (isAnimating: boolean) => (
+      <WelcomeHeroComputerGlitchSignalMap isAnimating={isAnimating} />
+    ),
+  },
+  {
+    id: "hero-computer-zone3",
+    className: styles.zone3Styles,
+    render: (isAnimating: boolean) => (
+      <WelcomeHeroComputerCyberneticGlyphGrid isAnimating={isAnimating} />
+    ),
+  },
+  {
+    id: "hero-computer-zone4",
+    className: styles.zone4Styles,
+    render: (isAnimating: boolean) => (
+      <WelcomeHeroComputerSystemMetricsPanel isAnimating={isAnimating} />
+    ),
+  },
+] as const;
+
 function WelcomeHeroComputerComponentInner({
   mousePosition,
   disabled = false,
 }: WelcomeHeroComputerComponentProps) {
-  const [rotation, setRotation] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
+  const capturesRef = useRef<HTMLDivElement>(null);
 
   const mousePositionRef = useRef(mousePosition);
-  const lastRotationRef = useRef({ x: 0, y: 0 });
+  const lastRotationRef = useRef({ x: BASE_ROTATION_X, y: BASE_ROTATION_Y });
   const shouldAnimateRef = useRef(true);
 
   mousePositionRef.current = mousePosition;
@@ -38,6 +71,24 @@ function WelcomeHeroComputerComponentInner({
       isVisible: isIntersecting,
     }) && !disabled;
   shouldAnimateRef.current = shouldAnimate;
+
+  const [visibleZones, dispatch] = useReducer((_state: number, action: number) => action, 0);
+
+  useEffect(() => {
+    if (!shouldAnimate) {
+      dispatch(0);
+      return;
+    }
+
+    let zone = 1;
+    const interval = setInterval(() => {
+      dispatch(zone);
+      zone += 1;
+      if (zone > 4) clearInterval(interval);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [shouldAnimate]);
 
   useEffect(() => {
     let frameId: number | null = null;
@@ -57,8 +108,8 @@ function WelcomeHeroComputerComponentInner({
 
       const currentMousePos = mousePositionRef.current;
       const newRotation = {
-        x: currentMousePos.x * -0.001,
-        y: currentMousePos.y * -0.001,
+        x: BASE_ROTATION_X + currentMousePos.x * -0.001,
+        y: BASE_ROTATION_Y + currentMousePos.y * -0.001,
       };
 
       if (
@@ -67,12 +118,22 @@ function WelcomeHeroComputerComponentInner({
       ) {
         lastRotationRef.current = newRotation;
 
+        const capturesElement = capturesRef.current;
+        if (!capturesElement) return;
+
         if (idleCallbackId) cancelIdleCallback(idleCallbackId);
 
+        const updateRotationStyles = () => {
+          capturesElement.style.setProperty("--mouse-position-x", `${newRotation.x}deg`);
+          capturesElement.style.setProperty("--mouse-position-y", `${newRotation.y}deg`);
+        };
+
         if ("requestIdleCallback" in window) {
-          idleCallbackId = requestIdleCallback(() => setRotation(newRotation), { timeout: 50 });
+          idleCallbackId = requestIdleCallback(updateRotationStyles, {
+            timeout: 50,
+          });
         } else {
-          setRotation(newRotation);
+          updateRotationStyles();
         }
       }
     };
@@ -97,28 +158,31 @@ function WelcomeHeroComputerComponentInner({
       className={styles.welcomeHeroComputerWrapperStyles}
     >
       <div
+        ref={capturesRef}
         style={
           {
-            "--mouse-position-x": `${rotation.x}deg`,
-            "--mouse-position-y": `${rotation.y}deg`,
+            "--mouse-position-x": `${BASE_ROTATION_X}deg`,
+            "--mouse-position-y": `${BASE_ROTATION_Y}deg`,
           } as React.CSSProperties
         }
         className={styles.welcomeHeroComputerCapturesStyles}
       >
         <Computer>
           <div className={styles.welcomeHeroComputerStyles}>
-            <div id="hero-computer-zone1" className={styles.zone1Styles}>
-              <WelcomeHeroComputerFakeConsole isAnimating={shouldAnimate} />
-            </div>
-            <div id="hero-computer-zone2" className={styles.zone2Styles}>
-              <WelcomeHeroComputerGlitchSignalMap isAnimating={shouldAnimate} />
-            </div>
-            <div id="hero-computer-zone3" className={styles.zone3Styles}>
-              <WelcomeHeroComputerCyberneticGlyphGrid isAnimating={shouldAnimate} />
-            </div>
-            <div id="hero-computer-zone4" className={styles.zone4Styles}>
-              <WelcomeHeroComputerSystemMetricsPanel isAnimating={shouldAnimate} />
-            </div>
+            {visibleZones === 0 ? (
+              <WelcomeHeroComputerSplash />
+            ) : (
+              HERO_COMPUTER_ZONES.map(({ id, className, render }, index) => (
+                <div
+                  key={id}
+                  id={id}
+                  className={className}
+                  style={{ opacity: index < visibleZones ? 1 : 0 }}
+                >
+                  {render(index < visibleZones)}
+                </div>
+              ))
+            )}
           </div>
         </Computer>
       </div>

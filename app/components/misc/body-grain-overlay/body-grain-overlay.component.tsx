@@ -6,6 +6,9 @@ import {
 } from "@/components/misc/shaders/grain/grain.shader";
 import * as styles from "./body-grain-overlay.css";
 
+const GRAIN_TARGET_FPS = 10;
+const GRAIN_FRAME_MS = 1000 / GRAIN_TARGET_FPS;
+
 function BodyGrainOverlayComponent() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -16,6 +19,7 @@ function BodyGrainOverlayComponent() {
     let frameId = 0;
     let disposed = false;
     let isRendering = false;
+    let lastFrame = 0;
 
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const reducedMotionRef = { current: mediaQuery.matches };
@@ -133,7 +137,13 @@ function BodyGrainOverlayComponent() {
     const render = (now: number) => {
       if (disposed) return;
 
+      if (!reducedMotionRef.current && now - lastFrame < GRAIN_FRAME_MS) {
+        frameId = window.requestAnimationFrame(render);
+        return;
+      }
+
       isRendering = true;
+      lastFrame = now;
       const elapsed = reducedMotionRef.current ? 0 : (now - start) / 1000;
 
       gl.uniform1f(timeLocation, elapsed);

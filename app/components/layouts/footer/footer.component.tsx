@@ -23,12 +23,8 @@ export function Footer({ className }: FooterProps) {
                 Thanks for exploring
                 <span className={styles.sparkleStyle}>✦</span>
               </h3>
-              <p className={styles.subtextStyle}>
-                Built with passion and pixels
-              </p>
-              <p className={styles.copyrightStyle}>
-                © 2025 Netoun. All rights reserved.
-              </p>
+              <p className={styles.subtextStyle}>Built with passion and pixels</p>
+              <p className={styles.copyrightStyle}>© 2025 Netoun. All rights reserved.</p>
             </div>
           </div>
         </div>

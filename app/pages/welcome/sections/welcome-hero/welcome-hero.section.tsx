@@ -4,8 +4,7 @@ import { useMousePosition } from "@/hooks/use-mouse-position.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
 import { WelcomeHeroFilterBackground } from "./components/background/welcome-hero-filter-background.component";
 import { WelcomeHeroComputerComponent } from "./components/computer/welcome-hero-computer.component";
-import { useWelcomeHeroContentAnimation } from "./hooks/use-welcome-hero-content-animation.hook";
-import { WelcomeHeroContactHoverCard } from "./components/contact-hover-card/welcome-hero-contact-hover-card.component";
+import { WelcomeHeroSectionContent } from "./components/welcome-hero-section-content/welcome-hero-section-content.component";
 import * as styles from "./welcome-hero.css";
 
 function getElementFromNode(node: Node): Element | null {
@@ -17,8 +16,6 @@ function getElementFromNode(node: Node): Element | null {
 
 export function WelcomeHeroSection() {
   const welcomeContainerRef = useRef<HTMLDivElement>(null);
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const descriptionRef = useRef<HTMLParagraphElement>(null);
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const { ref: sectionRef, isIntersecting: isVisible } = useIntersectionObserver<HTMLDivElement>({
     threshold: 0.1,
@@ -145,22 +142,6 @@ export function WelcomeHeroSection() {
     };
   }, []);
 
-  const { startAnimation } = useWelcomeHeroContentAnimation();
-
-  useEffect(() => {
-    if (headingRef.current && descriptionRef.current) {
-      // Use getElementById for button (faster than getElementsByClassName)
-      const button = document.getElementById("welcome-button");
-      if (button) {
-        startAnimation({
-          welcomeHeading: headingRef.current,
-          welcomeDescription: descriptionRef.current,
-          welcomeButton: button as HTMLElement,
-        });
-      }
-    }
-  }, [startAnimation]);
-
   const shouldDisableHeroAnimations = isTextSelected || !isVisible;
 
   return (
@@ -171,29 +152,8 @@ export function WelcomeHeroSection() {
         className={styles.welcomeContainerStyle}
         data-text-selected={isTextSelected ? "true" : "false"}
       >
-        <WelcomeHeroFilterBackground container={container} mousePosition={mousePosition} />
-        <div className={styles.welcomeContentStyle}>
-          <h1 id="welcome-heading" ref={headingRef} className={styles.welcomeHeadingStyles}>
-            Hi, I'm Nicolas&nbsp;: <br /> Full-stack engineer crafting fast, clean web experiences.
-          </h1>
-          <p
-            id="welcome-description"
-            ref={descriptionRef}
-            className={styles.welcomeDescriptionStyles}
-          >
-            <b>_</b>❯ I design and ship clean web experiences - from scalable frontends to robust
-            backend systems. Currently building at{" "}
-            <a className={styles.welcomeLinkStyles} href="https://www.lonestone.io">
-              Lonestone
-            </a>{" "}
-            as a software engineer.
-            <span className={styles.welcomeDescriptionCursorStyles}>▐</span>
-          </p>
-          <div className={styles.welcomeMetaStyles}>
-            <span>Focused on performance, UX, and clean architecture</span>
-          </div>
-          <WelcomeHeroContactHoverCard />
-        </div>
+        <WelcomeHeroFilterBackground disabled={shouldDisableHeroAnimations} />
+        <WelcomeHeroSectionContent />
       </div>
 
       <WelcomeHeroComputerComponent
