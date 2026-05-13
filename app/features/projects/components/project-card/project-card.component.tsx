@@ -17,6 +17,7 @@ export interface ProjectCardProps {
   featured?: boolean;
   type?: ProjectType;
   rotate?: number;
+  animationsEnabled?: boolean;
 }
 
 export function ProjectCard({
@@ -29,24 +30,18 @@ export function ProjectCard({
   featured = false,
   type = "project",
   rotate = 0,
+  animationsEnabled = true,
 }: ProjectCardProps) {
   const { ref: cardRef, isIntersecting } = useIntersectionObserver<HTMLDivElement>({
     threshold: 0,
     rootMargin: "0px 0px 80px 0px",
+    enabled: animationsEnabled,
   });
   const imageRef = useRef<HTMLImageElement>(null);
-  const hasAnimatedRef = useRef(false);
   const shouldAnimate = useAnimationPriority({
     priority: "medium",
-    isVisible: isIntersecting,
+    isVisible: animationsEnabled && isIntersecting,
   });
-
-  useEffect(() => {
-    if (isIntersecting && cardRef.current && !hasAnimatedRef.current) {
-      hasAnimatedRef.current = true;
-      cardRef.current.classList.add(styles.cardVisible);
-    }
-  }, [isIntersecting]);
 
   useEffect(() => {
     if (!shouldAnimate) return;
@@ -143,7 +138,7 @@ export function ProjectCard({
                   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjE0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZThlNGRkIi8+PC9zdmc+";
               }}
             />
-            <HolographicOverlay />
+            <HolographicOverlay enabled={animationsEnabled} />
           </div>
 
           <div className={styles.contentStyle}>

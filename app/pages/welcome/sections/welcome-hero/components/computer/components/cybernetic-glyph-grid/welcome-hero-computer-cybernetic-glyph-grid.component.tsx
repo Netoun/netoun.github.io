@@ -1,5 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
-import type { CSSProperties } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import * as styles from "./welcome-hero-computer-cybernetic-glyph-grid.css";
 
 export interface WelcomeHeroComputerCyberneticGlyphGridProps {
@@ -8,6 +7,7 @@ export interface WelcomeHeroComputerCyberneticGlyphGridProps {
 }
 
 const HEX = "0123456789ABCDEF";
+
 const GLYPH_GLITCH_TOKENS = [
   "  ",
   " .",
@@ -47,14 +47,27 @@ const GLYPH_GLITCH_TOKENS = [
   "◎◉",
   "◉◎",
 ];
+
 const BASE_SEED = 0x2f6a91c3;
 const LCG_A = 1664525;
 const LCG_C = 1013904223;
-const CELL_WIDTH_PX = 16;
-const CELL_HEIGHT_PX = 13;
-const GRID_GAP_PX = 2;
-const TICK_MS = 92;
+
+const CELL_BASE_W = 16;
+const CELL_BASE_H = 13;
+const GAP_PX = 2;
+
+const MAX_DPR = 1.25;
+
+const TICK_MS = 100;
 const UPDATE_RATIO = 0.12;
+
+const PULSE_PERIOD_S = 2.9;
+const PULSE_RADIANS_PER_SECOND = (Math.PI * 2) / PULSE_PERIOD_S;
+
+const GLITCH_DURATION_MS = 92;
+const GLITCH_BASE_ALPHA = 0.58;
+
+const FONT_FAMILY = "Doto, system-ui, sans-serif";
 
 const lcg = (seed: number): number => (seed * LCG_A + LCG_C) >>> 0;
 
@@ -69,246 +82,469 @@ const glitchToken = (seed: number): [string, number] => {
   return [GLYPH_GLITCH_TOKENS[next % GLYPH_GLITCH_TOKENS.length] ?? "░░", lcg(next)];
 };
 
-const buildInitialValues = (count: number) => {
-  const values: string[] = [];
-  const seeds: number[] = [];
+interface CellState {
+  value: string;
+  seed: number;
+  accent: boolean;
+  glitchUntil: number;
+  settleValue: string;
+  settleSeed: number;
+  pulseDelay: number;
+}
+
+interface GridLayout {
+  cols: number;
+  rows: number;
+  cellW: number;
+  cellH: number;
+}
+
+type GlyphTone = "normal" | "accent" | "glitch";
+
+interface GlyphBitmap {
+  canvas: HTMLCanvasElement;
+  width: number;
+  height: number;
+}
+
+const TONE_STYLES: Record<
+  GlyphTone,
+  {
+    color: string;
+    glow: string;
+    shadowBlur: number;
+  }
+> = {
+  normal: {
+    color: "oklch(0.82 0.15 130)",
+    glow: "oklch(0.8858 0.182 95.69 / 0.12)",
+    shadowBlur: 7,
+  },
+  accent: {
+    color: "oklch(0.71 0.17 336)",
+    glow: "oklch(0.8858 0.182 95.69 / 0.18)",
+    shadowBlur: 10,
+  },
+  glitch: {
+    color: "oklch(0.77 0.21 105)",
+    glow: "oklch(0.5548 0.2575 312.98 / 0.2)",
+    shadowBlur: 12,
+  },
+};
+
+const buildCells = (count: number): CellState[] => {
+  const cells: CellState[] = [];
   let seed = BASE_SEED;
 
   for (let index = 0; index < count; index += 1) {
     const [value, nextSeed] = hexPair(seed);
-    values.push(value);
-    seeds.push(nextSeed ^ (index * 2654435761));
+    const cellSeed = nextSeed ^ (index * 2654435761);
+
+    cells.push({
+      value,
+      seed: cellSeed,
+      accent: (((BASE_SEED + index * 13) >>> 2) & 0x0f) === 0,
+      glitchUntil: 0,
+      settleValue: value,
+      settleSeed: cellSeed,
+      pulseDelay: ((index * 17) % 240) / 70,
+    });
+
     seed = nextSeed;
   }
 
-  return { values, seeds };
+  return cells;
+};
+
+const computeLayout = (w: number, h: number): GridLayout => {
+  const cols = Math.max(8, Math.floor((w - GAP_PX) / (CELL_BASE_W + GAP_PX)));
+  const rows = Math.max(6, Math.floor((h - GAP_PX) / (CELL_BASE_H + GAP_PX)));
+  const cellW = (w - GAP_PX * (cols + 1)) / cols;
+  const cellH = (h - GAP_PX * (rows + 1)) / rows;
+
+  return { cols, rows, cellW, cellH };
+};
+
+const makeGlyphKey = (value: string, tone: GlyphTone, fontSize: number, dpr: number) =>
+  `${value}:${tone}:${Math.round(fontSize * 100)}:${Math.round(dpr * 100)}`;
+
+const createGlyphBitmap = (
+  value: string,
+  tone: GlyphTone,
+  fontSize: number,
+  dpr: number,
+): GlyphBitmap => {
+  const toneStyle = TONE_STYLES[tone];
+
+  const measureCanvas = document.createElement("canvas");
+  const measureCtx = measureCanvas.getContext("2d");
+
+  const font = `700 ${fontSize}px ${FONT_FAMILY}`;
+
+  let textWidth = fontSize * 1.6;
+
+  if (measureCtx) {
+    measureCtx.font = font;
+    textWidth = measureCtx.measureText(value).width;
+  }
+
+  const padding = Math.ceil(toneStyle.shadowBlur + 5);
+  const cssWidth = Math.ceil(textWidth + padding * 2);
+  const cssHeight = Math.ceil(fontSize * 1.65 + padding * 2);
+
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.ceil(cssWidth * dpr));
+  canvas.height = Math.max(1, Math.ceil(cssHeight * dpr));
+
+  const ctx = canvas.getContext("2d", {
+    alpha: true,
+    desynchronized: true,
+  });
+
+  if (ctx) {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.imageSmoothingEnabled = false;
+
+    ctx.font = font;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.fillStyle = toneStyle.color;
+    ctx.shadowColor = toneStyle.glow;
+    ctx.shadowBlur = toneStyle.shadowBlur * dpr;
+
+    ctx.fillText(value, cssWidth / 2, cssHeight / 2);
+  }
+
+  return {
+    canvas,
+    width: cssWidth,
+    height: cssHeight,
+  };
 };
 
 export const WelcomeHeroComputerCyberneticGlyphGrid = memo(
   ({ isAnimating, className }: WelcomeHeroComputerCyberneticGlyphGridProps) => {
     const rootRef = useRef<HTMLDivElement>(null);
-    const cellRefs = useRef<Array<HTMLSpanElement | null>>([]);
-    const valuesRef = useRef<string[]>([]);
-    const seedsRef = useRef<number[]>([]);
-    const prefersReducedMotionRef = useRef(false);
-    // Track active timeouts for cleanup
-    const timeoutIdsRef = useRef<number[]>([]);
-    // Track RAF frame ID
-    const frameIdRef = useRef<number>(0);
-    // Track if component is mounted
-    const isMountedRef = useRef(true);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
 
-    const [grid, setGrid] = useState({ cols: 12, rows: 8 });
-    const [cellCount, setCellCount] = useState(96);
+    const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
+    const cellsRef = useRef<CellState[]>([]);
+    const glyphAtlasRef = useRef<Map<string, GlyphBitmap>>(new Map());
+
+    const layoutRef = useRef<GridLayout>({
+      cols: 12,
+      rows: 8,
+      cellW: CELL_BASE_W,
+      cellH: CELL_BASE_H,
+    });
+
+    const dprRef = useRef(1);
+    const canvasWRef = useRef(0);
+    const canvasHRef = useRef(0);
+    const fontSizeRef = useRef(0);
+
+    const rafRef = useRef<number | null>(null);
+    const animStartRef = useRef(0);
+    const lastTickRef = useRef(0);
+    const tickStepRef = useRef(0);
+
+    const isAnimatingRef = useRef(isAnimating);
+    const reducedMotionRef = useRef(false);
+    const mountedRef = useRef(false);
+
+    const [reducedMotion, setReducedMotion] = useState(false);
+
+    isAnimatingRef.current = isAnimating;
+    reducedMotionRef.current = reducedMotion;
+
+    const getGlyph = (
+      value: string,
+      tone: GlyphTone,
+      fontSize: number,
+      dpr: number,
+    ): GlyphBitmap => {
+      const key = makeGlyphKey(value, tone, fontSize, dpr);
+      const cached = glyphAtlasRef.current.get(key);
+
+      if (cached) return cached;
+
+      const bitmap = createGlyphBitmap(value, tone, fontSize, dpr);
+      glyphAtlasRef.current.set(key, bitmap);
+
+      return bitmap;
+    };
+
+    const ensureCells = (count: number) => {
+      if (cellsRef.current.length === count) return;
+      cellsRef.current = buildCells(count);
+    };
+
+    const updateCells = (now: number) => {
+      tickStepRef.current += 1;
+
+      const cells = cellsRef.current;
+      const count = cells.length;
+
+      if (count === 0) return;
+
+      const batch = Math.max(2, Math.floor(count * UPDATE_RATIO));
+      const step = tickStepRef.current;
+
+      for (let i = 0; i < batch; i += 1) {
+        const ci = (step * 11 + i * 37 + 17) % count;
+        const cell = cells[ci];
+
+        if (!cell) continue;
+
+        const shouldGlitch = ((cell.seed >>> 1) & 0x1f) <= 2;
+        const [nextValue, nextSeed] = shouldGlitch ? glitchToken(cell.seed) : hexPair(cell.seed);
+
+        cell.value = nextValue;
+        cell.seed = nextSeed;
+
+        if (shouldGlitch) {
+          const settleSeed = lcg(nextSeed);
+          const [settleValue, stableSeed] = hexPair(settleSeed);
+
+          cell.glitchUntil = now + GLITCH_DURATION_MS;
+          cell.settleValue = settleValue;
+          cell.settleSeed = stableSeed;
+        } else {
+          cell.glitchUntil = 0;
+        }
+      }
+    };
+
+    const draw = (now: number) => {
+      const ctx = ctxRef.current;
+      if (!ctx) return;
+
+      const dpr = dprRef.current;
+      const { cols, rows, cellW, cellH } = layoutRef.current;
+      const cells = cellsRef.current;
+      const w = canvasWRef.current;
+      const h = canvasHRef.current;
+
+      if (w <= 0 || h <= 0 || cells.length === 0) return;
+
+      const running = isAnimatingRef.current && !reducedMotionRef.current;
+      const elapsed = running ? (now - animStartRef.current) / 1000 : 0;
+      const fontSize = fontSizeRef.current;
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+      ctx.globalCompositeOperation = "source-over";
+
+      const bg = ctx.createLinearGradient(0, 0, 0, h);
+      bg.addColorStop(0, "oklch(0.13 0.03 210 / 0.92)");
+      bg.addColorStop(1, "oklch(0.095 0.02 225 / 0.96)");
+
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, w, h);
+
+      for (let row = 0; row < rows; row += 1) {
+        for (let col = 0; col < cols; col += 1) {
+          const idx = row * cols + col;
+          const cell = cells[idx];
+
+          if (!cell) continue;
+
+          if (cell.glitchUntil > 0 && now >= cell.glitchUntil) {
+            cell.value = cell.settleValue;
+            cell.seed = cell.settleSeed;
+            cell.glitchUntil = 0;
+          }
+
+          const isGlitch = cell.glitchUntil > 0;
+          const tone: GlyphTone = isGlitch ? "glitch" : cell.accent ? "accent" : "normal";
+
+          let alpha: number;
+          let offsetX = 0;
+
+          if (isGlitch) {
+            const phase = (now * 0.0053 + idx * 0.731) % 1;
+
+            alpha = GLITCH_BASE_ALPHA + 0.37 * Math.abs(Math.sin(phase * Math.PI));
+            offsetX = Math.sin(phase * 7.7) * 0.6;
+          } else {
+            alpha = running
+              ? 0.54 +
+                0.32 *
+                  (Math.sin((elapsed + cell.pulseDelay) * PULSE_RADIANS_PER_SECOND - Math.PI / 2) *
+                    0.5 +
+                    0.5)
+              : 0.62;
+          }
+
+          const cx = GAP_PX + col * (cellW + GAP_PX) + cellW / 2;
+          const cy = GAP_PX + row * (cellH + GAP_PX) + cellH / 2;
+
+          const glyph = getGlyph(cell.value, tone, fontSize, dpr);
+
+          ctx.globalAlpha = alpha;
+          ctx.drawImage(
+            glyph.canvas,
+            cx - glyph.width / 2 + offsetX,
+            cy - glyph.height / 2,
+            glyph.width,
+            glyph.height,
+          );
+        }
+      }
+
+      ctx.globalAlpha = 1;
+    };
 
     useEffect(() => {
-      const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-      const updateMotion = () => {
-        prefersReducedMotionRef.current = mediaQuery.matches;
+      const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+      const update = () => {
+        setReducedMotion(mq.matches);
       };
 
-      updateMotion();
-      mediaQuery.addEventListener("change", updateMotion);
+      update();
+      mq.addEventListener("change", update);
 
       return () => {
-        mediaQuery.removeEventListener("change", updateMotion);
+        mq.removeEventListener("change", update);
       };
     }, []);
 
     useEffect(() => {
-      const element = rootRef.current;
-      if (!element) return;
+      const canvas = canvasRef.current;
+      if (!canvas) return;
 
-      const updateGrid = () => {
-        const { width, height } = element.getBoundingClientRect();
-        const cols = Math.max(8, Math.floor((width - GRID_GAP_PX) / (CELL_WIDTH_PX + GRID_GAP_PX)));
-        const rows = Math.max(
-          6,
-          Math.floor((height - GRID_GAP_PX) / (CELL_HEIGHT_PX + GRID_GAP_PX)),
-        );
-
-        const nextCount = cols * rows;
-
-        setGrid((previous) => {
-          if (previous.cols === cols && previous.rows === rows) return previous;
-          return { cols, rows };
-        });
-        setCellCount((previous) => (previous === nextCount ? previous : nextCount));
-      };
-
-      updateGrid();
-
-      const resizeObserver = new ResizeObserver(() => {
-        updateGrid();
+      ctxRef.current = canvas.getContext("2d", {
+        alpha: false,
+        desynchronized: true,
       });
-      resizeObserver.observe(element);
+
+      if (ctxRef.current) {
+        ctxRef.current.imageSmoothingEnabled = false;
+      }
 
       return () => {
-        resizeObserver.disconnect();
+        ctxRef.current = null;
       };
     }, []);
 
     useEffect(() => {
-      const { values, seeds } = buildInitialValues(cellCount);
-      valuesRef.current = values;
-      seedsRef.current = seeds;
-      cellRefs.current = cellRefs.current.slice(0, cellCount);
+      const el = rootRef.current;
+      const canvas = canvasRef.current;
 
-      // Cleanup refs on unmount
-      return () => {
-        cellRefs.current = [];
-        valuesRef.current = [];
-        seedsRef.current = [];
+      if (!el || !canvas) return;
+
+      const resize = () => {
+        const rect = el.getBoundingClientRect();
+        const w = Math.floor(rect.width);
+        const h = Math.floor(rect.height);
+
+        if (w <= 0 || h <= 0) return;
+
+        const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+        const layout = computeLayout(w, h);
+        const fontSize = Math.max(7, layout.cellH * 0.72);
+        const count = layout.cols * layout.rows;
+
+        const dprChanged = dprRef.current !== dpr;
+        const fontChanged = Math.abs(fontSizeRef.current - fontSize) > 0.25;
+
+        dprRef.current = dpr;
+        canvasWRef.current = w;
+        canvasHRef.current = h;
+        layoutRef.current = layout;
+        fontSizeRef.current = fontSize;
+
+        canvas.width = Math.max(1, Math.ceil(w * dpr));
+        canvas.height = Math.max(1, Math.ceil(h * dpr));
+        canvas.style.cssText = `width:${w}px;height:${h}px;`;
+
+        if (dprChanged || fontChanged) {
+          glyphAtlasRef.current.clear();
+        }
+
+        ensureCells(count);
+        draw(performance.now());
       };
-    }, [cellCount]);
+
+      resize();
+
+      const ro = new ResizeObserver(resize);
+      ro.observe(el);
+
+      return () => {
+        ro.disconnect();
+      };
+    }, []);
 
     useEffect(() => {
-      // Only start animation when active
-      if (!isAnimating) {
-        // Cleanup any pending timeouts when animation stops
-        timeoutIdsRef.current.forEach((id) => clearTimeout(id));
-        timeoutIdsRef.current = [];
+      let cancelled = false;
+
+      document.fonts?.ready.then(() => {
+        if (cancelled) return;
+
+        glyphAtlasRef.current.clear();
+        draw(performance.now());
+      });
+
+      return () => {
+        cancelled = true;
+      };
+    }, []);
+
+    useEffect(() => {
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+
+      if (!isAnimating || reducedMotion) {
+        draw(performance.now());
         return;
       }
 
-      let lastTick = 0;
-      let frameStep = 0;
-      isMountedRef.current = true;
+      mountedRef.current = true;
+      animStartRef.current = performance.now();
+      lastTickRef.current = animStartRef.current;
+      tickStepRef.current = 0;
 
-      const animate = (currentTime: number) => {
-        // Stop RAF if component unmounted or animation stopped
-        if (!isMountedRef.current || !isAnimating) {
-          return;
+      const loop = (now: number) => {
+        if (!mountedRef.current) return;
+
+        if (!document.hidden && now - lastTickRef.current >= TICK_MS) {
+          lastTickRef.current = now;
+          updateCells(now);
         }
 
-        // Schedule next frame first
-        frameIdRef.current = requestAnimationFrame(animate);
-
-        if (prefersReducedMotionRef.current) return;
-        if (currentTime - lastTick < TICK_MS) return;
-
-        lastTick = currentTime;
-        frameStep += 1;
-
-        const count = valuesRef.current.length;
-        if (count === 0) return;
-
-        const batch = Math.max(2, Math.floor(count * UPDATE_RATIO));
-
-        for (let index = 0; index < batch; index += 1) {
-          const cellIndex = (frameStep * 11 + index * 37 + 17) % count;
-          const currentSeed = seedsRef.current[cellIndex] ?? BASE_SEED;
-          const cellNode = cellRefs.current[cellIndex];
-
-          const shouldGlitch = ((currentSeed >>> 1) & 0x1f) <= 2;
-
-          const [nextValue, nextSeed] = shouldGlitch
-            ? glitchToken(currentSeed)
-            : hexPair(currentSeed);
-
-          valuesRef.current[cellIndex] = nextValue;
-          seedsRef.current[cellIndex] = nextSeed;
-
-          if (!cellNode) continue;
-          cellNode.textContent = nextValue;
-          cellNode.dataset.accent = ((nextSeed >>> 3) & 0x07) === 0 ? "true" : "false";
-          cellNode.dataset.glitch = shouldGlitch ? "true" : "false";
-
-          if (shouldGlitch) {
-            const settleSeed = lcg(nextSeed);
-            const [settleValue, stableSeed] = hexPair(settleSeed);
-
-            // Track timeout ID for cleanup
-            const timeoutId = window.setTimeout(() => {
-              // Remove this ID from tracked timeouts
-              timeoutIdsRef.current = timeoutIdsRef.current.filter((id) => id !== timeoutId);
-
-              const liveNode = cellRefs.current[cellIndex];
-              if (!liveNode) return;
-              liveNode.textContent = settleValue;
-              liveNode.dataset.glitch = "false";
-              liveNode.dataset.accent = ((stableSeed >>> 4) & 0x07) === 0 ? "true" : "false";
-              valuesRef.current[cellIndex] = settleValue;
-              seedsRef.current[cellIndex] = stableSeed;
-            }, 92);
-
-            timeoutIdsRef.current.push(timeoutId);
-          }
+        if (!document.hidden) {
+          draw(now);
         }
+
+        rafRef.current = requestAnimationFrame(loop);
       };
 
-      frameIdRef.current = requestAnimationFrame(animate);
+      rafRef.current = requestAnimationFrame(loop);
 
       return () => {
-        isMountedRef.current = false;
-        if (frameIdRef.current) {
-          cancelAnimationFrame(frameIdRef.current);
-          frameIdRef.current = 0;
+        mountedRef.current = false;
+
+        if (rafRef.current !== null) {
+          cancelAnimationFrame(rafRef.current);
+          rafRef.current = null;
         }
-        // Cleanup all tracked timeouts
-        timeoutIdsRef.current.forEach((id) => clearTimeout(id));
-        timeoutIdsRef.current = [];
       };
-    }, [isAnimating]);
+    }, [isAnimating, reducedMotion]);
 
     const rootClassName = className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
 
-    const initialCells = useMemo(() => {
-      const { values } = buildInitialValues(cellCount);
-
-      return values.map((value, index) => {
-        const accent = (((BASE_SEED + index * 13) >>> 2) & 0x0f) === 0;
-        const pulseDelay = `${((index * 17) % 240) / 70}s`;
-
-        return {
-          value,
-          accent,
-          pulseDelay,
-        };
-      });
-    }, [cellCount]);
-
     return (
       <div ref={rootRef} className={rootClassName} aria-hidden="true">
+        <canvas ref={canvasRef} className={styles.canvasStyles} />
         <div className={styles.noiseOverlayStyles} />
-        <div className={styles.scanlineStyles} />
-        <div
-          className={styles.gridStyles}
-          style={{
-            gridTemplateColumns: `repeat(${grid.cols}, minmax(0, 1fr))`,
-            gridTemplateRows: `repeat(${grid.rows}, minmax(0, 1fr))`,
-          }}
-        >
-          {initialCells.map((cell, index) => {
-            // Create a stable unique key based on cell properties
-            const cellKey = `glyph-${cell.value}-${cell.pulseDelay}-${index}`;
-            return (
-              <span
-                key={cellKey}
-                ref={(element) => {
-                  cellRefs.current[index] = element;
-                }}
-                className={styles.cellStyles}
-                data-accent={cell.accent ? "true" : "false"}
-                data-glitch="false"
-                style={
-                  {
-                    "--pulse-delay": cell.pulseDelay,
-                  } as CSSProperties
-                }
-              >
-                {cell.value}
-              </span>
-            );
-          })}
-        </div>
       </div>
     );
   },
-  (previousProps, nextProps) => {
-    return (
-      previousProps.isAnimating === nextProps.isAnimating &&
-      previousProps.className === nextProps.className
-    );
-  },
+  (prev, next) => prev.isAnimating === next.isAnimating && prev.className === next.className,
 );

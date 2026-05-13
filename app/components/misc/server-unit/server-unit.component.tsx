@@ -43,7 +43,7 @@ function generateStatusLeds(seed: number): StatusLed[] {
   ];
 }
 
-export function ServerUnit({ seed = 42, children, variant = "a", className, ...props }: ServerUnitProps) {
+function ServerUnit({ seed = 42, children, variant = "a", className, ...props }: ServerUnitProps) {
   const variantMeta = {
     a: { brand: "NETOUN CORE", rack: "RACK 42U", code: "CORE" },
     b: { brand: "NETOUN EDGE", rack: "EDGE NODE", code: "EDGE" },

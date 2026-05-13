@@ -1,13 +1,7 @@
 import { vars } from "@styles/theme.css";
 import { recipe } from "@vanilla-extract/recipes";
 
-export type TagColor =
-  | "pink"
-  | "green"
-  | "purple"
-  | "yellow"
-  | "blue"
-  | "default";
+export type TagColor = "pink" | "green" | "purple" | "yellow" | "blue" | "default";
 export type TagSize = "small" | "medium" | "large";
 
 export const tagStyle = recipe({

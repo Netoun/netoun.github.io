@@ -99,10 +99,7 @@ export function ServerUnitSection() {
 
   return (
     <section className={serverUnitSection}>
-      <div
-        className={serverUnitWrapperBase}
-        style={{ transform: `scale(${scale})` }}
-      >
+      <div className={serverUnitWrapperBase} style={{ transform: `scale(${scale})` }}>
         <div
           className={serverUnitWrapper3D}
           style={{
@@ -121,7 +118,10 @@ export function ServerUnitSection() {
               <button
                 key={option}
                 type="button"
-                className={clsx(serverUnitSizeButton, size === option && serverUnitSizeButtonActive)}
+                className={clsx(
+                  serverUnitSizeButton,
+                  size === option && serverUnitSizeButtonActive,
+                )}
                 onClick={() => setSize(option)}
               >
                 {option.toUpperCase()}
@@ -135,9 +135,7 @@ export function ServerUnitSection() {
             <h3>{group.title}</h3>
             {group.controls.map((control) => (
               <div className={serverUnitSettingsLabel} key={control.label}>
-                <span className={serverUnitSettingsLabelTitle}>
-                  {control.label}
-                </span>
+                <span className={serverUnitSettingsLabelTitle}>{control.label}</span>
                 <Slider
                   className={serverUnitSettingsInput}
                   minValue={control.min}

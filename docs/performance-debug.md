@@ -17,17 +17,17 @@ Disable persistent debug mode with `?perf=0`.
 An AI agent can use Chrome DevTools against a page where `?perf=1` is active and run:
 
 ```js
-await window.__perfDebug.waitForReport(5000)
+await window.__perfDebug.waitForReport(5000);
 ```
 
 Useful commands:
 
 ```js
-window.__perfDebug.getReport()
-window.__perfDebug.getSnapshot()
-await window.__perfDebug.copyReport()
-window.__perfDebug.downloadReport()
-window.__perfDebug.reset()
+window.__perfDebug.getReport();
+window.__perfDebug.getSnapshot();
+await window.__perfDebug.copyReport();
+window.__perfDebug.downloadReport();
+window.__perfDebug.reset();
 ```
 
 `getReport()` returns a versioned object with:
@@ -49,7 +49,7 @@ For reports like "small phones lag badly", capture at least one sample with:
 In Chrome DevTools, emulate a small mobile device, open `/?perf=1`, reproduce the lag, then run:
 
 ```js
-await window.__perfDebug.waitForReport(8000)
+await window.__perfDebug.waitForReport(8000);
 ```
 
 Look first at these fields:

@@ -1,4 +1,5 @@
 import { tagStyle, type TagColor, type TagSize } from "./tag.css";
+import { memo } from "react";
 
 const TAG_COLOR_MAP: Record<string, TagColor> = {
   // blue — frontend / React ecosystem
@@ -94,8 +95,10 @@ export interface TagProps {
   size?: TagSize;
 }
 
-export function Tag({ children, color, size }: TagProps) {
+function TagComponent({ children, color, size }: TagProps) {
   const resolvedColor = color ?? getTagColor(children);
 
   return <span className={tagStyle({ color: resolvedColor, size })}>{children}</span>;
 }
+
+export const Tag = memo(TagComponent);

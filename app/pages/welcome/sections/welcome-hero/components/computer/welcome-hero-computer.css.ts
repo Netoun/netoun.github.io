@@ -21,11 +21,11 @@ export const welcomeHeroComputerWrapperStyles = style({
   },
   "@media": {
     [breakpoints.md]: {
-      bottom: "1.5rem",
+      bottom: "0.5rem",
       width: "460px",
     },
     [breakpoints.xl]: {
-      bottom: "3rem",
+      bottom: "1rem",
       width: "640px",
     },
   },
@@ -36,7 +36,8 @@ export const welcomeHeroComputerCapturesStyles = style({
   userSelect: "none",
   pointerEvents: "none",
   transformStyle: "preserve-3d",
-  transform: "rotateY(var(--mouse-position-x)) rotateX(var(--mouse-position-y)) translateZ(0)",
+  transform:
+    "rotateY(calc(var(--mouse-position-x) * 1.8)) rotateX(calc(var(--mouse-position-y) * 1.8)) translateZ(0)",
   willChange: "transform",
   backfaceVisibility: "hidden",
 });
@@ -44,6 +45,7 @@ export const welcomeHeroComputerCapturesStyles = style({
 const gridBase = {
   borderRadius: vars.radius.sm,
   background: `color-mix(in srgb, ${vars.colors.background} 10%, transparent)`,
+  transition: "opacity 0.4s ease-out",
 };
 
 export const welcomeHeroComputerStyles = style({
@@ -83,4 +85,17 @@ export const zone4Styles = style({
   ...gridBase,
   gridColumn: "3 / 4",
   gridRow: "3 / 4",
+});
+
+export const splashStyles = style({
+  gridColumn: "1 / -1",
+  gridRow: "1 / -1",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontFamily: vars.fontFamily.doto,
+  fontSize: vars.fontSize.xs,
+  color: vars.colors.secondary,
+  textTransform: "uppercase",
+  letterSpacing: "0.15em",
 });

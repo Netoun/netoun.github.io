@@ -303,10 +303,17 @@ function tryWebGL(canvas: HTMLCanvasElement, parent: HTMLElement): HolographicBa
   };
 }
 
-function HolographicOverlayComponent() {
+interface HolographicOverlayProps {
+  enabled?: boolean;
+}
+
+function HolographicOverlayComponent({ enabled = true }: HolographicOverlayProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    if (!enabled) return;
+    console.log("HolographicOverlay enabled:", enabled);
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -416,7 +423,11 @@ function HolographicOverlayComponent() {
       reducedMotion.removeEventListener("change", onMotionChange);
       backend?.dispose();
     };
-  }, []);
+  }, [enabled]);
+
+  if (!enabled) {
+    return null;
+  }
 
   return <canvas ref={canvasRef} className={styles.holographicOverlayStyles} aria-hidden="true" />;
 }

@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, useState, useCallback } from "react";
+import { memo, useEffect, useMemo, useRef } from "react";
 import * as styles from "./welcome-hero-computer-fake-console.css";
 
 export interface WelcomeHeroComputerFakeConsoleProps {
@@ -9,10 +9,28 @@ export interface WelcomeHeroComputerFakeConsoleProps {
 const INITIAL_ROWS_COUNT = 10;
 const MIN_ROWS_COUNT = 6;
 const MAX_ROWS_COUNT = 30;
+const EXTRA_PENDING_ROW = 1;
+
+const LINE_GAP = 2;
+const TICK_INTERVAL_MS = 500;
+const SHIFT_DURATION_MS = 250;
+
+const INITIAL_SEED = 0x1a2b3c4d;
 
 const TOKENS_A = ["PROCESS", "GRID", "SYNC", "ION", "RET", "NODE", "CORE", "MUX"];
 const TOKENS_B = ["ONLINE", "IDLE", "TRACE", "LOCK", "FLOW", "READY", "SHIFT", "LINK"];
 const HEX = "0123456789ABCDEF";
+
+const TOKEN_A_LABELS = TOKENS_A.map(
+  (token, index) => `${token} ${String(index + 1).padStart(2, "0")}`,
+);
+
+const PERCENT_LABELS = Array.from(
+  { length: 100 },
+  (_, index) => `${String(index).padStart(2, "0")}%`,
+);
+
+const HIDDEN_LINE_STYLE = { display: "none" } as const;
 
 const lcg = (seed: number) => (seed * 1664525 + 1013904223) >>> 0;
 
@@ -24,270 +42,382 @@ const intFromSeed = (seed: number, max: number): [number, number] => {
 const hexChunk = (seed: number, size: number): [string, number] => {
   let current = seed;
   let value = "";
+
   for (let index = 0; index < size; index += 1) {
     const [digit, next] = intFromSeed(current, HEX.length);
     value += HEX[digit];
     current = next;
   }
+
   return [value, current];
 };
 
 const generateLine = (seed: number): [string, number] => {
-  let current = seed;
-  const [leftIdx, seedA] = intFromSeed(current, TOKENS_A.length);
+  const [leftIdx, seedA] = intFromSeed(seed, TOKEN_A_LABELS.length);
   const [rightIdx, seedB] = intFromSeed(seedA, TOKENS_B.length);
-  const [progress, seedC] = intFromSeed(seedB, 100);
+  const [progress, seedC] = intFromSeed(seedB, PERCENT_LABELS.length);
   const [shortHex, seedD] = hexChunk(seedC, 4);
   const [shortHexTail, nextSeed] = hexChunk(seedD, 3);
 
-  const line = `${TOKENS_A[leftIdx]} ${String(leftIdx + 1).padStart(2, "0")}  ${TOKENS_B[rightIdx]} ${String(progress).padStart(2, "0")}%  ${shortHex}-${shortHexTail}`;
-  return [line, nextSeed];
+  return [
+    `${TOKEN_A_LABELS[leftIdx]}  ${TOKENS_B[rightIdx]} ${PERCENT_LABELS[progress]}  ${shortHex}-${shortHexTail}`,
+    nextSeed,
+  ];
 };
 
 const createLines = (seed: number, count: number): [string[], number] => {
-  const lines: string[] = [];
+  // oxlint-disable-next-line unicorn/no-new-array
+  const lines = new Array<string>(count);
   let current = seed;
 
   for (let index = 0; index < count; index += 1) {
     const [line, next] = generateLine(current);
-    lines.push(line);
+    lines[index] = line;
     current = next;
   }
 
   return [lines, current];
 };
 
-interface ConsoleState {
-  lines: string[];
-  seed: number;
-  pendingLine: string | null;
-  isShifting: boolean;
-}
+const clampRowsCount = (rowsCount: number) =>
+  Math.max(MIN_ROWS_COUNT, Math.min(MAX_ROWS_COUNT, rowsCount));
 
-type ConsoleAction =
-  | { type: "INIT"; lines: string[]; seed: number }
-  | { type: "TICK" }
-  | { type: "SHIFT" }
-  | { type: "RESIZE"; rowsCount: number }
-  | { type: "STOP" };
-
-function consoleReducer(state: ConsoleState, action: ConsoleAction): ConsoleState {
-  switch (action.type) {
-    case "INIT":
-      return { ...state, lines: action.lines, seed: action.seed };
-    case "TICK": {
-      const [newLine, nextSeed] = generateLine(state.seed);
-      return { ...state, seed: nextSeed, pendingLine: newLine, isShifting: true };
-    }
-    case "SHIFT": {
-      if (!state.pendingLine) return state;
-      return {
-        ...state,
-        lines: [...state.lines.slice(1), state.pendingLine],
-        pendingLine: null,
-        isShifting: false,
-      };
-    }
-    case "RESIZE": {
-      const { rowsCount } = action;
-      if (state.lines.length === rowsCount) return state;
-      if (state.lines.length > rowsCount) {
-        return { ...state, lines: state.lines.slice(state.lines.length - rowsCount) };
-      }
-      const missingCount = rowsCount - state.lines.length;
-      const [newLines, nextSeed] = createLines(state.seed, missingCount);
-      return { ...state, lines: [...state.lines, ...newLines], seed: nextSeed };
-    }
-    case "STOP":
-      return { ...state, pendingLine: null, isShifting: false };
-    default:
-      return state;
-  }
-}
-
-const initialConsoleState: ConsoleState = {
-  lines: [],
-  seed: 0x1a2b3c4d,
-  pendingLine: null,
-  isShifting: false,
-};
-
-export function WelcomeHeroComputerFakeConsole({
+export const WelcomeHeroComputerFakeConsole = memo(function WelcomeHeroComputerFakeConsole({
   isAnimating,
   className,
 }: WelcomeHeroComputerFakeConsoleProps) {
-  const [rowsCount, setRowsCount] = useState(INITIAL_ROWS_COUNT);
-  const [{ lines, pendingLine, isShifting }, dispatch] = useReducer(
-    consoleReducer,
-    initialConsoleState,
-    () => {
-      const [initialLines, initialSeed] = createLines(0x1a2b3c4d, INITIAL_ROWS_COUNT);
-      return { lines: initialLines, seed: initialSeed, pendingLine: null, isShifting: false };
-    },
-  );
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const reelRef = useRef<HTMLDivElement>(null);
-  const shiftDistanceRef = useRef(0);
+  const lineRefs = useRef<Array<HTMLParagraphElement | null>>([]);
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const updateMotion = () => setPrefersReducedMotion(mediaQuery.matches);
+  const initialConsoleRef = useRef<{ lines: string[]; seed: number } | null>(null);
 
-    updateMotion();
-    mediaQuery.addEventListener("change", updateMotion);
+  if (!initialConsoleRef.current) {
+    const [lines, seed] = createLines(INITIAL_SEED, INITIAL_ROWS_COUNT);
+    initialConsoleRef.current = { lines, seed };
+  }
 
-    return () => {
-      mediaQuery.removeEventListener("change", updateMotion);
-    };
-  }, []);
+  const rowsCountRef = useRef(INITIAL_ROWS_COUNT);
+  const linesRef = useRef(initialConsoleRef.current.lines);
+  const seedRef = useRef(initialConsoleRef.current.seed);
+  const pendingLineRef = useRef<string | null>(null);
 
-  // Cache for line height - initialized once
+  const isAnimatingPropRef = useRef(isAnimating);
+  const prefersReducedMotionRef = useRef(false);
+  const isShiftingRef = useRef(false);
+
   const lineHeightRef = useRef(12);
-  const rafIdRef = useRef<number | null>(null);
-  const shiftRafIdRef = useRef<number | null>(null);
+  const shiftDistanceRef = useRef(14);
 
-  const calculateLineHeight = useCallback((lineElement: Element): number => {
-    const computed = window.getComputedStyle(lineElement);
-    const parsedLineHeight = Number.parseFloat(computed.lineHeight);
-    return Number.isFinite(parsedLineHeight) && parsedLineHeight > 0 ? parsedLineHeight : 12;
-  }, []);
+  const layoutRafRef = useRef<number | null>(null);
+  const shiftRafRef = useRef<number | null>(null);
+  const tickTimeoutRef = useRef<number | null>(null);
+  const shiftTimeoutRef = useRef<number | null>(null);
+
+  const updateAnimationStateRef = useRef<(() => void) | null>(null);
+
+  isAnimatingPropRef.current = isAnimating;
+
+  const lineIndexes = useMemo(
+    () => Array.from({ length: MAX_ROWS_COUNT + EXTRA_PENDING_ROW }, (_, index) => index),
+    [],
+  );
+
+  const syncLineNodeRef = useRef<(node: HTMLParagraphElement, index: number) => void>(() => {});
+
+  syncLineNodeRef.current = (node, index) => {
+    const rowsCount = rowsCountRef.current;
+    const pendingLine = pendingLineRef.current;
+    const lines = linesRef.current;
+
+    const isPendingIndex = pendingLine !== null && index === rowsCount;
+    const isActive = index < rowsCount || isPendingIndex;
+    const nextText = isPendingIndex ? pendingLine : (lines[index] ?? "");
+
+    if (node.textContent !== nextText) {
+      node.textContent = nextText;
+    }
+
+    const nextDisplay = isActive ? "" : "none";
+    if (node.style.display !== nextDisplay) {
+      node.style.display = nextDisplay;
+    }
+
+    const nextDim = index < rowsCount - 3 ? "true" : "false";
+    if (node.dataset.dim !== nextDim) {
+      node.dataset.dim = nextDim;
+    }
+  };
+
+  const lineRefCallbacks = useMemo(
+    () =>
+      Array.from({ length: MAX_ROWS_COUNT + EXTRA_PENDING_ROW }, (_, index) => {
+        return (node: HTMLParagraphElement | null) => {
+          lineRefs.current[index] = node;
+
+          if (node) {
+            syncLineNodeRef.current(node, index);
+          }
+        };
+      }),
+    [],
+  );
 
   useEffect(() => {
     const rootElement = rootRef.current;
-    if (!rootElement) return;
+    const reelElement = reelRef.current;
 
-    const lineGap = 2;
+    if (!rootElement || !reelElement) return;
 
-    const updateRowsCount = (height: number) => {
-      const nextRowsCount = Math.max(
-        MIN_ROWS_COUNT,
-        Math.min(MAX_ROWS_COUNT, Math.floor(height / (lineHeightRef.current + lineGap)) + 2),
+    const clearLayoutRaf = () => {
+      if (layoutRafRef.current !== null) {
+        cancelAnimationFrame(layoutRafRef.current);
+        layoutRafRef.current = null;
+      }
+    };
+
+    const clearShiftRaf = () => {
+      if (shiftRafRef.current !== null) {
+        cancelAnimationFrame(shiftRafRef.current);
+        shiftRafRef.current = null;
+      }
+    };
+
+    const clearTickTimeout = () => {
+      if (tickTimeoutRef.current !== null) {
+        window.clearTimeout(tickTimeoutRef.current);
+        tickTimeoutRef.current = null;
+      }
+    };
+
+    const clearShiftTimeout = () => {
+      if (shiftTimeoutRef.current !== null) {
+        window.clearTimeout(shiftTimeoutRef.current);
+        shiftTimeoutRef.current = null;
+      }
+    };
+
+    const shouldAnimate = () => isAnimatingPropRef.current && !prefersReducedMotionRef.current;
+
+    const paintLines = () => {
+      for (let index = 0; index < lineRefs.current.length; index += 1) {
+        const node = lineRefs.current[index];
+
+        if (node) {
+          syncLineNodeRef.current(node, index);
+        }
+      }
+    };
+
+    const resetReelTransform = () => {
+      reelElement.style.cssText = "transition:none;transform:translate3d(0,0,0)";
+      reelElement.dataset.shifting = "false";
+    };
+
+    const resizeLines = (nextRowsCount: number) => {
+      const previousLines = linesRef.current;
+
+      if (previousLines.length === nextRowsCount) return;
+
+      pendingLineRef.current = null;
+      isShiftingRef.current = false;
+      resetReelTransform();
+
+      if (previousLines.length > nextRowsCount) {
+        linesRef.current = previousLines.slice(previousLines.length - nextRowsCount);
+        return;
+      }
+
+      const missingCount = nextRowsCount - previousLines.length;
+      const [newLines, nextSeed] = createLines(seedRef.current, missingCount);
+
+      seedRef.current = nextSeed;
+      linesRef.current = previousLines.concat(newLines);
+    };
+
+    const measureLineMetrics = () => {
+      const lineElement = lineRefs.current[0];
+
+      if (!lineElement) return;
+
+      const computed = window.getComputedStyle(lineElement);
+      const parsedLineHeight = Number.parseFloat(computed.lineHeight);
+
+      lineHeightRef.current =
+        Number.isFinite(parsedLineHeight) && parsedLineHeight > 0
+          ? parsedLineHeight
+          : lineElement.getBoundingClientRect().height || 12;
+
+      shiftDistanceRef.current = lineHeightRef.current + LINE_GAP;
+    };
+
+    const scheduleTick = () => {
+      if (!shouldAnimate()) return;
+      if (tickTimeoutRef.current !== null) return;
+      if (isShiftingRef.current) return;
+
+      tickTimeoutRef.current = window.setTimeout(() => {
+        tickTimeoutRef.current = null;
+
+        if (!shouldAnimate()) return;
+        if (isShiftingRef.current) return;
+
+        const [nextLine, nextSeed] = generateLine(seedRef.current);
+
+        seedRef.current = nextSeed;
+        pendingLineRef.current = nextLine;
+        isShiftingRef.current = true;
+
+        paintLines();
+
+        reelElement.dataset.shifting = "true";
+        reelElement.style.cssText = "transition:none;transform:translate3d(0,0,0)";
+
+        clearShiftRaf();
+        clearShiftTimeout();
+
+        shiftRafRef.current = requestAnimationFrame(() => {
+          shiftRafRef.current = null;
+
+          if (!shouldAnimate()) {
+            pendingLineRef.current = null;
+            isShiftingRef.current = false;
+            resetReelTransform();
+            paintLines();
+            return;
+          }
+
+          reelElement.style.cssText = `transition:transform ${SHIFT_DURATION_MS}ms linear;transform:translate3d(0,-${shiftDistanceRef.current}px,0)`;
+
+          shiftTimeoutRef.current = window.setTimeout(() => {
+            shiftTimeoutRef.current = null;
+
+            const pendingLine = pendingLineRef.current;
+            const lines = linesRef.current;
+            const rowsCount = rowsCountRef.current;
+
+            if (pendingLine) {
+              for (let index = 0; index < rowsCount - 1; index += 1) {
+                lines[index] = lines[index + 1];
+              }
+
+              lines[rowsCount - 1] = pendingLine;
+            }
+
+            pendingLineRef.current = null;
+            isShiftingRef.current = false;
+
+            resetReelTransform();
+            paintLines();
+            scheduleTick();
+          }, SHIFT_DURATION_MS);
+        });
+      }, TICK_INTERVAL_MS);
+    };
+
+    const stopAnimation = () => {
+      clearTickTimeout();
+      clearShiftTimeout();
+      clearShiftRaf();
+
+      pendingLineRef.current = null;
+      isShiftingRef.current = false;
+
+      resetReelTransform();
+      paintLines();
+    };
+
+    const updateAnimationState = () => {
+      const nextShouldAnimate = shouldAnimate();
+
+      reelElement.dataset.animating = nextShouldAnimate ? "true" : "false";
+
+      if (nextShouldAnimate) {
+        scheduleTick();
+      } else {
+        stopAnimation();
+      }
+    };
+
+    const updateRowsCountFromHeight = (height: number) => {
+      const nextRowsCount = clampRowsCount(
+        Math.floor(height / (lineHeightRef.current + LINE_GAP)) + 2,
       );
 
-      setRowsCount((previousRowsCount) => {
-        return previousRowsCount === nextRowsCount ? previousRowsCount : nextRowsCount;
+      if (rowsCountRef.current === nextRowsCount) return;
+
+      clearTickTimeout();
+      clearShiftTimeout();
+      clearShiftRaf();
+
+      rowsCountRef.current = nextRowsCount;
+      resizeLines(nextRowsCount);
+      paintLines();
+      updateAnimationState();
+    };
+
+    const scheduleLayoutUpdate = (height: number) => {
+      clearLayoutRaf();
+
+      layoutRafRef.current = requestAnimationFrame(() => {
+        layoutRafRef.current = null;
+
+        measureLineMetrics();
+        updateRowsCountFromHeight(height);
       });
     };
 
-    // Batch DOM reads in requestAnimationFrame
-    const initializeLayout = () => {
-      rafIdRef.current = requestAnimationFrame(() => {
-        const lineElement = rootElement.querySelector("p");
-        if (lineElement) {
-          lineHeightRef.current = calculateLineHeight(lineElement);
-        }
-        updateRowsCount(rootElement.clientHeight);
-      });
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const updateReducedMotion = () => {
+      prefersReducedMotionRef.current = mediaQuery.matches;
+      rootElement.dataset.reducedMotion = mediaQuery.matches ? "true" : "false";
+      updateAnimationState();
     };
 
-    initializeLayout();
+    updateAnimationStateRef.current = updateAnimationState;
+
+    paintLines();
+    scheduleLayoutUpdate(rootElement.clientHeight);
+    updateReducedMotion();
 
     const resizeObserver = new ResizeObserver((entries) => {
       const entry = entries[0];
+
       if (!entry) return;
-      // Batch resize in RAF as well
-      rafIdRef.current = requestAnimationFrame(() => {
-        updateRowsCount(entry.contentRect.height);
-      });
+
+      scheduleLayoutUpdate(entry.contentRect.height);
     });
+
     resizeObserver.observe(rootElement);
 
+    mediaQuery.addEventListener("change", updateReducedMotion);
+
     return () => {
+      updateAnimationStateRef.current = null;
+
       resizeObserver.disconnect();
-      if (rafIdRef.current) {
-        cancelAnimationFrame(rafIdRef.current);
-      }
-    };
-  }, [calculateLineHeight]);
+      mediaQuery.removeEventListener("change", updateReducedMotion);
 
-  useEffect(() => {
-    dispatch({ type: "RESIZE", rowsCount });
-  }, [rowsCount]);
+      clearLayoutRaf();
+      clearTickTimeout();
+      clearShiftTimeout();
+      clearShiftRaf();
 
-  const rootClassName = className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
-
-  const shouldReelAnimate = isAnimating && !prefersReducedMotion;
-
-  // Cache for shift distance - recalculated only when necessary
-  const cachedShiftDistanceRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (!shouldReelAnimate || isShifting) return;
-
-    // Recalculate shift distance only if not cached
-    if (cachedShiftDistanceRef.current === null) {
-      const lineElement = reelRef.current?.querySelector("p");
-      if (lineElement) {
-        // Batch in RAF to avoid forced reflow
-        shiftRafIdRef.current = requestAnimationFrame(() => {
-          const lineHeight = lineElement.getBoundingClientRect().height;
-          cachedShiftDistanceRef.current = lineHeight + 2;
-          shiftDistanceRef.current = cachedShiftDistanceRef.current;
-        });
-      }
-    } else {
-      shiftDistanceRef.current = cachedShiftDistanceRef.current;
-    }
-
-    // Increased tick interval from 340ms to 500ms to reduce main thread work
-    const tick = window.setTimeout(() => {
-      dispatch({ type: "TICK" });
-    }, 500);
-
-    return () => {
-      window.clearTimeout(tick);
-      if (shiftRafIdRef.current) {
-        cancelAnimationFrame(shiftRafIdRef.current);
-        shiftRafIdRef.current = null;
-      }
-    };
-  }, [shouldReelAnimate, isShifting]);
-
-  useEffect(() => {
-    if (!isShifting) return;
-
-    const finishShift = window.setTimeout(() => {
-      dispatch({ type: "SHIFT" });
-    }, 250);
-
-    return () => {
-      window.clearTimeout(finishShift);
-    };
-  }, [isShifting, pendingLine]);
-
-  useEffect(() => {
-    if (shouldReelAnimate) return;
-    dispatch({ type: "STOP" });
-    // Reset cache when animation stops to allow recalculation on next start
-    cachedShiftDistanceRef.current = null;
-  }, [shouldReelAnimate]);
-
-  const renderLines = pendingLine ? [...lines, pendingLine] : lines;
-
-  const reelDataAnimating = shouldReelAnimate ? "true" : "false";
-
-  useEffect(() => {
-    if (!shouldReelAnimate) {
-      shiftDistanceRef.current = 0;
-    }
-  }, [shouldReelAnimate]);
-
-  useEffect(() => {
-    return () => {
-      dispatch({ type: "STOP" });
-      shiftDistanceRef.current = 0;
-      cachedShiftDistanceRef.current = null;
+      pendingLineRef.current = null;
+      isShiftingRef.current = false;
+      resetReelTransform();
     };
   }, []);
 
+  useEffect(() => {
+    updateAnimationStateRef.current?.();
+  }, [isAnimating]);
+
+  const rootClassName = className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
+
   return (
-    <div
-      ref={rootRef}
-      className={rootClassName}
-      data-reduced-motion={prefersReducedMotion}
-      aria-hidden="true"
-    >
+    <div ref={rootRef} className={rootClassName} data-reduced-motion="false" aria-hidden="true">
       <div className={styles.noiseOverlayStyles} />
       <div className={styles.scanlineStyles} />
       <div className={styles.bottomRevealStyles} />
@@ -296,19 +426,20 @@ export function WelcomeHeroComputerFakeConsole({
         <div
           ref={reelRef}
           className={styles.reelStyles}
-          data-animating={reelDataAnimating}
-          data-shifting={isShifting ? "true" : "false"}
+          data-animating="false"
+          data-shifting="false"
         >
-          {renderLines.map((line, index) => {
-            const isDim = index < rowsCount - 3;
-            return (
-              <p key={line} className={styles.lineStyles} data-dim={isDim}>
-                {line}
-              </p>
-            );
-          })}
+          {lineIndexes.map((value, index) => (
+            <p
+              key={`line-${value}`}
+              ref={lineRefCallbacks[index]}
+              className={styles.lineStyles}
+              data-dim={index < INITIAL_ROWS_COUNT - 3 ? "true" : "false"}
+              style={index > INITIAL_ROWS_COUNT ? HIDDEN_LINE_STYLE : undefined}
+            />
+          ))}
         </div>
       </div>
     </div>
   );
-}
+});

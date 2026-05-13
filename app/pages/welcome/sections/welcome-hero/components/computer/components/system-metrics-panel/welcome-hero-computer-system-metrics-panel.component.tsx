@@ -51,17 +51,10 @@ export const WelcomeHeroComputerSystemMetricsPanel = memo(
     }, []);
 
     useEffect(() => {
-      let frameId = 0;
-      let lastUpdate = 0;
+      if (!isAnimating || prefersReducedMotion) return;
 
-      const animate = (currentTime: number) => {
-        frameId = requestAnimationFrame(animate);
-
+      const updateValues = () => {
         if (!shouldAnimateRef.current) return;
-        if (prefersReducedMotion) return;
-        if (currentTime - lastUpdate < UPDATE_INTERVAL_MS) return;
-
-        lastUpdate = currentTime;
         tickRef.current += 1;
         const tick = tickRef.current;
 
@@ -75,12 +68,12 @@ export const WelcomeHeroComputerSystemMetricsPanel = memo(
         });
       };
 
-      frameId = requestAnimationFrame(animate);
+      const intervalId = window.setInterval(updateValues, UPDATE_INTERVAL_MS);
 
       return () => {
-        if (frameId) cancelAnimationFrame(frameId);
+        window.clearInterval(intervalId);
       };
-    }, [prefersReducedMotion]);
+    }, [isAnimating, prefersReducedMotion]);
 
     const rootClassName = className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
 

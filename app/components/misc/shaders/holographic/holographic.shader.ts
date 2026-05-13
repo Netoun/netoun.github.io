@@ -35,9 +35,8 @@ fn vs(@builtin(vertex_index) idx: u32) -> VertexOutput {
 }
 
 fn hash21(p: vec2f) -> f32 {
-  var q = fract(p * vec2f(234.34, 435.345));
-  q += dot(q, q + 34.23);
-  return fract(q.x * q.y);
+  let q = fract(p * vec2f(234.34, 435.345));
+  return fract((q.x + q.y) * (q.x * 34.23 + q.y * 21.17));
 }
 
 fn noise(p: vec2f) -> f32 {
@@ -51,20 +50,6 @@ fn noise(p: vec2f) -> f32 {
   let d = hash21(i + vec2f(1.0, 1.0));
 
   return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
-}
-
-fn fbm(p0: vec2f) -> f32 {
-  var p = p0;
-  var v = 0.0;
-  var a = 0.5;
-
-  for (var i = 0; i < 4; i = i + 1) {
-    v += noise(p) * a;
-    p = p * 2.0 + vec2f(19.7, 11.3);
-    a *= 0.5;
-  }
-
-  return v;
 }
 
 fn spectralColor(x: f32) -> vec3f {
@@ -88,51 +73,52 @@ fn fs(in: VertexOutput) -> @location(0) vec4f {
   let edgeFade = smoothstep(0.0, 0.16, edge);
 
   let drift = vec2f(t * 0.026, -t * 0.018);
-  let wave = vec2f(
-    sin((uv.y + t * 0.2) * 13.0),
-    cos((uv.x - t * 0.17) * 11.0)
-  ) * 0.007;
 
-  let flowUv = uv + wave;
-  let n = fbm(flowUv * 3.6 + drift);
-  let n2 = fbm(flowUv * 9.0 + vec2f(-t * 0.035, t * 0.022));
-  let grain = hash21(floor((uv + vec2f(t * 0.015, -t * 0.01)) * uniforms.resolution.xy * 0.55));
+  // 1 seule onde au lieu de sin + cos.
+  let wave = sin((uv.y + t * 0.18) * 10.0) * 0.006;
+  let flowUv = uv + vec2f(wave, -wave * 0.45);
+
+  // 1 seul noise lissé au lieu de 2 fbm à 4 octaves.
+  let n = noise(flowUv * 3.6 + drift);
+
+  // Grain très cheap, pas de noise.
+  let grain = hash21(floor((uv + vec2f(t * 0.012, -t * 0.008)) * uniforms.resolution * 0.45));
 
   let diagonal = flowUv.x * 1.15 + flowUv.y * 0.72;
-  let foilBands = 0.5 + 0.5 * sin((diagonal + n * 0.42) * 22.0 - t * 0.65);
-  let sharpBands = smoothstep(0.58, 0.96, foilBands);
+
+  // Bande principale réutilisée pour éviter un second sinus caustic.
+  let band = 0.5 + 0.5 * sin((diagonal + n * 0.42) * 22.0 - t * 0.65);
+  let sharpBands = smoothstep(0.58, 0.96, band);
+  let caustic = smoothstep(0.68, 1.0, band + n * 0.18);
 
   let softSheen = smoothstep(0.0, 1.0, 1.0 - radius * 1.38 + n * 0.24);
-  let caustic = smoothstep(0.55, 1.0, 0.45 + 0.55 * sin((diagonal + n * 0.5) * 10.0 - t * 0.5));
-
   let borderRing = smoothstep(0.13, 0.0, edge) * smoothstep(0.0, 0.032, edge);
   let innerGlow = smoothstep(0.38, 0.04, radius);
 
   let tintA = vec3f(0.76, 0.9, 1.0);
   let tintB = vec3f(1.0, 0.96, 0.98);
   let baseMix = smoothstep(0.0, 1.0, uv.y + n * 0.16 - 0.04);
+
   var color = mix(tintA, tintB, baseMix);
 
   let spectral = spectralColor((diagonal + n * 0.45 + t * 0.035) * 12.0);
-  let secondarySpectral = spectralColor((uv.x - uv.y * 0.75 + n2 * 0.35 - t * 0.028) * 18.0);
 
-  color = mix(color, spectral, 0.26 * sharpBands);
-  color += secondarySpectral * caustic * 0.1;
-  color += vec3f(0.9, 0.98, 1.0) * softSheen * 0.09;
-  color += vec3f(0.95, 0.98, 1.0) * borderRing * 0.85;
-  color += vec3f(0.9, 0.95, 1.0) * innerGlow * 0.055;
-  color += (grain - 0.5) * 0.035;
+  color = mix(color, spectral, 0.28 * sharpBands);
+  color += spectral * caustic * 0.075;
+  color += vec3f(0.9, 0.98, 1.0) * softSheen * 0.085;
+  color += vec3f(0.95, 0.98, 1.0) * borderRing * 0.82;
+  color += vec3f(0.9, 0.95, 1.0) * innerGlow * 0.052;
+  color += (grain - 0.5) * 0.03;
 
-  let haze = 0.72 + 0.28 * n2;
-  color *= haze;
+  color *= 0.74 + 0.26 * n;
 
   var alpha = 0.045;
   alpha += softSheen * 0.045;
   alpha += sharpBands * 0.055;
-  alpha += caustic * 0.035;
-  alpha += n2 * 0.025;
+  alpha += caustic * 0.03;
+  alpha += n * 0.022;
   alpha += borderRing * 0.16;
-  alpha += grain * 0.012;
+  alpha += grain * 0.01;
   alpha = clamp(alpha, 0.0, 0.24) * edgeFade;
 
   return vec4f(color * alpha, alpha);
@@ -150,16 +136,15 @@ void main() {
 `;
 
 export const GLSL_FRAGMENT = `
-precision highp float;
+precision mediump float;
 
 varying vec2 v_uv;
 uniform vec2 u_resolution;
 uniform float u_time;
 
 float hash21(vec2 p) {
-  p = fract(p * vec2(234.34, 435.345));
-  p += dot(p, p + 34.23);
-  return fract(p.x * p.y);
+  vec2 q = fract(p * vec2(234.34, 435.345));
+  return fract((q.x + q.y) * (q.x * 34.23 + q.y * 21.17));
 }
 
 float noise(vec2 p) {
@@ -173,19 +158,6 @@ float noise(vec2 p) {
   float d = hash21(i + vec2(1.0, 1.0));
 
   return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
-}
-
-float fbm(vec2 p) {
-  float v = 0.0;
-  float a = 0.5;
-
-  for (int i = 0; i < 4; i++) {
-    v += noise(p) * a;
-    p = p * 2.0 + vec2(19.7, 11.3);
-    a *= 0.5;
-  }
-
-  return v;
 }
 
 vec3 spectralColor(float x) {
@@ -208,54 +180,51 @@ void main() {
   float edgeFade = smoothstep(0.0, 0.16, edge);
 
   vec2 drift = vec2(t * 0.026, -t * 0.018);
-  vec2 wave = vec2(
-    sin((uv.y + t * 0.2) * 13.0),
-    cos((uv.x - t * 0.17) * 11.0)
-  ) * 0.007;
 
-  vec2 flowUv = uv + wave;
-  float n = fbm(flowUv * 3.6 + drift);
-  float n2 = fbm(flowUv * 9.0 + vec2(-t * 0.035, t * 0.022));
-  float grain = hash21(floor((uv + vec2(t * 0.015, -t * 0.01)) * u_resolution.xy * 0.55));
+  float wave = sin((uv.y + t * 0.18) * 10.0) * 0.006;
+  vec2 flowUv = uv + vec2(wave, -wave * 0.45);
+
+  float n = noise(flowUv * 3.6 + drift);
+
+  float grain = hash21(floor((uv + vec2(t * 0.012, -t * 0.008)) * u_resolution * 0.45));
 
   float diagonal = flowUv.x * 1.15 + flowUv.y * 0.72;
-  float foilBands = 0.5 + 0.5 * sin((diagonal + n * 0.42) * 22.0 - t * 0.65);
-  float sharpBands = smoothstep(0.58, 0.96, foilBands);
+
+  float band = 0.5 + 0.5 * sin((diagonal + n * 0.42) * 22.0 - t * 0.65);
+  float sharpBands = smoothstep(0.58, 0.96, band);
+  float caustic = smoothstep(0.68, 1.0, band + n * 0.18);
 
   float softSheen = smoothstep(0.0, 1.0, 1.0 - radius * 1.38 + n * 0.24);
-  float caustic = smoothstep(0.55, 1.0, 0.45 + 0.55 * sin((diagonal + n * 0.5) * 10.0 - t * 0.5));
-
   float borderRing = smoothstep(0.13, 0.0, edge) * smoothstep(0.0, 0.032, edge);
   float innerGlow = smoothstep(0.38, 0.04, radius);
 
   vec3 tintA = vec3(0.76, 0.9, 1.0);
   vec3 tintB = vec3(1.0, 0.96, 0.98);
   float baseMix = smoothstep(0.0, 1.0, uv.y + n * 0.16 - 0.04);
+
   vec3 color = mix(tintA, tintB, baseMix);
 
   vec3 spectral = spectralColor((diagonal + n * 0.45 + t * 0.035) * 12.0);
-  vec3 secondarySpectral = spectralColor((uv.x - uv.y * 0.75 + n2 * 0.35 - t * 0.028) * 18.0);
 
-  color = mix(color, spectral, 0.26 * sharpBands);
-  color += secondarySpectral * caustic * 0.1;
-  color += vec3(0.9, 0.98, 1.0) * softSheen * 0.09;
-  color += vec3(0.95, 0.98, 1.0) * borderRing * 0.85;
-  color += vec3(0.9, 0.95, 1.0) * innerGlow * 0.055;
-  color += (grain - 0.5) * 0.035;
+  color = mix(color, spectral, 0.28 * sharpBands);
+  color += spectral * caustic * 0.075;
+  color += vec3(0.9, 0.98, 1.0) * softSheen * 0.085;
+  color += vec3(0.95, 0.98, 1.0) * borderRing * 0.82;
+  color += vec3(0.9, 0.95, 1.0) * innerGlow * 0.052;
+  color += (grain - 0.5) * 0.03;
 
-  float haze = 0.72 + 0.28 * n2;
-  color *= haze;
+  color *= 0.74 + 0.26 * n;
 
   float alpha = 0.045;
   alpha += softSheen * 0.045;
   alpha += sharpBands * 0.055;
-  alpha += caustic * 0.035;
-  alpha += n2 * 0.025;
+  alpha += caustic * 0.03;
+  alpha += n * 0.022;
   alpha += borderRing * 0.16;
-  alpha += grain * 0.012;
+  alpha += grain * 0.01;
   alpha = clamp(alpha, 0.0, 0.24) * edgeFade;
 
-  gl_FragColor = vec4(color, alpha);
+  gl_FragColor = vec4(color * alpha, alpha);
 }
 `;
 

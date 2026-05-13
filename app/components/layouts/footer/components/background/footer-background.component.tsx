@@ -166,7 +166,9 @@ const FooterMeshShaderBackground = memo(function FooterMeshShaderBackground({
       const gpu = (navigator as NavigatorWithGpu).gpu;
       if (!gpu || shouldAbort()) return null;
 
-      const adapter = await gpu.requestAdapter({ powerPreference: "high-performance" });
+      const adapter = await gpu.requestAdapter({
+        powerPreference: "high-performance",
+      });
       if (!adapter || shouldAbort()) return null;
 
       const device = await adapter.requestDevice();
@@ -207,8 +209,7 @@ const FooterMeshShaderBackground = memo(function FooterMeshShaderBackground({
       });
 
       let frameId = 0;
-      let isRendering = false;
-      const start = performance.now();
+      let renderQueued = false;
 
       const resize = () => {
         const { width, height } = getCanvasSize(canvas);
@@ -218,10 +219,11 @@ const FooterMeshShaderBackground = memo(function FooterMeshShaderBackground({
         }
       };
 
-      const render = (now: number) => {
+      const render = (_now: number) => {
+        renderQueued = false;
         if (shouldAbort()) return;
-        isRendering = true;
-        const elapsed = common.reducedMotionRef.current ? 0 : (now - start) / 1000;
+
+        const elapsed = 0;
 
         device.queue.writeBuffer(
           uniformBuffer,
@@ -250,17 +252,11 @@ const FooterMeshShaderBackground = memo(function FooterMeshShaderBackground({
         if (!canvas.dataset.ready) {
           canvas.dataset.ready = "true";
         }
-
-        if (common.reducedMotionRef.current) {
-          isRendering = false;
-          return;
-        }
-
-        frameId = window.requestAnimationFrame(render);
       };
 
       const startRendering = () => {
-        if (!isRendering && !shouldAbort()) {
+        if (!shouldAbort() && !renderQueued) {
+          renderQueued = true;
           frameId = window.requestAnimationFrame(render);
         }
       };
@@ -376,8 +372,7 @@ const FooterMeshShaderBackground = memo(function FooterMeshShaderBackground({
       }
 
       let frameId = 0;
-      let isRendering = false;
-      const start = performance.now();
+      let renderQueued = false;
 
       const resize = () => {
         const { width, height } = getCanvasSize(canvas);
@@ -390,27 +385,22 @@ const FooterMeshShaderBackground = memo(function FooterMeshShaderBackground({
         gl.uniform1f(qualityLocation, common.qualityValue);
       };
 
-      const render = (now: number) => {
+      const render = (_now: number) => {
+        renderQueued = false;
         if (cancelled) return;
-        isRendering = true;
-        const elapsed = common.reducedMotionRef.current ? 0 : (now - start) / 1000;
+
+        const elapsed = 0;
         gl.uniform1f(timeLocation, elapsed);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
 
         if (!canvas.dataset.ready) {
           canvas.dataset.ready = "true";
         }
-
-        if (common.reducedMotionRef.current) {
-          isRendering = false;
-          return;
-        }
-
-        frameId = window.requestAnimationFrame(render);
       };
 
       const startRendering = () => {
-        if (!isRendering && !cancelled) {
+        if (!cancelled && !renderQueued) {
+          renderQueued = true;
           frameId = window.requestAnimationFrame(render);
         }
       };
@@ -458,6 +448,9 @@ const FooterMeshShaderBackground = memo(function FooterMeshShaderBackground({
           rendererCleanup = gpuCleanup;
         }
       } catch (_error) {
+        if (_error instanceof Error) {
+          return _error;
+        }
         // WebGPU unavailable, fallback to WebGL
       }
 
