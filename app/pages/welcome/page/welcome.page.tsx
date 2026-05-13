@@ -16,6 +16,11 @@ const WelcomeSkillsSection = lazy(async () => {
   return { default: module.WelcomeSkillsSection };
 });
 
+const FooterSection = lazy(async () => {
+  const module = await import("../../../components/layouts/footer/footer.component");
+  return { default: module.Footer };
+});
+
 export function meta() {
   return [
     { title: "Netoun - Full Stack Engineer & Creative Developer" },
@@ -93,6 +98,7 @@ export default function Welcome() {
           <WelcomeProjectsSection />
           <WelcomeExperienceSection />
           <WelcomeSkillsSection />
+          <FooterSection />
         </Suspense>
       ) : null}
     </main>
