@@ -13,8 +13,8 @@ export const cardStyle = style({
   flexDirection: "column",
   transition:
     "transform 0.25s cubic-bezier(.22,1,.36,1), box-shadow 0.35s cubic-bezier(.22,1,.36,1)",
-  opacity: 0,
-  transform: "translateY(20px) rotate(var(--card-rotate, 0deg))",
+  opacity: 1,
+  transform: "rotate(var(--card-rotate, 0deg))",
   position: "relative",
   transformStyle: "preserve-3d",
   perspective: "1000px",
@@ -43,12 +43,6 @@ globalStyle(`${cardStyle}:hover`, {
 export const perspectiveWrapper = style({
   perspective: "1000px",
   height: "100%",
-});
-
-export const cardVisible = style({
-  opacity: 1,
-  transform: "translateY(0) rotate(var(--card-rotate, 0deg))",
-  transition: "opacity 0.5s ease, transform 0.5s ease, box-shadow 0.35s cubic-bezier(.22,1,.36,1)",
 });
 
 export const linkStyle = style({

@@ -1,5 +1,5 @@
 import { vars } from "@styles/theme.css";
-import type { AccentType, ShapeType, SkillBlock } from "./skills-data.types";
+import type { AccentType, SkillBlock } from "./skills-data.types";
 
 export const SKILL_BLOCKS = [
   {
@@ -101,20 +101,4 @@ export const ACCENT_VARS: Record<AccentType, string> = {
   secondary: vars.colors.secondary,
   tertiary: vars.colors.tertiary,
   kirby: vars.colors.kirby,
-};
-
-export const ACCENT_RGB: Record<AccentType, [number, number, number]> = {
-  primary: [0.13, 0.55, 0.96],
-  secondary: [0.14, 0.78, 0.52],
-  tertiary: [0.96, 0.62, 0.15],
-  kirby: [0.95, 0.35, 0.64],
-};
-
-export const SHAPE_INDEX: Record<ShapeType, number> = {
-  sparkle: 0,
-  diamond: 1,
-  cube: 2,
-  circle: 3,
-  hexagon: 4,
-  ring: 5,
 };

@@ -47,7 +47,10 @@ interface SharedSvgIds {
   noiseId: string;
 }
 
-const SharedDefsSVG = memo(function SharedDefsSVG({ meshBlurId, noiseId }: SharedSvgIds) {
+const SharedDefsSVG = memo(function SharedDefsSVG({
+  meshBlurId,
+  noiseId,
+}: SharedSvgIds) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -107,7 +110,9 @@ const MeshShapeSVG = memo(function MeshShapeSVG({
   );
 });
 
-const NoiseOverlaySVG = memo(function NoiseOverlaySVG({ noiseId }: Pick<SharedSvgIds, "noiseId">) {
+const NoiseOverlaySVG = memo(function NoiseOverlaySVG({
+  noiseId,
+}: Pick<SharedSvgIds, "noiseId">) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -178,7 +183,9 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
         return null;
       }
 
-      const context = canvas.getContext("webgpu") as MinimalGPUCanvasContext | null;
+      const context = canvas.getContext(
+        "webgpu",
+      ) as MinimalGPUCanvasContext | null;
       if (!context || shouldAbort()) {
         device.destroy();
         return null;
@@ -226,12 +233,19 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
         if (shouldAbort()) return;
 
         isRendering = true;
-        const elapsed = common.reducedMotionRef.current ? 0 : (now - start) / 1000;
+        const elapsed = common.reducedMotionRef.current
+          ? 0
+          : (now - start) / 1000;
 
         device.queue.writeBuffer(
           uniformBuffer,
           0,
-          new Float32Array([canvas.width, canvas.height, elapsed, common.qualityValue]),
+          new Float32Array([
+            canvas.width,
+            canvas.height,
+            elapsed,
+            common.qualityValue,
+          ]),
         );
 
         const encoder = device.createCommandEncoder();
@@ -265,7 +279,15 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
       };
 
       const startRendering = () => {
-        if (!isRendering && !shouldAbort()) {
+        if (shouldAbort()) return;
+
+        if (common.reducedMotionRef.current) {
+          window.cancelAnimationFrame(frameId);
+          render(performance.now());
+          return;
+        }
+
+        if (!isRendering) {
           frameId = window.requestAnimationFrame(render);
         }
       };
@@ -410,7 +432,9 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
         if (cancelled) return;
 
         isRendering = true;
-        const elapsed = common.reducedMotionRef.current ? 0 : (now - start) / 1000;
+        const elapsed = common.reducedMotionRef.current
+          ? 0
+          : (now - start) / 1000;
         gl.uniform1f(timeLocation, elapsed);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
 
@@ -427,7 +451,15 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
       };
 
       const startRendering = () => {
-        if (!isRendering && !cancelled) {
+        if (cancelled) return;
+
+        if (common.reducedMotionRef.current) {
+          window.cancelAnimationFrame(frameId);
+          render(performance.now());
+          return;
+        }
+
+        if (!isRendering) {
           frameId = window.requestAnimationFrame(render);
         }
       };
@@ -462,7 +494,9 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
       let rendererCleanup: (() => void) | null = null;
 
       try {
-        const gpuCleanup = await Promise.race<Awaited<ReturnType<typeof initWebGPU>>>([
+        const gpuCleanup = await Promise.race<
+          Awaited<ReturnType<typeof initWebGPU>>
+        >([
           initWebGPU(() => cancelled || webgpuTimedOut),
           new Promise<null>((resolve) => {
             window.setTimeout(() => {
@@ -519,7 +553,11 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
       ))}
       <NoiseOverlaySVG noiseId={noiseId} />
       {renderer !== "svg" && (
-        <canvas ref={setCanvas} className={styles.welcomeShaderCanvasStyles} aria-hidden="true" />
+        <canvas
+          ref={setCanvas}
+          className={styles.welcomeShaderCanvasStyles}
+          aria-hidden="true"
+        />
       )}
     </div>
   );
@@ -566,7 +604,11 @@ function WelcomeHeroFilterBackgroundComponent({
         ) : null}
       </ClientOnly>
 
-      <MeshShaderBackground meshBlurId={meshBlurId} noiseId={noiseId} disabled={disabled} />
+      <MeshShaderBackground
+        meshBlurId={meshBlurId}
+        noiseId={noiseId}
+        disabled={disabled}
+      />
     </>
   );
 }
