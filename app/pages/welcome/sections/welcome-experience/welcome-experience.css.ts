@@ -5,8 +5,8 @@ import { style } from "@vanilla-extract/css";
 export const sectionStyle = style({
   position: "relative",
   overflow: "hidden",
-  paddingTop: vars.spacing["3xl"],
-  paddingBottom: vars.spacing["3xl"],
+  paddingTop: vars.spacing["2xl"],
+  paddingBottom: vars.spacing["2xl"],
 });
 
 export const contentStyle = style({

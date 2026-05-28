@@ -96,13 +96,10 @@ export function useHeroMorphProgress({
 
     const raw = (window.scrollY - p.start) / (p.end - p.start);
     const progress = clamp(raw, 0, 1);
-    const t = easeOutCubic(progress);
     const s = easeInOutQuad(progress);
     const scale = 1 - (1 - p.targetScale) * s;
-    const ty = -28 * t;
 
     el.style.setProperty("--hero-scale", scale.toFixed(4));
-    el.style.setProperty("--hero-translate-y", `${ty}vh`);
   }, []);
 
   const scheduleTick = useCallback(() => {
@@ -122,7 +119,8 @@ export function useHeroMorphProgress({
   const setActiveState = useCallback(() => {
     desktopMorphRef.current = window.matchMedia(DESKTOP_MORPH_QUERY).matches;
     reducedMotionRef.current = window.matchMedia(REDUCED_MOTION_QUERY).matches;
-    activeRef.current = enabled && desktopMorphRef.current && !reducedMotionRef.current;
+    activeRef.current =
+      enabled && desktopMorphRef.current && !reducedMotionRef.current;
 
     if (!activeRef.current) {
       resetInlineStyles();
