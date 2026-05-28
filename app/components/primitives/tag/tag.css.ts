@@ -40,7 +40,7 @@ export const tagStyle = recipe({
     },
     size: {
       small: {
-        fontSize: vars.fontSize["2xs"],
+        fontSize: vars.fontSize.xs,
         padding: `calc(${vars.spacing.xs} * 0.5) calc(${vars.spacing.sm} * 0.75)`,
       },
       medium: {

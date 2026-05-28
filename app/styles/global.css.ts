@@ -61,3 +61,21 @@ globalStyle("#root, #__next", {
 globalStyle("html, body", {
   fontFamily: vars.fontFamily.ppNeueMontreal,
 });
+
+// 10. Visible keyboard focus (brand-colored ring)
+globalStyle("a:focus-visible, button:focus-visible, [tabindex]:focus-visible", {
+  outline: `2px solid ${vars.colors.primary}`,
+  outlineOffset: "2px",
+  borderRadius: vars.radius.xs,
+});
+
+// 11. Respect reduced-motion for decorative CSS animations/transitions
+globalStyle("*, *::before, *::after", {
+  "@media": {
+    "(prefers-reduced-motion: reduce)": {
+      animationDuration: "0.01ms !important",
+      animationIterationCount: "1 !important",
+      transitionDuration: "0.01ms !important",
+    },
+  },
+});
