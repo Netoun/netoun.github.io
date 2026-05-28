@@ -3,8 +3,8 @@ import { globalStyle, style } from "@vanilla-extract/css";
 
 export const blockStyle = style({
   borderRadius: vars.radius.md,
-  border: `1px solid color-mix(in srgb, ${vars.colors.border} 60%, transparent)`,
-  backgroundColor: `color-mix(in srgb, ${vars.colors.background} 55%, white)`,
+  border: `1px solid color-mix(in srgb, ${vars.colors.cardBorder} 50%, transparent)`,
+  backgroundColor: vars.colors.card,
   backdropFilter: "blur(20px)",
   WebkitBackdropFilter: "blur(20px)",
   overflow: "hidden",
@@ -26,8 +26,8 @@ export const blockBarStyle = style({
   alignItems: "center",
   gap: vars.spacing.md,
   padding: `${vars.spacing.sm} ${vars.spacing.md} ${vars.spacing.xs}`,
-  backgroundColor: `color-mix(in srgb, ${vars.colors.background} 30%, white)`,
-  borderBottom: `1px solid color-mix(in srgb, ${vars.colors.border} 60%, transparent)`,
+  backgroundColor: `color-mix(in srgb, ${vars.colors.card} 55%, transparent)`,
+  borderBottom: `1px solid color-mix(in srgb, ${vars.colors.cardBorder} 50%, transparent)`,
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.xs,
   letterSpacing: "0.12em",

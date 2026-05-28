@@ -61,8 +61,8 @@ export const terminalBarStyle = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  gap: `calc(${vars.spacing.sm} * 1.25)`,
-  padding: `calc(${vars.spacing.sm} * 1.25) calc(${vars.spacing.sm} * 1.75) calc(${vars.spacing.sm} * 1)`,
+  gap: vars.spacing.sm,
+  padding: `${vars.spacing.sm} ${vars.spacing.md}`,
   backgroundColor: `color-mix(in srgb, ${vars.colors.card} 55%, transparent)`,
   borderBottom: `1px solid color-mix(in srgb, ${vars.colors.cardBorder} 50%, transparent)`,
   fontFamily: vars.fontFamily.doto,
@@ -107,7 +107,7 @@ globalStyle(`${linkStyle}:hover ${imageStyle}`, {
 });
 
 export const contentStyle = style({
-  padding: `${vars.spacing.md} ${vars.spacing.md} calc(${vars.spacing.sm} * 1.75)`,
+  padding: vars.spacing.md,
   display: "flex",
   flexDirection: "column",
   gap: vars.spacing.sm,
@@ -155,7 +155,7 @@ export const footerStyle = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  padding: `calc(${vars.spacing.sm} * 1.25) ${vars.spacing.md} calc(${vars.spacing.sm} * 1.625)`,
+  padding: `${vars.spacing.sm} ${vars.spacing.md}`,
   borderTop: `1px solid ${vars.colors.border}`,
 });
 

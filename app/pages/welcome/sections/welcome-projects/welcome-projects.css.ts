@@ -15,6 +15,6 @@ export const contentStyle = style({
 
 export const gridStyle = style({
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 360px), 1fr))",
   gap: vars.spacing.xl,
 });
