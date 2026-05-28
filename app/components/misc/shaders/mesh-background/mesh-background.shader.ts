@@ -80,7 +80,7 @@ varying vec2 v_c1;
 varying vec2 v_c2;
 varying vec2 v_c3;
 
-uniform float u_time;
+uniform mediump float u_time;
 
 const float ANIMATION_SPEED = ${toGlslFloat(SHADER_CONFIG.animationSpeed)};
 

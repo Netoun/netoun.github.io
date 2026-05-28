@@ -312,7 +312,6 @@ function HolographicOverlayComponent({ enabled = true }: HolographicOverlayProps
 
   useEffect(() => {
     if (!enabled) return;
-    console.log("HolographicOverlay enabled:", enabled);
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -322,6 +321,7 @@ function HolographicOverlayComponent({ enabled = true }: HolographicOverlayProps
 
     let disposed = false;
     let frameId = 0;
+    let isVisible = false;
     let backend: HolographicBackend | null = null;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -341,7 +341,7 @@ function HolographicOverlayComponent({ enabled = true }: HolographicOverlayProps
         return;
       }
 
-      if (!reducedMotion.matches) {
+      if (!reducedMotion.matches && isVisible) {
         frameId = requestAnimationFrame(render);
       }
     };
@@ -369,7 +369,7 @@ function HolographicOverlayComponent({ enabled = true }: HolographicOverlayProps
     };
 
     const startRendering = () => {
-      if (disposed || !backend) return;
+      if (disposed || !backend || !isVisible) return;
 
       cancelAnimationFrame(frameId);
       frameId = requestAnimationFrame(render);
@@ -388,6 +388,29 @@ function HolographicOverlayComponent({ enabled = true }: HolographicOverlayProps
 
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(parent);
+
+    // Pause the render loop while the card is off-screen so each card's shader
+    // stops draining GPU/CPU when not visible.
+    const intersectionObserver = new IntersectionObserver(
+      ([entry]) => {
+        const nextVisible = entry.isIntersecting;
+        if (nextVisible === isVisible) return;
+        isVisible = nextVisible;
+
+        if (!isVisible) {
+          cancelAnimationFrame(frameId);
+          return;
+        }
+
+        if (reducedMotion.matches) {
+          renderOnce();
+        } else {
+          startRendering();
+        }
+      },
+      { threshold: 0 },
+    );
+    intersectionObserver.observe(parent);
 
     reducedMotion.addEventListener("change", onMotionChange);
 
@@ -420,6 +443,7 @@ function HolographicOverlayComponent({ enabled = true }: HolographicOverlayProps
       disposed = true;
       cancelAnimationFrame(frameId);
       resizeObserver.disconnect();
+      intersectionObserver.disconnect();
       reducedMotion.removeEventListener("change", onMotionChange);
       backend?.dispose();
     };

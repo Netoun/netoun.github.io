@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import type { ComponentProps, CSSProperties, ReactNode } from "react";
+import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
 import * as styles from "./server-unit.css";
 
 type ServerUnitProps = Omit<ComponentProps<"div">, "children"> & {
@@ -134,9 +135,14 @@ export function ServerUnitRack({
 }: ServerUnitRackProps) {
   const unitHeight = SERVER_UNIT_HEIGHT_BY_SIZE[size];
   const rackHeight = unitHeight * 3 + SERVER_RACK_GAP * 2;
+  const { ref, isIntersecting } = useIntersectionObserver<HTMLDivElement>({
+    rootMargin: "200px",
+  });
 
   return (
     <div
+      ref={ref}
+      data-server-rack-paused={isIntersecting ? "false" : "true"}
       className={clsx(styles.serverUnitRackPerspectiveStyle, className)}
       style={
         {

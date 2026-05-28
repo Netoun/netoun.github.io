@@ -245,12 +245,10 @@ const blinkSlow = keyframes({
   "0%, 100%": {
     opacity: 0.45,
     transform: "scale(0.96)",
-    boxShadow: "inset 0 -1px 1px rgba(0,0,0,.55)",
   },
   "50%": {
     opacity: 0.72,
     transform: "scale(1)",
-    boxShadow: "inset 0 0 1px rgba(255,255,255,.18), inset 0 -1px 1px rgba(0,0,0,.5)",
   },
 });
 
@@ -386,6 +384,7 @@ export const statusLedStyle = style({
     "&[data-status='HDD']": { color: vars.colors.primary },
     "&[data-status='LAN']": { color: vars.colors.secondary },
     "&[data-status='ERR']": { color: vars.colors.destructive },
+    '[data-server-rack-paused="true"] &': { animationPlayState: "paused" },
   },
   "@media": {
     "(prefers-reduced-motion: reduce)": {

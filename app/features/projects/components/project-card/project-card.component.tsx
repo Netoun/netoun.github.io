@@ -52,16 +52,16 @@ export function ProjectCard({
     const tagsEl = card.querySelector("[data-tags]");
 
     let boundingRect: DOMRect | null = null;
+    let rafId = 0;
+    let lastX = 0;
+    let lastY = 0;
 
-    const handleMouseEnter = () => {
-      boundingRect = card.getBoundingClientRect();
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
+    const applyParallax = () => {
+      rafId = 0;
       if (!boundingRect) return;
 
-      const x = e.clientX - boundingRect.left;
-      const y = e.clientY - boundingRect.top;
+      const x = lastX - boundingRect.left;
+      const y = lastY - boundingRect.top;
       const xPercentage = x / boundingRect.width;
       const yPercentage = y / boundingRect.height;
       const xRotation = (xPercentage - 0.5) * 20;
@@ -82,8 +82,27 @@ export function ProjectCard({
       }
     };
 
+    const handleMouseEnter = () => {
+      boundingRect = card.getBoundingClientRect();
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!boundingRect) return;
+
+      lastX = e.clientX;
+      lastY = e.clientY;
+
+      if (rafId === 0) {
+        rafId = requestAnimationFrame(applyParallax);
+      }
+    };
+
     const handleMouseLeave = () => {
       boundingRect = null;
+      if (rafId !== 0) {
+        cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
       image.style.transform = "";
       if (tagsEl) (tagsEl as HTMLElement).style.transform = "";
     };
@@ -96,6 +115,7 @@ export function ProjectCard({
       card.removeEventListener("mouseenter", handleMouseEnter);
       card.removeEventListener("mousemove", handleMouseMove);
       card.removeEventListener("mouseleave", handleMouseLeave);
+      if (rafId !== 0) cancelAnimationFrame(rafId);
     };
   }, [shouldAnimate]);
 
