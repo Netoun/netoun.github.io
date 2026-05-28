@@ -3,7 +3,6 @@ import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
 import { TerminalButtons } from "@/components/primitives/terminal-buttons/terminal-buttons.component";
 import { Tag } from "@/components/primitives/tag/tag.component";
-import { HolographicOverlay } from "@/components/misc/holographic-overlay/holographic-overlay.component";
 import type { ProjectType } from "../../hooks/use-projects.hook.types";
 import * as styles from "./project-card.css";
 
@@ -158,7 +157,7 @@ export function ProjectCard({
                   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjE0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZThlNGRkIi8+PC9zdmc+";
               }}
             />
-            <HolographicOverlay enabled={animationsEnabled} />
+            <div className={styles.holoSheenStyle} aria-hidden="true" />
           </div>
 
           <div className={styles.contentStyle}>

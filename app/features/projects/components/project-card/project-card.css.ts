@@ -106,6 +106,36 @@ globalStyle(`${linkStyle}:hover ${imageStyle}`, {
   transform: "scale(1.15)",
 });
 
+// Lightweight CSS holographic sheen (replaces the per-card WebGL overlay).
+// Reuses the --x/--y vars set by the card parallax so the iridescence
+// tracks the cursor without opening a GPU context.
+export const holoSheenStyle = style({
+  position: "absolute",
+  inset: 0,
+  pointerEvents: "none",
+  zIndex: 3,
+  borderRadius: "inherit",
+  opacity: 0.18,
+  mixBlendMode: "soft-light",
+  transition: "opacity 0.35s ease",
+  backgroundImage: `linear-gradient(
+    115deg,
+    transparent 0%,
+    color-mix(in srgb, ${vars.colors.primary} 50%, transparent) 22%,
+    color-mix(in srgb, ${vars.colors.secondary} 50%, transparent) 42%,
+    color-mix(in srgb, ${vars.colors.tertiary} 50%, transparent) 60%,
+    color-mix(in srgb, ${vars.colors.kirby} 50%, transparent) 80%,
+    transparent 100%
+  )`,
+  backgroundSize: "220% 220%",
+  backgroundPosition: "var(--x, 50%) var(--y, 50%)",
+  boxShadow: `inset 0 1px 0 color-mix(in srgb, ${vars.colors.background} 35%, transparent)`,
+});
+
+globalStyle(`${cardStyle}:hover ${holoSheenStyle}`, {
+  opacity: 0.5,
+});
+
 export const contentStyle = style({
   padding: vars.spacing.md,
   display: "flex",

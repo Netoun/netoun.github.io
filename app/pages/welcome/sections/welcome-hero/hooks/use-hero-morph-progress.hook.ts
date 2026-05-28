@@ -20,7 +20,6 @@ const CSS_PROPS = ["--hero-scale", "--hero-translate-y"];
 const clamp = (v: number, min: number, max: number) =>
   Math.min(Math.max(v, min), max);
 
-const easeOutCubic = (t: number): number => 1 - Math.pow(1 - t, 3);
 const easeInOutQuad = (t: number): number =>
   t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 
