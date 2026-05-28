@@ -73,10 +73,13 @@ function WelcomeHeroComputerComponentInner({
   shouldAnimateRef.current = shouldAnimate;
 
   const [visibleZones, dispatch] = useReducer((_state: number, action: number) => action, 0);
+  const hasRevealedRef = useRef(false);
 
   useEffect(() => {
-    if (!shouldAnimate) {
-      dispatch(0);
+    if (!shouldAnimate) return;
+
+    if (hasRevealedRef.current) {
+      dispatch(4);
       return;
     }
 
@@ -84,7 +87,10 @@ function WelcomeHeroComputerComponentInner({
     const interval = setInterval(() => {
       dispatch(zone);
       zone += 1;
-      if (zone > 4) clearInterval(interval);
+      if (zone > 4) {
+        hasRevealedRef.current = true;
+        clearInterval(interval);
+      }
     }, 1000);
 
     return () => clearInterval(interval);

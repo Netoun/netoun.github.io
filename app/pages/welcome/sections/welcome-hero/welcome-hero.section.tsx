@@ -1,10 +1,10 @@
 import { useEffect, useReducer, useRef, useState } from "react";
-import { Section } from "@/components/layouts/sections/section.component";
 import { useMousePosition } from "@/hooks/use-mouse-position.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
 import { WelcomeHeroFilterBackground } from "./components/background/welcome-hero-filter-background.component";
 import { WelcomeHeroComputerComponent } from "./components/computer/welcome-hero-computer.component";
 import { WelcomeHeroSectionContent } from "./components/welcome-hero-section-content/welcome-hero-section-content.component";
+import { HeroScrollMorph } from "./components/hero-scroll-morph/hero-scroll-morph.component";
 import * as styles from "./welcome-hero.css";
 
 function getElementFromNode(node: Node): Element | null {
@@ -41,8 +41,6 @@ export function WelcomeHeroSection() {
     }
   }, []);
 
-  // Detect text selection in welcome-hero section (optimized for Chrome)
-  // Uses mouseup/keyup instead of selectionchange to avoid excessive events on Chrome
   useEffect(() => {
     if (!welcomeContainerRef.current) return;
 
@@ -75,17 +73,13 @@ export function WelcomeHeroSection() {
       }
     };
 
-    // Check on mouseup (when selection ends)
     const handleMouseUp = () => {
-      // Small delay to ensure selection is updated
       requestAnimationFrame(() => {
         requestAnimationFrame(checkSelection);
       });
     };
 
-    // Check on keyup (for keyboard selections like Shift+Arrow)
     const handleKeyUp = (e: KeyboardEvent) => {
-      // Only check if selection-related keys are pressed
       if (
         e.shiftKey ||
         e.key === "ArrowLeft" ||
@@ -103,7 +97,6 @@ export function WelcomeHeroSection() {
       }
     };
 
-    // Check when clicking outside to clear selection
     const handleClick = (e: MouseEvent) => {
       const target = e.target as Node;
       if (!container.contains(target)) {
@@ -111,9 +104,8 @@ export function WelcomeHeroSection() {
       }
     };
 
-    // Fallback: check selectionchange but with heavy throttling (only for Chrome edge cases)
     let lastCheck = 0;
-    const THROTTLE_MS = 150; // Only check every 150ms max
+    const THROTTLE_MS = 150;
     const handleSelectionChange = () => {
       const now = performance.now();
       if (now - lastCheck < THROTTLE_MS) return;
@@ -145,21 +137,27 @@ export function WelcomeHeroSection() {
   const shouldDisableHeroAnimations = isTextSelected || !isVisible;
 
   return (
-    <Section ref={sectionRef} className={styles.welcomeSectionStyles} data-section="welcome-hero">
+    <HeroScrollMorph containerRef={welcomeContainerRef}>
       <div
-        ref={welcomeContainerRef}
-        id="welcome-container"
-        className={styles.welcomeContainerStyle}
-        data-text-selected={isTextSelected ? "true" : "false"}
+        ref={sectionRef}
+        className={styles.welcomeSectionStyles}
+        data-section="welcome-hero"
       >
-        <WelcomeHeroFilterBackground disabled={shouldDisableHeroAnimations} />
-        <WelcomeHeroSectionContent />
-      </div>
+        <div
+          ref={welcomeContainerRef}
+          id="welcome-container"
+          className={styles.welcomeContainerStyle}
+          data-text-selected={isTextSelected ? "true" : "false"}
+        >
+          <WelcomeHeroFilterBackground disabled={shouldDisableHeroAnimations} />
+          <WelcomeHeroSectionContent />
+        </div>
 
-      <WelcomeHeroComputerComponent
-        mousePosition={mousePosition}
-        disabled={shouldDisableHeroAnimations}
-      />
-    </Section>
+        <WelcomeHeroComputerComponent
+          mousePosition={mousePosition}
+          disabled={shouldDisableHeroAnimations}
+        />
+      </div>
+    </HeroScrollMorph>
   );
 }

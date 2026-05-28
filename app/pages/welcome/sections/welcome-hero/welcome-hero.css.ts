@@ -4,9 +4,12 @@ import { breakpoints } from "@/styles/responsive.css";
 import { vars } from "@/styles/theme.css";
 
 export const welcomeSectionStyles = style({
-  height: "100dvh",
   position: "relative",
-  maxHeight: "68rem",
+  width: "100%",
+  height: "100%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 });
 
 export const welcomeContainerStyle = style({
@@ -16,6 +19,7 @@ export const welcomeContainerStyle = style({
   overflow: "hidden",
   borderRadius: vars.radius.md,
   height: "100%",
+  width: "100%",
   backgroundColor: `color-mix(in srgb, ${vars.colors.foreground} 98%, ${vars.colors.accent})`,
   backgroundSize: "calc(0.5rem - 1px) calc(0.5rem - 1px)",
   backgroundPosition: "-5px -5px",
@@ -25,6 +29,8 @@ export const welcomeContainerStyle = style({
     inset 0 0 200px color-mix(in srgb, ${vars.colors.foreground} 80%, transparent),
     inset 0 0 40px color-mix(in srgb, ${vars.colors.foreground} 60%, transparent)
   `,
+  willChange: "transform",
+  contain: "layout style paint",
 
   ":after": {
     content: "",

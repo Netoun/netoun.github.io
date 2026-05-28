@@ -182,17 +182,27 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
 
       resize();
 
-      const resizeObserver = new ResizeObserver(startRendering);
+      // The mesh is static (single draw). The hero morph continuously resizes
+      // this canvas during scroll; debounce so we reallocate the GL buffer and
+      // redraw once when the size settles instead of every animation frame.
+      let resizeDebounce = 0;
+      const onResize = () => {
+        window.clearTimeout(resizeDebounce);
+        resizeDebounce = window.setTimeout(startRendering, 200);
+      };
+
+      const resizeObserver = new ResizeObserver(onResize);
       resizeObserver.observe(canvas);
 
-      window.addEventListener("resize", startRendering, { passive: true });
+      window.addEventListener("resize", onResize, { passive: true });
 
       startRendering();
 
       return () => {
+        window.clearTimeout(resizeDebounce);
         window.cancelAnimationFrame(frameId);
         resizeObserver.disconnect();
-        window.removeEventListener("resize", startRendering);
+        window.removeEventListener("resize", onResize);
         common.dispose();
         device.destroy();
       };
@@ -352,17 +362,27 @@ const MeshShaderBackground = memo(function MeshShaderBackground({
 
       resize();
 
-      const resizeObserver = new ResizeObserver(startRendering);
+      // The mesh is static (single draw). The hero morph continuously resizes
+      // this canvas during scroll; debounce so we reallocate the GL buffer and
+      // redraw once when the size settles instead of every animation frame.
+      let resizeDebounce = 0;
+      const onResize = () => {
+        window.clearTimeout(resizeDebounce);
+        resizeDebounce = window.setTimeout(startRendering, 200);
+      };
+
+      const resizeObserver = new ResizeObserver(onResize);
       resizeObserver.observe(canvas);
 
-      window.addEventListener("resize", startRendering, { passive: true });
+      window.addEventListener("resize", onResize, { passive: true });
 
       startRendering();
 
       return () => {
+        window.clearTimeout(resizeDebounce);
         window.cancelAnimationFrame(frameId);
         resizeObserver.disconnect();
-        window.removeEventListener("resize", startRendering);
+        window.removeEventListener("resize", onResize);
         common.dispose();
 
         gl.deleteBuffer(positionBuffer);

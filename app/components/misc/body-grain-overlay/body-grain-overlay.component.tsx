@@ -6,23 +6,12 @@ import {
 } from "@/components/misc/shaders/grain/grain.shader";
 import * as styles from "./body-grain-overlay.css";
 
-const GRAIN_TARGET_FPS = 10;
-const GRAIN_FRAME_MS = 1000 / GRAIN_TARGET_FPS;
-
 function BodyGrainOverlayComponent() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
-    let frameId = 0;
-    let disposed = false;
-    let isRendering = false;
-    let lastFrame = 0;
-
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const reducedMotionRef = { current: mediaQuery.matches };
 
     const gl = canvas.getContext("webgl", {
       alpha: true,
@@ -110,9 +99,7 @@ function BodyGrainOverlayComponent() {
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
     const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
-    const timeLocation = gl.getUniformLocation(program, "u_time");
-
-    if (!resolutionLocation || !timeLocation) {
+    if (!resolutionLocation) {
       gl.deleteBuffer(positionBuffer);
       gl.deleteProgram(program);
       gl.deleteShader(vertexShader);
@@ -120,7 +107,7 @@ function BodyGrainOverlayComponent() {
       return;
     }
 
-    const resize = () => {
+    const render = () => {
       const { width, height } = getCanvasSize();
 
       if (canvas.width !== width || canvas.height !== height) {
@@ -130,59 +117,18 @@ function BodyGrainOverlayComponent() {
 
       gl.viewport(0, 0, width, height);
       gl.uniform2f(resolutionLocation, width, height);
-    };
-
-    const start = performance.now();
-
-    const render = (now: number) => {
-      if (disposed) return;
-
-      if (!reducedMotionRef.current && now - lastFrame < GRAIN_FRAME_MS) {
-        frameId = window.requestAnimationFrame(render);
-        return;
-      }
-
-      isRendering = true;
-      lastFrame = now;
-      const elapsed = reducedMotionRef.current ? 0 : (now - start) / 1000;
-
-      gl.uniform1f(timeLocation, elapsed);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-      if (reducedMotionRef.current) {
-        isRendering = false;
-        return;
-      }
-
-      frameId = window.requestAnimationFrame(render);
-    };
-
-    const startRendering = () => {
-      if (!isRendering && !disposed) {
-        frameId = window.requestAnimationFrame(render);
-      }
     };
 
     const onResize = () => {
-      resize();
-      startRendering();
+      render();
     };
 
-    const onMotionChange = () => {
-      reducedMotionRef.current = mediaQuery.matches;
-      startRendering();
-    };
-
-    resize();
+    render();
     window.addEventListener("resize", onResize, { passive: true });
-    mediaQuery.addEventListener("change", onMotionChange);
-    startRendering();
 
     return () => {
-      disposed = true;
-      window.cancelAnimationFrame(frameId);
       window.removeEventListener("resize", onResize);
-      mediaQuery.removeEventListener("change", onMotionChange);
       gl.deleteBuffer(positionBuffer);
       gl.deleteProgram(program);
       gl.deleteShader(vertexShader);
