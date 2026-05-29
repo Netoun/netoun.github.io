@@ -63,9 +63,15 @@ export const SHADER_CONFIG = {
   vignetteStrength: 0.28,
   baseColor: [0.02, 0.03, 0.05] as const,
 
-  // Gros gain FPS sur retina.
-  // Si c'est trop flou, mets 1.25 ou 1.5.
-  maxDevicePixelRatio: 1,
+  // Le mesh est un single-draw statique (redessiné seulement en debounce au
+  // resize), donc supersampler ne coûte presque rien en continu. On force un
+  // plancher de rendu pour que le film grain reste fin même sur les écrans en
+  // devicePixelRatio=1 (gros moniteurs 2K/4K), et un plafond pour borner la
+  // mémoire GPU du buffer.
+  minRenderScale: 1.5,
+  maxRenderScale: 1.5,
+  // Plafond plus élevé quand la qualité est forcée à "high".
+  maxRenderScaleHigh: 2,
 
   defaultQuality: 0.45,
   highQuality: 0.75,
@@ -345,7 +351,14 @@ export function getShaderQuality() {
 
 export function getCanvasSize(canvas: HTMLCanvasElement) {
   const rect = canvas.getBoundingClientRect();
-  const dpr = Math.min(window.devicePixelRatio || 1, SHADER_CONFIG.maxDevicePixelRatio);
+  const maxScale =
+    document.documentElement.dataset.quality === "high"
+      ? SHADER_CONFIG.maxRenderScaleHigh
+      : SHADER_CONFIG.maxRenderScale;
+  const dpr = Math.min(
+    Math.max(window.devicePixelRatio || 1, SHADER_CONFIG.minRenderScale),
+    maxScale,
+  );
 
   return {
     width: Math.max(1, Math.floor(rect.width * dpr)),

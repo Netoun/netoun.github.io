@@ -1,7 +1,11 @@
 const toGlslFloat = (value: number) => value.toFixed(8).replace(/0+$/, "").replace(/\.$/, ".0");
 
 const GRAIN_CONFIG = {
-  maxDevicePixelRatio: 2,
+  // Single-draw statique (redessiné seulement au resize) : on supersample pour
+  // que le grain reste fin même en devicePixelRatio=1 (gros moniteurs 2K/4K),
+  // où il serait sinon rendu à 1 pixel physique et paraîtrait grossier.
+  minRenderScale: 1.5,
+  maxRenderScale: 2,
 
   coarseScale: 2.4,
   midScale: 4.8,
@@ -85,7 +89,10 @@ void main() {
 `;
 
 export function getCanvasSize() {
-  const dpr = Math.min(window.devicePixelRatio || 1, GRAIN_CONFIG.maxDevicePixelRatio);
+  const dpr = Math.min(
+    Math.max(window.devicePixelRatio || 1, GRAIN_CONFIG.minRenderScale),
+    GRAIN_CONFIG.maxRenderScale,
+  );
 
   return {
     width: Math.max(1, Math.floor(window.innerWidth * dpr)),

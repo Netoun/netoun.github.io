@@ -51,6 +51,9 @@ export const welcomeContainerStyle = style({
     [breakpoints.lg]: {
       padding: vars.spacing["3xl"],
     },
+    [breakpoints["2k"]]: {
+      padding: "6rem",
+    },
   },
 });
 
@@ -76,6 +79,10 @@ export const welcomeButtonStyles = style([
     "@media": {
       [breakpoints.md]: {
         fontSize: vars.fontSize["2xl"],
+      },
+      [breakpoints["2k"]]: {
+        maxWidth: "360px",
+        fontSize: vars.fontSize["3xl"],
       },
     },
   },
