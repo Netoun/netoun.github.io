@@ -28,6 +28,11 @@ export const welcomeHeroComputerWrapperStyles = style({
       bottom: "1rem",
       width: "640px",
     },
+    [breakpoints["2k"]]: {
+      bottom: "2rem",
+      right: "8vw",
+      width: "820px",
+    },
   },
 });
 

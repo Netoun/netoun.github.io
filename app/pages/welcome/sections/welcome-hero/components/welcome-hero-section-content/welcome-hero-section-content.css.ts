@@ -14,6 +14,9 @@ export const welcomeContentStyle = style({
     [breakpoints.md]: {
       gap: vars.spacing["2xl"],
     },
+    [breakpoints["2k"]]: {
+      gap: vars.spacing["3xl"],
+    },
   },
 });
 
@@ -53,6 +56,10 @@ export const welcomeHeadingStyles = style({
       letterSpacing: "-0.045em",
       lineHeight: "0.8",
     },
+    [breakpoints["2k"]]: {
+      maxWidth: "70%",
+      fontSize: vars.fontSize["8xl"],
+    },
   },
 });
 
@@ -67,6 +74,10 @@ export const welcomeDescriptionStyles = style({
   "@media": {
     [breakpoints.md]: {
       fontSize: vars.fontSize["2xl"],
+    },
+    [breakpoints["2k"]]: {
+      maxWidth: "48rem",
+      fontSize: vars.fontSize["3xl"],
     },
   },
 });
@@ -87,6 +98,12 @@ export const welcomeMetaStyles = style({
   WebkitTextFillColor: "transparent",
   color: "transparent",
   textShadow: vars.textShadow.glowPrimary,
+
+  "@media": {
+    [breakpoints["2k"]]: {
+      fontSize: vars.fontSize.lg,
+    },
+  },
 });
 
 const welcomeDescriptionCursorKeyframes = keyframes({
