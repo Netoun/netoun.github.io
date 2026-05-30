@@ -1,7 +1,9 @@
 import { vars } from "@styles/theme.css";
 import { recipe } from "@vanilla-extract/recipes";
 
-export type TagColor = "pink" | "green" | "purple" | "yellow" | "blue" | "default";
+// Three intentional tech domains, one per brand accent. Keep in sync with the
+// skills section colour legend.
+export type TagColor = "frontend" | "backend" | "creative" | "default";
 export type TagSize = "small" | "medium" | "large";
 
 export const tagStyle = recipe({
@@ -13,26 +15,22 @@ export const tagStyle = recipe({
   },
   variants: {
     color: {
-      pink: {
-        backgroundColor: `color-mix(in srgb, ${vars.colors.primary} 18%, transparent)`,
-        color: vars.colors.foreground,
-      },
-      green: {
+      // Teal — frontend & UI
+      frontend: {
         backgroundColor: `color-mix(in srgb, ${vars.colors.secondary} 18%, transparent)`,
         color: vars.colors.foreground,
       },
-      purple: {
+      // Purple — backend & infra
+      backend: {
         backgroundColor: `color-mix(in srgb, ${vars.colors.tertiary} 18%, transparent)`,
         color: vars.colors.foreground,
       },
-      yellow: {
-        backgroundColor: `color-mix(in srgb, ${vars.colors.primary} 14%, transparent)`,
+      // Gold — creative & systems
+      creative: {
+        backgroundColor: `color-mix(in srgb, ${vars.colors.primary} 18%, transparent)`,
         color: vars.colors.foreground,
       },
-      blue: {
-        backgroundColor: `color-mix(in srgb, ${vars.colors.secondary} 8%, transparent)`,
-        color: vars.colors.foreground,
-      },
+      // Neutral — tooling, process, meta
       default: {
         backgroundColor: `color-mix(in srgb, ${vars.colors.muted} 50%, transparent)`,
         color: vars.colors.foreground,

@@ -29,7 +29,7 @@ export function WelcomeExperienceSection() {
         <FeatureHeader>
           <FeatureHeaderTitle>EXPERIENCE</FeatureHeaderTitle>
           <FeatureHeaderDescription>
-            _WORK HISTORY · PROFESSIONAL EXPERIENCE_
+            Work history &amp; professional experience
           </FeatureHeaderDescription>
         </FeatureHeader>
 

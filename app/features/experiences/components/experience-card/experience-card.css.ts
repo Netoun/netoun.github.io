@@ -141,7 +141,7 @@ export const periodStyle = style({
 });
 
 export const cardBodyStyle = style({
-  padding: `${vars.spacing.md} ${vars.spacing.md} ${vars.spacing.md}`,
+  padding: vars.spacing.lg,
   display: "flex",
   flexDirection: "column",
   gap: vars.spacing.md,

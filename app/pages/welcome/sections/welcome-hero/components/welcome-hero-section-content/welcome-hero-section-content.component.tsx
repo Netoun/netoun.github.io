@@ -27,13 +27,13 @@ export function WelcomeHeroSectionContent() {
   return (
     <div className={styles.welcomeContentStyle}>
       <h1 ref={headingRef} className={styles.welcomeHeadingStyles}>
-        Hi, I&apos;m Nicolas&nbsp;:
+        Hi, I&apos;m Nicolas.
         <br />
-        Full-stack engineer crafting fast, clean web experiences.
+        Full-stack engineer &amp; creative developer.
       </h1>
 
       <p ref={descriptionRef} className={styles.welcomeDescriptionStyles}>
-        <b>_</b>❯ I design and ship clean web experiences: from scalable frontends to robust backend
+        <b>_</b>❯ I build fast, polished web products — from expressive interfaces to robust backend
         systems. Currently building at{" "}
         <a
           className={styles.welcomeLinkStyles}
@@ -42,9 +42,8 @@ export function WelcomeHeroSectionContent() {
           rel="noreferrer"
         >
           Lonestone
-        </a>{" "}
-        as a software engineer.
-        <span className={styles.welcomeDescriptionCursorStyles}>▐</span>
+        </a>
+        .<span className={styles.welcomeDescriptionCursorStyles}>▐</span>
       </p>
 
       <div className={styles.welcomeMetaStyles}>

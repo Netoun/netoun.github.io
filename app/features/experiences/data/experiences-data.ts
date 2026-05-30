@@ -5,10 +5,10 @@ export const experiences: Experience[] = [
     slug: "lonestone",
     company: "Lonestone",
     role: "Software Developer",
-    period: "Jul 2021 — ...",
+    period: "Jul 2021 — Present",
     location: "Nantes, FR",
     description:
-      "Successfully delivered numerous other projects, consistently meeting client requirements and technical challenges with innovative solutions.",
+      "Shipping production web applications for clients across healthcare, SaaS and corporate platforms, with a focus on maintainable architecture, product velocity and polished user interfaces.",
     active: true,
     projects: [
       {

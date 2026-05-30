@@ -1,4 +1,3 @@
-import { TerminalButtons } from "@/components/primitives/terminal-buttons/terminal-buttons.component";
 import { Tag } from "@/components/primitives/tag/tag.component";
 import { memo, useMemo } from "react";
 import type { SkillBlock } from "../../data/skills-data.types";
@@ -28,7 +27,6 @@ function BlockCardComponent({ block }: BlockCardProps) {
       style={{ "--block-accent": ACCENT_VARS[block.accent] } as React.CSSProperties}
     >
       <div className={styles.blockBarStyle}>
-        <TerminalButtons />
         <span className={styles.blockTitleStyle}>
           <span className={styles.blockTitlePromptStyle}>⸭</span>
           {block.title}
