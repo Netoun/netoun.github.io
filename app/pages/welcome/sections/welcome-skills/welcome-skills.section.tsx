@@ -25,8 +25,23 @@ export function WelcomeSkillsSection() {
       <Container className={styles.contentStyle}>
         <FeatureHeader variant="secondary">
           <FeatureHeaderTitle>SKILLS</FeatureHeaderTitle>
-          <FeatureHeaderDescription>TECH STACK · TOOLS · EXPERTISE</FeatureHeaderDescription>
+          <FeatureHeaderDescription>Tech stack, tools &amp; expertise</FeatureHeaderDescription>
         </FeatureHeader>
+
+        <div className={styles.legendStyle}>
+          <span className={styles.legendItemStyle}>
+            <span className={styles.legendDotStyle({ domain: "frontend" })} />
+            Frontend &amp; UI
+          </span>
+          <span className={styles.legendItemStyle}>
+            <span className={styles.legendDotStyle({ domain: "backend" })} />
+            Backend &amp; infra
+          </span>
+          <span className={styles.legendItemStyle}>
+            <span className={styles.legendDotStyle({ domain: "creative" })} />
+            Creative &amp; systems
+          </span>
+        </div>
 
         <div className={styles.skillsGridStyle}>
           {SKILL_BLOCKS.map((block) => (

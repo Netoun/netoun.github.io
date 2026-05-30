@@ -110,7 +110,7 @@ export const descriptionStyle = style({
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.sm,
   fontWeight: 600,
-  color: vars.colors.foreground,
-  letterSpacing: "0.22em",
+  color: vars.colors.mutedForeground,
+  letterSpacing: "0.14em",
   textTransform: "uppercase",
 });

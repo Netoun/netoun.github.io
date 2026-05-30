@@ -137,7 +137,7 @@ globalStyle(`${cardStyle}:hover ${holoSheenStyle}`, {
 });
 
 export const contentStyle = style({
-  padding: vars.spacing.md,
+  padding: vars.spacing.lg,
   display: "flex",
   flexDirection: "column",
   gap: vars.spacing.sm,

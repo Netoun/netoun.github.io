@@ -35,7 +35,7 @@ export function WelcomeHeroContactHoverCard() {
       <DialogTrigger isOpen={isOpen} onOpenChange={setIsOpen}>
         <span className={styles.welcomeHeroContactHoverCardTriggerStyles}>
           <Button id="welcome-button" className={buttonStyles.welcomeButtonStyles}>
-            <span className={buttonStyles.welcomeButtonLabelStyles}>_Contact me_</span>
+            <span className={buttonStyles.welcomeButtonLabelStyles}>_Get in touch_</span>
             <span className={buttonStyles.welcomeButtonArrowStyles}>⤘</span>
           </Button>
           <WelcomeHeroContactHoverCardBeam />

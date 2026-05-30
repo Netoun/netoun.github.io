@@ -1,4 +1,3 @@
-import { TerminalButtons } from "@/components/primitives/terminal-buttons/terminal-buttons.component";
 import { Tag } from "@/components/primitives/tag/tag.component";
 import * as styles from "./experience-card.css";
 import type { Experience } from "../../hooks/use-experiences.hook.types";
@@ -18,7 +17,6 @@ export function ExperienceCard({ experience, animationsEnabled = true }: Experie
       <div className={styles.cardStyle}>
         <div className={styles.cardBarStyle}>
           <div className={styles.cardBarLeftStyle}>
-            <TerminalButtons />
             <span className={styles.companyStyle}>{experience.company}</span>
             {experience.active && <span className={styles.currentBadgeStyle}>ACTIVE</span>}
           </div>

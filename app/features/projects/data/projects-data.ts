@@ -17,7 +17,8 @@ export const projects: Project[] = [
   {
     slug: "procedural-map",
     title: "Procedural Maps",
-    description: "Generate random maps with procedural generation.",
+    description:
+      "Browser-based procedural map generator using noise algorithms, rendered with Three.js and Canvas.",
     date: "2025-11-01",
     tags: ["TypeScript", "React", "Three.js", "Canvas"],
     image: "/images/projects/procedural-map-card.webp",
@@ -30,7 +31,7 @@ export const projects: Project[] = [
     slug: "treashunt",
     title: "Treashunt",
     description: "Design unforgettable adventures. Take on exciting challenges.",
-    date: "2026-12-03",
+    date: "2026-03-03",
     tags: ["React", "Drizzle", "Cloudflare", "Bun", "Elysia"],
     image: "/images/projects/treashunt-card.webp",
     url: "https://github.com/Netoun/treashunt",
@@ -41,7 +42,7 @@ export const projects: Project[] = [
   {
     slug: "game-ntnh",
     title: "Game NTNH",
-    description: "Experimental procedurale game with nothing to dot for now",
+    description: "Experimental procedural game built with Rust and Bevy.",
     date: "2026-02-15",
     tags: ["Game", "Creative", "Rust", "Bevy"],
     image: "/images/projects/game-ntnh-card.webp",

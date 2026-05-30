@@ -21,20 +21,6 @@ export const SKILL_BLOCKS = [
     ],
   },
   {
-    title: "Web Architecture",
-    accent: "tertiary",
-    shape: "diamond",
-    tags: [
-      { name: "TypeScript", level: 3 },
-      { name: "Design Systems", level: 3 },
-      { name: "REST / GraphQL", level: 2 },
-      { name: "Accessibility", level: 2 },
-      { name: "SSE", level: 2 },
-      { name: "Zod", level: 2 },
-      { name: "Monorepos", level: 2 },
-    ],
-  },
-  {
     title: "Backend & Infra",
     accent: "secondary",
     shape: "cube",
@@ -50,6 +36,20 @@ export const SKILL_BLOCKS = [
       { name: "Cloudflare", level: 2 },
       { name: "Keycloak", level: 1 },
       { name: "Ansible", level: 1 },
+    ],
+  },
+  {
+    title: "Web Architecture",
+    accent: "tertiary",
+    shape: "diamond",
+    tags: [
+      { name: "TypeScript", level: 3 },
+      { name: "Design Systems", level: 3 },
+      { name: "REST / GraphQL", level: 2 },
+      { name: "Accessibility", level: 2 },
+      { name: "SSE", level: 2 },
+      { name: "Zod", level: 2 },
+      { name: "Monorepos", level: 2 },
     ],
   },
   {

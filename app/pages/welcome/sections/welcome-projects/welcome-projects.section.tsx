@@ -29,7 +29,7 @@ export function WelcomeProjectsSection() {
         <FeatureHeader variant="tertiary">
           <FeatureHeaderTitle>PROJECTS</FeatureHeaderTitle>
           <FeatureHeaderDescription>
-            _SIDE PROJECTS · OPEN SOURCE · EXPERIMENTS_
+            Side projects, open source &amp; experiments
           </FeatureHeaderDescription>
         </FeatureHeader>
 
