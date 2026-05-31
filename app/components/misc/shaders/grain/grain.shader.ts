@@ -1,6 +1,6 @@
 const toGlslFloat = (value: number) => value.toFixed(8).replace(/0+$/, "").replace(/\.$/, ".0");
 
-const GRAIN_CONFIG = {
+export const GRAIN_CONFIG = {
   // Single-draw statique (redessiné seulement au resize) : on supersample pour
   // que le grain reste fin même en devicePixelRatio=1 (gros moniteurs 2K/4K),
   // où il serait sinon rendu à 1 pixel physique et paraîtrait grossier.
