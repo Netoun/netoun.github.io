@@ -28,13 +28,15 @@ export function meta() {
       property: "og:description",
       content: "Nicolas - Full-stack engineer crafting fast, clean web experiences.",
     },
-    { property: "og:type", content: "website" },
+    { property: "og:url", content: "https://www.netoun.com" },
 
     { name: "twitter:title", content: PAGE_TITLE },
     {
       name: "twitter:description",
       content: "Nicolas - Full-stack engineer crafting fast, clean web experiences.",
     },
+
+    { tagName: "link", rel: "canonical", href: "https://www.netoun.com" },
   ];
 }
 

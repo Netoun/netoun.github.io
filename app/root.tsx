@@ -59,6 +59,35 @@ export function Layout({ children }: { children: React.ReactNode }) {
           href="https://fonts.googleapis.com/css2?family=Doto:wght@100..900&display=swap"
           rel="stylesheet"
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              name: "Nicolas Coulonnier",
+              alternateName: "Netoun",
+              url: "https://www.netoun.com",
+              jobTitle: "Full Stack Engineer & Creative Developer",
+              description:
+                "Full-stack engineer crafting fast, clean web experiences. Specialized in React, TypeScript, Next.js, NestJS and creative frontend development.",
+              knowsAbout: [
+                "React",
+                "TypeScript",
+                "Next.js",
+                "NestJS",
+                "Node.js",
+                "WebGL",
+                "Three.js",
+                "Creative Coding",
+              ],
+              sameAs: [
+                "https://github.com/nicolqs",
+                "https://www.linkedin.com/in/nicolas-coulonnier/",
+              ],
+            }),
+          }}
+        />
         <Meta />
         <Links />
       </head>
