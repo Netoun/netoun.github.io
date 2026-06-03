@@ -119,3 +119,27 @@ export const copyrightStyle = style({
   margin: 0,
   marginTop: vars.spacing.md,
 });
+
+export const labsLinkStyle = style({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: vars.spacing.xs,
+  alignSelf: "flex-end",
+  fontFamily: vars.fontFamily.doto,
+  fontSize: vars.fontSize.sm,
+  letterSpacing: "0.08em",
+  color: vars.colors.background,
+  textDecoration: "none",
+  transition: "color 0.15s ease",
+  selectors: {
+    "&:hover": {
+      color: vars.colors.primary,
+    },
+  },
+
+  "@media": {
+    "screen and (max-width: 767px)": {
+      alignSelf: "center",
+    },
+  },
+});
