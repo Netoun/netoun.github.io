@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "bun run generate-sitemap && react-router build",
+    "build": "react-router build",
     "generate-sitemap": "bun scripts/generate-sitemap.ts",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
