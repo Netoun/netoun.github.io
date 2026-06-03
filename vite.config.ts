@@ -50,8 +50,47 @@ function rawCssTsPlugin(): Plugin {
   };
 }
 
+function sitemapPlugin(): Plugin {
+  const slugs = [
+    "computer-3d", "server-unit-3d", "project-card-3d",
+    "glitch-signal-map", "cybernetic-glyph-grid", "fake-console",
+    "system-metrics", "grain-shader", "mesh-background",
+    "scroll-morph", "kirby",
+  ];
+
+  return {
+    name: "generate-sitemap",
+    buildStart() {
+      const SITE_URL = "https://www.netoun.com";
+      const pages = [
+        { url: `${SITE_URL}/`, priority: "1.0" },
+        { url: `${SITE_URL}/labs`, priority: "0.8" },
+        ...slugs.map((s) => ({ url: `${SITE_URL}/labs/${s}`, priority: "0.6" })),
+      ];
+      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${pages
+  .map(
+    (p) => `  <url>
+    <loc>${p.url}</loc>
+    <changefreq>monthly</changefreq>
+    <priority>${p.priority}</priority>
+    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
+  </url>`,
+  )
+  .join("\n")}
+</urlset>
+`;
+      const publicDir = path.resolve(root, "public");
+      fs.mkdirSync(publicDir, { recursive: true });
+      fs.writeFileSync(path.join(publicDir, "sitemap.xml"), sitemap);
+      console.log(`sitemap.xml generated with ${pages.length} URLs`);
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [rawCssTsPlugin(), mdx(), reactRouter(), vanillaExtractPlugin()],
+  plugins: [rawCssTsPlugin(), sitemapPlugin(), mdx(), reactRouter(), vanillaExtractPlugin()],
   resolve: {
     alias: {
       "@": path.resolve(root, "app"),
