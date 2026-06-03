@@ -3,10 +3,10 @@ import { Computer } from "@/components/misc/computer/computer.component";
 import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
 import type { MousePosition } from "@/hooks/use-mouse-position.hook";
-import { WelcomeHeroComputerCyberneticGlyphGrid } from "./components/cybernetic-glyph-grid/welcome-hero-computer-cybernetic-glyph-grid.component";
-import { WelcomeHeroComputerFakeConsole } from "./components/fake-console/welcome-hero-computer-fake-console.component";
-import { WelcomeHeroComputerGlitchSignalMap } from "./components/glitch-signal-map/welcome-hero-computer-glitch-signal-map.component";
-import { WelcomeHeroComputerSystemMetricsPanel } from "./components/system-metrics-panel/welcome-hero-computer-system-metrics-panel.component";
+import { CyberneticGlyphGrid } from "@/components/misc/cybernetic-glyph-grid/cybernetic-glyph-grid.component";
+import { FakeConsole } from "@/components/misc/fake-console/fake-console.component";
+import { GlitchSignalMap } from "@/components/misc/glitch-signal-map/glitch-signal-map.component";
+import { SystemMetricsPanel } from "@/components/misc/system-metrics-panel/system-metrics-panel.component";
 import { WelcomeHeroComputerSplash } from "./components/splash/welcome-hero-computer-splash.component";
 import * as styles from "./welcome-hero-computer.css";
 
@@ -22,28 +22,22 @@ const HERO_COMPUTER_ZONES = [
   {
     id: "hero-computer-zone1",
     className: styles.zone1Styles,
-    render: (isAnimating: boolean) => <WelcomeHeroComputerFakeConsole isAnimating={isAnimating} />,
+    render: (isAnimating: boolean) => <FakeConsole isAnimating={isAnimating} />,
   },
   {
     id: "hero-computer-zone2",
     className: styles.zone2Styles,
-    render: (isAnimating: boolean) => (
-      <WelcomeHeroComputerGlitchSignalMap isAnimating={isAnimating} />
-    ),
+    render: (isAnimating: boolean) => <GlitchSignalMap isAnimating={isAnimating} />,
   },
   {
     id: "hero-computer-zone3",
     className: styles.zone3Styles,
-    render: (isAnimating: boolean) => (
-      <WelcomeHeroComputerCyberneticGlyphGrid isAnimating={isAnimating} />
-    ),
+    render: (isAnimating: boolean) => <CyberneticGlyphGrid isAnimating={isAnimating} />,
   },
   {
     id: "hero-computer-zone4",
     className: styles.zone4Styles,
-    render: (isAnimating: boolean) => (
-      <WelcomeHeroComputerSystemMetricsPanel isAnimating={isAnimating} />
-    ),
+    render: (isAnimating: boolean) => <SystemMetricsPanel isAnimating={isAnimating} />,
   },
 ] as const;
 

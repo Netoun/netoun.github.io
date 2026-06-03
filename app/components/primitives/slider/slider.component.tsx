@@ -8,6 +8,7 @@ import { sliderRecipe, sliderThumbStyle, sliderTrackStyle } from "./slider.css";
 
 export interface SliderProps {
   label?: string;
+  "aria-label"?: string;
   value?: number;
   defaultValue?: number;
   minValue?: number;
