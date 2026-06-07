@@ -1,8 +1,4 @@
 import type { ReactNode } from "react";
-import {
-  FeatureHeader,
-  FeatureHeaderTitle,
-} from "@/components/layouts/feature-header/feature-header.component";
 import type { LabExperiment } from "../../data/labs.types";
 import { LabsCodeViewer } from "../labs-code-viewer/labs-code-viewer.component";
 import * as styles from "./labs-experiment-frame.css";
@@ -29,9 +25,7 @@ export function LabsExperimentFrame({ experiment }: { experiment: LabExperiment 
   return (
     <article className={styles.frame}>
       <header className={styles.frameHeader}>
-        <FeatureHeader variant={experiment.accent} as="page">
-          <FeatureHeaderTitle size="lg">{experiment.title}</FeatureHeaderTitle>
-        </FeatureHeader>
+        <h1 className={styles.title}>{experiment.title}</h1>
         <p className={styles.description}>{experiment.description}</p>
         <div className={styles.tagRow}>
           {experiment.tags.map((tag) => (

@@ -7,6 +7,7 @@ import { CyberneticGlyphGrid } from "@/components/misc/cybernetic-glyph-grid/cyb
 import { FakeConsole } from "@/components/misc/fake-console/fake-console.component";
 import { GlitchSignalMap } from "@/components/misc/glitch-signal-map/glitch-signal-map.component";
 import { SystemMetricsPanel } from "@/components/misc/system-metrics-panel/system-metrics-panel.component";
+import { useHeroAnimation } from "../../orchestrator/hero-animation.context";
 import { WelcomeHeroComputerSplash } from "./components/splash/welcome-hero-computer-splash.component";
 import * as styles from "./welcome-hero-computer.css";
 
@@ -15,7 +16,6 @@ const BASE_ROTATION_Y = -3;
 
 interface WelcomeHeroComputerComponentProps {
   mousePosition: MousePosition;
-  disabled?: boolean;
 }
 
 const HERO_COMPUTER_ZONES = [
@@ -41,10 +41,9 @@ const HERO_COMPUTER_ZONES = [
   },
 ] as const;
 
-function WelcomeHeroComputerComponentInner({
-  mousePosition,
-  disabled = false,
-}: WelcomeHeroComputerComponentProps) {
+function WelcomeHeroComputerComponentInner({ mousePosition }: WelcomeHeroComputerComponentProps) {
+  const heroAnim = useHeroAnimation();
+  const disabled = !heroAnim.getState().shouldAnimate;
   const containerRef = useRef<HTMLDivElement>(null);
   const capturesRef = useRef<HTMLDivElement>(null);
 
@@ -193,11 +192,9 @@ function WelcomeHeroComputerComponentInner({
 export const WelcomeHeroComputerComponent = memo(
   WelcomeHeroComputerComponentInner,
   (prevProps, nextProps) => {
-    // Only rerender if mouse position values actually changed
     return (
       prevProps.mousePosition.x === nextProps.mousePosition.x &&
-      prevProps.mousePosition.y === nextProps.mousePosition.y &&
-      prevProps.disabled === nextProps.disabled
+      prevProps.mousePosition.y === nextProps.mousePosition.y
     );
   },
 );

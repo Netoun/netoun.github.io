@@ -1,54 +1,37 @@
-import { Container } from "@/components/layouts/container/container.component";
-import {
-  FeatureHeader,
-  FeatureHeaderTitle,
-  FeatureHeaderDescription,
-} from "@/components/layouts/feature-header/feature-header.component";
-import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
-import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
+import { ContentSection } from "@/components/layouts/content-section/content-section.component";
 import { SKILL_BLOCKS } from "@/features/skills/data/skills-data";
 import { BlockCard } from "@/features/skills/components/block-card/skills-block-card.component";
 import * as styles from "./welcome-skills.css";
 
 export function WelcomeSkillsSection() {
-  const { ref: sectionRef, isIntersecting } = useIntersectionObserver<HTMLElement>({
-    threshold: 0.1,
-  });
-  const shouldAnimate = useAnimationPriority({ priority: "medium", isVisible: isIntersecting });
-
   return (
-    <section
-      ref={sectionRef}
+    <ContentSection
+      title="SKILLS"
+      description="Tech stack, tools &amp; expertise"
+      variant="secondary"
       className={styles.sectionStyle}
-      data-anim-disabled={shouldAnimate ? "false" : "true"}
+      contentClassName={styles.contentStyle}
     >
-      <Container className={styles.contentStyle}>
-        <FeatureHeader variant="secondary">
-          <FeatureHeaderTitle>SKILLS</FeatureHeaderTitle>
-          <FeatureHeaderDescription>Tech stack, tools &amp; expertise</FeatureHeaderDescription>
-        </FeatureHeader>
+      <div className={styles.legendStyle}>
+        <span className={styles.legendItemStyle}>
+          <span className={styles.legendDotStyle({ domain: "frontend" })} />
+          Frontend &amp; UI
+        </span>
+        <span className={styles.legendItemStyle}>
+          <span className={styles.legendDotStyle({ domain: "backend" })} />
+          Backend &amp; infra
+        </span>
+        <span className={styles.legendItemStyle}>
+          <span className={styles.legendDotStyle({ domain: "creative" })} />
+          Creative &amp; systems
+        </span>
+      </div>
 
-        <div className={styles.legendStyle}>
-          <span className={styles.legendItemStyle}>
-            <span className={styles.legendDotStyle({ domain: "frontend" })} />
-            Frontend &amp; UI
-          </span>
-          <span className={styles.legendItemStyle}>
-            <span className={styles.legendDotStyle({ domain: "backend" })} />
-            Backend &amp; infra
-          </span>
-          <span className={styles.legendItemStyle}>
-            <span className={styles.legendDotStyle({ domain: "creative" })} />
-            Creative &amp; systems
-          </span>
-        </div>
-
-        <div className={styles.skillsGridStyle}>
-          {SKILL_BLOCKS.map((block) => (
-            <BlockCard key={block.title} block={block} />
-          ))}
-        </div>
-      </Container>
-    </section>
+      <div className={styles.skillsGridStyle}>
+        {SKILL_BLOCKS.map((block) => (
+          <BlockCard key={block.title} block={block} />
+        ))}
+      </div>
+    </ContentSection>
   );
 }

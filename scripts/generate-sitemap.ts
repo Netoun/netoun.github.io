@@ -5,20 +5,13 @@ import { fileURLToPath } from "node:url";
 const SITE_URL = "https://www.netoun.com";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.resolve(__dirname, "../public");
+const EXPERIMENTS_DIR = path.resolve(__dirname, "../app/features/labs/experiments");
 
-const slugs = [
-  "computer-3d",
-  "server-unit-3d",
-  "project-card-3d",
-  "glitch-signal-map",
-  "cybernetic-glyph-grid",
-  "fake-console",
-  "system-metrics",
-  "grain-shader",
-  "mesh-background",
-  "scroll-morph",
-  "kirby",
-] as const;
+const slugs = fs
+  .readdirSync(EXPERIMENTS_DIR, { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => entry.name)
+  .sort() as readonly string[];
 
 const pages: { url: string; priority: string; changefreq: string }[] = [
   { url: `${SITE_URL}/`, priority: "1.0", changefreq: "monthly" },
