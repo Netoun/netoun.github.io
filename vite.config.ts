@@ -5,6 +5,7 @@ import mdx from "@mdx-js/rollup";
 import { reactRouter } from "@react-router/dev/vite";
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
 import { defineConfig, type Plugin } from "vite";
+import { EXPERIMENT_SLUGS } from "./app/features/labs/data/experiment-slugs";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 
@@ -51,13 +52,6 @@ function rawCssTsPlugin(): Plugin {
 }
 
 function sitemapPlugin(): Plugin {
-  const slugs = [
-    "computer-3d", "server-unit-3d", "project-card-3d",
-    "glitch-signal-map", "cybernetic-glyph-grid", "fake-console",
-    "system-metrics", "grain-shader", "mesh-background",
-    "scroll-morph", "kirby",
-  ];
-
   return {
     name: "generate-sitemap",
     buildStart() {
@@ -65,7 +59,7 @@ function sitemapPlugin(): Plugin {
       const pages = [
         { url: `${SITE_URL}/`, priority: "1.0" },
         { url: `${SITE_URL}/labs`, priority: "0.8" },
-        ...slugs.map((s) => ({ url: `${SITE_URL}/labs/${s}`, priority: "0.6" })),
+        ...EXPERIMENT_SLUGS.map((s) => ({ url: `${SITE_URL}/labs/${s}`, priority: "0.6" })),
       ];
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

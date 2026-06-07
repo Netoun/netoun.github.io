@@ -17,8 +17,7 @@ const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
 const CSS_PROPS = ["--hero-scale", "--hero-translate-y"];
 
-const clamp = (v: number, min: number, max: number) =>
-  Math.min(Math.max(v, min), max);
+const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max);
 
 const easeInOutQuad = (t: number): number =>
   t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
@@ -47,10 +46,7 @@ function getInitialParams(): MorphParams {
   };
 }
 
-export function useHeroMorphProgress({
-  containerRef,
-  enabled = true,
-}: HeroMorphProgressOptions) {
+export function useHeroMorphProgress({ containerRef, enabled = true }: HeroMorphProgressOptions) {
   const stageElRef = useRef<HTMLElement | null>(null);
   const rafRef = useRef<number | null>(null);
   const paramsRef = useRef<MorphParams>(getInitialParams());
@@ -118,8 +114,7 @@ export function useHeroMorphProgress({
   const setActiveState = useCallback(() => {
     desktopMorphRef.current = window.matchMedia(DESKTOP_MORPH_QUERY).matches;
     reducedMotionRef.current = window.matchMedia(REDUCED_MOTION_QUERY).matches;
-    activeRef.current =
-      enabled && desktopMorphRef.current && !reducedMotionRef.current;
+    activeRef.current = enabled && desktopMorphRef.current && !reducedMotionRef.current;
 
     if (!activeRef.current) {
       resetInlineStyles();

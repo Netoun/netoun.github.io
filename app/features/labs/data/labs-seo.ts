@@ -6,7 +6,7 @@ export const SITE_URL = "https://www.netoun.com";
 const LABS_DESCRIPTION =
   "An interactive playground of the 3D, canvas and shader experiments powering netoun.com — live demos with their source code.";
 
-type MetaDescriptor =
+export type MetaDescriptor =
   | { title: string }
   | { name: string; content: string }
   | { property: string; content: string }

@@ -1,5 +1,14 @@
 {
   "version": 1,
   "include": ["/*"],
-  "exclude": ["/assets/*", "/fonts/*", "/images/*", "/*.png", "/*.ico", "/*.webp", "/favicon*", "/*.svg"]
+  "exclude": [
+    "/assets/*",
+    "/fonts/*",
+    "/images/*",
+    "/*.png",
+    "/*.ico",
+    "/*.webp",
+    "/favicon*",
+    "/*.svg"
+  ]
 }

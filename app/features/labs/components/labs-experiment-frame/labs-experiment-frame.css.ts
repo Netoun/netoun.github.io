@@ -17,6 +17,13 @@ export const frameHeader = style({
   gap: vars.spacing.sm,
 });
 
+export const title = style({
+  fontSize: vars.fontSize["2xl"],
+  fontWeight: vars.fontWeight.extrabold,
+  color: vars.colors.mutedForeground,
+  fontFamily: vars.fontFamily.doto,
+});
+
 export const description = style({
   maxWidth: "48rem",
   fontSize: vars.fontSize.base,
