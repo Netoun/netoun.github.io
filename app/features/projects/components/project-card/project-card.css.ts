@@ -1,3 +1,4 @@
+import { motion } from "@styles/motion.css";
 import { vars } from "@styles/theme.css";
 import { globalStyle, style } from "@vanilla-extract/css";
 
@@ -55,6 +56,14 @@ export const linkStyle = style({
   zIndex: 2,
   transform: "translateZ(0)",
   transformStyle: "preserve-3d",
+  // ring intérieur : la carte est en overflow hidden, un offset positif serait rogné
+  outline: "2px solid transparent",
+  outlineOffset: "-2px",
+  borderRadius: "inherit",
+
+  ":focus-visible": {
+    outlineColor: vars.colors.foreground,
+  },
 });
 
 export const terminalBarStyle = style({
@@ -97,12 +106,11 @@ export const imageStyle = style({
   width: "100%",
   height: "100%",
   objectFit: "cover",
-  transform: "scale(1.15)",
-  transition: "transform 0.15s ease-out",
-  // filter: "brightness(1.15)",
+  transform: "scale(1.05)",
+  transition: `transform ${motion.duration.base} ${motion.easing.signature}`,
 });
 
-globalStyle(`${linkStyle}:hover ${imageStyle}`, {
+globalStyle(`${cardStyle}:hover ${imageStyle}`, {
   transform: "scale(1.15)",
 });
 
@@ -218,6 +226,16 @@ globalStyle(`${cardStyle}:hover ${linkArrowStyle}`, {
 });
 
 globalStyle(`${cardStyle}:hover ${linkLabelStyle}`, {
+  color: vars.colors.foreground,
+});
+
+// Au clavier, répliquer les révélations du hover (flèche + label)
+globalStyle(`${linkStyle}:focus-visible ${linkArrowStyle}`, {
+  opacity: 1,
+  transform: "translateX(0)",
+});
+
+globalStyle(`${linkStyle}:focus-visible ${linkLabelStyle}`, {
   color: vars.colors.foreground,
 });
 

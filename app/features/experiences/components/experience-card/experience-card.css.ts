@@ -1,3 +1,4 @@
+import { motion } from "@styles/motion.css";
 import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
 import { globalStyle, keyframes, style } from "@vanilla-extract/css";
@@ -218,6 +219,25 @@ export const projectTitleStyle = style({
   letterSpacing: "0.1em",
   fontWeight: 900,
   color: `color-mix(in oklch, ${vars.colors.secondary} 80%, ${vars.colors.foreground})`,
+
+  // Le même style sert aussi de <span> non interactif : états réservés aux <a>
+  selectors: {
+    "&:is(a)": {
+      textDecoration: "none",
+      borderRadius: vars.radius.sm,
+      outline: "2px solid transparent",
+      outlineOffset: "2px",
+      transition: `color ${motion.duration.fast} ${motion.easing.out}`,
+    },
+    "&:is(a):hover": {
+      color: vars.colors.foreground,
+      textDecoration: "underline",
+      textUnderlineOffset: "3px",
+    },
+    "&:is(a):focus-visible": {
+      outlineColor: vars.colors.foreground,
+    },
+  },
 
   "@media": {
     [breakpoints.md]: {
