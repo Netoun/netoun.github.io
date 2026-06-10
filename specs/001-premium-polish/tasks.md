@@ -54,10 +54,10 @@
 
 **Independent Test**: quickstart.md §P3 (comparaison desktop + 375px, format des headers).
 
-- [ ] T019 [US3] Normaliser le rythme vertical (vars.spacing.2xl/3xl, mobile compris) dans app/components/layouts/content-section/ et les .css.ts des sections welcome
-- [ ] T020 [US3] Numérotation terminal `_0N / LABEL_` uniforme (Doto, letterSpacing existant, prop index) dans app/components/layouts/feature-header/feature-header.component.tsx + feature-header.css.ts, et passer l'index depuis les sections de app/pages/welcome/
-- [ ] T021 [US3] Vérifier hiérarchie display/body et line-height des titres sur tous les breakpoints (ajuster dans les .css.ts concernés uniquement si écart)
-- [ ] T022 [US3] Gate US3 : revue visuelle mobile + desktop (quickstart.md §P3) + typecheck/lint/test + Lighthouse vs baseline
+- [x] T019 [US3] Normaliser le rythme vertical (vars.spacing.2xl/3xl, mobile compris) dans app/components/layouts/content-section/ et les .css.ts des sections welcome
+- [x] T020 [US3] Numérotation terminal `_0N / LABEL_` uniforme (Doto, letterSpacing existant, prop index) dans app/components/layouts/feature-header/feature-header.component.tsx + feature-header.css.ts, et passer l'index depuis les sections de app/pages/welcome/
+- [x] T021 [US3] Vérifier hiérarchie display/body et line-height des titres sur tous les breakpoints (ajuster dans les .css.ts concernés uniquement si écart)
+- [x] T022 [US3] Gate US3 : revue visuelle mobile + desktop (quickstart.md §P3) + typecheck/lint/test + Lighthouse vs baseline
 
 ## Phase 6: User Story 4 — Matière et lumière unifiées (P4)
 

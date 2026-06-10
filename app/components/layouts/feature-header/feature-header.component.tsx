@@ -8,22 +8,27 @@ type HeaderVariant = "section" | "page";
 
 interface FeatureHeaderContextValue {
   variant: AccentVariant;
+  headerVariant: HeaderVariant;
 }
 
 const FeatureHeaderContext = createContext<FeatureHeaderContextValue>({
   variant: "primary",
+  headerVariant: "section",
 });
 
 interface FeatureHeaderProps {
   children: React.ReactNode;
   variant?: AccentVariant;
   as?: HeaderVariant;
+  /** Terminal section numbering — renders `_0N /` above the title */
+  index?: number;
 }
 
 export function FeatureHeader({
   children,
   variant = "primary",
   as = "section",
+  index,
 }: FeatureHeaderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -43,8 +48,13 @@ export function FeatureHeader({
   }, [as]);
 
   return (
-    <FeatureHeaderContext.Provider value={{ variant }}>
+    <FeatureHeaderContext.Provider value={{ variant, headerVariant: as }}>
       <div ref={containerRef} className={styles.containerStyle({ variant: as })}>
+        {index !== undefined && (
+          <span className={styles.indexStyle} data-reveal-item>
+            _{String(index).padStart(2, "0")} /
+          </span>
+        )}
         {children}
       </div>
     </FeatureHeaderContext.Provider>
@@ -57,9 +67,11 @@ interface FeatureHeaderTitleProps {
 }
 
 export function FeatureHeaderTitle({ children, size = "lg" }: FeatureHeaderTitleProps) {
-  const { variant } = use(FeatureHeaderContext);
+  const { variant, headerVariant } = use(FeatureHeaderContext);
 
-  const Tag = size === "lg" ? "h1" : "h2";
+  // Heading level follows the header's role, not its visual size:
+  // one h1 per page (hero/page headers), sections are h2.
+  const Tag = headerVariant === "page" ? "h1" : "h2";
 
   return (
     <Tag className={styles.titleStyle({ size, variant })} data-reveal-item>

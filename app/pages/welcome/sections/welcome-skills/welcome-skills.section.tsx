@@ -9,6 +9,7 @@ export function WelcomeSkillsSection() {
       title="SKILLS"
       description="Tech stack, tools &amp; expertise"
       variant="secondary"
+      index={3}
       className={styles.sectionStyle}
       contentClassName={styles.contentStyle}
     >

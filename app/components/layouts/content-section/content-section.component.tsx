@@ -22,6 +22,8 @@ interface ContentSectionProps {
   className?: string;
   contentClassName?: string;
   threshold?: number;
+  /** Terminal section numbering, forwarded to FeatureHeader (`_0N /`) */
+  index?: number;
   children: ReactNode | ((state: ContentSectionState) => ReactNode);
 }
 
@@ -32,6 +34,7 @@ export function ContentSection({
   className,
   contentClassName,
   threshold = 0.1,
+  index,
   children,
 }: ContentSectionProps) {
   const { ref: sectionRef, isIntersecting } = useIntersectionObserver<HTMLElement>({
@@ -54,7 +57,7 @@ export function ContentSection({
       data-reveal={revealState ?? undefined}
     >
       <Container className={contentClassName}>
-        <FeatureHeader variant={variant}>
+        <FeatureHeader variant={variant} index={index}>
           <FeatureHeaderTitle>{title}</FeatureHeaderTitle>
           <FeatureHeaderDescription>{description}</FeatureHeaderDescription>
         </FeatureHeader>

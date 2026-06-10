@@ -1,3 +1,4 @@
+import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
 import { globalKeyframes, style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
@@ -15,9 +16,11 @@ const ACCENT_MAP = {
   tertiary: vars.colors.tertiary,
 } as const;
 
+// Visible by default: page headers are faded in by anime (which applies its own
+// opacity from-value), section headers by the [data-reveal] system. A CSS
+// opacity: 0 here would leave headers invisible without JS or with reduced motion.
 export const containerStyle = recipe({
   base: {
-    opacity: 0,
     willChange: "transform, opacity",
     contain: "layout paint",
   },
@@ -40,12 +43,15 @@ export const titleStyle = recipe({
   base: {
     color: vars.colors.foreground,
     marginBottom: vars.spacing.sm,
+    lineHeight: vars.lineHeight.tight,
   },
   variants: {
+    // Mobile-first: display sizes step down one notch on small screens so
+    // long titles (EXPERIENCE) don't wrap awkwardly at 375px.
     size: {
-      sm: { fontSize: vars.fontSize["3xl"] },
-      md: { fontSize: vars.fontSize["4xl"] },
-      lg: { fontSize: vars.fontSize["5xl"] },
+      sm: { fontSize: vars.fontSize["2xl"], "@media": { [breakpoints.md]: { fontSize: vars.fontSize["3xl"] } } },
+      md: { fontSize: vars.fontSize["3xl"], "@media": { [breakpoints.md]: { fontSize: vars.fontSize["4xl"] } } },
+      lg: { fontSize: vars.fontSize["4xl"], "@media": { [breakpoints.md]: { fontSize: vars.fontSize["5xl"] } } },
     },
     variant: {
       primary: {
@@ -113,4 +119,16 @@ export const descriptionStyle = style({
   color: vars.colors.mutedForeground,
   letterSpacing: "0.14em",
   textTransform: "uppercase",
+});
+
+// Terminal section numbering (`_01 /`) — eyebrow above the title, same Doto
+// vocabulary as the description line.
+export const indexStyle = style({
+  display: "block",
+  fontFamily: vars.fontFamily.doto,
+  fontSize: vars.fontSize.sm,
+  fontWeight: 600,
+  color: vars.colors.mutedForeground,
+  letterSpacing: "0.14em",
+  marginBottom: vars.spacing.xs,
 });
