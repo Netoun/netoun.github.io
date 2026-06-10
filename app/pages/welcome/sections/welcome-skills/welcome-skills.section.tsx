@@ -12,7 +12,7 @@ export function WelcomeSkillsSection() {
       className={styles.sectionStyle}
       contentClassName={styles.contentStyle}
     >
-      <div className={styles.legendStyle}>
+      <div className={styles.legendStyle} data-reveal-item>
         <span className={styles.legendItemStyle}>
           <span className={styles.legendDotStyle({ domain: "frontend" })} />
           Frontend &amp; UI

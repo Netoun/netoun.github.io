@@ -9,7 +9,11 @@ export interface ExperienceCardProps {
 
 export function ExperienceCard({ experience, animationsEnabled = true }: ExperienceCardProps) {
   return (
-    <div className={styles.entryStyle} data-anim-disabled={animationsEnabled ? "false" : "true"}>
+    <div
+      className={styles.entryStyle}
+      data-anim-disabled={animationsEnabled ? "false" : "true"}
+      data-reveal-item
+    >
       <div className={styles.timelineDotStyle}>
         <div className={styles.timelineDotPingStyle} />
       </div>

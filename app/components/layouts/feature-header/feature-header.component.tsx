@@ -27,7 +27,11 @@ export function FeatureHeader({
 }: FeatureHeaderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Page headers (labs) are visible at load: keep the mount animation.
+  // Section headers reveal on viewport entry via ContentSection's [data-reveal].
   useEffect(() => {
+    if (as !== "page") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (containerRef.current) {
       animate(containerRef.current, {
         opacity: [0, 1],
@@ -36,7 +40,7 @@ export function FeatureHeader({
         duration: 600,
       });
     }
-  }, []);
+  }, [as]);
 
   return (
     <FeatureHeaderContext.Provider value={{ variant }}>
@@ -58,7 +62,7 @@ export function FeatureHeaderTitle({ children, size = "lg" }: FeatureHeaderTitle
   const Tag = size === "lg" ? "h1" : "h2";
 
   return (
-    <Tag className={styles.titleStyle({ size, variant })}>
+    <Tag className={styles.titleStyle({ size, variant })} data-reveal-item>
       <span className={styles.prefixStyle({ variant })}>_❯</span>
       {children}
       <span className={styles.cursorStyle({ variant })} />
@@ -71,5 +75,9 @@ interface FeatureHeaderDescriptionProps {
 }
 
 export function FeatureHeaderDescription({ children }: FeatureHeaderDescriptionProps) {
-  return <p className={styles.descriptionStyle}>{children}</p>;
+  return (
+    <p className={styles.descriptionStyle} data-reveal-item>
+      {children}
+    </p>
+  );
 }

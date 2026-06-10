@@ -23,6 +23,7 @@ function BlockCardComponent({ block }: BlockCardProps) {
   return (
     <div
       data-block
+      data-reveal-item
       className={styles.blockStyle}
       style={{ "--block-accent": ACCENT_VARS[block.accent] } as React.CSSProperties}
     >

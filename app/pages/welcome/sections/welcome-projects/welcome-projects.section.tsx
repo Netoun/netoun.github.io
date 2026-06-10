@@ -15,7 +15,7 @@ export function WelcomeProjectsSection() {
       {({ shouldAnimate }) => (
         <div className={styles.gridStyle}>
           {projects.map(({ slug, ...project }) => (
-            <div key={slug} data-card>
+            <div key={slug} data-card data-reveal-item>
               <ProjectCard {...project} animationsEnabled={shouldAnimate} />
             </div>
           ))}

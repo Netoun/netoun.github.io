@@ -7,6 +7,7 @@ import {
 } from "@/components/layouts/feature-header/feature-header.component";
 import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
+import { useReveal } from "@/hooks/use-reveal.hook";
 
 type HeaderVariant = "primary" | "secondary" | "tertiary";
 
@@ -36,6 +37,7 @@ export function ContentSection({
   const { ref: sectionRef, isIntersecting } = useIntersectionObserver<HTMLElement>({
     threshold,
   });
+  const { ref: revealRef, state: revealState } = useReveal<HTMLElement>();
   const shouldAnimate = useAnimationPriority({
     priority: "medium",
     isVisible: isIntersecting,
@@ -43,9 +45,13 @@ export function ContentSection({
 
   return (
     <section
-      ref={sectionRef}
+      ref={(element) => {
+        sectionRef.current = element;
+        revealRef.current = element;
+      }}
       className={className}
       data-anim-disabled={shouldAnimate ? "false" : "true"}
+      data-reveal={revealState ?? undefined}
     >
       <Container className={contentClassName}>
         <FeatureHeader variant={variant}>
