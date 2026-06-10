@@ -5,7 +5,7 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   plugins: [vanillaExtractPlugin()],
   test: {
-    environment: "jsdom",
+    environment: "happy-dom",
     setupFiles: ["./test-setup.ts"],
     globals: true,
   },
