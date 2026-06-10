@@ -73,10 +73,10 @@
 
 ## Phase 7: Polish & Cross-Cutting
 
-- [ ] T028 Passe transversale finale : parcours clavier complet, reduced-motion, mobile 375px sur `/` et `/labs` (SC-001, SC-005, SC-006 de spec.md)
-- [ ] T029 Lighthouse final complet vs baseline-lighthouse.md — zéro régression sur les 4 catégories (SC-002) ; retirer/retravailler toute finition qui coûte
-- [ ] T030 Mettre à jour docs/design.md : tokens motion (durées/easings), tokens de surface, règle focus-visible — sections nouvelles uniquement, invariants intacts
-- [ ] T031 Nettoyage : supprimer SPEC.md racine (cadrage migré dans specs/001-premium-polish/) et vérifier `bun run build` final
+- [x] T028 Passe transversale finale : parcours clavier complet, reduced-motion, mobile 375px sur `/` et `/labs` (SC-001, SC-005, SC-006 de spec.md)
+- [x] T029 Lighthouse final complet vs baseline-lighthouse.md — zéro régression sur les 4 catégories (SC-002) ; retirer/retravailler toute finition qui coûte
+- [x] T030 Mettre à jour docs/design.md : tokens motion (durées/easings), tokens de surface, règle focus-visible — sections nouvelles uniquement, invariants intacts
+- [x] T031 Nettoyage : supprimer SPEC.md racine (cadrage migré dans specs/001-premium-polish/) et vérifier `bun run build` final
 
 ## Dependencies
 
