@@ -108,3 +108,10 @@ See [design.md](docs/design.md).
 ## Component Architecture
 
 See [architecture.md](docs/architecture.md) — naming rules, page/section/component organization, templates.
+
+<!-- SPECKIT START -->
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan:
+[specs/001-premium-polish/plan.md](specs/001-premium-polish/plan.md)
+(spec: [specs/001-premium-polish/spec.md](specs/001-premium-polish/spec.md))
+<!-- SPECKIT END -->
