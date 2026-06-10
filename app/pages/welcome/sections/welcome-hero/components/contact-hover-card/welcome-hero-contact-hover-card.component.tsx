@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DialogTrigger, OverlayArrow, Popover } from "react-aria-components";
 import { contactLinks } from "../../../../data/contact-links.data";
+import { useMagnetic } from "../../hooks/use-magnetic.hook";
 import { Button } from "@/components/primitives/button/button.component";
 import { ContactIcon } from "@/components/primitives/icons/contact-icon.component";
 import { WelcomeHeroContactHoverCardBeam } from "./components/beam/welcome-hero-contact-hover-card-beam.component";
@@ -10,6 +11,8 @@ import * as styles from "./welcome-hero-contact-hover-card.css";
 export function WelcomeHeroContactHoverCard() {
   const [isMobile, setIsMobile] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLSpanElement>(null);
+  useMagnetic(triggerRef);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 767px)");
@@ -33,7 +36,7 @@ export function WelcomeHeroContactHoverCard() {
       data-mobile={isMobile ? "true" : "false"}
     >
       <DialogTrigger isOpen={isOpen} onOpenChange={setIsOpen}>
-        <span className={styles.welcomeHeroContactHoverCardTriggerStyles}>
+        <span ref={triggerRef} className={styles.welcomeHeroContactHoverCardTriggerStyles}>
           <Button id="welcome-button" className={buttonStyles.welcomeButtonStyles}>
             <span className={buttonStyles.welcomeButtonLabelStyles}>_Get in touch_</span>
             <span className={buttonStyles.welcomeButtonArrowStyles}>⤘</span>

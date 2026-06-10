@@ -1,4 +1,5 @@
 import { globalStyle, keyframes, style } from "@vanilla-extract/css";
+import { motion } from "@/styles/motion.css";
 import { vars } from "@/styles/theme.css";
 import { breakpoints } from "@/styles/responsive.css";
 import {
@@ -26,6 +27,9 @@ export const welcomeHeroContactHoverCardTriggerStyles = style({
   position: "relative",
   display: "inline-flex",
   width: "fit-content",
+  // Magnetic CTA : suit le curseur de ±4px max via use-magnetic.hook
+  transform: "translate3d(var(--magnet-x, 0px), var(--magnet-y, 0px), 0)",
+  transition: `transform ${motion.duration.fast} ${motion.easing.out}`,
 });
 
 const popoverEnter = keyframes({

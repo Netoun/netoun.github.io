@@ -1,3 +1,4 @@
+import { motion } from "@styles/motion.css";
 import { vars } from "@styles/theme.css";
 import { recipe } from "@vanilla-extract/recipes";
 
@@ -13,15 +14,25 @@ export const buttonRecipe = recipe({
     border: "1px solid transparent",
     cursor: "pointer",
     transitionProperty: "box-shadow, transform",
-    transitionDuration: "300ms, 200ms",
+    transitionDuration: `${motion.duration.base}, ${motion.duration.fast}`,
+    transitionTimingFunction: motion.easing.signature,
     textDecoration: "none",
+    outline: "2px solid transparent",
+    outlineOffset: "2px",
 
     ":hover": {
       transform: "translateY(-2px)",
     },
 
     ":active": {
-      transform: "translateY(0)",
+      transform: "translateY(0) scale(0.98)",
+      transitionDuration: motion.duration.fast,
+    },
+
+    // foreground plutôt que primary : le ring doit rester visible sur le fond beige
+    // (primary gold ≈ même luminance que le background, contraste < 3:1)
+    ":focus-visible": {
+      outlineColor: vars.colors.foreground,
     },
 
     ":disabled": {

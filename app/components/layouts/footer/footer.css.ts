@@ -1,5 +1,6 @@
 import { vars } from "@styles/theme.css";
 import { style, keyframes } from "@vanilla-extract/css";
+import { motion } from "@/styles/motion.css";
 import { breakpoints } from "@/styles/responsive.css";
 
 const pulse = keyframes({
@@ -130,10 +131,18 @@ export const labsLinkStyle = style({
   letterSpacing: "0.08em",
   color: vars.colors.background,
   textDecoration: "none",
-  transition: "color 0.15s ease",
+  transition: `color ${motion.duration.fast} ${motion.easing.out}`,
+  borderRadius: vars.radius.sm,
+  outline: "2px solid transparent",
+  outlineOffset: "4px",
   selectors: {
     "&:hover": {
       color: vars.colors.primary,
+    },
+    // fond sombre du footer : le ring primary y est très contrasté
+    "&:focus-visible": {
+      color: vars.colors.primary,
+      outlineColor: vars.colors.primary,
     },
   },
 
