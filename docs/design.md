@@ -77,6 +77,35 @@ Local files in `/public/fonts/`. Sizes via `vars.fontSize.*` (`xs` 0.75rem → `
 
 Reserved for CTAs and hero elements. Overused, the effect disappears.
 
+## Surfaces (cards, panels, terminal bars)
+
+One shared vocabulary for every card-like surface:
+
+| Token | Usage |
+| ----- | ----- |
+| `vars.border.subtle` | Card borders, terminal bar separators (50% cardBorder mix) |
+| `vars.border.strong` | Stronger separators (footers) |
+| `vars.boxShadow.restCard` | Cards at rest — discreet halo |
+| `vars.boxShadow.hoverCard` | Cards on hover — lift + accent ring |
+
+No ad hoc `color-mix` borders or one-off box-shadows on surfaces.
+
+## Motion
+
+Tokens in `app/styles/motion.css.ts` (static values, not runtime vars):
+
+| Token | Value | Usage |
+| ----- | ----- | ----- |
+| `motion.duration` | `fast` 150ms · `base` 300ms · `slow` 600ms | All transitions |
+| `motion.easing.signature` | cubic-bezier(0.22, 1, 0.36, 1) | Reveals, hovers — the house curve |
+| `motion.staggerStep` | 70ms | Scroll reveal stagger (index capped at 5) |
+
+Scroll reveals via `use-reveal.hook` (`data-reveal` / `data-reveal-item`): hidden state is only ever applied by JS before paint — prerendered HTML stays fully visible without JS. Every animation respects `prefers-reduced-motion` (content shown immediately, no motion).
+
+## Focus
+
+Every interactive element has a visible `:focus-visible` ring: `outline 2px` + offset, `foreground` on light surfaces (gold is too close to the beige background), `primary` on dark surfaces (footer). Never remove it.
+
 ## Breakpoints (mobile-first)
 
 ```ts
