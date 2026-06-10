@@ -110,10 +110,28 @@ const fontFamily = {
   mabeoVintage: "MabeoVintage, system-ui, sans-serif",
 };
 
+// Surface vocabulary — one border/shadow language for every card-like surface
+// (project cards, experience cards, labs panels, terminal bars).
+const border = {
+  subtle: `1px solid color-mix(in srgb, ${colors.cardBorder} 50%, transparent)`,
+  strong: `1px solid ${colors.border}`,
+};
+
 const boxShadow = {
   innerSm: "inset 0 0 2px 0 oklch(0 0 0 / 0.05)",
   innerMd: "inset 0 0 4px 0 oklch(0 0 0 / 0.05)",
   innerLg: "inset 0 0 6px 0 oklch(0 0 0 / 0.05)",
+  // Cards at rest: discreet halo. On hover: assertive lift + accent ring.
+  restCard: `
+    0 4px 24px color-mix(in srgb, ${colors.primary} 14%, transparent),
+    0 1px 4px color-mix(in srgb, ${colors.foreground} 6%, transparent)
+  `,
+  hoverCard: `
+    0 24px 60px color-mix(in srgb, ${colors.foreground} 14%, transparent),
+    0 0 0 1px color-mix(in srgb, ${colors.primary} 30%, transparent),
+    0 8px 40px color-mix(in srgb, ${colors.primary} 28%, transparent),
+    0 2px 12px color-mix(in srgb, ${colors.secondary} 15%, transparent)
+  `,
   sm: "0 1px 2px 0 oklch(0 0 0 / 0.05)",
   md: "0 4px 6px -1px oklch(0 0 0 / 0.1), 0 2px 4px -2px oklch(0 0 0 / 0.1)",
   lg: "0 10px 15px -3px oklch(0 0 0 / 0.1), 0 4px 6px -4px oklch(0 0 0 / 0.1)",
@@ -174,6 +192,7 @@ export const [theme, vars] = createTheme({
   fontWeight,
   lineHeight,
   fontFamily,
+  border,
   boxShadow,
   textShadow,
 });

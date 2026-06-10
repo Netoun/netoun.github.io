@@ -5,7 +5,7 @@ import { globalStyle, style } from "@vanilla-extract/css";
 export const cardStyle = style({
   borderRadius: vars.radius.md,
   height: "100%",
-  border: `1px solid color-mix(in srgb, ${vars.colors.cardBorder} 50%, transparent)`,
+  border: vars.border.subtle,
   backgroundColor: vars.colors.card,
   backdropFilter: "blur(10px)",
   WebkitBackdropFilter: "blur(10px)",
@@ -22,19 +22,11 @@ export const cardStyle = style({
   cursor: "pointer",
   backfaceVisibility: "hidden",
   WebkitBackfaceVisibility: "hidden",
-  boxShadow: `
-    0 4px 24px color-mix(in srgb, ${vars.colors.primary} 14%, transparent),
-    0 1px 4px color-mix(in srgb, ${vars.colors.foreground} 6%, transparent)
-  `,
+  boxShadow: vars.boxShadow.restCard,
 });
 
 globalStyle(`${cardStyle}:hover`, {
-  boxShadow: `
-    0 24px 60px color-mix(in srgb, ${vars.colors.foreground} 14%, transparent),
-    0 0 0 1px color-mix(in srgb, ${vars.colors.primary} 30%, transparent),
-    0 8px 40px color-mix(in srgb, ${vars.colors.primary} 28%, transparent),
-    0 2px 12px color-mix(in srgb, ${vars.colors.secondary} 15%, transparent)
-  `,
+  boxShadow: vars.boxShadow.hoverCard,
   transform:
     "rotate(0deg) rotateX(var(--x-rotation, 0deg)) rotateY(var(--y-rotation, 0deg)) translateY(-4px) scale(1.02)",
   transition:
@@ -73,7 +65,7 @@ export const terminalBarStyle = style({
   gap: vars.spacing.sm,
   padding: `${vars.spacing.sm} ${vars.spacing.md}`,
   backgroundColor: `color-mix(in srgb, ${vars.colors.card} 55%, transparent)`,
-  borderBottom: `1px solid color-mix(in srgb, ${vars.colors.cardBorder} 50%, transparent)`,
+  borderBottom: vars.border.subtle,
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.xs,
   color: vars.colors.mutedForeground,
@@ -194,7 +186,7 @@ export const footerStyle = style({
   alignItems: "center",
   justifyContent: "space-between",
   padding: `${vars.spacing.sm} ${vars.spacing.md}`,
-  borderTop: `1px solid ${vars.colors.border}`,
+  borderTop: vars.border.strong,
 });
 
 export const linkLabelStyle = style({

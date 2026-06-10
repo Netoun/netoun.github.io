@@ -68,7 +68,7 @@ export const stage = style({
   minHeight: "28rem",
   padding: vars.spacing.xl,
   borderRadius: vars.radius.md,
-  border: `1px solid ${vars.colors.cardBorder}`,
+  border: vars.border.subtle,
   overflow: "hidden",
   backgroundColor: vars.colors.card,
   backgroundImage: `
@@ -84,7 +84,7 @@ export const controlsAside = style({
   gap: vars.spacing.lg,
   padding: vars.spacing.lg,
   borderRadius: vars.radius.md,
-  border: `1px solid ${vars.colors.cardBorder}`,
+  border: vars.border.subtle,
   backgroundColor: vars.colors.card,
   "@media": {
     [breakpoints.lg]: {
