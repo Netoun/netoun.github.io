@@ -8,6 +8,7 @@ export function WelcomeExperienceSection() {
     <ContentSection
       title="EXPERIENCE"
       description="Work history &amp; professional experience"
+      index={2}
       className={styles.sectionStyle}
       contentClassName={styles.contentStyle}
       threshold={0}

@@ -21,7 +21,7 @@ export const timelineStyle = style({
 
   "@media": {
     [breakpoints.md]: {
-      paddingLeft: "48px",
+      paddingLeft: vars.spacing["2xl"],
     },
   },
 });

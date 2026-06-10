@@ -9,6 +9,7 @@ export function WelcomeProjectsSection() {
       title="PROJECTS"
       description="Side projects, open source &amp; experiments"
       variant="tertiary"
+      index={1}
       className={styles.sectionStyle}
       contentClassName={styles.contentStyle}
     >
