@@ -1,4 +1,5 @@
-import { globalKeyframes } from "@vanilla-extract/css";
+import { globalKeyframes, globalStyle } from "@vanilla-extract/css";
+import { motion } from "./motion.css";
 
 // Animations globales pour les keyframes CSS
 globalKeyframes("blink", {
@@ -61,4 +62,26 @@ globalKeyframes("glowPulse", {
 globalKeyframes("pulse", {
   "0%, 100%": { opacity: 1 },
   "50%": { opacity: 0.35 },
+});
+
+// Scroll reveals (use-reveal.hook) — the hidden state only ever exists under a
+// JS-set data-reveal attribute, so prerendered HTML stays visible without JS.
+globalStyle("[data-reveal] [data-reveal-item]", {
+  transitionProperty: "opacity, transform",
+  transitionDuration: motion.duration.slow,
+  transitionTimingFunction: motion.easing.signature,
+  transitionDelay: `calc(var(--reveal-index, 0) * ${motion.staggerStep})`,
+});
+
+globalStyle('[data-reveal="idle"] [data-reveal-item]', {
+  opacity: 0,
+  transform: "translateY(16px)",
+});
+
+globalStyle("[data-reveal] [data-reveal-item]", {
+  "@media": {
+    "(prefers-reduced-motion: reduce)": {
+      transition: "none",
+    },
+  },
 });

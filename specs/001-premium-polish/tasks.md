@@ -38,13 +38,13 @@
 
 **Independent Test**: quickstart.md §P2 (reload, scroll, perf panel, reduced-motion, no-JS, bfcache).
 
-- [ ] T012 [US2] Créer app/hooks/use-reveal.hook.ts (états idle/revealed/static de data-model.md : classe posée par JS avant paint, IntersectionObserver via use-intersection-observer + use-animation-priority existants, stagger `--reveal-index`, no-op reduced-motion, pageshow → static, D1/D2) + test unitaire des transitions d'état
-- [ ] T013 [US2] Ajouter les styles de reveal partagés (état caché transform/opacity, transition tokens motion, media query reduced-motion) dans app/styles/animations.css.ts
-- [ ] T014 [US2] Étendre l'orchestrateur hero avec la séquence d'entrée H1 → sous-titre → CTAs → laptop (timeline Anime.js, transform/opacity only, fallback reduced-motion = état final, D4) dans app/pages/welcome/sections/welcome-hero/orchestrator/use-hero-animation.hook.ts
-- [ ] T015 [P] [US2] Brancher use-reveal + stagger sur welcome-projects et welcome-skills (app/pages/welcome/sections/welcome-projects/, welcome-skills/ — .section.tsx + .css.ts)
-- [ ] T016 [P] [US2] Brancher use-reveal + stagger sur welcome-experience (app/pages/welcome/sections/welcome-experience/) — welcome-inspirations est du code mort non monté, hors périmètre
-- [ ] T017 [US2] Reveal label → titre dans app/components/layouts/feature-header/ (réutiliser l'animation Anime.js existante du composant, l'aligner sur les tokens motion)
-- [ ] T018 [US2] Gate US2 : quickstart.md §P2 complet (perf scroll Chrome + Firefox sans frame >32ms, CLS, reduced-motion, JS off, bfcache, resize fenêtre pendant l'entrée hero sans layout shift ni état bloqué) + typecheck/lint/test + Lighthouse vs baseline
+- [x] T012 [US2] Créer app/hooks/use-reveal.hook.ts (états idle/revealed/static de data-model.md : classe posée par JS avant paint, IntersectionObserver via use-intersection-observer + use-animation-priority existants, stagger `--reveal-index`, no-op reduced-motion, pageshow → static, D1/D2) + test unitaire des transitions d'état
+- [x] T013 [US2] Ajouter les styles de reveal partagés (état caché transform/opacity, transition tokens motion, media query reduced-motion) dans app/styles/animations.css.ts
+- [x] T014 [US2] Étendre l'orchestrateur hero avec la séquence d'entrée H1 → sous-titre → CTAs → laptop (timeline Anime.js, transform/opacity only, fallback reduced-motion = état final, D4) dans app/pages/welcome/sections/welcome-hero/orchestrator/use-hero-animation.hook.ts
+- [x] T015 [P] [US2] Brancher use-reveal + stagger sur welcome-projects et welcome-skills (app/pages/welcome/sections/welcome-projects/, welcome-skills/ — .section.tsx + .css.ts)
+- [x] T016 [P] [US2] Brancher use-reveal + stagger sur welcome-experience (app/pages/welcome/sections/welcome-experience/) — welcome-inspirations est du code mort non monté, hors périmètre
+- [x] T017 [US2] Reveal label → titre dans app/components/layouts/feature-header/ (réutiliser l'animation Anime.js existante du composant, l'aligner sur les tokens motion)
+- [x] T018 [US2] Gate US2 : quickstart.md §P2 complet (perf scroll Chrome + Firefox sans frame >32ms, CLS, reduced-motion, JS off, bfcache, resize fenêtre pendant l'entrée hero sans layout shift ni état bloqué) + typecheck/lint/test + Lighthouse vs baseline
 
 **Checkpoint**: US1+US2 = l'essentiel de l'impact premium.
 

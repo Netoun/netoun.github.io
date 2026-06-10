@@ -1,6 +1,13 @@
-import { style } from "@vanilla-extract/css";
+import { keyframes, style } from "@vanilla-extract/css";
+import { motion } from "@/styles/motion.css";
 import { breakpoints } from "@/styles/responsive.css";
 import { vars } from "@/styles/theme.css";
+
+// Fin de la cascade d'entrée du hero (titre → texte → CTA → laptop).
+// Pas de `to` : chaque propriété revient à sa valeur de repos (0.94 ou 1 selon data-quality).
+const computerEnter = keyframes({
+  from: { opacity: 0, transform: "translateY(24px)" },
+});
 
 export const welcomeHeroComputerWrapperStyles = style({
   position: "absolute",
@@ -13,6 +20,7 @@ export const welcomeHeroComputerWrapperStyles = style({
   filter: `drop-shadow(0 0 3rem color-mix(in srgb, ${vars.colors.secondary} 42%, transparent))`,
   width: "max(100%, 400px)",
   maxWidth: "100%",
+  animation: `${computerEnter} ${motion.duration.slow} ${motion.easing.signature} 400ms backwards`,
   selectors: {
     ':global([data-quality="high"]) &': {
       opacity: 1,
@@ -20,6 +28,9 @@ export const welcomeHeroComputerWrapperStyles = style({
     },
   },
   "@media": {
+    "(prefers-reduced-motion: reduce)": {
+      animation: "none",
+    },
     [breakpoints.md]: {
       bottom: "0.5rem",
       width: "460px",
