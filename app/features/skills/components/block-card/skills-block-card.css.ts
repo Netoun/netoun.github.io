@@ -1,23 +1,24 @@
+import { motion } from "@styles/motion.css";
 import { vars } from "@styles/theme.css";
 import { globalStyle, style } from "@vanilla-extract/css";
 
 export const blockStyle = style({
   borderRadius: vars.radius.md,
-  border: `1px solid color-mix(in srgb, ${vars.colors.cardBorder} 50%, transparent)`,
+  border: vars.border.subtle,
   backgroundColor: vars.colors.card,
   backdropFilter: "blur(20px)",
   WebkitBackdropFilter: "blur(20px)",
   overflow: "hidden",
   opacity: 1,
-  boxShadow: `0 4px 20px color-mix(in srgb, ${vars.colors.primary} 8%, transparent)`,
-  transition: "box-shadow 0.3s ease, border-color 0.3s ease",
+  boxShadow: vars.boxShadow.restCard,
+  transition: `box-shadow ${motion.duration.base} ${motion.easing.signature}, border-color ${motion.duration.base} ${motion.easing.signature}`,
   height: "100%",
   display: "flex",
   flexDirection: "column",
 });
 
 globalStyle(`${blockStyle}:hover`, {
-  boxShadow: `0 8px 32px color-mix(in srgb, ${vars.colors.primary} 16%, transparent)`,
+  boxShadow: vars.boxShadow.hoverCard,
   borderColor: `color-mix(in srgb, var(--block-accent) 40%, transparent)`,
 });
 
@@ -27,7 +28,7 @@ export const blockBarStyle = style({
   gap: vars.spacing.md,
   padding: `${vars.spacing.sm} ${vars.spacing.md} ${vars.spacing.xs}`,
   backgroundColor: `color-mix(in srgb, ${vars.colors.card} 55%, transparent)`,
-  borderBottom: `1px solid color-mix(in srgb, ${vars.colors.cardBorder} 50%, transparent)`,
+  borderBottom: vars.border.subtle,
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.xs,
   letterSpacing: "0.12em",

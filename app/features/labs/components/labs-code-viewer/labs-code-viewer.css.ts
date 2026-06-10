@@ -7,7 +7,7 @@ export const codeViewer = style({
   display: "flex",
   flexDirection: "column",
   borderRadius: vars.radius.md,
-  border: `1px solid ${vars.colors.cardBorder}`,
+  border: vars.border.subtle,
   background: vars.colors.foreground,
   boxShadow: vars.boxShadow.lg,
   overflow: "hidden",

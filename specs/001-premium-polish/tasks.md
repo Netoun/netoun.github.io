@@ -65,11 +65,11 @@
 
 **Independent Test**: quickstart.md §P4 (comparaison côte à côte, audit glows).
 
-- [ ] T023 [US4] Ajouter les tokens de surface (border subtle/strong, shadow restCard/hoverCard — data-model.md) dans app/styles/theme.css.ts
-- [ ] T024 [P] [US4] Remplacer les color-mix/box-shadows ad hoc par les tokens dans app/features/projects/components/project-card/project-card.css.ts et app/features/experiences/components/experience-card/
-- [ ] T025 [P] [US4] Appliquer les tokens de surface aux footers et terminal bars (app/components/layouts/footer/, project-card terminalBarStyle)
-- [ ] T026 [US4] Aligner labs sur le vocabulaire de matière de la home (app/features/labs/components/ — shell et cards d'expériences)
-- [ ] T027 [US4] Gate US4 : quickstart.md §P4 (continuité home → labs, glows réservés CTAs/hero/hover) + typecheck/lint/test + Lighthouse vs baseline
+- [x] T023 [US4] Ajouter les tokens de surface (border subtle/strong, shadow restCard/hoverCard — data-model.md) dans app/styles/theme.css.ts
+- [x] T024 [P] [US4] Remplacer les color-mix/box-shadows ad hoc par les tokens dans app/features/projects/components/project-card/project-card.css.ts et app/features/experiences/components/experience-card/
+- [x] T025 [P] [US4] Appliquer les tokens de surface aux footers et terminal bars (app/components/layouts/footer/, project-card terminalBarStyle)
+- [x] T026 [US4] Aligner labs sur le vocabulaire de matière de la home (app/features/labs/components/ — shell et cards d'expériences)
+- [x] T027 [US4] Gate US4 : quickstart.md §P4 (continuité home → labs, glows réservés CTAs/hero/hover) + typecheck/lint/test + Lighthouse vs baseline
 
 ## Phase 7: Polish & Cross-Cutting
 

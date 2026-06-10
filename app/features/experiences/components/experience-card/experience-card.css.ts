@@ -74,21 +74,18 @@ globalStyle(`${entryStyle}[data-anim-disabled='true'] ${timelineDotPingStyle}`, 
 
 export const cardStyle = style({
   borderRadius: vars.radius.md,
-  border: `1px solid color-mix(in srgb, ${vars.colors.cardBorder} 50%, transparent)`,
+  border: vars.border.subtle,
   backgroundColor: vars.colors.card,
   backdropFilter: "blur(10px)",
   WebkitBackdropFilter: "blur(10px)",
   overflow: "hidden",
-  boxShadow: `
-    0 4px 24px color-mix(in srgb, ${vars.colors.primary} 10%, transparent),
-    0 1px 4px color-mix(in srgb, ${vars.colors.foreground} 5%, transparent)
-  `,
-  transition: "box-shadow 0.3s ease",
+  boxShadow: vars.boxShadow.restCard,
+  transition: `box-shadow ${motion.duration.base} ${motion.easing.signature}`,
   marginBottom: vars.spacing["2xl"],
 });
 
 globalStyle(`${cardStyle}:hover`, {
-  boxShadow: `0 8px 32px color-mix(in srgb, ${vars.colors.primary} 16%, transparent), 0 0 0 1px color-mix(in srgb, ${vars.colors.primary} 22%, transparent)`,
+  boxShadow: vars.boxShadow.hoverCard,
 });
 
 export const cardBarStyle = style({
@@ -101,7 +98,7 @@ export const cardBarStyle = style({
     ${vars.spacing.md}
     calc(${vars.spacing.sm} * 1)
   `,
-  borderBottom: `1px solid color-mix(in srgb, ${vars.colors.cardBorder} 50%, transparent)`,
+  borderBottom: vars.border.subtle,
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.xs,
   letterSpacing: "0.12em",
