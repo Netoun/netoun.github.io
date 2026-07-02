@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 import { MeshBackgroundCanvas } from "@/components/misc/mesh-background/mesh-background-canvas.component";
 import { labs } from "../../data/experiments";
 import { LabsIsoIcon } from "../labs-iso-icon/labs-iso-icon.component";
@@ -46,6 +46,11 @@ export function LabsShell({ children }: LabsShellProps) {
         <div className={styles.sidebarContent}>
           {/* Brand header */}
           <div className={styles.conHead}>
+            {/* Back to the portfolio homepage */}
+            <Link to="/" className={styles.homeLink} onClick={closeMenu}>
+              <span aria-hidden="true">❮</span>
+              netoun.com
+            </Link>
             <div className={styles.brandRow}>
               <NavLink to="/labs" end className={styles.brand} onClick={closeMenu}>
                 <span className={styles.brandMark}>▚</span>

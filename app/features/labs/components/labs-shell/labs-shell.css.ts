@@ -32,6 +32,12 @@ export const sidebar = style({
   borderRadius: vars.radius.md,
   marginInline: vars.spacing.md,
   "@media": {
+    // Mobile/tablet app-bar: symmetric 16px float (top = sides) so it doesn't
+    // hug the top edge tighter than the sides.
+    "screen and (max-width: 1023.98px)": {
+      top: vars.spacing.md,
+      marginBlockStart: vars.spacing.md,
+    },
     [breakpoints.lg]: {
       width: "17rem",
       flexShrink: 0,
@@ -62,6 +68,14 @@ export const sidebarScrim = style({
   pointerEvents: "none",
   background:
     "linear-gradient(180deg, oklch(0.16 0.014 90 / 0.55) 0%, oklch(0.12 0.012 90 / 0.7) 100%)",
+  "@media": {
+    // Sticky app-bar on mobile/tablet: make the base near-opaque so content
+    // scrolling underneath doesn't bleed through (halos above still glow).
+    "screen and (max-width: 1023.98px)": {
+      background:
+        "linear-gradient(180deg, oklch(0.16 0.014 90 / 0.94) 0%, oklch(0.12 0.012 90 / 0.97) 100%)",
+    },
+  },
 });
 
 // Mesh color halos (gold / cyan / violet) blended additively — subtle glows
@@ -125,6 +139,26 @@ export const conHead = style({
   },
 });
 
+// Back-to-homepage link sitting above the brand (console-style, muted → cyan)
+export const homeLink = style({
+  display: "inline-flex",
+  alignItems: "center",
+  flexShrink: 0,
+  gap: "0.4rem",
+  fontFamily: vars.fontFamily.doto,
+  fontSize: "0.7rem",
+  letterSpacing: "0.08em",
+  whiteSpace: "nowrap",
+  textDecoration: "none",
+  color: vars.colors.muted,
+  transition: "color 0.16s ease",
+  selectors: {
+    "&:hover": {
+      color: vars.colors.secondary,
+    },
+  },
+});
+
 export const brandRow = style({
   display: "flex",
   alignItems: "center",
@@ -158,6 +192,12 @@ export const verBadge = style({
   borderRadius: vars.radius.full,
   padding: "0.15rem 0.5rem",
   whiteSpace: "nowrap",
+  "@media": {
+    // Hidden in the slim mobile app-bar to free room for home link + menu
+    "screen and (max-width: 1023.98px)": {
+      display: "none",
+    },
+  },
 });
 
 // ── Status line ────────────────────────────────────────────────────────────
@@ -200,12 +240,14 @@ export const blinkCursor = style({
 export const menuButton = style({
   display: "inline-flex",
   alignItems: "center",
+  flexShrink: 0,
   borderRadius: vars.radius.sm,
   background: "transparent",
   color: vars.colors.primary,
   fontFamily: vars.fontFamily.doto,
   fontSize: "0.7rem",
   letterSpacing: "0.1em",
+  whiteSpace: "nowrap",
   cursor: "pointer",
   border: "1px solid transparent",
   transition: "border-color 0.15s ease, color 0.15s ease, background 0.15s ease",
@@ -501,6 +543,11 @@ export const content = style({
   minWidth: 0,
   paddingInline: vars.spacing.md,
   "@media": {
+    // Breathing room under the sticky app-bar so the page title isn't jammed
+    // against it (sides stay 16px, aligned with the header).
+    "screen and (max-width: 1023.98px)": {
+      paddingBlock: vars.spacing.lg,
+    },
     [breakpoints.lg]: {
       paddingBlock: vars.spacing.lg,
     },

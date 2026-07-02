@@ -15,7 +15,9 @@ export type MetaDescriptor =
 /** Per-experiment SEO meta: title, description, keywords, OG, Twitter, canonical. */
 export function buildExperimentMeta(experiment: LabExperiment): MetaDescriptor[] {
   const url = `${SITE_URL}/labs/${experiment.slug}`;
-  const title = `Netoun - Labs - ${experiment.title}`;
+  // Topic-first title: the experiment name + its technique group lead, so a
+  // query like "computer 3d css" matches "3D Computer · 3D CSS" up front.
+  const title = `${experiment.title} · ${experiment.group} — Netoun Labs`;
 
   return [
     { title },

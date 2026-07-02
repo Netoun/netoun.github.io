@@ -8,8 +8,8 @@ export const computer3dExperiment: LabExperiment = {
   slug: "computer-3d",
   title: "3D Computer",
   description:
-    "A retro workstation built entirely with CSS 3D transforms — no WebGL, just perspective and transform-style: preserve-3d.",
-  tags: ["CSS 3D", "transforms", "no-WebGL", "retro"],
+    "A retro computer workstation built entirely with CSS 3D transforms — no WebGL, just perspective and transform-style: preserve-3d.",
+  tags: ["CSS 3D", "3D computer", "transforms", "no-WebGL", "retro"],
   group: "3D CSS",
   accent: "secondary",
   icon: "🖥",
