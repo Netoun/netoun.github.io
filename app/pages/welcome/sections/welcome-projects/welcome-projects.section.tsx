@@ -6,6 +6,7 @@ import * as styles from "./welcome-projects.css";
 export function WelcomeProjectsSection() {
   return (
     <ContentSection
+      id="projects"
       title="PROJECTS"
       description="Side projects, open source &amp; experiments"
       variant="tertiary"

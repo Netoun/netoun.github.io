@@ -1,5 +1,5 @@
 import { vars } from "@styles/theme.css";
-import { style, keyframes } from "@vanilla-extract/css";
+import { createVar, style, styleVariants, keyframes } from "@vanilla-extract/css";
 import { motion } from "@/styles/motion.css";
 import { breakpoints } from "@/styles/responsive.css";
 
@@ -111,6 +111,140 @@ export const subtextStyle = style({
   fontSize: vars.fontSize.base,
   color: vars.colors.kirby,
   margin: 0,
+});
+
+// Terminal "connection" block: header prompt + one row per link, each with an
+// identity-accent LED that lights up on hover — echoes the rack next to it.
+export const contactNavStyle = style({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-end",
+  gap: vars.spacing.sm,
+  marginTop: vars.spacing.md,
+
+  "@media": {
+    "screen and (max-width: 767px)": {
+      alignItems: "center",
+    },
+  },
+});
+
+export const contactHeaderStyle = style({
+  fontFamily: vars.fontFamily.doto,
+  fontSize: vars.fontSize.xs,
+  letterSpacing: "0.12em",
+  color: `color-mix(in srgb, ${vars.colors.background} 55%, transparent)`,
+});
+
+const cursorBlink = keyframes({
+  "0%, 49%": { opacity: 1 },
+  "50%, 100%": { opacity: 0 },
+});
+
+export const contactCursorStyle = style({
+  display: "inline-block",
+  marginLeft: vars.spacing.xs,
+  color: vars.colors.primary,
+  animation: `${cursorBlink} 1.2s step-end infinite`,
+
+  "@media": {
+    "(prefers-reduced-motion: reduce)": {
+      animation: "none",
+    },
+  },
+});
+
+export const contactListStyle = style({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-end",
+  gap: vars.spacing.xs,
+  listStyle: "none",
+  margin: 0,
+  padding: 0,
+
+  "@media": {
+    "screen and (max-width: 767px)": {
+      alignItems: "center",
+    },
+  },
+});
+
+// Per-link accent, consumed by the label hover color and the LED.
+const contactAccentVar = createVar();
+
+export const contactLinkStyle = style({
+  vars: { [contactAccentVar]: vars.colors.kirby },
+  display: "inline-flex",
+  alignItems: "center",
+  gap: vars.spacing.sm,
+  fontFamily: vars.fontFamily.doto,
+  fontSize: vars.fontSize.sm,
+  letterSpacing: "0.06em",
+  textTransform: "uppercase",
+  color: `color-mix(in srgb, ${vars.colors.background} 75%, transparent)`,
+  textDecoration: "none",
+  borderRadius: vars.radius.sm,
+  outline: "2px solid transparent",
+  outlineOffset: "4px",
+  transition: `color ${motion.duration.fast} ${motion.easing.out}`,
+
+  selectors: {
+    "&:hover": {
+      color: contactAccentVar,
+    },
+    // fond sombre du footer : le ring primary y est très contrasté
+    "&:focus-visible": {
+      color: contactAccentVar,
+      outlineColor: vars.colors.primary,
+    },
+  },
+});
+
+export const contactLinkAccentStyles = styleVariants({
+  primary: { vars: { [contactAccentVar]: vars.colors.primary } },
+  secondary: { vars: { [contactAccentVar]: vars.colors.secondary } },
+  tertiary: { vars: { [contactAccentVar]: vars.colors.tertiary } },
+  kirby: { vars: { [contactAccentVar]: vars.colors.kirby } },
+});
+
+// The prompt arrow slides in when the row is hovered/focused.
+export const contactArrowStyle = style({
+  display: "inline-block",
+  opacity: 0,
+  transform: "translateX(-4px)",
+  transition: `opacity ${motion.duration.fast} ${motion.easing.out}, transform ${motion.duration.fast} ${motion.easing.out}`,
+  color: contactAccentVar,
+
+  selectors: {
+    [`${contactLinkStyle}:hover &, ${contactLinkStyle}:focus-visible &`]: {
+      opacity: 1,
+      transform: "translateX(0)",
+    },
+  },
+
+  "@media": {
+    "(prefers-reduced-motion: reduce)": {
+      transition: "none",
+      transform: "none",
+    },
+  },
+});
+
+// Square status LED, dimmed at rest, lit with a soft glow on hover.
+export const contactLedStyle = style({
+  width: "8px",
+  height: "8px",
+  borderRadius: "2px",
+  backgroundColor: `color-mix(in srgb, ${contactAccentVar} 35%, transparent)`,
+  transition: `background-color ${motion.duration.fast} ${motion.easing.out}, box-shadow ${motion.duration.fast} ${motion.easing.out}`,
+
+  selectors: {
+    [`${contactLinkStyle}:hover &, ${contactLinkStyle}:focus-visible &`]: {
+      backgroundColor: contactAccentVar,
+      boxShadow: `0 0 10px color-mix(in srgb, ${contactAccentVar} 70%, transparent)`,
+    },
+  },
 });
 
 export const copyrightStyle = style({

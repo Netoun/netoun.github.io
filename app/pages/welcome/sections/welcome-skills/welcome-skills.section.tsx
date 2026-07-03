@@ -6,6 +6,7 @@ import * as styles from "./welcome-skills.css";
 export function WelcomeSkillsSection() {
   return (
     <ContentSection
+      id="skills"
       title="SKILLS"
       description="Tech stack, tools &amp; expertise"
       variant="secondary"

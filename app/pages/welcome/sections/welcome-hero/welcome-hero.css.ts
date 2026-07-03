@@ -76,6 +76,12 @@ export const welcomeButtonStyles = style([
       textShadow: vars.textShadow.glowPrimary,
     },
 
+    // Sits on the dark hero: buttonRecipe's default focus ring is `foreground`
+    // (near-black), invisible here. Dark surfaces use `primary` per design.md.
+    ":focus-visible": {
+      outlineColor: vars.colors.primary,
+    },
+
     "@media": {
       [breakpoints.md]: {
         fontSize: vars.fontSize["2xl"],

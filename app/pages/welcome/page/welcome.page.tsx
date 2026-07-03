@@ -1,4 +1,5 @@
 import { Footer } from "../../../components/layouts/footer/footer.component";
+import { WelcomeSectionsNav } from "../components/welcome-sections-nav/welcome-sections-nav.component";
 import { WelcomeExperienceSection } from "../sections/welcome-experience/welcome-experience.section";
 import { WelcomeHeroSection } from "../sections/welcome-hero/welcome-hero.section";
 import { WelcomeProjectsSection } from "../sections/welcome-projects/welcome-projects.section";
@@ -43,11 +44,12 @@ export function meta() {
 export default function Welcome() {
   return (
     <main>
+      <WelcomeSectionsNav />
       <WelcomeHeroSection />
       <WelcomeProjectsSection />
       <WelcomeExperienceSection />
       <WelcomeSkillsSection />
-      <Footer />
+      <Footer id="contact" />
     </main>
   );
 }

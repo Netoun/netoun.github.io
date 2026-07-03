@@ -1,4 +1,4 @@
-import { memo, useEffect, useReducer, useRef } from "react";
+import { memo, useEffect, useReducer, useRef, useState } from "react";
 import { Computer } from "@/components/misc/computer/computer.component";
 import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
@@ -13,6 +13,11 @@ import * as styles from "./welcome-hero-computer.css";
 
 const BASE_ROTATION_X = 3;
 const BASE_ROTATION_Y = -3;
+// Tilt amplitude in pre-multiplier units: the CSS transform multiplies the
+// vars by 1.8, so ±2.8 here ≈ ±5deg of visible tilt — subtle, not gimmicky.
+const TILT_AMPLITUDE = 2.8;
+// Lerp factor per frame — damping toward the pointer target for smoothness.
+const TILT_DAMPING = 0.1;
 
 interface WelcomeHeroComputerComponentProps {
   mousePosition: MousePosition;
@@ -89,52 +94,84 @@ function WelcomeHeroComputerComponentInner({ mousePosition }: WelcomeHeroCompute
     return () => clearInterval(interval);
   }, [shouldAnimate]);
 
-  useEffect(() => {
-    let frameId: number | null = null;
-    let idleCallbackId: number | undefined;
-    let lastUpdateTime = 0;
-    const updateInterval = 32; // Reduced from 16ms to 32ms (30fps instead of 60fps)
+  // Tilt only for desktop pointers, never under prefers-reduced-motion.
+  const [canTilt, setCanTilt] = useState(false);
 
-    const animate = (currentTime: number) => {
+  useEffect(() => {
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const update = () => {
+      setCanTilt(finePointer.matches && !reducedMotion.matches);
+    };
+
+    update();
+    finePointer.addEventListener("change", update);
+    reducedMotion.addEventListener("change", update);
+
+    return () => {
+      finePointer.removeEventListener("change", update);
+      reducedMotion.removeEventListener("change", update);
+    };
+  }, []);
+
+  useEffect(() => {
+    const resetToBasePose = () => {
+      lastRotationRef.current = { x: BASE_ROTATION_X, y: BASE_ROTATION_Y };
+      const capturesElement = capturesRef.current;
+      if (!capturesElement) return;
+      capturesElement.style.setProperty("--mouse-position-x", `${BASE_ROTATION_X}deg`);
+      capturesElement.style.setProperty("--mouse-position-y", `${BASE_ROTATION_Y}deg`);
+    };
+
+    if (!canTilt) {
+      resetToBasePose();
+      return;
+    }
+
+    let frameId: number | null = null;
+
+    // Single rAF loop: pointer position (mutated ref, no rerenders) → tilt
+    // target, lerped each frame for damping. Only the two CSS vars feeding a
+    // GPU-composited rotateX/rotateY transform are written — no layout work.
+    const animate = () => {
       if (!shouldAnimateRef.current) {
+        // Hero out of view / animations disabled: detach the loop.
         frameId = null;
         return;
       }
 
       frameId = requestAnimationFrame(animate);
-      if (currentTime - lastUpdateTime < updateInterval) return;
-      lastUpdateTime = currentTime;
 
       const currentMousePos = mousePositionRef.current;
-      const newRotation = {
-        x: BASE_ROTATION_X + currentMousePos.x * -0.001,
-        y: BASE_ROTATION_Y + currentMousePos.y * -0.001,
+      // No pointer event yet: hold the base pose instead of tilting toward (0,0).
+      if (currentMousePos.x === 0 && currentMousePos.y === 0) return;
+
+      // Normalize viewport coords to [-1, 1] around the center.
+      const nx = Math.min(1, Math.max(-1, (currentMousePos.x / window.innerWidth) * 2 - 1));
+      const ny = Math.min(1, Math.max(-1, (currentMousePos.y / window.innerHeight) * 2 - 1));
+
+      const target = {
+        x: BASE_ROTATION_X - nx * TILT_AMPLITUDE,
+        y: BASE_ROTATION_Y - ny * TILT_AMPLITUDE,
       };
 
-      if (
-        Math.abs(newRotation.x - lastRotationRef.current.x) > 0.001 ||
-        Math.abs(newRotation.y - lastRotationRef.current.y) > 0.001
-      ) {
-        lastRotationRef.current = newRotation;
+      const current = lastRotationRef.current;
+      const next = {
+        x: current.x + (target.x - current.x) * TILT_DAMPING,
+        y: current.y + (target.y - current.y) * TILT_DAMPING,
+      };
 
-        const capturesElement = capturesRef.current;
-        if (!capturesElement) return;
-
-        if (idleCallbackId) cancelIdleCallback(idleCallbackId);
-
-        const updateRotationStyles = () => {
-          capturesElement.style.setProperty("--mouse-position-x", `${newRotation.x}deg`);
-          capturesElement.style.setProperty("--mouse-position-y", `${newRotation.y}deg`);
-        };
-
-        if ("requestIdleCallback" in window) {
-          idleCallbackId = requestIdleCallback(updateRotationStyles, {
-            timeout: 50,
-          });
-        } else {
-          updateRotationStyles();
-        }
+      if (Math.abs(next.x - current.x) < 0.002 && Math.abs(next.y - current.y) < 0.002) {
+        return; // Converged — skip the style write until the pointer moves again.
       }
+
+      lastRotationRef.current = next;
+
+      const capturesElement = capturesRef.current;
+      if (!capturesElement) return;
+      capturesElement.style.setProperty("--mouse-position-x", `${next.x}deg`);
+      capturesElement.style.setProperty("--mouse-position-y", `${next.y}deg`);
     };
 
     // Only start animation if component is visible
@@ -144,9 +181,8 @@ function WelcomeHeroComputerComponentInner({ mousePosition }: WelcomeHeroCompute
 
     return () => {
       if (frameId) cancelAnimationFrame(frameId);
-      if (idleCallbackId) cancelIdleCallback(idleCallbackId);
     };
-  }, [shouldAnimate]);
+  }, [shouldAnimate, canTilt]);
 
   return (
     <div

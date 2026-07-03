@@ -6,6 +6,7 @@ import * as styles from "./welcome-experience.css";
 export function WelcomeExperienceSection() {
   return (
     <ContentSection
+      id="experience"
       title="EXPERIENCE"
       description="Work history &amp; professional experience"
       index={2}
