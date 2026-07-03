@@ -24,6 +24,8 @@ interface ContentSectionProps {
   threshold?: number;
   /** Terminal section numbering, forwarded to FeatureHeader (`_0N /`) */
   index?: number;
+  /** Stable id for anchor navigation (e.g. sticky section nav) */
+  id?: string;
   children: ReactNode | ((state: ContentSectionState) => ReactNode);
 }
 
@@ -35,6 +37,7 @@ export function ContentSection({
   contentClassName,
   threshold = 0.1,
   index,
+  id,
   children,
 }: ContentSectionProps) {
   const { ref: sectionRef, isIntersecting } = useIntersectionObserver<HTMLElement>({
@@ -48,6 +51,7 @@ export function ContentSection({
 
   return (
     <section
+      id={id}
       ref={(element) => {
         sectionRef.current = element;
         revealRef.current = element;

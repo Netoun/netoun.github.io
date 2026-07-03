@@ -79,7 +79,9 @@ export function useHeroMorphProgress({ containerRef, enabled = true }: HeroMorph
     paramsRef.current = {
       start: heroTop + 120,
       end: heroTop + window.innerHeight * 0.85,
-      targetScale: containerWidth / availableWidth,
+      // Clamp to 1: on viewports narrower than the container cap the ratio
+      // exceeds 1, which would grow the hero past the viewport and clip it.
+      targetScale: Math.min(1, containerWidth / availableWidth),
       initialized: true,
     };
   }, []);

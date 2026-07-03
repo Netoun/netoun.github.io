@@ -6,6 +6,8 @@ export const sectionStyle = style({
   overflow: "hidden",
   paddingTop: vars.spacing["3xl"],
   paddingBottom: vars.spacing["3xl"],
+  // Clears the fixed sections nav so anchor jumps don't hide the section header under it.
+  scrollMarginTop: vars.spacing["3xl"],
 });
 
 export const contentStyle = style({

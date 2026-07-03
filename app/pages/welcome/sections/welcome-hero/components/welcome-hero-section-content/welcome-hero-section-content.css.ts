@@ -120,4 +120,11 @@ export const welcomeLinkStyles = style({
   color: vars.colors.primary,
   textDecoration: "underline",
   textShadow: vars.textShadow.glowPrimary,
+
+  // Dark hero surface: focus ring must be `primary`, not the global `foreground` default.
+  selectors: {
+    "&:focus-visible": {
+      outlineColor: vars.colors.primary,
+    },
+  },
 });

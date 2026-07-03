@@ -18,7 +18,9 @@ export const heroMorphStage = style({
   position: "relative",
   top: 0,
   height: "100vh",
-  width: "100vw",
+  // 100% not 100vw: 100vw ignores the vertical scrollbar width and creates
+  // a horizontal overflow on browsers with classic scrollbars.
+  width: "100%",
   overflow: "hidden",
   contain: "layout style paint",
   vars: {
@@ -30,6 +32,9 @@ export const heroMorphStage = style({
     [breakpoints.md]: {
       position: "sticky",
       willChange: "transform",
+      // Above the sections nav (z 40): the nav appears mid-hero and gets
+      // uncovered by the panel's bottom edge as the hero scrolls away.
+      zIndex: 41,
     },
   },
 });
@@ -38,7 +43,7 @@ export const heroMorphFrame = style({
   position: "absolute",
   top: vars.spacing.sm,
   left: vars.spacing.sm,
-  width: `calc(100vw - (${vars.spacing.sm} * 2))`,
+  width: `calc(100% - (${vars.spacing.sm} * 2))`,
   height: `calc(100vh - (${vars.spacing.sm} * 2))`,
   overflow: "hidden",
   borderRadius: vars.radius.md,

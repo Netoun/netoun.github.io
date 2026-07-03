@@ -13,10 +13,12 @@ globalStyle("*", {
   margin: 0,
 });
 
-// 3. Enable keyword animations
+// 3. Enable keyword animations + smooth anchor scrolling (sections nav)
 globalStyle("html", {
   "@media": {
-    "(prefers-reduced-motion: no-preference)": {},
+    "(prefers-reduced-motion: no-preference)": {
+      scrollBehavior: "smooth",
+    },
   },
 });
 

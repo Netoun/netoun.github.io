@@ -24,7 +24,12 @@ export function WelcomeHeroSection() {
   return (
     <HeroAnimationContext.Provider value={orchestrator}>
       <HeroScrollMorph containerRef={welcomeContainerRef}>
-        <div ref={sectionRef} className={styles.welcomeSectionStyles} data-section="welcome-hero">
+        <div
+          ref={sectionRef}
+          id="intro"
+          className={styles.welcomeSectionStyles}
+          data-section="welcome-hero"
+        >
           <div
             ref={welcomeContainerRef}
             id="welcome-container"
