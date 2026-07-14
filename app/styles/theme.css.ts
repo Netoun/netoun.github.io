@@ -106,7 +106,6 @@ const fontFamily = {
   inter: "Inter, system-ui, sans-serif",
   doto: "Doto, system-ui, sans-serif",
   ppNeueMontreal: "PPNeueMontreal, system-ui, sans-serif",
-  ttAlientzGrotesk: "TTAlientzGrotesk, system-ui, sans-serif",
   mabeoVintage: "MabeoVintage, system-ui, sans-serif",
 };
 
