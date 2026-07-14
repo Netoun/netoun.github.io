@@ -18,7 +18,7 @@
 
 | Role               | Font             | Note                                       |
 | ------------------ | ---------------- | ------------------------------------------ |
-| H1 display         | TTAlientzGrotesk | Very large, cream white, `textShadow.glow` |
+| H1 display         | PPNeueMontreal   | Very large, cream white, `textShadow.glow` |
 | Body / UI          | PPNeueMontreal   | Default body font                          |
 | Terminal / buttons | Doto (monospace) | Screen-style labels                        |
 | Decorative         | MabeoVintage     | Occasional accents                         |
@@ -29,7 +29,6 @@ Terminal micro-details to preserve: `_❯` prefix, `▐` cursor, underscores aro
 
 - SVG grain stays as overlay on the entire hero
 - The 3 mesh blob colors (gold, cyan, violet) define the home page visual identity
-- TTAlientzGrotesk on the H1 — do not substitute
 - Glows remain subtle — no aggressive neon
 
 ---
@@ -57,7 +56,6 @@ Hover states: `color-mix(in srgb, ${vars.colors.primary} 90%, transparent)` — 
 | Font             | Local file                      | Usage              |
 | ---------------- | ------------------------------- | ------------------ |
 | PPNeueMontreal   | `PPNeueMontreal-Variable.woff2` | Body, general UI   |
-| TTAlientzGrotesk | `TT_Alientz_Grotesque.woff2`    | Display titles     |
 | MabeoVintage     | `MabeoVintage-Regular.woff2`    | Decorative accents |
 | Doto             | Google Fonts                    | Terminal / buttons |
 | Inter            | Google Fonts                    | Fallback           |

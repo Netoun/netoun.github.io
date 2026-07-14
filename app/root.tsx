@@ -41,13 +41,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         />
         <link
           rel="preload"
-          href="/fonts/TT_Alientz_Grotesque.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
           href="/fonts/MabeoVintage-Regular.woff2"
           as="font"
           type="font/woff2"

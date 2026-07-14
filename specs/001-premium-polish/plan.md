@@ -24,7 +24,7 @@
 
 **Performance Goals**: 60fps sur toutes les animations (Chrome + Firefox), zéro régression Lighthouse (4 catégories), CLS inchangé
 
-**Constraints**: GPU-only (transform/opacity), `prefers-reduced-motion` partout, contenu visible sans JS, invariants DA intouchables (grain hero, blobs gold/cyan/violet, TTAlientzGrotesk H1, glows subtils), tokens `vars.*` only
+**Constraints**: GPU-only (transform/opacity), `prefers-reduced-motion` partout, contenu visible sans JS, invariants DA intouchables (grain hero, blobs gold/cyan/violet, glows subtils), tokens `vars.*` only
 
 **Scale/Scope**: 2 routes (`/`, `/labs[/:slug]`), ~5 sections home, ~10 composants touchés, 0 nouveau composant majeur
 
