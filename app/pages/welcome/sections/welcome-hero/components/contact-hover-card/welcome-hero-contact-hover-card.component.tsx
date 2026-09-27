@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { startTransition, useEffect, useRef, useState } from "react";
 import { DialogTrigger, OverlayArrow, Popover } from "react-aria-components";
 import { contactLinks } from "../../../../data/contact-links.data";
 import { useMagnetic } from "../../hooks/use-magnetic.hook";
@@ -9,10 +9,18 @@ import * as buttonStyles from "../../welcome-hero.css";
 import * as styles from "./welcome-hero-contact-hover-card.css";
 
 export function WelcomeHeroContactHoverCard() {
+  // Flipped after hydration as a transition: React renders it time-sliced, in
+  // its own tasks. A useSyncExternalStore server/client mismatch (or a plain
+  // setState here) renders it as blocking work glued to the hydration task.
+  const [isHydrated, setIsHydrated] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef<HTMLSpanElement>(null);
   useMagnetic(triggerRef);
+
+  useEffect(() => {
+    startTransition(() => setIsHydrated(true));
+  }, []);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 767px)");
@@ -29,6 +37,17 @@ export function WelcomeHeroContactHoverCard() {
     };
   }, []);
 
+  const label = (
+    <>
+      <span className={buttonStyles.welcomeButtonLabelStyles}>_Get in touch_</span>
+      <span className={buttonStyles.welcomeButtonArrowStyles}>⤘</span>
+    </>
+  );
+
+  // Without JS (and in the prerendered HTML) the CTA is a plain link to the
+  // footer contacts; once hydrated only that leaf becomes the popover trigger.
+  // Everything around it keeps its DOM node — the magnetic span included, whose
+  // listeners are bound once — and the same classes keep the same box.
   return (
     <div
       className={styles.wrapperStyles}
@@ -36,11 +55,18 @@ export function WelcomeHeroContactHoverCard() {
       data-mobile={isMobile ? "true" : "false"}
     >
       <DialogTrigger isOpen={isOpen} onOpenChange={setIsOpen}>
-        <span ref={triggerRef} className={styles.welcomeHeroContactHoverCardTriggerStyles}>
-          <Button id="welcome-button" className={buttonStyles.welcomeButtonStyles}>
-            <span className={buttonStyles.welcomeButtonLabelStyles}>_Get in touch_</span>
-            <span className={buttonStyles.welcomeButtonArrowStyles}>⤘</span>
-          </Button>
+        <span
+          ref={triggerRef}
+          className={styles.welcomeHeroContactHoverCardTriggerStyles}
+          data-spec-target="cta"
+        >
+          {isHydrated ? (
+            <Button className={buttonStyles.welcomeButtonStyles}>{label}</Button>
+          ) : (
+            <a href="#contact" className={buttonStyles.welcomeButtonStyles}>
+              {label}
+            </a>
+          )}
           <WelcomeHeroContactHoverCardBeam />
         </span>
         <Popover

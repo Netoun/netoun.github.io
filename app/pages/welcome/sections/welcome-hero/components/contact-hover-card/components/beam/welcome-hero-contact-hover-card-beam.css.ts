@@ -113,4 +113,11 @@ export const beamPacketStyles = style({
   fill: vars.colors.primary,
   opacity: 0.95,
   filter: `drop-shadow(0 0 4px ${vars.colors.primary})`,
+  "@media": {
+    // SMIL <animateMotion> ignores CSS animation rules, including the global
+    // reduced-motion override: the only way to stop the packets is to not render them.
+    "(prefers-reduced-motion: reduce)": {
+      display: "none",
+    },
+  },
 });

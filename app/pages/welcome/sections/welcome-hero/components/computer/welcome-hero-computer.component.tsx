@@ -1,4 +1,5 @@
-import { memo, type RefObject, useEffect, useReducer, useRef, useState } from "react";
+import clsx from "clsx";
+import { memo, type RefObject, useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { Computer } from "@/components/misc/computer/computer.component";
 import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
@@ -7,7 +8,10 @@ import { CyberneticGlyphGrid } from "@/components/misc/cybernetic-glyph-grid/cyb
 import { FakeConsole } from "@/components/misc/fake-console/fake-console.component";
 import { GlitchSignalMap } from "@/components/misc/glitch-signal-map/glitch-signal-map.component";
 import { SystemMetricsPanel } from "@/components/misc/system-metrics-panel/system-metrics-panel.component";
-import { useHeroAnimation } from "../../orchestrator/hero-animation.context";
+import { formatLaptopTilt, useWelcomeHeroSpec } from "../../hooks/use-welcome-hero-spec.hook";
+import { useHeroAnimation, useHeroAnimationValue } from "../../orchestrator/hero-animation.context";
+import { heroSpecGroup, heroSpecShown } from "../../welcome-hero-spec.css";
+import { WelcomeHeroSpecNote } from "../spec-note/welcome-hero-spec-note.component";
 import { WelcomeHeroComputerSplash } from "./components/splash/welcome-hero-computer-splash.component";
 import * as styles from "./welcome-hero-computer.css";
 
@@ -18,6 +22,20 @@ const BASE_ROTATION_Y = -3;
 const TILT_AMPLITUDE = 2.8;
 // Lerp factor per frame — damping toward the pointer target for smoothness.
 const TILT_DAMPING = 0.1;
+
+/** The tilt as the CSS transform applies it, for the spec note. */
+const tiltLabel = ({ x, y }: { x: number; y: number }) =>
+  formatLaptopTilt(x * styles.heroComputerTiltScale, y * styles.heroComputerTiltScale);
+
+const TILT_LINE_INDEX = 1;
+const BASE_TILT_LABEL = tiltLabel({ x: BASE_ROTATION_X, y: BASE_ROTATION_Y });
+
+/** Rewrites the spec note's tilt line, only when its text changes. */
+function writeTiltLine(line: HTMLSpanElement | null, rotation: { x: number; y: number }) {
+  if (!line) return;
+  const text = tiltLabel(rotation);
+  if (line.textContent !== text) line.textContent = text;
+}
 
 interface WelcomeHeroComputerComponentProps {
   /** Stable pointer ref from `useMousePosition` — read in animation frames only. */
@@ -50,10 +68,16 @@ const HERO_COMPUTER_ZONES = [
 function WelcomeHeroComputerComponentInner({
   mousePositionRef,
 }: WelcomeHeroComputerComponentProps) {
-  const heroAnim = useHeroAnimation();
-  const disabled = !heroAnim.getState().shouldAnimate;
+  const heroAnimationEnabled = useHeroAnimationValue(useHeroAnimation(), "shouldAnimate");
   const containerRef = useRef<HTMLDivElement>(null);
   const capturesRef = useRef<HTMLDivElement>(null);
+  const tiltLineRef = useRef<HTMLSpanElement | null>(null);
+  const spec = useWelcomeHeroSpec();
+  // The note mounts once the spec is measured: print the pose the laptop holds now.
+  const attachTiltLine = useCallback((element: HTMLSpanElement | null) => {
+    tiltLineRef.current = element;
+    writeTiltLine(element, lastRotationRef.current);
+  }, []);
 
   const lastRotationRef = useRef({ x: BASE_ROTATION_X, y: BASE_ROTATION_Y });
   const shouldAnimateRef = useRef(true);
@@ -67,7 +91,7 @@ function WelcomeHeroComputerComponentInner({
     useAnimationPriority({
       priority: "medium",
       isVisible: isIntersecting,
-    }) && !disabled;
+    }) && heroAnimationEnabled;
   shouldAnimateRef.current = shouldAnimate;
 
   const [visibleZones, dispatch] = useReducer((_state: number, action: number) => action, 0);
@@ -76,7 +100,9 @@ function WelcomeHeroComputerComponentInner({
   useEffect(() => {
     if (!shouldAnimate) return;
 
-    if (hasRevealedRef.current) {
+    // Reduced motion: no staggered fade-in — the screen is complete at once.
+    if (hasRevealedRef.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      hasRevealedRef.current = true;
       dispatch(4);
       return;
     }
@@ -118,6 +144,7 @@ function WelcomeHeroComputerComponentInner({
   useEffect(() => {
     const resetToBasePose = () => {
       lastRotationRef.current = { x: BASE_ROTATION_X, y: BASE_ROTATION_Y };
+      writeTiltLine(tiltLineRef.current, lastRotationRef.current);
       const capturesElement = capturesRef.current;
       if (!capturesElement) return;
       capturesElement.style.setProperty("--mouse-position-x", `${BASE_ROTATION_X}deg`);
@@ -167,6 +194,7 @@ function WelcomeHeroComputerComponentInner({
       }
 
       lastRotationRef.current = next;
+      writeTiltLine(tiltLineRef.current, next);
 
       const capturesElement = capturesRef.current;
       if (!capturesElement) return;
@@ -191,8 +219,13 @@ function WelcomeHeroComputerComponentInner({
         intersectionRef.current = element;
       }}
       className={styles.welcomeHeroComputerWrapperStyles}
+      data-spec-target="laptop"
     >
+      {/* Decorative on the homepage: the screen's hex and fake metrics are noise
+          to a screen reader. No focusable inside, so aria-hidden is enough — inert
+          would also kill the signal map's pointer hover. The Lab keeps them exposed. */}
       <div
+        aria-hidden="true"
         ref={capturesRef}
         style={
           {
@@ -204,6 +237,13 @@ function WelcomeHeroComputerComponentInner({
       >
         <Computer>
           <div className={styles.welcomeHeroComputerStyles}>
+            <span
+              className={clsx(
+                styles.welcomeHeroComputerSelectionStyles,
+                heroSpecGroup.laptop,
+                heroSpecShown.block,
+              )}
+            />
             {visibleZones === 0 ? (
               <WelcomeHeroComputerSplash />
             ) : (
@@ -214,13 +254,25 @@ function WelcomeHeroComputerComponentInner({
                   className={className}
                   style={{ opacity: index < visibleZones ? 1 : 0 }}
                 >
-                  {render(index < visibleZones)}
+                  {/* Offscreen or text selected: every widget loop pauses, not just the tilt. */}
+                  {render(index < visibleZones && shouldAnimate)}
                 </div>
               ))
             )}
           </div>
         </Computer>
       </div>
+      <WelcomeHeroSpecNote
+        group="laptop"
+        lines={
+          spec
+            ? ["COMPUTER · CSS 3D", BASE_TILT_LABEL, `${spec.laptopFaces} faces · preserve-3d`]
+            : undefined
+        }
+        className={styles.welcomeHeroComputerNoteStyles}
+        accent="mint"
+        liveLine={{ index: TILT_LINE_INDEX, ref: attachTiltLine }}
+      />
     </div>
   );
 }

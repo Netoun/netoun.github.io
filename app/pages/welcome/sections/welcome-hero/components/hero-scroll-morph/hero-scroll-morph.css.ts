@@ -1,66 +1,116 @@
-import { style } from "@vanilla-extract/css";
+import { keyframes, style } from "@vanilla-extract/css";
 import { breakpoints } from "@/styles/responsive.css";
 import { vars } from "@/styles/theme.css";
+import {
+  heroColumnGutter,
+  heroColumnGutterByBreakpoint,
+  heroMorphMedia,
+  heroPinMedia,
+  heroScrollTimelineSupports,
+} from "../../welcome-hero-layout.css";
+
+// Frame radius at md+: the footer panel's radius, so the morph lands on its shape.
+const frameRadius = vars.radius.xl;
+
+// The frame's sides close in on the page's content column. Text and laptop are
+// already laid out on that column, so nothing scales: only the edges move, and
+// the panel lands flush with the paper sections and the footer below.
+const frameTighten = keyframes({
+  from: { clipPath: `inset(0 0 round ${frameRadius})` },
+  to: { clipPath: `inset(0 ${heroColumnGutter} round ${frameRadius})` },
+});
 
 export const heroScrollMorphWrapper = style({
   position: "relative",
-  height: "100vh",
-  overflow: "visible",
 
-  "@media": {
-    [breakpoints.md]: {
-      height: "200vh",
+  "@supports": {
+    [heroScrollTimelineSupports]: {
+      "@media": {
+        // A short pin (20vh) so the first scroll visibly tightens the frame
+        // before the page moves. The spacer lives in the content box: sticky
+        // is bounded by it, a padding would not extend the pin.
+        [heroPinMedia]: {
+          selectors: {
+            "&::after": {
+              content: "",
+              display: "block",
+              height: "20vh",
+            },
+          },
+        },
+      },
     },
   },
 });
 
 export const heroMorphStage = style({
   position: "relative",
-  top: 0,
-  height: "100vh",
-  // 100% not 100vw: 100vw ignores the vertical scrollbar width and creates
-  // a horizontal overflow on browsers with classic scrollbars.
-  width: "100%",
-  overflow: "hidden",
-  contain: "layout style paint",
-  vars: {
-    "--hero-scale": "1",
-    "--hero-translate-y": "0px",
-  } as Record<string, string>,
+  padding: vars.spacing.sm,
 
-  "@media": {
-    [breakpoints.md]: {
-      position: "sticky",
-      willChange: "transform",
-      // Above the sections nav (z 40): the nav appears mid-hero and gets
-      // uncovered by the panel's bottom edge as the hero scrolls away.
-      zIndex: 41,
+  "@supports": {
+    [heroScrollTimelineSupports]: {
+      "@media": {
+        [heroPinMedia]: {
+          position: "sticky",
+          top: 0,
+          // Above the sections nav (z 40): the nav appears mid-hero and gets
+          // uncovered by the panel's bottom edge as the hero scrolls away.
+          zIndex: 41,
+        },
+      },
     },
   },
 });
 
 export const heroMorphFrame = style({
-  position: "absolute",
-  top: vars.spacing.sm,
-  left: vars.spacing.sm,
-  width: `calc(100% - (${vars.spacing.sm} * 2))`,
-  height: `calc(100vh - (${vars.spacing.sm} * 2))`,
+  position: "relative",
+  display: "flex",
+  flexDirection: "column",
+  // In flow, never a fixed height: when the text needs more than one screen
+  // (landscape phones, 400 % zoom) the frame grows instead of clipping it.
+  minHeight: [`calc(100vh - 2 * ${vars.spacing.sm})`, `calc(100svh - 2 * ${vars.spacing.sm})`],
   overflow: "hidden",
   borderRadius: vars.radius.md,
-  transform: "translate3d(0, var(--hero-translate-y), 0) scale(var(--hero-scale))",
-  transformOrigin: "center top",
+  vars: {
+    [heroColumnGutter]: "0px",
+  },
 
   "@media": {
     [breakpoints.md]: {
-      borderRadius: vars.radius.xl,
-      willChange: "transform",
+      borderRadius: frameRadius,
+      vars: { [heroColumnGutter]: heroColumnGutterByBreakpoint.md },
+    },
+    [breakpoints.lg]: {
+      vars: { [heroColumnGutter]: heroColumnGutterByBreakpoint.lg },
+    },
+    [breakpoints.xl]: {
+      vars: { [heroColumnGutter]: heroColumnGutterByBreakpoint.xl },
+    },
+    [breakpoints["2k"]]: {
+      vars: { [heroColumnGutter]: heroColumnGutterByBreakpoint["2k"] },
+    },
+  },
+
+  "@supports": {
+    [heroScrollTimelineSupports]: {
+      "@media": {
+        [heroMorphMedia]: {
+          animationName: frameTighten,
+          animationTimingFunction: "linear",
+          animationFillMode: "both",
+          animationTimeline: "scroll(root block)",
+          // Fully landed once half a screen has scrolled: by then the first
+          // project cards enter below, on the same column.
+          animationRange: "0 50vh",
+        },
+      },
     },
   },
 });
 
 export const heroMorphContent = style({
-  position: "absolute",
-  inset: 0,
-  width: "100%",
-  height: "100%",
+  position: "relative",
+  flex: 1,
+  display: "flex",
+  flexDirection: "column",
 });

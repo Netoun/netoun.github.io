@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import type {
   HeroAnimationOrchestrator,
   HeroAnimationState,
@@ -12,6 +12,13 @@ function getElementFromNode(node: Node): Element | null {
   return node as Element;
 }
 
+export const INITIAL_HERO_ANIMATION_STATE: HeroAnimationState = {
+  shouldAnimate: true,
+  isTextSelected: false,
+  isSectionVisible: true,
+  prefersReducedMotion: false,
+};
+
 interface UseHeroAnimationProviderOptions {
   containerRef: React.RefObject<HTMLElement | null>;
   sectionRef: React.RefObject<HTMLElement | null>;
@@ -22,13 +29,10 @@ export function useHeroAnimationProvider({
   sectionRef,
 }: UseHeroAnimationProviderOptions): HeroAnimationOrchestrator {
   const subscribersRef = useRef<Set<HeroAnimationSubscriber>>(new Set());
-  const [state, setState] = useState<HeroAnimationState>({
-    shouldAnimate: true,
-    isTextSelected: false,
-    isSectionVisible: true,
-    prefersReducedMotion: false,
-  });
-  const stateRef = useRef(state);
+  // External store: consumers read it through `useHeroAnimationValue`
+  // (useSyncExternalStore), so a change re-renders exactly the components that
+  // read the changed key — never the whole hero, and never a stale memo.
+  const stateRef = useRef<HeroAnimationState>(INITIAL_HERO_ANIMATION_STATE);
 
   const notify = useCallback(() => {
     const s = stateRef.current;
@@ -45,7 +49,6 @@ export function useHeroAnimationProvider({
         ...stateRef.current,
         shouldAnimate: !stateRef.current.isTextSelected && stateRef.current.isSectionVisible,
       };
-      setState(stateRef.current);
       notify();
     },
     [notify],

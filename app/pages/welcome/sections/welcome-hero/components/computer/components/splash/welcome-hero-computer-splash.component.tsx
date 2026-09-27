@@ -1,6 +1,3 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import * as styles from "../../welcome-hero-computer.css";
 
 const BOOT_STEPS = [
@@ -8,30 +5,23 @@ const BOOT_STEPS = [
   "Loading modules...",
   "Calibrating sensors...",
   "Establishing connection...",
-  "System ready.",
-];
+] as const;
 
+const READY_STEP = "System ready.";
+
+// Every step is in the markup and CSS reveals them in turn (splashStepStyles,
+// keyed by :nth-child — keep BOOT_STEP_COUNT in sync):
+// the sequence needs no JS and the prerendered HTML rests on "System ready.".
 export function WelcomeHeroComputerSplash() {
-  const [step, setStep] = useState(0);
-  const [showCursor, setShowCursor] = useState(true);
-
-  useEffect(() => {
-    if (step >= BOOT_STEPS.length) return;
-    const timer = setTimeout(() => setStep((s) => s + 1), 200);
-    return () => clearTimeout(timer);
-  }, [step]);
-
-  useEffect(() => {
-    const cursor = setInterval(() => setShowCursor((c) => !c), 530);
-    return () => clearInterval(cursor);
-  }, []);
-
   return (
     <div className={styles.splashStyles}>
-      <span>
-        {BOOT_STEPS[Math.min(step, BOOT_STEPS.length - 1)]}
-        {step < BOOT_STEPS.length && (showCursor ? "_" : " ")}
-      </span>
+      {BOOT_STEPS.map((step) => (
+        <span key={step} className={styles.splashStepStyles}>
+          {step}
+          <span className={styles.splashCursorStyles}>_</span>
+        </span>
+      ))}
+      <span className={styles.splashFinalStepStyles}>{READY_STEP}</span>
     </div>
   );
 }

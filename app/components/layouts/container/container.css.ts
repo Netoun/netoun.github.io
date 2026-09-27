@@ -8,30 +8,43 @@ import { breakpoints } from "@/styles/responsive.css";
 // sat 16px from the edge, which is the fastest way to look unfinished.
 // Gutters grow with the viewport; the hero and footer panels stay near
 // full-bleed on purpose, so the paper sections read as the quiet counterpoint.
+//
+// Exported so anything that must land on this column (the hero scroll morph)
+// derives its geometry from the same numbers instead of a hand-copied table.
+export const containerColumn = {
+  base: { maxWidth: "100%", padding: vars.spacing.md },
+  sm: { maxWidth: "100%", padding: vars.spacing.lg },
+  md: { maxWidth: "768px", padding: vars.spacing.xl },
+  lg: { maxWidth: "1024px", padding: vars.spacing["2xl"] },
+  xl: { maxWidth: "1280px", padding: vars.spacing["2xl"] },
+  "2k": { maxWidth: "1440px", padding: vars.spacing["3xl"] },
+} as const;
+
 export const containerStyle = style({
-  maxWidth: "100%",
+  maxWidth: containerColumn.base.maxWidth,
   margin: "0 auto",
-  padding: `0 ${vars.spacing.md}`,
+  padding: `0 ${containerColumn.base.padding}`,
 
   "@media": {
     [breakpoints.sm]: {
-      padding: `0 ${vars.spacing.lg}`,
+      maxWidth: containerColumn.sm.maxWidth,
+      padding: `0 ${containerColumn.sm.padding}`,
     },
     [breakpoints.md]: {
-      maxWidth: "768px",
-      padding: `0 ${vars.spacing.xl}`,
+      maxWidth: containerColumn.md.maxWidth,
+      padding: `0 ${containerColumn.md.padding}`,
     },
     [breakpoints.lg]: {
-      maxWidth: "1024px",
-      padding: `0 ${vars.spacing["2xl"]}`,
+      maxWidth: containerColumn.lg.maxWidth,
+      padding: `0 ${containerColumn.lg.padding}`,
     },
     [breakpoints.xl]: {
-      maxWidth: "1280px",
-      padding: `0 ${vars.spacing["2xl"]}`,
+      maxWidth: containerColumn.xl.maxWidth,
+      padding: `0 ${containerColumn.xl.padding}`,
     },
     [breakpoints["2k"]]: {
-      maxWidth: "1440px",
-      padding: `0 ${vars.spacing["3xl"]}`,
+      maxWidth: containerColumn["2k"].maxWidth,
+      padding: `0 ${containerColumn["2k"].padding}`,
     },
   },
 });

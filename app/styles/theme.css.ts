@@ -110,6 +110,9 @@ const fontFamily = {
   doto: "Doto, system-ui, sans-serif",
   ppNeueMontreal: "PPNeueMontreal, system-ui, sans-serif",
   mabeoVintage: "MabeoVintage, system-ui, sans-serif",
+  // The code voice: system monospace, never downloaded. Only the hero's spec
+  // layer (file tabs, annotations) uses it, to print values read from the code.
+  mono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace',
 };
 
 // Surface vocabulary — one border/shadow language for every card-like surface
@@ -187,6 +190,9 @@ const textShadow = {
     0 0 82px color-mix(in srgb, ${colors.secondary} 20%, transparent);
   `,
 };
+
+/** Raw colour values, for places that print a token rather than paint with it (the hero swatches). */
+export const colorTokens = colors;
 
 export const [theme, vars] = createTheme({
   colors,

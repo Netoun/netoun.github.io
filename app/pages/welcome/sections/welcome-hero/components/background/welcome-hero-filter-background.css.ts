@@ -1,16 +1,22 @@
 import { style } from "@vanilla-extract/css";
+import { vars } from "@/styles/theme.css";
 
-// Container for mesh background layers
+// Mesh layer, exactly the visible frame. Its own background is a static CSS
+// approximation of the shader (gold low left, violet high right, a trace of
+// mint top left): the colour identity holds before the canvas is ready, without
+// WebGL, and without JS.
 export const welcomeMeshContainerStyles = style({
   position: "absolute",
-  inset: "-50% 0 0 0",
-  width: "150%",
-  height: "150%",
+  inset: 0,
   zIndex: 1,
   pointerEvents: "none",
-  // Promote to own compositor layer to isolate repaints from foreground content
-  willChange: "transform",
-  contain: "layout style paint",
+  contain: "strict",
+  backgroundColor: vars.colors.foreground,
+  backgroundImage: `
+    radial-gradient(ellipse 62% 78% at 20% 88%, color-mix(in srgb, ${vars.colors.primary} 24%, transparent), transparent 70%),
+    radial-gradient(ellipse 55% 65% at 100% 0%, color-mix(in srgb, ${vars.colors.tertiary} 42%, transparent), transparent 70%),
+    radial-gradient(ellipse 24% 22% at 14% -6%, color-mix(in srgb, ${vars.colors.secondary} 16%, transparent), transparent 72%)
+  `,
 });
 
 export const welcomeShaderCanvasStyles = style({

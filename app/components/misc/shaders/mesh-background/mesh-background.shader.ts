@@ -116,7 +116,25 @@ void main() {
 }
 `;
 
-export const FRAGMENT_SHADER = `
+/**
+ * Which window of the mesh composition a canvas shows, in uv units
+ * (`uv = rawUv * scale + offset`). A canvas smaller than the composition renders
+ * only its visible part instead of oversizing the canvas and clipping it.
+ * Grain and dither stay on the raw uv, i.e. on the canvas's physical pixels.
+ */
+export interface MeshCompositionWindow {
+  scale: readonly [number, number];
+  offset: readonly [number, number];
+}
+
+const FULL_COMPOSITION: MeshCompositionWindow = { scale: [1, 1], offset: [0, 0] };
+
+const glslVec2 = (value: readonly [number, number]) => `vec2(${value.map(toGlslFloat).join(", ")})`;
+
+const wgslVec2 = (value: readonly [number, number]) =>
+  `vec2f(${value.map(toWgslFloat).join(", ")})`;
+
+export const buildMeshFragmentShader = (view: MeshCompositionWindow = FULL_COMPOSITION) => `
 #ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
@@ -152,7 +170,7 @@ float blobFast(vec2 uv, vec2 center, vec2 invScale, float softness) {
 }
 
 void main() {
-  vec2 uv = v_uv;
+  vec2 uv = v_uv * ${glslVec2(view.scale)} + ${glslVec2(view.offset)};
 
   float m1 = blobFast(
     uv,
@@ -192,7 +210,7 @@ void main() {
   color *= ${toGlslFloat(SHADER_CONFIG.vignetteBase)} + ${toGlslFloat(SHADER_CONFIG.vignetteStrength)} * vignette;
   color += ${glslVec3(SHADER_CONFIG.baseColor)};
 
-  vec2 px = uv * u_resolution;
+  vec2 px = v_uv * u_resolution;
 
   // Dither sub-perceptuel (~1.5/255) : casse le banding 8 bits des dégradés
   // sans texture visible, même quand le film grain est coupé (u_quality = 0).
@@ -215,7 +233,9 @@ void main() {
 }
 `;
 
-export const WEBGPU_SHADER = `
+export const FRAGMENT_SHADER = buildMeshFragmentShader();
+
+export const buildMeshWebGPUShader = (view: MeshCompositionWindow = FULL_COMPOSITION) => `
 struct VertexOut {
   @builtin(position) pos : vec4f,
   @location(0) uv : vec2f,
@@ -292,7 +312,7 @@ fn blobFast(uv: vec2f, center: vec2f, invScale: vec2f, softness: f32) -> f32 {
 
 @fragment
 fn fsMain(in: VertexOut) -> @location(0) vec4f {
-  let uv = in.uv;
+  let uv = in.uv * ${wgslVec2(view.scale)} + ${wgslVec2(view.offset)};
 
   let m1 = blobFast(
     uv,
@@ -332,7 +352,7 @@ fn fsMain(in: VertexOut) -> @location(0) vec4f {
   color *= ${toWgslFloat(SHADER_CONFIG.vignetteBase)} + ${toWgslFloat(SHADER_CONFIG.vignetteStrength)} * vignette;
   color += ${wgslVec3(SHADER_CONFIG.baseColor)};
 
-  let px = uv * u.resolution;
+  let px = in.uv * u.resolution;
 
   // Dither sub-perceptuel (~1.5/255) : casse le banding 8 bits des dégradés
   // sans texture visible, même quand le film grain est coupé (quality = 0).
@@ -355,6 +375,8 @@ fn fsMain(in: VertexOut) -> @location(0) vec4f {
   return vec4f(max(color, vec3f(0.0)), 1.0);
 }
 `;
+
+export const WEBGPU_SHADER = buildMeshWebGPUShader();
 
 export function getShaderQuality() {
   return document.documentElement.dataset.quality === "high"

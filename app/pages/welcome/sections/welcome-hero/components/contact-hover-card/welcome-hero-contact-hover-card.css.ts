@@ -1,4 +1,4 @@
-import { globalStyle, keyframes, style } from "@vanilla-extract/css";
+import { createVar, globalStyle, keyframes, style } from "@vanilla-extract/css";
 import { motion } from "@/styles/motion.css";
 import { vars } from "@/styles/theme.css";
 import { breakpoints } from "@/styles/responsive.css";
@@ -10,6 +10,13 @@ import {
 
 // Note: Les styles du beam SVG ont été déplacés dans
 // components/beam/welcome-hero-contact-hover-card-beam.css.ts
+
+// Surface of the popover (a lifted beige veil over the dark hero) and its
+// mint edge — shared by the arrow, so it reads as part of the card, and by
+// the link hover rows. They were referenced but never defined: the arrow
+// filled black and the hover rows had no background at all.
+const highlightBackground = createVar();
+const highlightBorder = createVar();
 
 export const wrapperStyles = style({
   position: "relative",
@@ -132,6 +139,10 @@ const scanline = keyframes({
 });
 
 export const popoverStyles = style({
+  vars: {
+    [highlightBackground]: `color-mix(in srgb, ${vars.colors.background} 22%, transparent)`,
+    [highlightBorder]: `color-mix(in srgb, ${vars.colors.secondary} 50%, transparent)`,
+  },
   position: "relative",
   overflow: "hidden",
   borderRadius: vars.radius.lg,
@@ -199,8 +210,8 @@ export const popoverStyles = style({
 
 export const arrowStyles = style({
   display: "block",
-  fill: "color-mix(in srgb, var(--highlight-background) 92%, transparent)",
-  stroke: "color-mix(in srgb, var(--highlight-border) 78%, transparent)",
+  fill: `color-mix(in srgb, ${highlightBackground} 92%, transparent)`,
+  stroke: `color-mix(in srgb, ${highlightBorder} 78%, transparent)`,
   paintOrder: "stroke",
   strokeWidth: "2px",
   filter: `drop-shadow(0 2px 8px color-mix(in srgb, ${vars.colors.primary} 30%, transparent))`,
@@ -233,7 +244,7 @@ export const linkStyles = style({
   transition: "background-color 150ms ease, color 150ms ease",
 
   ":hover": {
-    backgroundColor: "color-mix(in srgb, var(--highlight-background) 88%, transparent)",
+    backgroundColor: `color-mix(in srgb, ${highlightBackground} 88%, transparent)`,
     color: vars.colors.secondary,
     textShadow: vars.textShadow.glowSm,
   },

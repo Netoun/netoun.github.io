@@ -33,23 +33,16 @@ function getDevicePixelRatio(options: RendererOptions): number {
   return Math.min(Math.max(dpr, min), max);
 }
 
+// Sizes the drawing buffer from a CSS size the ResizeObserver already measured:
+// reading offsetWidth here would force a synchronous layout of the whole page
+// inside the draw frame (≈60 ms on a throttled phone at first paint).
 function resizeCanvas(
   canvas: HTMLCanvasElement,
+  cssSize: { width: number; height: number },
   dpr: number,
-  useBoundingRect?: boolean,
 ): { width: number; height: number } {
-  let cssWidth: number;
-  let cssHeight: number;
-  if (useBoundingRect) {
-    const rect = canvas.getBoundingClientRect();
-    cssWidth = rect.width;
-    cssHeight = rect.height;
-  } else {
-    cssWidth = canvas.offsetWidth;
-    cssHeight = canvas.offsetHeight;
-  }
-  const width = Math.max(1, Math.floor(cssWidth * dpr));
-  const height = Math.max(1, Math.floor(cssHeight * dpr));
+  const width = Math.max(1, Math.floor(cssSize.width * dpr));
+  const height = Math.max(1, Math.floor(cssSize.height * dpr));
   if (canvas.width !== width || canvas.height !== height) {
     canvas.width = width;
     canvas.height = height;
@@ -287,6 +280,9 @@ export function createCanvasRenderer(
     let isVisible = true;
     let reducedMotion = false;
     let sizeDirty = true;
+    // CSS size from the ResizeObserver; null until its first callback (which
+    // runs after the first layout following observe()).
+    let cssSize: { width: number; height: number } | null = null;
     let lastDpr = 0;
     let bufferWidth = 1;
     let bufferHeight = 1;
@@ -319,11 +315,13 @@ export function createCanvasRenderer(
       resolve(session);
     }
 
+    // Reduced motion means a still frame, not a blank canvas: draws still happen
+    // (first paint, resize, visibility, uniforms) but never loop or follow scroll.
     function scheduleDraw() {
       if (cancelled || drawQueued) return;
-      if (!isVisible || reducedMotion) return;
+      if (!isVisible) return;
       drawQueued = true;
-      if (options.animate) {
+      if (options.animate && !reducedMotion) {
         frameId = requestAnimationFrame(renderFrame);
       } else {
         frameId = requestAnimationFrame(() => {
@@ -336,14 +334,14 @@ export function createCanvasRenderer(
       drawQueued = false;
       frameId = null;
       if (cancelled) return;
-      if (!isVisible || reducedMotion) return;
+      if (!isVisible) return;
 
-      // Reading offsetWidth forces style/layout, so only measure when the
-      // observers flagged a size change or the dpr changed (display move) —
-      // never on the per-frame scroll/animate path.
+      // Not measured yet: the observer's first callback schedules the first draw.
+      if (!cssSize) return;
+
       const dpr = getDevicePixelRatio(options);
       if (sizeDirty || dpr !== lastDpr) {
-        const size = resizeCanvas(canvas, dpr);
+        const size = resizeCanvas(canvas, cssSize, dpr);
         bufferWidth = size.width;
         bufferHeight = size.height;
         lastDpr = dpr;
@@ -355,9 +353,9 @@ export function createCanvasRenderer(
       const quality = options.quality?.() ?? 0;
       const uniforms: Uniforms = {
         u_resolution: [width, height],
-        u_time: options.animate ? now / 1000 : 0,
+        u_time: options.animate && !reducedMotion ? now / 1000 : 0,
         u_quality: quality,
-        u_scroll: options.animateOnScroll ? window.scrollY : 0,
+        u_scroll: options.animateOnScroll && !reducedMotion ? window.scrollY : 0,
         ...liveUniforms,
       };
 
@@ -375,7 +373,7 @@ export function createCanvasRenderer(
         canvas.dataset.ready = "true";
       }
 
-      if (options.animate) {
+      if (options.animate && !reducedMotion) {
         scheduleDraw();
       }
     }
@@ -393,7 +391,7 @@ export function createCanvasRenderer(
     }
 
     function onScroll() {
-      if (!options.animateOnScroll) return;
+      if (!options.animateOnScroll || reducedMotion) return;
       scheduleDraw();
     }
 
@@ -418,7 +416,17 @@ export function createCanvasRenderer(
           : null;
       visibilityObserver?.observe(canvas);
 
-      const resizeObserver = new ResizeObserver(onResizeDebounced);
+      const resizeObserver = new ResizeObserver(([entry]) => {
+        const box = entry.contentBoxSize?.[0];
+        const next = box
+          ? { width: box.inlineSize, height: box.blockSize }
+          : { width: entry.contentRect.width, height: entry.contentRect.height };
+        const isFirst = cssSize === null;
+        cssSize = next;
+        // First size: draw right away. Later ones: debounced like window resizes.
+        if (isFirst) onResize();
+        else onResizeDebounced();
+      });
       resizeObserver.observe(canvas);
       window.addEventListener("resize", onResizeDebounced, { passive: true });
       if (options.animateOnScroll) window.addEventListener("scroll", onScroll, { passive: true });
