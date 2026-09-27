@@ -28,11 +28,11 @@ Tooling notes:
 
 ## Content Nicolas decides during execution (never invent)
 
-- [ ] Single role label — "Full-stack engineer" (hero h1) vs "Software Developer" (experience data) vs "Software Engineer" (`public/llms.txt`)
+- [x] Single role label — "Full-stack engineer" (hero h1) vs "Software Developer" (experience data) vs "Software Engineer" (`public/llms.txt`) → **"Full-stack engineer"** (Nicolas, 2026-09-27). Hero h1 already matches; align `experiences-data.ts` (§5) and `public/llms.txt` + meta/JSON-LD (§2).
 - [ ] Project order + lead project; whether Nzoth / Lonestone Boilerplate get a "Lonestone OSS" label
 - [ ] Footer copy replacing "Thanks for exploring ✦ / Built with passion and pixels"
 - [ ] Meaning of the ACTIVE badge on projects (today it renders the `featured` flag on 5/6 cards): drop or redefine
-- [ ] Hero meta line "Focused on performance, UX, and clean architecture": keep (render fixed) or cut
+- [x] Hero meta line "Focused on performance, UX, and clean architecture": keep (render fixed) or cut → **cut** (Nicolas, 2026-09-27).
 - [ ] Experience: "… and many more" entry; Sogeti (Sep 2017 – Oct 2019) overlapping Easilys (Jul 2019 –)
 - [ ] Treashunt description (currently product marketing copy)
 - [ ] Repo and live URLs per project (needed for SOURCE / LIVE links)
@@ -42,14 +42,16 @@ Tooling notes:
 
 ## 0 · Prerequisite — start of the Hero session
 
-- [ ] `/impeccable document` → root `DESIGN.md` (tokens in frontmatter + `.impeccable/design.json`) derived from code: invariants above, plus what the code really does (WebGL/WebGPU mesh, WebGL grain, no mouse trail, MabeoVintage unused).
-- [ ] Delete `docs/design.md`; update links in `AGENTS.md:7`, `CLAUDE.md:8`, `PRODUCT.md:43`.
+- [x] `/impeccable document` → root `DESIGN.md` (tokens in frontmatter + `.impeccable/design.json`) derived from code: invariants above, plus what the code really does (WebGL/WebGPU mesh, WebGL grain, no mouse trail, MabeoVintage unused).
+- [x] Delete `docs/design.md`; update links in `AGENTS.md:7`, `CLAUDE.md:8`, `PRODUCT.md:43`.
 
-## 1 · Hero — NEXT SESSION (verdict: refine, keep the world)
+Done (2026-09-27): North Star "The Night Workbench", component feel "Precise, tactile, quiet" (Nicolas). Links also updated in `README.md`, `docs/architecture.md`, `.specify/memory/constitution.md`. The shader's second blob is **mint** (rgb 0.33/0.84/0.56), not cyan — DESIGN.md says gold/mint/violet. Contradictions the documenter left out of DESIGN.md on purpose (to fix in §2/§3/§5/§7): default focus ring for links/buttons/`[tabindex]` is gold (invisible on paper); `⤘` card prompts pure gold on paper; nav gold hover on paper; footer copyright graphite on dark (2.72:1); Doto 0.6rem in nav and 400–500 weight in bars; experience card `backdrop-filter`; MabeoVintage preloaded unused.
+
+## 1 · Hero — DONE 2026-09-27 (verdict: refine, keep the world)
 
 Goal: the morph does something at every width, the hero never clips, it also routes peers to the Labs, and it honours the prerender and reduced-motion contracts.
 
-- [ ] **`/impeccable harden`**
+- [x] **`/impeccable harden`**
   - Laptop tilt dies after scrolling to the bottom and back (reproduced 3/3): `WelcomeHeroComputer` reads `getState().shouldAnimate` during render while the orchestrator context value is memoized (`welcome-hero-computer.component.tsx:53-54`, `use-hero-animation.hook.ts:166`). Fix with `useSyncExternalStore(subscribe, () => getState().shouldAnimate)`. Same pattern at `welcome-hero.section.tsx:21` (`isTextSelected`).
   - `marginTop: \`-${vars.spacing.sm}\`` compiles to `-var(…)`, invalid and dropped by the browser → `calc(-1 * ${vars.spacing.sm})` (`welcome-hero-section-content.css.ts:89`).
   - Remove `respectReducedMotion={false}` (`welcome-hero-filter-background.component.tsx:20`): the mesh still drifts on scroll under reduced motion.
@@ -58,26 +60,75 @@ Goal: the morph does something at every width, the hero never clips, it also rou
   - Static CSS gold/cyan/violet gradient under the mesh canvas so the colour invariant survives without WebGL.
   - Laptop screen text is read by screen readers ("CORE 07 READY 60%…"): `aria-hidden` + `inert` on the homepage wrapper.
   - Define `--highlight-background` / `--highlight-border` (`welcome-hero-contact-hover-card.css.ts:202-203, 236`).
-- [ ] **`/impeccable optimize`**
+- [x] **`/impeccable optimize`**
   - Laptop widgets never pause offscreen (2 rAF loops + ~31 DOM mutations/s for the whole visit): `render(index < visibleZones)` → `render(index < visibleZones && shouldAnimate)` (`welcome-hero-computer.component.tsx:207-219`). Model: the rack's `data-server-rack-paused`.
   - Mesh canvas sized to the visible frame (container is 150 % × 150 %), drop the permanent `will-change`, `powerPreference: "low-power"`, throttle or drop the scroll link (`welcome-hero-filter-background.component.tsx:14-22`, `.css.ts:4-14`).
   - Record a mobile Lighthouse baseline before/after (2026-09-27: 80–83, LCP 3.7 s, FCP 2.6 s; desktop 99).
-- [ ] **`/impeccable animate`**
+- [x] **`/impeccable animate`**
   - Dead-scroll pin: `getContainerMaxWidth()` hand-copies max-widths that no longer match `container.css.ts:29` (1280 px up to 1919 px), so `targetScale` clamps to 1 — at 1280–1919 px the hero stays pinned for a full screen with nothing moving; at 1920 the text shrinks ×0.757 and lands 1440 px wide over 1312 px content (`use-hero-morph-progress.hook.ts:25-31, 86`). Measure the target from the real container instead of a table.
   - Pin 200vh → ~120vh (`hero-scroll-morph.css.ts:12`).
   - Morph with `clip-path: inset()` + radius instead of `scale()`: text keeps its size, the panel lands aligned with the beige sections and the footer.
   - Entrance: CSS-only, never set opacity 0 on already-painted content (today the h1 blinks at hydration: painted 892 ms → hidden 1191 ms → back 1284 ms; `use-welcome-hero-content-animation.hook.ts:27-48`).
   - SMIL beam packets ignore reduced motion.
-- [ ] **`/impeccable adapt`**
+- [x] **`/impeccable adapt`**
   - Hero content clipped at 844×390 (landscape phone) and 320×256 (~400 % zoom), WCAG 1.4.10: `min-height` + `svh`/`dvh` when the morph is inactive (< md, reduced motion, short `max-height`), let the frame grow (`hero-scroll-morph.css.ts:5-59`, `welcome-hero.css.ts:15-33`).
-- [ ] **`/impeccable shape`**
+- [x] **`/impeccable shape`**
   - Write the Labs brief for all 4 sections (hero CTA, nav item, captions, footer line); implement the hero part only: secondary "Explore the Labs →" CTA next to "_Get in touch_" (`welcome-hero-section-content.component.tsx:52-54`), caption `⤘ /labs/computer-3d` under the laptop.
-- [ ] **`/impeccable typeset`** (hero scope)
+- [x] **`/impeccable typeset`** (hero scope)
   - Meta line renders ~3.3:1: `textShadow` painted over the `background-clip: text` gradient + opacity 0.86 (`welcome-hero-section-content.css.ts:85-107`); violet gradient stop 4.23:1; paragraph line-height 1.25 (`:69`).
-- [ ] Optional **`/impeccable delight`**: the laptop screen shows something true (Labs slugs, or its own `?raw` source) instead of random hex and fake metrics.
-- [ ] **`/impeccable polish`** (hero): 1280 / 1440 / 1920, 390 portrait + landscape, reduced motion, no-JS, keyboard.
+- [ ] Optional **`/impeccable delight`**: the laptop screen shows something true (Labs slugs, or its own `?raw` source) instead of random hex and fake metrics. **Deferred** by Nicolas (2026-09-27): the 4 widgets are shared with the Labs, so it is not a hero-only change. Pick it up with §8 or as its own session.
+- [x] **`/impeccable polish`** (hero): 1280 / 1440 / 1920, 390 portrait + landscape, reduced motion, no-JS, keyboard.
 
 Risks: switching `scale()` → `clip-path` changes how the morph feels at 1920 (a shrinking card becomes a tightening frame) — validate visually. `useSyncExternalStore` touches every orchestrator consumer — the tilt round-trip must go from 3/3 failures to 0/3.
+
+Done (2026-09-27):
+
+- **Measurements.** Lighthouse mobile (3 runs, simulated throttling) went from 86/86/86 (FCP 2.6 s, LCP 3.7 s, TBT 0–20 ms, CLS 0.002) to 85/85/86 (FCP 2.4–2.6 s, LCP 3.6–3.7 s, TBT 80–100 ms, CLS 0). A real DevTools trace (mobile, CPU ×4, over 5 s) says the opposite of the simulated TBT: TBT 367 → 118 ms, longest task 362 → 105 ms. The canvas renderer's 62 ms forced reflow at first draw is gone. Lantern charges the whole hydration to one 90 ms task (base: 48 ms + a separate 30 ms canvas task). LCP is unchanged and still dominated by render-blocking Google Fonts CSS (§2 optimize). The LCP element was the meta line; it is now the lead paragraph.
+- **Tilt.** Round-trip failures went from 3/3 to 0/3. Offscreen laptop widget mutations went from ~31/s to 0. At 1440 @2x the hero mesh buffer is 2848×1768; before it was 2.25× that.
+- **Harden.**
+  - `useHeroAnimationValue` (useSyncExternalStore) replaces `getState()` reads during render, and the provider no longer re-renders the section on every change.
+  - "_Get in touch_" prerenders as `<a href="#contact">`. After hydration only that leaf becomes the React Aria button, inside a transition, so the magnetic span keeps its DOM node and its listeners.
+  - The boot splash is pure CSS and rests on "System ready.".
+  - A static CSS gold/violet/mint gradient sits under the canvas.
+  - The laptop is `aria-hidden` but not `inert`: nothing inside it is focusable, and `inert` would kill the signal map's pointer hover.
+  - `--highlight-*` became scoped `createVar`s.
+  - The `-var()` margin disappeared with the meta line.
+  - Reduced motion: the shared canvas renderer now draws a still frame instead of nothing. This also fixes the blank grain and footer mesh under reduced motion (cross-section). The hero no longer passes `respectReducedMotion={false}`. SMIL beam packets are not rendered, and the hero text entrance is `animation: none`.
+- **Optimize.**
+  - Widgets receive `isAnimating = revealed && shouldAnimate`.
+  - The mesh canvas is exactly the frame. `MeshCompositionWindow` bakes the visible uv window into the shader, and grain stays on physical pixels.
+  - No permanent `will-change`. The scroll link was dropped rather than throttled: the mesh now draws once, then only on resize.
+  - The hero was already `low-power` (the component default).
+  - Shared renderer: buffer size comes from the ResizeObserver entry and never from `offsetWidth` in the draw frame.
+- **Animate.** The morph is CSS scroll-driven: `clip-path: inset(0 var(gutter) round 2rem)`, with `animation-timeline: scroll(root)` over 0–50vh. The JS hook is deleted.
+  - The target is not a DOM measurement. It is computed from `containerColumn`, now exported by `container.css.ts`: one source for the sections and the hero. The text and the laptop are laid out on that column from the start, so nothing scales and the panel lands flush with the cards and the footer (checked at 1440: 128 → 1312 px).
+  - The pin is 20vh (spacer), only when `min-width: 1024px`, `min-height: 640px` and motion is allowed. The frame tightens from md up.
+  - Browsers without scroll timelines keep a full-bleed static frame.
+  - The entrance is CSS, from a dimmed but _visible_ state (opacity 0.25): no hydration blink. The anime.js hook is deleted.
+- **Adapt.** The frame is in flow with `min-height: 100svh`, and the laptop stacks under the text in reserved space below lg or below 640 px of height. Checked with no clipping and no horizontal scroll at 844×390 (frame grows to 942 px) and 320×256 (776 px). Beside the text, the laptop width follows the viewport height so the lid clears the headline (1280×720 checked).
+- **Shape.** Brief below. Hero part implemented: "Explore the Labs →" sits _under_ the CTA, because beside it the contact popover (which opens to the right) covered it. Caption `⤘ /labs/computer-3d` sits under the laptop.
+- **Typeset.** Meta line cut (Nicolas). Lead line-height 1.25 → 1.375. The h1 is capped at `11em` so the break stays on "&" at every width. The lead is capped at 42rem at 2k so it clears the lid.
+- **Polish / verification.** 1280×800 and 1280×720, 1440×900, 1920×1080, 390×844, 844×390, 320×256; keyboard order (Lonestone → CTA → Labs → caption), Enter opens the popover, focus rings in `primary`. No-JS: the prerender shows the gradient, "System ready." and a working `#contact` link. Reduced motion verified in code. Detector overlay on the build: nothing new that is hero-specific (the glows and the `▐` cursor are documented invariants; the widget colours belong to the deferred delight). Other findings belong to §4/§5/§7.
+- **Tooling.** `.impeccable/**` was added to oxfmt `ignorePatterns`: the committed critique archive was failing `fmt:check` before this session. `bun run check` is green, knip is clean, and lint warnings went 26 → 24.
+- **Cross-section notes.** The `scroll-morph` Lab still describes its own scale morph, which stays true for the demo. The DESIGN.md hover rule applies to captions on paper: ink, never gold (§4 `project-card-3d` caption). Firefox scroll-timeline support was not checked in a browser.
+- **Spec layer (2026-09-27, after the "creative dev" feedback).** Nicolas asked for more small details; picked on a Claude Design canvas: the editor header of concept E with the annotations of F, plus the dot grid and a ~2 s plotter intro. Shipped as the hero's spec layer (DESIGN.md › Spec Layer):
+  - File tabs (React Aria `ToggleButtonGroup`) naming the real files that set each value: `welcome-hero-section-content.css.ts`, `welcome-hero.css.ts`, `welcome-hero-computer.css.ts`, `theme.css.ts`. The live renderer (`onRendererReady` added to `MeshBackgroundCanvas`) and the measured fps (rAF, only while the hero is visible).
+  - Annotations read from the live elements (`use-welcome-hero-spec.hook.ts`, formatters unit-tested): headline baselines drawn in CSS from `lh`/`em` (baseline = `0.5lh + 0.356em`, measured), lead measure, gutter dimension with a count-up, CTA note, a selection box on the laptop's screen plane with the live tilt, palette swatches. Hover (`:has()`, no JS) or a picked tab lights a group.
+  - From 1280 px and 640 px tall only; narrower keeps the header (entry file name) and the dots. Without JS: dots and file name. Under reduced motion: static.
+  - "0 images" in the canvas was wrong (the laptop uses `noise.svg`): the note reads "12 faces · preserve-3d", with the face count read from the DOM.
+  - Fixes found on the way: the laptop wrapper took the pointer over the end of the lead's lines (text not selectable at 1440): only the screen and caption take it now. At 1024–1279 px the laptop lid covered the lead's line ends: lead measure 32rem there (40rem from xl). Container padding-top now clears the 2.5rem header at every width (text starts 40 px lower below lg).
+  - Verified on the build: 1024×700, 1280×800, 1440×900, 1920×1080, 2560×1440, 390×844, no horizontal scroll; keyboard (one tab stop, arrows, Enter/Space toggle, gold ring); no-JS prerender (no `data-spec`, no values). Lighthouse mobile ×3: 85/85/85 (was 85/85/86), TBT 50–60 ms, CLS 0, FCP 2.7 s, LCP 3.8 s (fonts-bound, §2). Detector: only the mint (a DESIGN.md brand colour), existing glows and footer findings.
+  - Then (Nicolas): the `⤘ /labs/computer-3d` caption under the laptop is removed (its reserved space in the stacked layout too), the `theme.css.ts` tab is removed (three tabs), and the swatches stay at full strength, outside the lighting. The Labs brief's caption spec still applies to §4/§7.
+  - Not done: `.impeccable/design.json` sidecar not regenerated for the spec layer (DESIGN.md is); Safari/Firefox not checked in a browser (`lh` unit, `:has()`, `mask-position` animation).
+
+### Labs brief (shape, 2026-09-27) — applies to §1, §3, §4, §7
+
+- **Job.** Route the peers (PRODUCT.md, primary users) from any live object to its Lab, where it runs with its source. This is proof over claims: the caption points at the artifact, it does not describe it.
+- **Two glyphs, never mixed.** `→` = a route to a page ("Explore the Labs →", nav LABS item, footer line). `⤘ /labs/<slug>` = a caption attached to one live object, naming its Lab path verbatim.
+- **Caption spec.** Doto `sm` weight 900 (Doto floor). On dark panels: beige at 72 %, hover and focus in `primary`. On paper: ink at ~70 %, hover in ink, never gold (Dark-Only Gold). Placed under or next to its object, never floating. React Router `Link`. `aria-label` = "<path> — <object>, live with its source" (visible text first, WCAG 2.5.3). Only for objects that have a Lab: `computer-3d` (hero, done), `project-card-3d` (§4, in the projects header), `server-unit-3d` (§7, by the rack).
+- **Hero (done).** A secondary route under the primary CTA, quieter than it (no fill, no glow), Doto 900 at base/lg.
+- **Nav (§3).** LABS is the last item: a route with `→`, no `_0N` index, outside the scroll-spy, visually separated from the anchors.
+- **Footer (§7).** A dedicated Labs line with the experiment count read from `experiments.ts` (never hard-coded). Nicolas writes the wording (§7 clarify); the existing "Explore the Labs →" link can become that line.
 
 ## 2 · Global
 

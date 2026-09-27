@@ -1,0 +1,494 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-27T18:45:47+00:00",
+  "title": "Design System: Netoun",
+  "extensions": {
+    "colorMeta": {
+      "warm-paper-beige": {
+        "role": "neutral",
+        "displayName": "Warm Paper Beige",
+        "canonical": "oklch(0.93 0.03 80)",
+        "tonalRamp": [
+          "oklch(0.15 0.03 80)",
+          "oklch(0.26 0.03 80)",
+          "oklch(0.38 0.03 80)",
+          "oklch(0.49 0.03 80)",
+          "oklch(0.61 0.03 80)",
+          "oklch(0.72 0.03 80)",
+          "oklch(0.84 0.03 80)",
+          "oklch(0.95 0.03 80)"
+        ]
+      },
+      "workbench-ink": {
+        "role": "neutral",
+        "displayName": "Workbench Ink",
+        "canonical": "oklch(0.07 0 0)",
+        "tonalRamp": [
+          "oklch(0.15 0 0)",
+          "oklch(0.26 0 0)",
+          "oklch(0.38 0 0)",
+          "oklch(0.49 0 0)",
+          "oklch(0.61 0 0)",
+          "oklch(0.72 0 0)",
+          "oklch(0.84 0 0)",
+          "oklch(0.95 0 0)"
+        ]
+      },
+      "lit-paper-stock": {
+        "role": "neutral",
+        "displayName": "Lit Paper Stock",
+        "canonical": "oklch(0.975 0.012 88)",
+        "tonalRamp": [
+          "oklch(0.15 0.012 88)",
+          "oklch(0.26 0.012 88)",
+          "oklch(0.38 0.012 88)",
+          "oklch(0.49 0.012 88)",
+          "oklch(0.61 0.012 88)",
+          "oklch(0.72 0.012 88)",
+          "oklch(0.84 0.012 88)",
+          "oklch(0.95 0.012 88)"
+        ]
+      },
+      "paper-edge": {
+        "role": "neutral",
+        "displayName": "Paper Edge",
+        "canonical": "oklch(0.88 0.02 80)",
+        "tonalRamp": [
+          "oklch(0.15 0.02 80)",
+          "oklch(0.26 0.02 80)",
+          "oklch(0.38 0.02 80)",
+          "oklch(0.49 0.02 80)",
+          "oklch(0.61 0.02 80)",
+          "oklch(0.72 0.02 80)",
+          "oklch(0.84 0.02 80)",
+          "oklch(0.95 0.02 80)"
+        ]
+      },
+      "pale-gray-rule": {
+        "role": "neutral",
+        "displayName": "Pale Gray Rule",
+        "canonical": "oklch(0.9 0 0)",
+        "tonalRamp": [
+          "oklch(0.15 0 0)",
+          "oklch(0.26 0 0)",
+          "oklch(0.38 0 0)",
+          "oklch(0.49 0 0)",
+          "oklch(0.61 0 0)",
+          "oklch(0.72 0 0)",
+          "oklch(0.84 0 0)",
+          "oklch(0.95 0 0)"
+        ]
+      },
+      "pale-gray-wash": {
+        "role": "neutral",
+        "displayName": "Pale Gray Wash",
+        "canonical": "oklch(0.96 0 0)",
+        "tonalRamp": [
+          "oklch(0.15 0 0)",
+          "oklch(0.26 0 0)",
+          "oklch(0.38 0 0)",
+          "oklch(0.49 0 0)",
+          "oklch(0.61 0 0)",
+          "oklch(0.72 0 0)",
+          "oklch(0.84 0 0)",
+          "oklch(0.95 0 0)"
+        ]
+      },
+      "graphite-gray": {
+        "role": "neutral",
+        "displayName": "Graphite Gray",
+        "canonical": "oklch(0.45 0 0)",
+        "tonalRamp": [
+          "oklch(0.15 0 0)",
+          "oklch(0.26 0 0)",
+          "oklch(0.38 0 0)",
+          "oklch(0.49 0 0)",
+          "oklch(0.61 0 0)",
+          "oklch(0.72 0 0)",
+          "oklch(0.84 0 0)",
+          "oklch(0.95 0 0)"
+        ]
+      },
+      "lamplight-gold": {
+        "role": "primary",
+        "displayName": "Lamplight Gold",
+        "canonical": "oklch(0.8858 0.182 95.69)",
+        "tonalRamp": [
+          "oklch(0.15 0.182 95.69)",
+          "oklch(0.26 0.182 95.69)",
+          "oklch(0.38 0.182 95.69)",
+          "oklch(0.49 0.182 95.69)",
+          "oklch(0.61 0.182 95.69)",
+          "oklch(0.72 0.182 95.69)",
+          "oklch(0.84 0.182 95.69)",
+          "oklch(0.95 0.182 95.69)"
+        ]
+      },
+      "deep-ink": {
+        "role": "primary",
+        "displayName": "Deep Ink",
+        "canonical": "oklch(0.09 0 0)",
+        "tonalRamp": [
+          "oklch(0.15 0 0)",
+          "oklch(0.26 0 0)",
+          "oklch(0.38 0 0)",
+          "oklch(0.49 0 0)",
+          "oklch(0.61 0 0)",
+          "oklch(0.72 0 0)",
+          "oklch(0.84 0 0)",
+          "oklch(0.95 0 0)"
+        ]
+      },
+      "phosphor-mint": {
+        "role": "secondary",
+        "displayName": "Phosphor Mint",
+        "canonical": "oklch(0.7906 0.1573 166.87)",
+        "tonalRamp": [
+          "oklch(0.15 0.1573 166.87)",
+          "oklch(0.26 0.1573 166.87)",
+          "oklch(0.38 0.1573 166.87)",
+          "oklch(0.49 0.1573 166.87)",
+          "oklch(0.61 0.1573 166.87)",
+          "oklch(0.72 0.1573 166.87)",
+          "oklch(0.84 0.1573 166.87)",
+          "oklch(0.95 0.1573 166.87)"
+        ]
+      },
+      "ultraviolet-orchid": {
+        "role": "tertiary",
+        "displayName": "Ultraviolet Orchid",
+        "canonical": "oklch(0.5548 0.2575 312.98)",
+        "tonalRamp": [
+          "oklch(0.15 0.2575 312.98)",
+          "oklch(0.26 0.2575 312.98)",
+          "oklch(0.38 0.2575 312.98)",
+          "oklch(0.49 0.2575 312.98)",
+          "oklch(0.61 0.2575 312.98)",
+          "oklch(0.72 0.2575 312.98)",
+          "oklch(0.84 0.2575 312.98)",
+          "oklch(0.95 0.2575 312.98)"
+        ]
+      },
+      "kirby-pink": {
+        "role": "tertiary",
+        "displayName": "Kirby Pink",
+        "canonical": "oklch(0.8455 0.0872 355.09)",
+        "tonalRamp": [
+          "oklch(0.15 0.0872 355.09)",
+          "oklch(0.26 0.0872 355.09)",
+          "oklch(0.38 0.0872 355.09)",
+          "oklch(0.49 0.0872 355.09)",
+          "oklch(0.61 0.0872 355.09)",
+          "oklch(0.72 0.0872 355.09)",
+          "oklch(0.84 0.0872 355.09)",
+          "oklch(0.95 0.0872 355.09)"
+        ]
+      },
+      "fault-red": {
+        "role": "neutral",
+        "displayName": "Fault Red",
+        "canonical": "oklch(0.55 0.22 29)",
+        "tonalRamp": [
+          "oklch(0.15 0.22 29)",
+          "oklch(0.26 0.22 29)",
+          "oklch(0.38 0.22 29)",
+          "oklch(0.49 0.22 29)",
+          "oklch(0.61 0.22 29)",
+          "oklch(0.72 0.22 29)",
+          "oklch(0.84 0.22 29)",
+          "oklch(0.95 0.22 29)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero headline only, italic, on the dark panel."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section and page titles led by the _❯ prompt."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card titles and experience roles."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Hero statement under the headline."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Card descriptions and running text."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Doto terminal bars, tags, status annotations, link labels."
+      },
+      "label-cta": {
+        "displayName": "CTA Label",
+        "purpose": "Hero _Get in touch_ button only."
+      },
+      "label-nav": {
+        "displayName": "Nav Label",
+        "purpose": "Sections nav indexes and names (below the legible Doto floor; debt)."
+      }
+    },
+    "shadows": [
+      {
+        "name": "rest-card",
+        "value": "0 1px 2px color-mix(in srgb, oklch(0.07 0 0) 5%, transparent), 0 8px 24px -12px color-mix(in srgb, oklch(0.07 0 0) 18%, transparent)",
+        "purpose": "Every paper card and the open sections nav, at rest. Neutral, tight, no accent."
+      },
+      {
+        "name": "hover-card",
+        "value": "0 24px 60px color-mix(in srgb, oklch(0.07 0 0) 14%, transparent), 0 0 0 1px color-mix(in srgb, oklch(0.8858 0.182 95.69) 30%, transparent), 0 8px 40px color-mix(in srgb, oklch(0.8858 0.182 95.69) 28%, transparent), 0 2px 12px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 15%, transparent)",
+        "purpose": "Paper cards on hover: larger lift plus a gold hairline ring, gold bloom and faint mint bloom. The only place gold touches a paper surface."
+      },
+      {
+        "name": "panel-inset",
+        "value": "inset 0 0 200px color-mix(in srgb, oklch(0.07 0 0) 80%, transparent), inset 0 0 40px color-mix(in srgb, oklch(0.07 0 0) 60%, transparent)",
+        "purpose": "Heavy inset ink shading on the hero and footer machine panels."
+      },
+      {
+        "name": "glow",
+        "value": "0 0 7px color-mix(in srgb, oklch(0.93 0.03 80) 40%, transparent), 0 0 10px color-mix(in srgb, oklch(0.93 0.03 80) 30%, transparent), 0 0 21px color-mix(in srgb, oklch(0.93 0.03 80) 20%, transparent), 0 0 42px color-mix(in srgb, oklch(0.8858 0.182 95.69) 20%, transparent), 0 0 82px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 20%, transparent)",
+        "purpose": "Soft paper-to-gold-to-mint halo on the gold primary button."
+      },
+      {
+        "name": "glow-xl",
+        "value": "0 0 7px color-mix(in srgb, oklch(0.93 0.03 80) 40%, transparent), 0 0 10px color-mix(in srgb, oklch(0.8858 0.182 95.69) 30%, transparent), 0 0 21px color-mix(in srgb, oklch(0.8858 0.182 95.69) 20%, transparent), 0 0 42px color-mix(in srgb, oklch(0.8858 0.182 95.69) 20%, transparent), 0 0 82px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 20%, transparent)",
+        "purpose": "Hero CTA at rest."
+      },
+      {
+        "name": "glow-2xl",
+        "value": "0 0 7px color-mix(in srgb, oklch(0.93 0.03 80) 50%, transparent), 0 0 10px color-mix(in srgb, oklch(0.8858 0.182 95.69) 40%, transparent), 0 0 21px color-mix(in srgb, oklch(0.8858 0.182 95.69) 30%, transparent), 0 0 42px color-mix(in srgb, oklch(0.8858 0.182 95.69) 30%, transparent), 0 0 82px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 30%, transparent), 0 0 130px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 20%, transparent), 0 0 170px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 10%, transparent)",
+        "purpose": "Hero CTA on hover."
+      },
+      {
+        "name": "text-glow",
+        "value": "0 0 7px color-mix(in srgb, oklch(0.93 0.03 80) 40%, transparent), 0 0 10px color-mix(in srgb, oklch(0.93 0.03 80) 30%, transparent), 0 0 21px color-mix(in srgb, oklch(0.93 0.03 80) 20%, transparent), 0 0 42px color-mix(in srgb, oklch(0.8858 0.182 95.69) 20%, transparent), 0 0 82px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 20%, transparent)",
+        "purpose": "Text shadow of the hero headline and rack labels on dark panels."
+      },
+      {
+        "name": "text-glow-sm",
+        "value": "0 0 7px color-mix(in srgb, oklch(0.93 0.03 80) 40%, transparent), 0 0 10px color-mix(in srgb, oklch(0.93 0.03 80) 30%, transparent), 0 0 21px color-mix(in srgb, oklch(0.8858 0.182 95.69) 20%, transparent), 0 0 42px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 20%, transparent)",
+        "purpose": "Text shadow of the hero lead and contact popover link hover."
+      },
+      {
+        "name": "text-glow-primary",
+        "value": "0 0 7px color-mix(in srgb, oklch(0.8858 0.182 95.69) 40%, transparent), 0 0 10px color-mix(in srgb, oklch(0.8858 0.182 95.69) 30%, transparent), 0 0 21px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 20%, transparent), 0 0 42px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 20%, transparent), 0 0 82px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 20%, transparent)",
+        "purpose": "Gold-to-mint text glow on the hero CTA label, hero links and meta line."
+      },
+      {
+        "name": "card-image-inset",
+        "value": "inset 0 0 6px 0 oklch(0 0 0 / 0.05)",
+        "purpose": "Faint inset on project card image wells."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-signature",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "House curve for reveals, hovers, card shadows and nav transitions; shared with anime.js as SIGNATURE_CURVE."
+      },
+      {
+        "name": "ease-out",
+        "value": "ease-out",
+        "purpose": "Small colour and arrow transitions on footer and nav links."
+      },
+      {
+        "name": "duration-fast",
+        "value": "150ms",
+        "purpose": "Link colour, arrow slide-in, LED light-up, button press."
+      },
+      {
+        "name": "duration-base",
+        "value": "300ms",
+        "purpose": "Card shadow, button shadow, nav name expansion."
+      },
+      {
+        "name": "duration-slow",
+        "value": "600ms",
+        "purpose": "Scroll reveals (16px rise plus fade) and the sections nav entrance."
+      },
+      {
+        "name": "stagger-step",
+        "value": "70ms",
+        "purpose": "Per-item delay in section reveals, capped around 400ms by consumers."
+      },
+      {
+        "name": "magnetic-pull",
+        "value": "4px max within 80px",
+        "purpose": "Hero CTA drift toward a fine pointer; inert on touch and under reduced motion."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "0.01ms",
+        "purpose": "Global clamp on animation and transition durations under prefers-reduced-motion: reduce."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      },
+      {
+        "name": "2k",
+        "value": "1920px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Hero CTA",
+      "kind": "button",
+      "refersTo": "button-cta",
+      "description": "The magnetic _Get in touch_ button on the dark hero; the only glowing button.",
+      "html": "<div class=\"ds-cta-stage\"><button class=\"ds-btn-cta\"><span>_Get in touch_</span><span class=\"ds-btn-cta-arrow\">⤘</span></button></div>",
+      "css": ".ds-cta-stage { background: color-mix(in srgb, oklch(0.07 0 0) 98%, oklch(0.96 0 0)); padding: 48px; border-radius: 2rem; box-shadow: inset 0 0 200px color-mix(in srgb, oklch(0.07 0 0) 80%, transparent), inset 0 0 40px color-mix(in srgb, oklch(0.07 0 0) 60%, transparent); } .ds-btn-cta { display: inline-flex; align-items: center; justify-content: center; max-width: 300px; padding: 1rem 1.5rem; border-radius: 1.5rem; border: 1px solid oklch(0.9 0 0); background: oklch(0.93 0.03 80); color: oklch(0.07 0 0); font-family: Doto, system-ui, sans-serif; font-size: 1.5rem; font-weight: 900; line-height: 1.25; text-transform: uppercase; cursor: pointer; box-shadow: 0 0 7px color-mix(in srgb, oklch(0.93 0.03 80) 40%, transparent), 0 0 10px color-mix(in srgb, oklch(0.8858 0.182 95.69) 30%, transparent), 0 0 21px color-mix(in srgb, oklch(0.8858 0.182 95.69) 20%, transparent), 0 0 42px color-mix(in srgb, oklch(0.8858 0.182 95.69) 20%, transparent), 0 0 82px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 20%, transparent); text-shadow: 0 0 7px color-mix(in srgb, oklch(0.8858 0.182 95.69) 40%, transparent), 0 0 10px color-mix(in srgb, oklch(0.8858 0.182 95.69) 30%, transparent), 0 0 21px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 20%, transparent), 0 0 42px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 20%, transparent), 0 0 82px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 20%, transparent); outline: 2px solid transparent; outline-offset: 2px; transition: box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1), transform 150ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-btn-cta:hover { transform: translateY(-2px); background: oklch(0.96 0 0); box-shadow: 0 0 7px color-mix(in srgb, oklch(0.93 0.03 80) 50%, transparent), 0 0 10px color-mix(in srgb, oklch(0.8858 0.182 95.69) 40%, transparent), 0 0 21px color-mix(in srgb, oklch(0.8858 0.182 95.69) 30%, transparent), 0 0 42px color-mix(in srgb, oklch(0.8858 0.182 95.69) 30%, transparent), 0 0 82px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 30%, transparent), 0 0 130px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 20%, transparent), 0 0 170px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 10%, transparent); } .ds-btn-cta:active { transform: translateY(0) scale(0.98); } .ds-btn-cta:focus-visible { outline-color: oklch(0.8858 0.182 95.69); } .ds-btn-cta-arrow { margin-left: 0.25rem; } .ds-btn-cta:hover .ds-btn-cta-arrow { color: oklch(0.8858 0.182 95.69); }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Solid gold button with deep ink text; used for labs controls such as reset.",
+      "html": "<button class=\"ds-btn-primary\">Reset</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; padding: 0.5rem 1rem; border-radius: 1.5rem; border: 1px solid transparent; background: oklch(0.8858 0.182 95.69); color: oklch(0.09 0 0); font-family: PPNeueMontreal, system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; line-height: 1.25; cursor: pointer; box-shadow: 0 0 7px color-mix(in srgb, oklch(0.93 0.03 80) 40%, transparent), 0 0 10px color-mix(in srgb, oklch(0.93 0.03 80) 30%, transparent), 0 0 21px color-mix(in srgb, oklch(0.93 0.03 80) 20%, transparent), 0 0 42px color-mix(in srgb, oklch(0.8858 0.182 95.69) 20%, transparent), 0 0 82px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 20%, transparent); outline: 2px solid transparent; outline-offset: 2px; transition: box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1), transform 150ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-btn-primary:hover { transform: translateY(-2px); background: color-mix(in srgb, oklch(0.8858 0.182 95.69) 90%, transparent); } .ds-btn-primary:active { transform: translateY(0) scale(0.98); } .ds-btn-primary:focus-visible { outline-color: oklch(0.07 0 0); }"
+    },
+    {
+      "name": "Domain Tags",
+      "kind": "chip",
+      "refersTo": "tag-frontend",
+      "description": "Doto pills tinted 18% with the domain accent: mint frontend, violet backend, gold creative, ink-washed tooling.",
+      "html": "<div class=\"ds-tags\"><span class=\"ds-tag ds-tag-frontend\">React</span><span class=\"ds-tag ds-tag-backend\">NestJS</span><span class=\"ds-tag ds-tag-creative\">WebGL</span><span class=\"ds-tag ds-tag-default\">Git</span></div>",
+      "css": ".ds-tags { display: flex; flex-wrap: wrap; gap: 0.3125rem; padding: 16px; background: oklch(0.975 0.012 88); } .ds-tag { font-family: Doto, system-ui, sans-serif; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em; border-radius: 9999px; padding: 0.125rem 0.375rem; color: oklch(0.07 0 0); } .ds-tag-frontend { background: color-mix(in srgb, oklch(0.7906 0.1573 166.87) 18%, transparent); } .ds-tag-backend { background: color-mix(in srgb, oklch(0.5548 0.2575 312.98) 18%, transparent); } .ds-tag-creative { background: color-mix(in srgb, oklch(0.8858 0.182 95.69) 18%, transparent); } .ds-tag-default { background: color-mix(in srgb, oklch(0.07 0 0) 8%, transparent); }"
+    },
+    {
+      "name": "Project Card",
+      "kind": "card",
+      "refersTo": "card-paper",
+      "description": "Opaque paper card with a Doto terminal bar; neutral at rest, gold-tinted lift and revealed arrow on hover or focus.",
+      "html": "<a class=\"ds-card\" href=\"#\"><div class=\"ds-card-bar\"><span class=\"ds-dots\"><i></i><i></i><i></i></span><span>PROCEDURAL MAPS</span><span class=\"ds-status\">LIVE</span></div><div class=\"ds-card-body\"><h3 class=\"ds-card-title\"><span class=\"ds-card-prompt\">⤘</span>Procedural Maps</h3><p class=\"ds-card-text\">Procedural terrain generation rendered in the browser.</p></div><div class=\"ds-card-foot\"><span class=\"ds-card-link\">_VIEW PROJECT_ <span class=\"ds-card-arrow\">⤘</span></span></div></a>",
+      "css": ".ds-card { display: flex; flex-direction: column; max-width: 340px; text-decoration: none; color: oklch(0.07 0 0); background: oklch(0.975 0.012 88); border: 1px solid color-mix(in srgb, oklch(0.88 0.02 80) 50%, transparent); border-radius: 1rem; overflow: hidden; box-shadow: 0 1px 2px color-mix(in srgb, oklch(0.07 0 0) 5%, transparent), 0 8px 24px -12px color-mix(in srgb, oklch(0.07 0 0) 18%, transparent); outline: 2px solid transparent; outline-offset: -2px; transition: transform 250ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 350ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-card:hover { box-shadow: 0 24px 60px color-mix(in srgb, oklch(0.07 0 0) 14%, transparent), 0 0 0 1px color-mix(in srgb, oklch(0.8858 0.182 95.69) 30%, transparent), 0 8px 40px color-mix(in srgb, oklch(0.8858 0.182 95.69) 28%, transparent), 0 2px 12px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 15%, transparent); transform: translateY(-4px) scale(1.02); } .ds-card:focus-visible { outline-color: oklch(0.07 0 0); } .ds-card-bar { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.5rem 1rem; border-bottom: 1px solid color-mix(in srgb, oklch(0.88 0.02 80) 50%, transparent); font-family: Doto, system-ui, sans-serif; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: oklch(0.45 0 0); } .ds-dots { display: flex; gap: 0.25rem; } .ds-dots i { width: 10px; height: 10px; border-radius: 9999px; background: color-mix(in srgb, oklch(0.55 0.22 29) 75%, oklch(0.8858 0.182 95.69)); } .ds-dots i:nth-child(2) { background: color-mix(in srgb, oklch(0.8858 0.182 95.69) 68%, oklch(0.7906 0.1573 166.87)); } .ds-dots i:nth-child(3) { background: color-mix(in srgb, oklch(0.7906 0.1573 166.87) 72%, oklch(0.8858 0.182 95.69)); } .ds-status { display: inline-flex; align-items: center; gap: 0.375rem; letter-spacing: 0.14em; font-weight: 500; } .ds-status::before { content: ''; width: 5px; height: 5px; border-radius: 9999px; background: oklch(0.8858 0.182 95.69); box-shadow: 0 0 6px color-mix(in srgb, oklch(0.8858 0.182 95.69) 60%, transparent); } .ds-card-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; } .ds-card-title { margin: 0; display: flex; align-items: center; gap: 0.375rem; font-family: PPNeueMontreal, system-ui, sans-serif; font-size: 1rem; font-weight: 600; } .ds-card-prompt { font-family: Doto, system-ui, sans-serif; font-size: 0.875rem; color: color-mix(in srgb, oklch(0.8858 0.182 95.69) 50%, oklch(0.07 0 0)); } .ds-card-text { margin: 0; font-family: PPNeueMontreal, system-ui, sans-serif; font-size: 0.875rem; line-height: 1.45; } .ds-card-foot { padding: 0.5rem 1rem; border-top: 1px solid oklch(0.9 0 0); } .ds-card-link { font-family: Doto, system-ui, sans-serif; font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: oklch(0.45 0 0); transition: color 200ms; } .ds-card-arrow { display: inline-block; opacity: 0; transform: translateX(-4px); transition: opacity 200ms ease, transform 200ms ease; } .ds-card:hover .ds-card-link, .ds-card:focus-visible .ds-card-link { color: oklch(0.07 0 0); } .ds-card:hover .ds-card-arrow, .ds-card:focus-visible .ds-card-arrow { opacity: 1; transform: translateX(0); }"
+    },
+    {
+      "name": "Section Header",
+      "kind": "custom",
+      "refersTo": "headline",
+      "description": "Terminal section header: _0N / index, _❯-prompted headline, uppercase Doto description.",
+      "html": "<header class=\"ds-header\"><span class=\"ds-header-index\">_01 /</span><h2 class=\"ds-header-title\"><span class=\"ds-header-prompt\">_❯</span>PROJECTS</h2><p class=\"ds-header-desc\">Shipped work and open source</p></header>",
+      "css": ".ds-header { padding: 24px; background: oklch(0.93 0.03 80); } .ds-header-index { display: block; margin-bottom: 0.25rem; font-family: Doto, system-ui, sans-serif; font-size: 0.875rem; font-weight: 600; letter-spacing: 0.14em; color: oklch(0.45 0 0); } .ds-header-title { margin: 0 0 0.5rem; font-family: PPNeueMontreal, system-ui, sans-serif; font-size: 3.5rem; font-weight: 700; line-height: 1.25; color: oklch(0.07 0 0); } .ds-header-prompt { margin-right: 0.5rem; color: color-mix(in srgb, oklch(0.8858 0.182 95.69) 50%, oklch(0.07 0 0)); } .ds-header-desc { margin: 0; font-family: Doto, system-ui, sans-serif; font-size: 0.875rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(0.45 0 0); }"
+    },
+    {
+      "name": "Sections Nav",
+      "kind": "nav",
+      "refersTo": "nav-section-link",
+      "description": "Fixed marginalia nav: Doto indexes at rest, names slide open and the paper panel materialises on hover or focus-within.",
+      "html": "<nav class=\"ds-nav\"><ul class=\"ds-nav-list\"><li><a class=\"ds-nav-link\" href=\"#\">_00<span class=\"ds-nav-name\"> / INTRO</span></a></li><li><a class=\"ds-nav-link\" aria-current=\"true\" href=\"#\">_01<span class=\"ds-nav-name\"> / PROJECTS</span></a></li><li><a class=\"ds-nav-link\" href=\"#\">_02<span class=\"ds-nav-name\"> / EXPERIENCE</span></a></li></ul></nav>",
+      "css": ".ds-nav { display: inline-flex; padding: 1rem; border-radius: 1rem; border: 1px solid transparent; background: transparent; border-left: 2px solid color-mix(in srgb, oklch(0.88 0.02 80) 50%, transparent); transition: background-color 300ms cubic-bezier(0.22, 1, 0.36, 1), border-color 300ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-nav:hover, .ds-nav:focus-within { background: oklch(0.975 0.012 88); border-color: color-mix(in srgb, oklch(0.88 0.02 80) 50%, transparent); box-shadow: 0 1px 2px color-mix(in srgb, oklch(0.07 0 0) 5%, transparent), 0 8px 24px -12px color-mix(in srgb, oklch(0.07 0 0) 18%, transparent); } .ds-nav-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.25rem; } .ds-nav-link { font-family: Doto, system-ui, sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: oklch(0.45 0 0); text-decoration: none; border-radius: 0.5rem; outline: 2px solid transparent; outline-offset: 2px; transition: color 150ms ease-out; } .ds-nav-link:hover { color: oklch(0.07 0 0); } .ds-nav-link[aria-current='true'] { color: oklch(0.07 0 0); text-shadow: 0 0 12px color-mix(in srgb, oklch(0.8858 0.182 95.69) 35%, transparent); } .ds-nav-link:focus-visible { outline-color: oklch(0.07 0 0); } .ds-nav-name { display: inline-block; vertical-align: bottom; overflow: hidden; white-space: nowrap; max-width: 0; opacity: 0; transition: max-width 300ms cubic-bezier(0.22, 1, 0.36, 1), opacity 300ms cubic-bezier(0.22, 1, 0.36, 1); } .ds-nav:hover .ds-nav-name, .ds-nav:focus-within .ds-nav-name { max-width: 6rem; opacity: 1; }"
+    },
+    {
+      "name": "Establish Link Contact Block",
+      "kind": "custom",
+      "refersTo": "panel-machine",
+      "description": "Footer contact block on the dark machine panel: Doto prompt with blinking cursor, rows with accent LEDs that light on hover or focus.",
+      "html": "<div class=\"ds-panel\"><p class=\"ds-contact-head\">_❯ ESTABLISH LINK<span class=\"ds-contact-cursor\">▐</span></p><ul class=\"ds-contact-list\"><li><a class=\"ds-contact-link\" href=\"#\" style=\"--ds-accent: oklch(0.8455 0.0872 355.09)\"><span class=\"ds-contact-arrow\">⤘</span>GITHUB<span class=\"ds-led\"></span></a></li><li><a class=\"ds-contact-link\" href=\"#\" style=\"--ds-accent: oklch(0.7906 0.1573 166.87)\"><span class=\"ds-contact-arrow\">⤘</span>LINKEDIN<span class=\"ds-led\"></span></a></li><li><a class=\"ds-contact-link\" href=\"#\" style=\"--ds-accent: oklch(0.8858 0.182 95.69)\"><span class=\"ds-contact-arrow\">⤘</span>EMAIL<span class=\"ds-led\"></span></a></li></ul></div>",
+      "css": ".ds-panel { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; padding: 2rem; border-radius: 2rem; background: color-mix(in srgb, oklch(0.07 0 0) 98%, oklch(0.96 0 0)); box-shadow: inset 0 0 200px color-mix(in srgb, oklch(0.07 0 0) 80%, transparent), inset 0 0 40px color-mix(in srgb, oklch(0.07 0 0) 60%, transparent); } .ds-contact-head { margin: 0; font-family: Doto, system-ui, sans-serif; font-size: 0.75rem; letter-spacing: 0.12em; color: color-mix(in srgb, oklch(0.93 0.03 80) 55%, transparent); } .ds-contact-cursor { display: inline-block; margin-left: 0.25rem; color: oklch(0.8858 0.182 95.69); animation: ds-blink 1.2s step-end infinite; } @keyframes ds-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } } @media (prefers-reduced-motion: reduce) { .ds-contact-cursor { animation: none; } } .ds-contact-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 0.25rem; } .ds-contact-link { display: inline-flex; align-items: center; gap: 0.5rem; font-family: Doto, system-ui, sans-serif; font-size: 0.875rem; letter-spacing: 0.06em; text-transform: uppercase; color: color-mix(in srgb, oklch(0.93 0.03 80) 75%, transparent); text-decoration: none; border-radius: 0.5rem; outline: 2px solid transparent; outline-offset: 4px; transition: color 150ms ease-out; } .ds-contact-link:hover, .ds-contact-link:focus-visible { color: var(--ds-accent); } .ds-contact-link:focus-visible { outline-color: oklch(0.8858 0.182 95.69); } .ds-contact-arrow { display: inline-block; opacity: 0; transform: translateX(-4px); color: var(--ds-accent); transition: opacity 150ms ease-out, transform 150ms ease-out; } .ds-contact-link:hover .ds-contact-arrow, .ds-contact-link:focus-visible .ds-contact-arrow { opacity: 1; transform: translateX(0); } .ds-led { width: 8px; height: 8px; border-radius: 2px; background: color-mix(in srgb, var(--ds-accent) 35%, transparent); transition: background-color 150ms ease-out, box-shadow 150ms ease-out; } .ds-contact-link:hover .ds-led, .ds-contact-link:focus-visible .ds-led { background: var(--ds-accent); box-shadow: 0 0 10px color-mix(in srgb, var(--ds-accent) 70%, transparent); }"
+    },
+    {
+      "name": "Machine Panel",
+      "kind": "custom",
+      "refersTo": "panel-machine",
+      "description": "The dark bookend surface of hero and footer, with inset shading; the live shader mesh is approximated here by static radial light.",
+      "html": "<section class=\"ds-machine\"><h1 class=\"ds-machine-title\">Nicolas Coulonnier</h1><p class=\"ds-machine-lead\"><b>_</b>❯ I build fast, polished web products.<span class=\"ds-machine-cursor\">▐</span></p></section>",
+      "css": ".ds-machine { position: relative; overflow: hidden; padding: 4rem; border-radius: 2rem; color: oklch(0.93 0.03 80); background: radial-gradient(60% 60% at 15% 20%, color-mix(in srgb, oklch(0.8858 0.182 95.69) 35%, transparent), transparent 70%), radial-gradient(55% 55% at 20% 90%, color-mix(in srgb, oklch(0.7906 0.1573 166.87) 30%, transparent), transparent 70%), radial-gradient(50% 50% at 90% 15%, color-mix(in srgb, oklch(0.5548 0.2575 312.98) 35%, transparent), transparent 70%), color-mix(in srgb, oklch(0.07 0 0) 98%, oklch(0.96 0 0)); box-shadow: inset 0 0 200px color-mix(in srgb, oklch(0.07 0 0) 80%, transparent), inset 0 0 40px color-mix(in srgb, oklch(0.07 0 0) 60%, transparent); } .ds-machine-title { margin: 0 0 1.5rem; font-family: PPNeueMontreal, system-ui, sans-serif; font-style: italic; font-weight: 700; font-size: 4.75rem; line-height: 0.9; letter-spacing: -0.04em; text-shadow: 0 0 7px color-mix(in srgb, oklch(0.93 0.03 80) 40%, transparent), 0 0 10px color-mix(in srgb, oklch(0.93 0.03 80) 30%, transparent), 0 0 21px color-mix(in srgb, oklch(0.93 0.03 80) 20%, transparent), 0 0 42px color-mix(in srgb, oklch(0.8858 0.182 95.69) 20%, transparent), 0 0 82px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 20%, transparent); } .ds-machine-lead { margin: 0; max-width: 40rem; font-family: PPNeueMontreal, system-ui, sans-serif; font-size: 1.5rem; line-height: 1.25; text-shadow: 0 0 7px color-mix(in srgb, oklch(0.93 0.03 80) 40%, transparent), 0 0 10px color-mix(in srgb, oklch(0.93 0.03 80) 30%, transparent), 0 0 21px color-mix(in srgb, oklch(0.8858 0.182 95.69) 20%, transparent), 0 0 42px color-mix(in srgb, oklch(0.7906 0.1573 166.87) 20%, transparent); } .ds-machine-cursor { animation: ds-cursor 800ms steps(1) infinite; } @keyframes ds-cursor { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } } @media (prefers-reduced-motion: reduce) { .ds-machine-cursor { animation: none; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Night Workbench",
+    "overview": "Dark machine panels bookend a lit workbench of warm paper cards, and the hardware objects carry the identity. At the top, an immersive near-black hero panel holds a WebGL/WebGPU mesh of gold, mint and violet light under animated film grain, a CSS-3D laptop that boots on arrival, and a magnetic `_Get in touch_` CTA; on scroll the hero morphs from full-bleed into an inset rounded panel. At the bottom, a matching dark footer panel holds a CSS-3D server rack and the `_❯ ESTABLISH LINK` contact block. Between them, the page is warm beige paper under a fixed WebGL grain overlay, and the content sits on opaque paper cards that stay quiet until pointed at.\n\nThe voice of the machine is Doto, a dot-matrix face used only for terminal vocabulary: `_❯` prompts, the `▐` cursor, the `⤘` arrow, underscored labels (`_GET IN TOUCH_`, `_VIEW PROJECT_`), and `_0N /` section numbering. The human voice is PP Neue Montreal, used for every heading and paragraph. Density is moderate: cards are compact and bar-topped like terminal windows, the sections breathe inside a capped column, and the dark panels run near-full-bleed.\n\nComponents are precise, tactile, quiet: neutral at rest, colour spent only on hover and focus, machine labels in Doto. Glows exist but stay subtle and belong to the dark world only (the hero and its CTA). Confirmed rejections: aggressive neon, and \"The Signal\" directions (carrier wave, dithering), which are never to be resurrected.",
+    "keyCharacteristics": [
+      "Two dark machine panels (hero laptop, footer rack) bookending a warm paper workbench.",
+      "A WebGL/WebGPU mesh of gold, mint and violet light plus WebGL film grain on the dark panels; a static WebGL grain over the whole page.",
+      "Opaque paper cards with a terminal title bar, neutral at rest, gold-tinted lift on hover.",
+      "Doto for machine labels only; PP Neue Montreal for everything a person reads at length.",
+      "One house easing curve, `cubic-bezier(0.22, 1, 0.36, 1)`, shared by CSS and JS.",
+      "Every animation stops under `prefers-reduced-motion`; prerendered HTML is fully visible without JS."
+    ],
+    "rules": [
+      {
+        "name": "The Spent-on-Hover Rule",
+        "body": "Accents never tint a resting surface. A card at rest is paper, a hairline and a neutral shadow; gold enters the surface only through the hover shadow, where it means \"this one\".",
+        "section": "colors"
+      },
+      {
+        "name": "The Dark-Only Gold Rule",
+        "body": "Gold is a text, hover and ring colour on dark panels only. On paper it measures about 1.1:1, so there it appears as a lit dot or tick, or mixed 50% with ink; gold hover and gold text on paper are debt, not precedent.",
+        "section": "colors"
+      },
+      {
+        "name": "The Kirby Reserve Rule",
+        "body": "Pink belongs to the footer's contact voice and the Kirby skill. It never goes on structural lines such as rails, rules or borders.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Voices Rule",
+        "body": "PP Neue Montreal speaks; Doto labels the machine. Doto is for prompts, bars, tags, indexes, nav and the CTA, never for a sentence meant to be read as prose.",
+        "section": "typography"
+      },
+      {
+        "name": "The Legible Dot-Matrix Rule",
+        "body": "Anything set in Doto that is read or clicked should be at least 16px or weight 800 and up. Dot-matrix glyphs break apart at small sizes and light weights; several shipped labels (0.6rem nav links, 0.75rem bars at weight 400 to 500) are below this and are debt, not the standard.",
+        "section": "typography"
+      },
+      {
+        "name": "The Index, Not Kicker Rule",
+        "body": "The `_0N /` mark above a section title is literal terminal numbering and nothing else: no descriptive words, no taglines.",
+        "section": "typography"
+      },
+      {
+        "name": "The Bookend Rule",
+        "body": "Dark panels run near-full-bleed at the top and bottom of the page only; everything between lives in the capped paper column. Never introduce a third dark panel mid-page.",
+        "section": "layout"
+      },
+      {
+        "name": "The Paper Doesn't Glow Rule",
+        "body": "Glows are dark-world vocabulary, reserved for the CTA and the hero. On paper, accent lives in small marks and in the hover shadow, never as a haze behind text.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Rest/Hover Pair Rule",
+        "body": "Every paper card uses the rest shadow at rest and the hover shadow on hover, transitioning over 300ms on the house curve. No other elevation levels on paper.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do preserve the hero world intact: the gold, mint and violet shader mesh, the film grain, the booting laptop, the magnetic CTA and the scroll morph.",
+      "Do keep the footer as a dark machine panel with the server rack and the `_❯ ESTABLISH LINK` contact block.",
+      "Do speak machine in Doto with the established vocabulary: `_❯` prompts, `▐` cursor, `⤘` arrow, underscored labels (`_GET IN TOUCH_`), `_0N /` numbering.",
+      "Do keep cards neutral at rest (rest shadow, subtle hairline, opaque paper) and spend colour only on hover and focus.",
+      "Do show a 2px outline with offset on every interactive element: ink on light surfaces, gold on dark panels.",
+      "Do set Doto that is read or clicked at 16px or more, or at weight 800 and up.",
+      "Do use the house curve `cubic-bezier(0.22, 1, 0.36, 1)` with the 150/300/600ms durations, and stop every animation under `prefers-reduced-motion`."
+    ],
+    "donts": [
+      "Don't use aggressive neon; glows stay subtle and are reserved for CTAs and the hero.",
+      "Don't resurrect \"The Signal\" directions: no carrier wave, no dithering.",
+      "Don't use gold as hover or text colour on paper (about 1.1:1); gold hover belongs to dark surfaces.",
+      "Don't use graphite gray for text on the dark panels (about 2.72:1); use warm paper at reduced opacity instead."
+    ]
+  }
+}

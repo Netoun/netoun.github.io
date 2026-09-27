@@ -9,7 +9,7 @@ Sync Impact Report
   spec-template.md ✅ · tasks-template.md ✅
 - Runtime guidance: AGENTS.md (imported by CLAUDE.md) ✅ aligned
 - Deferred TODOs: none
-Derived from the de facto rules of AGENTS.md, PRODUCT.md, docs/design.md, docs/architecture.md and the
+Derived from the de facto rules of AGENTS.md, PRODUCT.md, DESIGN.md, docs/architecture.md and the
 gates used by specs/001-premium-polish/plan.md.
 -->
 

@@ -4,7 +4,7 @@ Guidance for AI coding agents (Claude Code, Codex, opencode, Cursor) working in 
 
 ## Project
 
-Personal site of Nicolas Coulonnier (Netoun), full-stack engineer at Lonestone. Goal: visibility and credibility with technical peers, recruiters served on the side. Product truth lives in [PRODUCT.md](PRODUCT.md), visual system in [docs/design.md](docs/design.md), component rules in [docs/architecture.md](docs/architecture.md).
+Personal site of Nicolas Coulonnier (Netoun), full-stack engineer at Lonestone. Goal: visibility and credibility with technical peers, recruiters served on the side. Product truth lives in [PRODUCT.md](PRODUCT.md), visual system in [DESIGN.md](DESIGN.md) (+ `.impeccable/design.json` sidecar), component rules in [docs/architecture.md](docs/architecture.md).
 
 **Never invent content** — bio, experiences, links, dates, metrics, legal text. Missing content stays missing; ask. Known content inconsistencies are listed in PRODUCT.md › Evidence on Hand.
 

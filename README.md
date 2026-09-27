@@ -40,6 +40,6 @@ CI (`.github/workflows/ci.yml`) runs `check`, `knip` and `build` on every push t
 ## Docs
 
 - [PRODUCT.md](PRODUCT.md) — audience, purpose, positioning, content rules
-- [docs/design.md](docs/design.md) — design system (tokens, typography, motion, surfaces)
+- [DESIGN.md](DESIGN.md) — design system (tokens, typography, motion, surfaces)
 - [docs/architecture.md](docs/architecture.md) — folder, naming and import rules
 - [AGENTS.md](AGENTS.md) — working guide for AI coding agents (`CLAUDE.md` imports it)

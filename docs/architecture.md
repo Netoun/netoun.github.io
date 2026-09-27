@@ -296,7 +296,7 @@ For variants: `recipe()` from `@vanilla-extract/recipes` (see `button.css.ts`).
 
 ## Style Rules
 
-See [`design.md`](./design.md) for tokens, breakpoints, shadows, typography.
+See [`DESIGN.md`](../DESIGN.md) for tokens, breakpoints, shadows, typography.
 
 Reminders:
 

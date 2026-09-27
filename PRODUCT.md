@@ -40,7 +40,7 @@ Success = peers explore the Labs and share them; visitors leave knowing what Nic
 - Name: **Netoun** (handle) / Nicolas Coulonnier. Page titles follow `Netoun - [page]`.
 - Voice: terminal / machine vocabulary — `_❯` prompts, `▐` cursor, underscored labels (`_VIEW PROJECT_`, `_MENU_`), `_0N /` numbering, "ESTABLISH LINK". English copy.
 - Existing assets: `public/logo.svg`, favicons, OG images in `public/og-image-*`, local fonts in `public/fonts/`.
-- Visual identity is recorded in `docs/design.md`.
+- Visual identity is recorded in `DESIGN.md` (root) and its sidecar `.impeccable/design.json`.
 
 ## Evidence on Hand
 
