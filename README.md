@@ -33,7 +33,7 @@ bun run dev        # http://localhost:5173
 
 ## Deployment
 
-Static hosting on Cloudflare Pages: build with `bun run build`, publish `build/client`. Security and cache headers live in `public/_headers`, redirects in `public/_redirects`. Pages reads the Node version from `.node-version`; set `BUN_VERSION` to match `packageManager` in `package.json`.
+Static hosting on Cloudflare Pages (build image v3), publishing `build/client`. Pages installs Node from `.node-version` and Bun from `packageManager` in `package.json`, then runs `bun install --frozen-lockfile` before the dashboard build command (`bun i && bun run build && bun run generate-sitemap`). `generate-sitemap` is only a compatibility alias — the sitemap is emitted by the build — so the command can be simplified to `bun run build`. Security and cache headers live in `public/_headers`, redirects in `public/_redirects`.
 
 CI (`.github/workflows/ci.yml`) runs `check`, `knip` and `build` on every push to `main` and on pull requests.
 
