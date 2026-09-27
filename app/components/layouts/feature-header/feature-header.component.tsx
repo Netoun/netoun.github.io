@@ -1,5 +1,5 @@
 import { animate } from "animejs";
-import { createContext, useEffect, useRef, use } from "react";
+import { createContext, useEffect, useMemo, useRef, use } from "react";
 import * as styles from "./feature-header.css";
 
 type AccentVariant = "primary" | "secondary" | "tertiary";
@@ -47,8 +47,10 @@ export function FeatureHeader({
     }
   }, [as]);
 
+  const contextValue = useMemo(() => ({ variant, headerVariant: as }), [variant, as]);
+
   return (
-    <FeatureHeaderContext.Provider value={{ variant, headerVariant: as }}>
+    <FeatureHeaderContext.Provider value={contextValue}>
       <div ref={containerRef} className={styles.containerStyle({ variant: as })}>
         {index !== undefined && (
           <span className={styles.indexStyle} data-reveal-item>

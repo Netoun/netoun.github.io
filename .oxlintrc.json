@@ -1,11 +1,61 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["typescript", "unicorn", "oxc"],
+  "plugins": ["typescript", "unicorn", "oxc", "react", "jsx-a11y", "import", "vitest"],
   "categories": {
-    "correctness": "error"
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn"
   },
-  "rules": {},
   "env": {
-    "builtin": true
-  }
+    "builtin": true,
+    "browser": true
+  },
+  "ignorePatterns": ["build/**", ".react-router/**", "public/**"],
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "import/default": "off",
+    "import/no-unassigned-import": "off",
+    "import/no-named-as-default": "off",
+    "no-underscore-dangle": "off",
+    "vitest/require-mock-type-parameters": "off",
+
+    // React Compiler-era rules: real signals in animation code. Fix during the UI pass, then promote to error.
+    "react/refs": "warn",
+    "react/set-state-in-effect": "warn",
+    "react-hooks/exhaustive-deps": "warn"
+  },
+  "overrides": [
+    {
+      "files": ["app/components/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "regex": "^(@/|(\\.\\./)+)(features|pages)/",
+                "message": "app/components must not import from features/ or pages/ (docs/architecture.md). Pass data in as props."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["app/features/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "regex": "^(@/|(\\.\\./)+)pages/",
+                "message": "app/features must not import from pages/ (docs/architecture.md)."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
 }

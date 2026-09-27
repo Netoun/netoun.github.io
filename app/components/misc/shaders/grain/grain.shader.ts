@@ -57,15 +57,3 @@ void main() {
   gl_FragColor = vec4(tint, alpha);
 }
 `;
-
-export function getCanvasSize() {
-  const dpr = Math.min(
-    Math.max(window.devicePixelRatio || 1, GRAIN_CONFIG.minRenderScale),
-    GRAIN_CONFIG.maxRenderScale,
-  );
-
-  return {
-    width: Math.max(1, Math.floor(window.innerWidth * dpr)),
-    height: Math.max(1, Math.floor(window.innerHeight * dpr)),
-  };
-}

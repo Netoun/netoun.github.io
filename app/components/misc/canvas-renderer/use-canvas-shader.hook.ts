@@ -1,5 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import type { RendererType, ShaderBundle, Uniforms } from "./canvas-renderer.types";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import type {
+  RendererSession,
+  RendererType,
+  ShaderBundle,
+  Uniforms,
+} from "./canvas-renderer.types";
 import { createCanvasRenderer } from "./create-canvas-renderer";
 
 export interface UseShaderCanvasOptions {
@@ -23,31 +28,53 @@ export function useShaderCanvas(
   options: UseShaderCanvasOptions = {},
 ): { type: RendererType } {
   const [type, setType] = useState<RendererType>("pending");
-  const sessionRef = useRef<Awaited<ReturnType<typeof createCanvasRenderer>> | null>(null);
-  const optionsRef = useRef(options);
-  optionsRef.current = options;
+  const sessionRef = useRef<RendererSession | null>(null);
 
+  // Latest options for the async renderer, without re-creating the GPU session.
+  const optionsRef = useRef(options);
+  useLayoutEffect(() => {
+    optionsRef.current = options;
+  });
+
+  const { disabled, uniforms } = options;
+  const { vertexGLSL, fragmentGLSL, webgpuWGSL } = shader;
+
+  // One renderer session per shader source. Other options are read once, at creation.
   useEffect(() => {
     const canvas = canvasRef.current;
-    const { disabled, uniforms, ...rendererOpts } = optionsRef.current;
     if (!canvas || disabled) return;
 
+    const {
+      disabled: _disabled,
+      onReady: _onReady,
+      uniforms: initialUniforms,
+      ...rendererOptions
+    } = optionsRef.current;
     let cancelled = false;
 
-    createCanvasRenderer(canvas, shader, {
-      ...rendererOpts,
-      uniforms,
-      onReady(r) {
-        if (cancelled) return;
-        setType(r);
-        rendererOpts.onReady?.(r);
+    createCanvasRenderer(
+      canvas,
+      { vertexGLSL, fragmentGLSL, webgpuWGSL },
+      {
+        ...rendererOptions,
+        uniforms: initialUniforms,
+        onReady(rendererType) {
+          if (cancelled) return;
+          setType(rendererType);
+          optionsRef.current.onReady?.(rendererType);
+        },
       },
-    }).then((session) => {
+    ).then((session) => {
       if (cancelled) {
         session.destroy();
         return;
       }
       sessionRef.current = session;
+      // Uniforms may have changed while the renderer was initialising.
+      const latestUniforms = optionsRef.current.uniforms;
+      if (latestUniforms && latestUniforms !== initialUniforms) {
+        session.updateUniforms(latestUniforms);
+      }
     });
 
     return () => {
@@ -55,20 +82,11 @@ export function useShaderCanvas(
       sessionRef.current?.destroy();
       sessionRef.current = null;
     };
-  }, [
-    canvasRef,
-    shader.vertexGLSL,
-    shader.fragmentGLSL,
-    shader.webgpuWGSL,
-    optionsRef.current.disabled,
-  ]);
+  }, [canvasRef, vertexGLSL, fragmentGLSL, webgpuWGSL, disabled]);
 
   useEffect(() => {
-    const session = sessionRef.current;
-    const { uniforms } = options;
-    if (!session || !uniforms) return;
-    session.updateUniforms(uniforms);
-  }, [options.uniforms]);
+    if (uniforms) sessionRef.current?.updateUniforms(uniforms);
+  }, [uniforms]);
 
   return { type };
 }

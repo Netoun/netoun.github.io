@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import type { ExperimentSlug } from "./experiment-slugs";
 
 /** Sidebar grouping for experiments. Order defined by `LAB_GROUPS`. */
 export type LabGroup = "3D CSS" | "HUD" | "Shaders" | "Scroll" | "SVG";
@@ -18,8 +19,8 @@ export interface LabSource {
 
 /** Descriptor for one Labs experiment. Each experiment folder exports one. */
 export interface LabExperiment {
-  /** URL slug — must also be listed in `experiment-slugs.ts`. */
-  slug: string;
+  /** URL slug — typed against `experiment-slugs.ts`, which drives prerender + sitemap. */
+  slug: ExperimentSlug;
   /** Human title (also used in SEO). */
   title: string;
   /** One-line description (landing card + SEO description). */

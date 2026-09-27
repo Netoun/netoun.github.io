@@ -55,11 +55,11 @@ export const scanlineStyles = style({
   background: "linear-gradient(180deg, transparent 0%, oklch(1 0 0 / 0.16) 52%, transparent 100%)",
   animation: `${scanlineKeyframes} 7.1s linear infinite`,
   selectors: {
-    ':global([data-quality="high"]) &': {
+    '[data-quality="high"] &': {
       opacity: 0.3,
       animationDuration: "5.4s",
     },
-    ':global([data-reduced-motion="true"]) &': {
+    '[data-reduced-motion="true"] &': {
       animation: "none",
       opacity: 0.08,
     },

@@ -1,41 +1,34 @@
-import { useEffect, useMemo, useRef } from "react";
+import { type RefObject, useEffect, useRef } from "react";
 
 export type MousePosition = {
   x: number;
   y: number;
 };
 
-type UseMousePositionParams = {
-  container?: HTMLElement | Window;
-};
-
-export function useMousePosition({
-  container = typeof window !== "undefined" ? window : undefined,
-}: UseMousePositionParams = {}) {
+/**
+ * Tracks the pointer in viewport coordinates without re-rendering.
+ *
+ * Returns a stable ref: read `.current` from effects or animation frames, never
+ * during render. Listens on `target` when provided, on `window` otherwise.
+ * `{ x: 0, y: 0 }` means no pointer event has been received yet.
+ */
+export function useMousePosition(target?: RefObject<HTMLElement | null>): RefObject<MousePosition> {
   const mousePositionRef = useRef<MousePosition>({ x: 0, y: 0 });
 
   useEffect(() => {
-    // Client-only: skip if not in browser
-    if (typeof window === "undefined") return;
-    if (!container) return;
+    const container: HTMLElement | Window = target?.current ?? window;
 
-    const handleMouseMove = (e: Event) => {
-      const mouseEvent = e as MouseEvent;
-      // Mutate the existing object instead of replacing it
-      // This keeps the reference stable and prevents rerenders
-      mousePositionRef.current.x = mouseEvent.clientX;
-      mousePositionRef.current.y = mouseEvent.clientY;
+    const handleMouseMove = (event: Event) => {
+      if (!(event instanceof MouseEvent)) return;
+      mousePositionRef.current.x = event.clientX;
+      mousePositionRef.current.y = event.clientY;
     };
 
-    container.addEventListener("mousemove", handleMouseMove);
-
+    container.addEventListener("mousemove", handleMouseMove, { passive: true });
     return () => {
       container.removeEventListener("mousemove", handleMouseMove);
     };
-  }, [container]);
+  }, [target]);
 
-  // Return a stable object reference that doesn't change
-  // The object is mutated internally, but the reference stays the same
-  // This prevents rerenders while still allowing components to read the latest value
-  return useMemo(() => mousePositionRef.current, []);
+  return mousePositionRef;
 }

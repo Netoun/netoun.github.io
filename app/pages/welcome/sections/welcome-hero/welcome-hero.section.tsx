@@ -15,9 +15,8 @@ export function WelcomeHeroSection() {
     containerRef: welcomeContainerRef,
     sectionRef,
   });
-  const mousePosition = useMousePosition({
-    container: welcomeContainerRef.current ?? undefined,
-  });
+  // Viewport-wide: the laptop sits outside the text container and must follow the pointer anywhere.
+  const mousePositionRef = useMousePosition();
 
   const isTextSelected = orchestrator.getState().isTextSelected;
 
@@ -40,7 +39,7 @@ export function WelcomeHeroSection() {
             <WelcomeHeroSectionContent />
           </div>
 
-          <WelcomeHeroComputerComponent mousePosition={mousePosition} />
+          <WelcomeHeroComputerComponent mousePositionRef={mousePositionRef} />
         </div>
       </HeroScrollMorph>
     </HeroAnimationContext.Provider>

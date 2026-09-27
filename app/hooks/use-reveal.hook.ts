@@ -27,16 +27,18 @@ export function useReveal<T extends HTMLElement = HTMLElement>(options: UseRevea
     const element = ref.current;
     if (!element) return;
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setState("static");
-      return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reducedMotion) {
+      const items = element.querySelectorAll<HTMLElement>("[data-reveal-item]");
+      items.forEach((item, index) => {
+        item.style.setProperty("--reveal-index", String(Math.min(index, STAGGER_INDEX_CAP)));
+      });
     }
 
-    const items = element.querySelectorAll<HTMLElement>("[data-reveal-item]");
-    items.forEach((item, index) => {
-      item.style.setProperty("--reveal-index", String(Math.min(index, STAGGER_INDEX_CAP)));
-    });
-    setState("idle");
+    // Intentional: the first render must match the prerendered markup (state = null);
+    // the client-only decision lands in a layout effect, before the first paint.
+    // oxlint-disable-next-line react/set-state-in-effect
+    setState(reducedMotion ? "static" : "idle");
   }, []);
 
   useEffect(() => {

@@ -19,11 +19,11 @@ app/
 
 ## `app/components/` Categories
 
-| Directory     | Role                                                 | Examples                                     |
-| ------------- | ---------------------------------------------------- | -------------------------------------------- |
-| `primitives/` | Reusable UI atoms, no business logic                 | `button/`, `tag/`, `slider/`, `client-only/` |
-| `layouts/`    | Everything that structures the page                  | `container/`, `sections/`, `feature-header/` |
-| `misc/`       | Complex but reusable components (decorative, visual) | `computer/`, `kirby/`, `dots-canvas/`        |
+| Directory     | Role                                                 | Examples                                                            |
+| ------------- | ---------------------------------------------------- | ------------------------------------------------------------------- |
+| `primitives/` | Reusable UI atoms, no business logic                 | `button/`, `tag/`, `slider/`, `terminal-buttons/`                   |
+| `layouts/`    | Everything that structures the page                  | `container/`, `content-section/`, `feature-header/`, `footer/`      |
+| `misc/`       | Complex but reusable components (decorative, visual) | `computer/`, `server-unit/`, `mesh-background/`, `canvas-renderer/` |
 
 ### Rules
 
@@ -196,11 +196,15 @@ pages/welcome/
 
 ## Import Rules
 
+Enforced by oxlint (`no-restricted-imports` overrides in `.oxlintrc.json`) for `app/components/` and `app/features/`; the other rules are checked in review.
+
 - `app/pages/<feature>/` may import from `app/components/`, `app/features/` and its own sub-folders.
 - `app/features/<domain>/` may import from `app/components/` and its own sub-folders.
 - `app/components/` must not import from `app/pages/` or `app/features/`.
 - Cross-page import forbidden: no import from `app/pages/<other-feature>/`.
 - Cross-business-domain import forbidden by default (`app/features/projects/` → `app/features/experiences/`). Extract into `app/components/` if generic, or request an architecture decision if truly shared business logic.
+- **Decided exception:** `app/features/labs/experiments/` may import components (and their `?raw` sources) from any domain — showcasing them is the purpose of the Labs.
+- Shared components never import business data: pages pass it in as props (e.g. `<Footer links={contactLinks} />`).
 
 ---
 
@@ -217,25 +221,24 @@ This architecture describes the target, not the transient state of the code.
 
 ## Section Template
 
+Sections of the home page wrap `ContentSection`, which owns the container, the header (eyebrow index, title, description), the scroll reveal and the animation gating.
+
 ```tsx
 // <feature>-<name>.section.tsx
-import type { ReactNode } from "react";
-import { Section } from "@/components/layouts/sections/section.component";
-import { FeatureHeader, FeatureHeaderTitle } from "@/components/layouts/feature-header/feature-header.component";
+import { ContentSection } from "@/components/layouts/content-section/content-section.component";
 import * as styles from "./<feature>-<name>.css";
 
-interface <Feature><Name>SectionProps {
-  children?: ReactNode;
-}
-
-export function <Feature><Name>Section({ children }: <Feature><Name>SectionProps) {
+export function <Feature><Name>Section() {
   return (
-    <Section>
-      <FeatureHeader variant="secondary">
-        <FeatureHeaderTitle size="md">My Title</FeatureHeaderTitle>
-      </FeatureHeader>
-      {children}
-    </Section>
+    <ContentSection
+      id="<name>"
+      index={1}
+      title="My Title"
+      description="One-line description."
+      variant="secondary"
+    >
+      {({ shouldAnimate }) => <div className={styles.grid}>{/* ... */}</div>}
+    </ContentSection>
   );
 }
 ```

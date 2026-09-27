@@ -1,5 +1,6 @@
-import { Footer } from "../../../components/layouts/footer/footer.component";
+import { Footer } from "@/components/layouts/footer/footer.component";
 import { WelcomeSectionsNav } from "../components/welcome-sections-nav/welcome-sections-nav.component";
+import { contactLinks } from "../data/contact-links.data";
 import { WelcomeExperienceSection } from "../sections/welcome-experience/welcome-experience.section";
 import { WelcomeHeroSection } from "../sections/welcome-hero/welcome-hero.section";
 import { WelcomeProjectsSection } from "../sections/welcome-projects/welcome-projects.section";
@@ -49,7 +50,7 @@ export default function Welcome() {
       <WelcomeProjectsSection />
       <WelcomeExperienceSection />
       <WelcomeSkillsSection />
-      <Footer id="contact" />
+      <Footer id="contact" links={contactLinks} />
     </main>
   );
 }

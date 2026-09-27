@@ -7,10 +7,10 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import { Container } from "@/components/layouts/container/container.component";
 import { BodyGrainOverlay } from "@/components/misc/body-grain-overlay/body-grain-overlay.component";
 import type { Route } from "./+types/root";
-
-export const links: Route.LinksFunction = () => [];
+import * as styles from "./root.css";
 
 import "@styles/global.css";
 import "@styles/fonts.css";
@@ -86,7 +86,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <BodyGrainOverlay />
-        <div style={{ position: "relative", zIndex: 1 }}>
+        <div className={styles.appContent}>
           {children}
           <ScrollRestoration />
           <Scripts />
@@ -115,14 +115,16 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
-          <code>{stack}</code>
-        </pre>
-      )}
+    <main className={styles.errorPage}>
+      <Container>
+        <h1>{message}</h1>
+        <p>{details}</p>
+        {stack && (
+          <pre className={styles.errorStack}>
+            <code>{stack}</code>
+          </pre>
+        )}
+      </Container>
     </main>
   );
 }

@@ -2,20 +2,26 @@ import clsx from "clsx";
 import { Link } from "react-router";
 import { Container } from "@/components/layouts/container/container.component";
 import { ServerUnitRack } from "@/components/misc/server-unit/server-unit.component";
-import { contactLinks } from "@/pages/welcome/data/contact-links.data";
 import { FooterBackground } from "./components/background/footer-background.component";
 import * as styles from "./footer.css";
 
 // One identity accent per contact link — echoes the neon nav gradient + rack LEDs.
 const CONTACT_ACCENTS = ["primary", "secondary", "tertiary", "kirby"] as const;
 
-interface FooterProps {
+export interface FooterLink {
+  label: string;
+  url: string;
+}
+
+export interface FooterProps {
   className?: string;
   /** Stable id for anchor navigation (e.g. the home sections nav) */
   id?: string;
+  /** Contact links rendered in the "ESTABLISH LINK" nav — owned by the page. */
+  links: readonly FooterLink[];
 }
 
-export function Footer({ className, id }: FooterProps) {
+export function Footer({ className, id, links }: FooterProps) {
   return (
     <footer id={id} className={clsx(styles.footerStyle, className)}>
       <Container>
@@ -37,7 +43,7 @@ export function Footer({ className, id }: FooterProps) {
                   <span className={styles.contactCursorStyle}>▐</span>
                 </span>
                 <ul className={styles.contactListStyle}>
-                  {contactLinks.map((link, index) => (
+                  {links.map((link, index) => (
                     <li key={link.label}>
                       <a
                         href={link.url}

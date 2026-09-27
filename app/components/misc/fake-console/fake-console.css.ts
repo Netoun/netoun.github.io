@@ -68,7 +68,7 @@ export const scanlineStyles = style({
   background: "linear-gradient(180deg, transparent 0%, oklch(1 0 0 / 0.14) 45%, transparent 100%)",
   animation: `${scanlineKeyframes} 6.8s linear infinite`,
   selectors: {
-    ':global([data-quality="high"]) &': {
+    '[data-quality="high"] &': {
       opacity: 0.38,
       animationDuration: "5.2s",
     },

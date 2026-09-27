@@ -6,12 +6,6 @@ import type {
   Uniforms,
 } from "./canvas-renderer.types";
 
-declare global {
-  interface Navigator {
-    gpu?: GPU;
-  }
-}
-
 type WebGPUContext = {
   device: GPUDevice;
   context: GPUCanvasContext;
@@ -279,6 +273,9 @@ export function createCanvasRenderer(
   options: RendererOptions = {},
 ): Promise<RendererSession> {
   return new Promise((resolve) => {
+    // Session-owned copy: updates must apply even without initial uniforms,
+    // and must never mutate the caller's object.
+    const liveUniforms: Uniforms = { ...options.uniforms };
     let type: RendererType = "pending";
     let cleanupFn: (() => void) | null = null;
     let cancelled = false;
@@ -312,7 +309,7 @@ export function createCanvasRenderer(
           if (type === "webgl" || type === "webgpu") scheduleDraw();
         },
         updateUniforms(newUniforms: Uniforms) {
-          Object.assign(options.uniforms ?? {}, newUniforms);
+          Object.assign(liveUniforms, newUniforms);
           scheduleDraw();
         },
         destroy() {
@@ -361,7 +358,7 @@ export function createCanvasRenderer(
         u_time: options.animate ? now / 1000 : 0,
         u_quality: quality,
         u_scroll: options.animateOnScroll ? window.scrollY : 0,
-        ...options.uniforms,
+        ...liveUniforms,
       };
 
       if (webgpuCtx) {
@@ -435,8 +432,10 @@ export function createCanvasRenderer(
         if (webglData) {
           const { gl, program, positionBuffer } = webglData;
           gl.deleteBuffer(positionBuffer);
-          gl.deleteProgram(program);
+          // Read the attached shaders before deleting the program: afterwards the
+          // program handle is invalid and the shaders would leak.
           const shaders = gl.getAttachedShaders(program);
+          gl.deleteProgram(program);
           if (shaders) {
             for (const s of shaders) gl.deleteShader(s);
           }

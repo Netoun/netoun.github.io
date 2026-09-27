@@ -14,7 +14,7 @@ import * as styles from "./project-card-3d.demo.css";
 const SAMPLE_PROJECT = {
   title: "My website",
   description:
-    "My personal portfolio with a neo-retro futuristic design system, built with React Router v7 and Vanilla Extract.",
+    "My personal portfolio with a neo-retro futuristic design system, built with React Router v8 and Vanilla Extract.",
   date: "2026-04-27",
   tags: ["React", "TypeScript", "Vanilla Extract", "React Router"],
   image: "/images/projects/website-card.webp",

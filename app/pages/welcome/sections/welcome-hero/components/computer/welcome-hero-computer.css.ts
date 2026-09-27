@@ -27,7 +27,7 @@ export const welcomeHeroComputerWrapperStyles = style({
       background: `radial-gradient(ellipse at 70% 70%, color-mix(in srgb, ${vars.colors.secondary} 42%, transparent), transparent 70%)`,
       filter: "blur(3rem)",
     },
-    ':global([data-quality="high"]) &::before': {
+    '[data-quality="high"] &::before': {
       background: `radial-gradient(ellipse at 70% 70%, color-mix(in srgb, ${vars.colors.secondary} 76%, transparent), transparent 70%)`,
       filter: "blur(4.2rem)",
     },

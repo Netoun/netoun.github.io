@@ -514,29 +514,6 @@ export const navArrow = style({
   },
 });
 
-// ── Console footer ─────────────────────────────────────────────────────────
-export const conFoot = style({
-  marginTop: "auto",
-  padding: "0.85rem 1.15rem 1.1rem",
-  fontFamily: vars.fontFamily.doto,
-  fontSize: "0.66rem",
-  letterSpacing: "0.06em",
-  color: vars.colors.foreground,
-  display: "flex",
-  alignItems: "center",
-  gap: "0.3rem",
-  "@media": {
-    // Hidden in the slim mobile app-bar
-    "screen and (max-width: 1023.98px)": {
-      display: "none",
-    },
-  },
-});
-
-export const footPrompt = style({
-  color: vars.colors.secondary,
-});
-
 // ── Content area ───────────────────────────────────────────────────────────
 export const content = style({
   flex: 1,

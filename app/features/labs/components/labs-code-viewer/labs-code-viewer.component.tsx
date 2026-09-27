@@ -11,11 +11,14 @@ const CodeBlock = memo(function CodeBlock({ source }: { source: LabSource }) {
       <Highlight theme={themes.vsDark} code={source.code.trimEnd()} language={source.lang}>
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
           <pre className={`${styles.pre} ${className}`} style={style}>
+            {/* Prism tokens are positional and re-derived from `code`: index keys are correct here. */}
             {tokens.map((tokenLine, lineIndex) => (
+              // oxlint-disable-next-line react/no-array-index-key
               <div key={lineIndex} {...getLineProps({ line: tokenLine })} className={styles.line}>
                 <span className={styles.lineNumber}>{lineIndex + 1}</span>
                 <span className={styles.lineContent}>
                   {tokenLine.map((token, tokenIndex) => (
+                    // oxlint-disable-next-line react/no-array-index-key
                     <span key={tokenIndex} {...getTokenProps({ token })} />
                   ))}
                 </span>

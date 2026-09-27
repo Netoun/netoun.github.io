@@ -32,27 +32,6 @@ export const title = style({
   fontFamily: vars.fontFamily.doto,
 });
 
-export const titlePrompt = style({
-  fontFamily: vars.fontFamily.doto,
-  fontWeight: vars.fontWeight.bold,
-  color: vars.colors.primary,
-  textShadow: `0 0 18px color-mix(in oklch, ${vars.colors.primary} 60%, transparent)`,
-});
-
-// Experiment count chip — Doto, sits inline after the title.
-export const titleCount = style({
-  alignSelf: "center",
-  fontFamily: vars.fontFamily.doto,
-  fontSize: vars.fontSize.sm,
-  fontWeight: vars.fontWeight.semibold,
-  letterSpacing: "0.08em",
-  color: vars.colors.mutedForeground,
-  padding: "0.1rem 0.55rem",
-  borderRadius: vars.radius.full,
-  border: `1px solid ${vars.colors.cardBorder}`,
-  background: "oklch(1 0 0 / 0.4)",
-});
-
 export const intro = style({
   maxWidth: "44rem",
   margin: 0,

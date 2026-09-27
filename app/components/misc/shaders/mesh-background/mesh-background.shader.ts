@@ -356,26 +356,6 @@ fn fsMain(in: VertexOut) -> @location(0) vec4f {
 }
 `;
 
-export type RendererType = "pending" | "webgpu" | "webgl" | "svg";
-
-export type NavigatorWithGpu = Navigator & {
-  gpu?: GPU;
-};
-
-export interface MinimalGPUCanvasContext {
-  configure(options: {
-    device: GPUDevice;
-    format: GPUTextureFormat;
-    alphaMode: "premultiplied";
-  }): void;
-  getCurrentTexture(): GPUTexture;
-}
-
-export const GPU_BUFFER_USAGE = {
-  COPY_DST: 0x0008,
-  UNIFORM: 0x0040,
-} as const;
-
 export function getShaderQuality() {
   return document.documentElement.dataset.quality === "high"
     ? SHADER_CONFIG.highQuality
@@ -386,16 +366,5 @@ export function getShaderRenderScale() {
   return {
     min: SHADER_CONFIG.minRenderScale,
     max: SHADER_CONFIG.maxRenderScale,
-  };
-}
-
-export function getCanvasSize(canvas: HTMLCanvasElement) {
-  const rect = canvas.getBoundingClientRect();
-  const renderScale = getShaderRenderScale();
-  const dpr = Math.min(Math.max(window.devicePixelRatio || 1, renderScale.min), renderScale.max);
-
-  return {
-    width: Math.max(1, Math.floor(rect.width * dpr)),
-    height: Math.max(1, Math.floor(rect.height * dpr)),
   };
 }

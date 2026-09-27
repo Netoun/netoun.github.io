@@ -1,13 +1,11 @@
+/// <reference types="vitest/config" />
 import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import mdx from "@mdx-js/rollup";
 import { reactRouter } from "@react-router/dev/vite";
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
 import { defineConfig, type Plugin } from "vite";
-import { EXPERIMENT_SLUGS } from "./app/features/labs/data/experiment-slugs";
+import { EXPERIMENT_SLUGS } from "./app/features/labs/data/experiment-slugs.ts";
 
-const root = path.dirname(fileURLToPath(import.meta.url));
+const SITE_URL = "https://www.netoun.com";
 
 /**
  * Loads `*.css.ts?raw` imports as plain strings.
@@ -51,63 +49,77 @@ function rawCssTsPlugin(): Plugin {
   };
 }
 
+/**
+ * Emits `sitemap.xml` into the client build output (not `public/`), so builds
+ * and typechecks never dirty the working tree. Routes mirror the prerender
+ * list in `react-router.config.ts`.
+ */
 function sitemapPlugin(): Plugin {
   return {
     name: "generate-sitemap",
-    buildStart() {
-      const SITE_URL = "https://www.netoun.com";
+    apply: "build",
+    generateBundle() {
+      if (this.environment.name !== "client") return;
+
       const pages = [
         { url: `${SITE_URL}/`, priority: "1.0" },
         { url: `${SITE_URL}/labs`, priority: "0.8" },
-        ...EXPERIMENT_SLUGS.map((s) => ({ url: `${SITE_URL}/labs/${s}`, priority: "0.6" })),
+        ...EXPERIMENT_SLUGS.map((slug) => ({ url: `${SITE_URL}/labs/${slug}`, priority: "0.6" })),
       ];
-      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${pages
-  .map(
-    (p) => `  <url>
-    <loc>${p.url}</loc>
+      const urls = pages
+        .map(
+          (page) => `  <url>
+    <loc>${page.url}</loc>
     <changefreq>monthly</changefreq>
-    <priority>${p.priority}</priority>
-    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
+    <priority>${page.priority}</priority>
   </url>`,
-  )
-  .join("\n")}
+        )
+        .join("\n");
+
+      this.emitFile({
+        type: "asset",
+        fileName: "sitemap.xml",
+        source: `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
 </urlset>
-`;
-      const publicDir = path.resolve(root, "public");
-      fs.mkdirSync(publicDir, { recursive: true });
-      fs.writeFileSync(path.join(publicDir, "sitemap.xml"), sitemap);
-      console.log(`sitemap.xml generated with ${pages.length} URLs`);
+`,
+      });
     },
   };
 }
 
 export default defineConfig({
-  plugins: [rawCssTsPlugin(), sitemapPlugin(), mdx(), reactRouter(), vanillaExtractPlugin()],
+  plugins: [
+    rawCssTsPlugin(),
+    sitemapPlugin(),
+    // The React Router plugin replaces the app entry; Vitest must not load it.
+    !process.env.VITEST && reactRouter(),
+    vanillaExtractPlugin(),
+  ],
   resolve: {
-    alias: {
-      "@": path.resolve(root, "app"),
-      "@components": path.resolve(root, "app/components"),
-      "@primitives": path.resolve(root, "app/components/primitives"),
-      "@styles": path.resolve(root, "app/styles"),
-    },
+    // Aliases come from `tsconfig.json#compilerOptions.paths` (single source of truth).
+    tsconfigPaths: true,
   },
   build: {
-    cssMinify: "esbuild",
-    minify: "esbuild",
-    rollupOptions: {
+    rolldownOptions: {
       output: {
-        manualChunks: (id) => {
-          // Separate vendor chunks for better caching
-          if (id.includes("node_modules/react") || id.includes("node_modules/react-dom")) {
-            return "vendor-react";
-          }
-          if (id.includes("node_modules/animejs")) {
-            return "vendor-anime";
-          }
+        // Long-lived vendor chunks for better caching across deploys.
+        codeSplitting: {
+          groups: [
+            {
+              name: "vendor-react",
+              test: /node_modules[\\/](react|react-dom|react-router|scheduler)[\\/]/,
+            },
+            { name: "vendor-anime", test: /node_modules[\\/]animejs[\\/]/ },
+          ],
         },
       },
     },
+  },
+  test: {
+    environment: "happy-dom",
+    setupFiles: ["./test-setup.ts"],
+    globals: true,
   },
 });

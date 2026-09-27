@@ -1,87 +1,45 @@
-# Welcome to React Router!
+# netoun.com
 
-A modern, production-ready template for building full-stack React applications using React Router.
+Personal site of Nicolas Coulonnier (Netoun) — portfolio plus **Labs**, a playground of 3D CSS, canvas and shader experiments shown live with their source code.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+Live: <https://www.netoun.com>
 
-## Features
+## Stack
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+React Router 8 (framework mode, static prerender, `ssr: false`) · React 19 · TypeScript 7 · Vite 8 · Vanilla Extract · Anime.js · React Aria Components · Vitest 5 · oxlint / oxfmt · knip · Bun
 
-## Getting Started
+## Getting started
 
-### Installation
-
-Install the dependencies:
+Requires Bun ≥ 1.4 and Node 24 (`.node-version`).
 
 ```bash
-npm install
+bun install
+bun run dev        # http://localhost:5173
 ```
 
-### Development
+## Scripts
 
-Start the development server with HMR:
-
-```bash
-npm run dev
-```
-
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
-
-```bash
-npm run build
-```
+| Script                    | What it does                                            |
+| ------------------------- | ------------------------------------------------------- |
+| `bun run dev`             | Dev server with HMR                                     |
+| `bun run build`           | Prerender every route to `build/client` + `sitemap.xml` |
+| `bun run check`           | Typecheck, lint, format check and tests                 |
+| `bun run typecheck`       | Route typegen + `tsc`                                   |
+| `bun run lint`            | oxlint                                                  |
+| `bun run fmt`             | oxfmt (write)                                           |
+| `bun run test`            | Vitest in watch mode (`test:run` for a single run)      |
+| `bun run knip`            | Unused files, exports and dependencies                  |
+| `bun run generate-assets` | Regenerate favicons and OG images from `public/`        |
 
 ## Deployment
 
-### Docker Deployment
+Static hosting on Cloudflare Pages: build with `bun run build`, publish `build/client`. Security and cache headers live in `public/_headers`, redirects in `public/_redirects`. Pages reads the Node version from `.node-version`; set `BUN_VERSION` to match `packageManager` in `package.json`.
 
-To build and run using Docker:
+CI (`.github/workflows/ci.yml`) runs `check`, `knip` and `build` on every push to `main` and on pull requests.
 
-```bash
-docker build -t my-app .
+## Docs
 
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
+- [PRODUCT.md](PRODUCT.md) — audience, purpose, positioning, content rules
+- [docs/design.md](docs/design.md) — design system (tokens, typography, motion, surfaces)
+- [docs/architecture.md](docs/architecture.md) — folder, naming and import rules
+- [AGENTS.md](AGENTS.md) — working guide for AI coding agents (`CLAUDE.md` imports it)

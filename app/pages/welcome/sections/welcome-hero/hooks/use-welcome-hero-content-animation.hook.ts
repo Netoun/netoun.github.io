@@ -1,4 +1,5 @@
-import { animate } from "animejs";
+import { SIGNATURE_CURVE } from "@styles/motion.css";
+import { animate, cubicBezier } from "animejs";
 import { useCallback, useRef } from "react";
 
 type WelcomeHeroContentAnimationProps = {
@@ -19,8 +20,9 @@ export function useWelcomeHeroContentAnimation() {
 
       // Intentional cascade — heading, then description, then CTA — sharing the
       // signature easing (motion.easing.signature). GPU-only: opacity/transform,
-      // whole elements (no text splitting).
-      const ease = "cubicBezier(0.22, 1, 0.36, 1)";
+      // whole elements (no text splitting). anime.js ≥ 4.5 needs the easing
+      // function itself: the "cubicBezier(…)" string form silently falls back to linear.
+      const ease = cubicBezier(...SIGNATURE_CURVE);
 
       const headingAnim = animate(welcomeHeading, {
         opacity: [0, 1],

@@ -37,28 +37,28 @@ Terminal micro-details to preserve: `_❯` prefix, `▐` cursor, underscores aro
 
 Defined in `app/styles/theme.css.ts`, accessible via `vars.colors.*`.
 
-| Token         | Value                       | Usage                                   |
-| ------------- | --------------------------- | --------------------------------------- |
-| `background`  | oklch(0.93 0.03 80)         | General background (warm beige)         |
-| `foreground`  | oklch(0.07 0 0)             | Main text                               |
-| `primary`     | oklch(0.8858 0.182 95.69)   | Yellow/gold — CTAs, main accents        |
-| `secondary`   | oklch(0.7906 0.1573 166.87) | Mint green — secondary accents          |
-| `tertiary`    | oklch(0.5548 0.2575 312.98) | Violet                                  |
-| `kirby`       | oklch(0.8455 0.0872 355.09) | Pink — exclusive to the Kirby component |
-| `muted`       | oklch(0.96 0 0)             | Secondary backgrounds, subtle hover     |
-| `border`      | oklch(0.9 0 0)              | Borders                                 |
-| `destructive` | oklch(0.55 0.22 29)         | Errors, dangerous actions               |
+| Token         | Value                       | Usage                                                                               |
+| ------------- | --------------------------- | ----------------------------------------------------------------------------------- |
+| `background`  | oklch(0.93 0.03 80)         | General background (warm beige)                                                     |
+| `foreground`  | oklch(0.07 0 0)             | Main text                                                                           |
+| `primary`     | oklch(0.8858 0.182 95.69)   | Yellow/gold — CTAs, main accents                                                    |
+| `secondary`   | oklch(0.7906 0.1573 166.87) | Mint green — secondary accents                                                      |
+| `tertiary`    | oklch(0.5548 0.2575 312.98) | Violet                                                                              |
+| `kirby`       | oklch(0.8455 0.0872 355.09) | Pink — 4th accent (footer contact links, skills, hero gradient, project-card sheen) |
+| `muted`       | oklch(0.96 0 0)             | Secondary backgrounds, subtle hover                                                 |
+| `border`      | oklch(0.9 0 0)              | Borders                                                                             |
+| `destructive` | oklch(0.55 0.22 29)         | Errors, dangerous actions                                                           |
 
 Hover states: `color-mix(in srgb, ${vars.colors.primary} 90%, transparent)` — never hardcoded values.
 
 ## Typography
 
-| Font             | Local file                      | Usage              |
-| ---------------- | ------------------------------- | ------------------ |
-| PPNeueMontreal   | `PPNeueMontreal-Variable.woff2` | Body, general UI   |
-| MabeoVintage     | `MabeoVintage-Regular.woff2`    | Decorative accents |
-| Doto             | Google Fonts                    | Terminal / buttons |
-| Inter            | Google Fonts                    | Fallback           |
+| Font           | Local file                      | Usage                   |
+| -------------- | ------------------------------- | ----------------------- |
+| PPNeueMontreal | `PPNeueMontreal-Variable.woff2` | Body, general UI        |
+| MabeoVintage   | `MabeoVintage-Regular.woff2`    | Decorative accents      |
+| Doto           | Google Fonts                    | Terminal / buttons      |
+| Inter          | not loaded (theme stack only)   | Falls back to system-ui |
 
 Local files in `/public/fonts/`. Sizes via `vars.fontSize.*` (`xs` 0.75rem → `10xl` 10.5rem). Weights via `vars.fontWeight.*`.
 
@@ -79,12 +79,12 @@ Reserved for CTAs and hero elements. Overused, the effect disappears.
 
 One shared vocabulary for every card-like surface:
 
-| Token | Usage |
-| ----- | ----- |
-| `vars.border.subtle` | Card borders, terminal bar separators (50% cardBorder mix) |
-| `vars.border.strong` | Stronger separators (footers) |
-| `vars.boxShadow.restCard` | Cards at rest — discreet halo |
-| `vars.boxShadow.hoverCard` | Cards on hover — lift + accent ring |
+| Token                      | Usage                                                      |
+| -------------------------- | ---------------------------------------------------------- |
+| `vars.border.subtle`       | Card borders, terminal bar separators (50% cardBorder mix) |
+| `vars.border.strong`       | Stronger separators (footers)                              |
+| `vars.boxShadow.restCard`  | Cards at rest — discreet halo                              |
+| `vars.boxShadow.hoverCard` | Cards on hover — lift + accent ring                        |
 
 No ad hoc `color-mix` borders or one-off box-shadows on surfaces.
 
@@ -92,11 +92,11 @@ No ad hoc `color-mix` borders or one-off box-shadows on surfaces.
 
 Tokens in `app/styles/motion.css.ts` (static values, not runtime vars):
 
-| Token | Value | Usage |
-| ----- | ----- | ----- |
-| `motion.duration` | `fast` 150ms · `base` 300ms · `slow` 600ms | All transitions |
-| `motion.easing.signature` | cubic-bezier(0.22, 1, 0.36, 1) | Reveals, hovers — the house curve |
-| `motion.staggerStep` | 70ms | Scroll reveal stagger (index capped at 5) |
+| Token                     | Value                                      | Usage                                     |
+| ------------------------- | ------------------------------------------ | ----------------------------------------- |
+| `motion.duration`         | `fast` 150ms · `base` 300ms · `slow` 600ms | All transitions                           |
+| `motion.easing.signature` | cubic-bezier(0.22, 1, 0.36, 1)             | Reveals, hovers — the house curve         |
+| `motion.staggerStep`      | 70ms                                       | Scroll reveal stagger (index capped at 5) |
 
 Scroll reveals via `use-reveal.hook` (`data-reveal` / `data-reveal-item`): hidden state is only ever applied by JS before paint — prerendered HTML stays fully visible without JS. Every animation respects `prefers-reduced-motion` (content shown immediately, no motion).
 

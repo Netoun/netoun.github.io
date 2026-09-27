@@ -1,4 +1,4 @@
-import { memo, useEffect, useReducer, useRef, useState } from "react";
+import { memo, type RefObject, useEffect, useReducer, useRef, useState } from "react";
 import { Computer } from "@/components/misc/computer/computer.component";
 import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
@@ -20,7 +20,8 @@ const TILT_AMPLITUDE = 2.8;
 const TILT_DAMPING = 0.1;
 
 interface WelcomeHeroComputerComponentProps {
-  mousePosition: MousePosition;
+  /** Stable pointer ref from `useMousePosition` — read in animation frames only. */
+  mousePositionRef: RefObject<MousePosition>;
 }
 
 const HERO_COMPUTER_ZONES = [
@@ -46,17 +47,16 @@ const HERO_COMPUTER_ZONES = [
   },
 ] as const;
 
-function WelcomeHeroComputerComponentInner({ mousePosition }: WelcomeHeroComputerComponentProps) {
+function WelcomeHeroComputerComponentInner({
+  mousePositionRef,
+}: WelcomeHeroComputerComponentProps) {
   const heroAnim = useHeroAnimation();
   const disabled = !heroAnim.getState().shouldAnimate;
   const containerRef = useRef<HTMLDivElement>(null);
   const capturesRef = useRef<HTMLDivElement>(null);
 
-  const mousePositionRef = useRef(mousePosition);
   const lastRotationRef = useRef({ x: BASE_ROTATION_X, y: BASE_ROTATION_Y });
   const shouldAnimateRef = useRef(true);
-
-  mousePositionRef.current = mousePosition;
 
   const { ref: intersectionRef, isIntersecting } = useIntersectionObserver({
     threshold: 0.1,
@@ -182,7 +182,7 @@ function WelcomeHeroComputerComponentInner({ mousePosition }: WelcomeHeroCompute
     return () => {
       if (frameId) cancelAnimationFrame(frameId);
     };
-  }, [shouldAnimate, canTilt]);
+  }, [shouldAnimate, canTilt, mousePositionRef]);
 
   return (
     <div
@@ -224,13 +224,5 @@ function WelcomeHeroComputerComponentInner({ mousePosition }: WelcomeHeroCompute
     </div>
   );
 }
-// Memoize component to prevent rerenders when mousePosition object reference is stable
-export const WelcomeHeroComputerComponent = memo(
-  WelcomeHeroComputerComponentInner,
-  (prevProps, nextProps) => {
-    return (
-      prevProps.mousePosition.x === nextProps.mousePosition.x &&
-      prevProps.mousePosition.y === nextProps.mousePosition.y
-    );
-  },
-);
+// The pointer ref is stable, so memo keeps parent re-renders from reaching the heavy scene.
+export const WelcomeHeroComputerComponent = memo(WelcomeHeroComputerComponentInner);
