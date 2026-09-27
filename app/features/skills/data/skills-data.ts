@@ -4,7 +4,7 @@ import type { AccentType, SkillBlock } from "./skills-data.types";
 export const SKILL_BLOCKS = [
   {
     title: "Creative Frontend",
-    accent: "primary",
+    accent: "secondary",
     shape: "sparkle",
     tags: [
       { name: "React", level: 3 },
@@ -22,7 +22,7 @@ export const SKILL_BLOCKS = [
   },
   {
     title: "Backend & Infra",
-    accent: "secondary",
+    accent: "tertiary",
     shape: "cube",
     tags: [
       { name: "NestJS", level: 3 },
@@ -54,7 +54,7 @@ export const SKILL_BLOCKS = [
   },
   {
     title: "Realtime Systems",
-    accent: "kirby",
+    accent: "tertiary",
     shape: "circle",
     tags: [
       { name: "WebSockets", level: 2 },
@@ -65,7 +65,7 @@ export const SKILL_BLOCKS = [
   },
   {
     title: "Game / Procedural",
-    accent: "kirby",
+    accent: "primary",
     shape: "hexagon",
     tags: [
       { name: "Three.js", level: 2 },

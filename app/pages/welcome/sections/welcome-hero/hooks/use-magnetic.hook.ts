@@ -31,23 +31,48 @@ export function useMagnetic<T extends HTMLElement>(ref: RefObject<T | null>) {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     let frame = 0;
+    // getBoundingClientRect forces layout, and the hero tilt loop invalidates
+    // styles every pointer frame — measuring here each mousemove would reflow
+    // per frame. Cache the rect; refresh after scroll/resize, with a short TTL
+    // as a safety net for other movement (e.g. the entrance animation).
+    let cachedRect: DOMRect | null = null;
+    let cachedAt = 0;
+    let lastX = "";
+    let lastY = "";
+    const invalidateRect = () => {
+      cachedRect = null;
+    };
+
     const onMouseMove = (event: MouseEvent) => {
       if (frame) return;
-      frame = requestAnimationFrame(() => {
+      frame = requestAnimationFrame((now) => {
         frame = 0;
-        const rect = element.getBoundingClientRect();
+        if (!cachedRect || now - cachedAt > 1000) {
+          cachedRect = element.getBoundingClientRect();
+          cachedAt = now;
+        }
+        const rect = cachedRect;
         const { x, y } = computeMagnetOffset(
           event.clientX - (rect.left + rect.width / 2),
           event.clientY - (rect.top + rect.height / 2),
         );
-        element.style.setProperty("--magnet-x", `${x}px`);
-        element.style.setProperty("--magnet-y", `${y}px`);
+        const nextX = `${x}px`;
+        const nextY = `${y}px`;
+        if (nextX === lastX && nextY === lastY) return;
+        lastX = nextX;
+        lastY = nextY;
+        element.style.setProperty("--magnet-x", nextX);
+        element.style.setProperty("--magnet-y", nextY);
       });
     };
 
     window.addEventListener("mousemove", onMouseMove, { passive: true });
+    window.addEventListener("scroll", invalidateRect, { passive: true });
+    window.addEventListener("resize", invalidateRect, { passive: true });
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("scroll", invalidateRect);
+      window.removeEventListener("resize", invalidateRect);
       if (frame) cancelAnimationFrame(frame);
       element.style.removeProperty("--magnet-x");
       element.style.removeProperty("--magnet-y");

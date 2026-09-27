@@ -4,6 +4,7 @@ import { createCanvasRenderer } from "./create-canvas-renderer";
 
 export interface UseShaderCanvasOptions {
   animate?: boolean;
+  animateOnScroll?: boolean;
   debounceResize?: number;
   respectReducedMotion?: boolean;
   respectVisibility?: boolean;

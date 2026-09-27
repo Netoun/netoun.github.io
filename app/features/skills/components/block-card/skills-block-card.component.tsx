@@ -2,7 +2,6 @@ import { Tag } from "@/components/primitives/tag/tag.component";
 import { memo, useMemo } from "react";
 import type { SkillBlock } from "../../data/skills-data.types";
 import { ACCENT_VARS } from "../../data/skills-data";
-import { ShapeShader } from "../shape-shader/skills-shape-shader.component";
 import * as styles from "./skills-block-card.css";
 
 interface BlockCardProps {
@@ -34,9 +33,12 @@ function BlockCardComponent({ block }: BlockCardProps) {
         </span>
       </div>
 
+      {/* The decorative WebGL shape that used to sit here filled the block's
+          leftover space with a gradient sticker — six GPU contexts for six
+          ornaments, and the loudest thing on an otherwise quiet page. The
+          block now sizes to its content instead of padding it out. */}
       <div className={styles.blockBodyStyle}>
         <div className={styles.tagsWrapStyle}>{tags}</div>
-        <ShapeShader shape={block.shape} />
       </div>
     </div>
   );

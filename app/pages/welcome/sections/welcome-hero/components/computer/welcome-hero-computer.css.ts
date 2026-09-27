@@ -11,20 +11,25 @@ const computerEnter = keyframes({
 
 export const welcomeHeroComputerWrapperStyles = style({
   position: "absolute",
-  isolation: "isolate",
-  contain: "layout paint style",
   zIndex: 10,
   bottom: "0rem",
   right: "5vw",
-  opacity: 0.94,
-  filter: `drop-shadow(0 0 3rem color-mix(in srgb, ${vars.colors.secondary} 42%, transparent))`,
   width: "max(100%, 400px)",
   maxWidth: "100%",
   animation: `${computerEnter} ${motion.duration.slow} ${motion.easing.signature} 400ms backwards`,
   selectors: {
-    ':global([data-quality="high"]) &': {
-      opacity: 1,
-      filter: `drop-shadow(0 0 4.2rem color-mix(in srgb, ${vars.colors.secondary} 76%, transparent))`,
+    "&::before": {
+      content: "",
+      position: "absolute",
+      inset: "-10%",
+      zIndex: -1,
+      pointerEvents: "none",
+      background: `radial-gradient(ellipse at 70% 70%, color-mix(in srgb, ${vars.colors.secondary} 42%, transparent), transparent 70%)`,
+      filter: "blur(3rem)",
+    },
+    ':global([data-quality="high"]) &::before': {
+      background: `radial-gradient(ellipse at 70% 70%, color-mix(in srgb, ${vars.colors.secondary} 76%, transparent), transparent 70%)`,
+      filter: "blur(4.2rem)",
     },
   },
   "@media": {

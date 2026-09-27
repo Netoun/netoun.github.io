@@ -49,20 +49,27 @@ export const titleStyle = recipe({
     // Mobile-first: display sizes step down one notch on small screens so
     // long titles (EXPERIENCE) don't wrap awkwardly at 375px.
     size: {
-      sm: { fontSize: vars.fontSize["2xl"], "@media": { [breakpoints.md]: { fontSize: vars.fontSize["3xl"] } } },
-      md: { fontSize: vars.fontSize["3xl"], "@media": { [breakpoints.md]: { fontSize: vars.fontSize["4xl"] } } },
-      lg: { fontSize: vars.fontSize["4xl"], "@media": { [breakpoints.md]: { fontSize: vars.fontSize["5xl"] } } },
+      sm: {
+        fontSize: vars.fontSize["2xl"],
+        "@media": { [breakpoints.md]: { fontSize: vars.fontSize["3xl"] } },
+      },
+      md: {
+        fontSize: vars.fontSize["3xl"],
+        "@media": { [breakpoints.md]: { fontSize: vars.fontSize["4xl"] } },
+      },
+      lg: {
+        fontSize: vars.fontSize["4xl"],
+        "@media": { [breakpoints.md]: { fontSize: vars.fontSize["5xl"] } },
+      },
     },
+    // Paper does not glow. The section accent now lives only in the `_❯`
+    // prefix and the blinking cursor — two small deliberate marks instead of a
+    // coloured haze spread behind the headline. Glows stay a dark-world
+    // (hero / footer) vocabulary.
     variant: {
-      primary: {
-        textShadow: `0 0 40px color-mix(in srgb, ${ACCENT_MAP.primary} 30%, transparent)`,
-      },
-      secondary: {
-        textShadow: `0 0 40px color-mix(in srgb, ${ACCENT_MAP.secondary} 30%, transparent)`,
-      },
-      tertiary: {
-        textShadow: `0 0 40px color-mix(in srgb, ${ACCENT_MAP.tertiary} 30%, transparent)`,
-      },
+      primary: {},
+      secondary: {},
+      tertiary: {},
     },
   },
   defaultVariants: {
@@ -79,15 +86,12 @@ export const prefixStyle = recipe({
     variant: {
       primary: {
         color: `color-mix(in srgb, ${ACCENT_MAP.primary} 50%, ${vars.colors.foreground})`,
-        textShadow: `0 0 40px color-mix(in srgb, ${ACCENT_MAP.primary} 50%, transparent)`,
       },
       secondary: {
         color: `color-mix(in srgb, ${ACCENT_MAP.secondary} 50%, ${vars.colors.foreground})`,
-        textShadow: `0 0 40px color-mix(in srgb, ${ACCENT_MAP.secondary} 50%, transparent)`,
       },
       tertiary: {
         color: `color-mix(in srgb, ${ACCENT_MAP.tertiary} 50%, ${vars.colors.foreground})`,
-        textShadow: `0 0 40px color-mix(in srgb, ${ACCENT_MAP.tertiary} 50%, transparent)`,
       },
     },
   },

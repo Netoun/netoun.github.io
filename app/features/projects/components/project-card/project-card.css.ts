@@ -7,8 +7,6 @@ export const cardStyle = style({
   height: "100%",
   border: vars.border.subtle,
   backgroundColor: vars.colors.card,
-  backdropFilter: "blur(10px)",
-  WebkitBackdropFilter: "blur(10px)",
   overflow: "hidden",
   display: "flex",
   flexDirection: "column",
@@ -245,15 +243,27 @@ globalStyle(`${cardStyle}:hover ${haloStyle}`, {
   opacity: 1,
 });
 
+// Status is metadata, not a call to action. A filled gold pill on every card
+// made the loudest element on the page also the least informative — it now
+// reads as a Doto annotation with a single lit dot carrying the accent.
 export const statusBadgeStyle = style({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: `calc(${vars.spacing.xs} * 1.5)`,
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.xs,
   letterSpacing: "0.14em",
-  backgroundColor: vars.colors.primary,
-  color: vars.colors.primaryForeground,
-  padding: `calc(${vars.spacing.xs} / 2) ${vars.spacing.sm}`,
-  borderRadius: vars.radius.sm,
-  fontWeight: vars.fontWeight.bold,
+  color: vars.colors.mutedForeground,
+  fontWeight: vars.fontWeight.medium,
+
+  "::before": {
+    content: '""',
+    width: "5px",
+    height: "5px",
+    borderRadius: vars.radius.full,
+    backgroundColor: vars.colors.primary,
+    boxShadow: `0 0 6px color-mix(in srgb, ${vars.colors.primary} 60%, transparent)`,
+  },
 });
 
 export const footerAccentStyle = style({

@@ -1,12 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import * as styles from "./welcome-sections-nav.css";
 
+// Split into index + name so the menu can rest collapsed (index only) and
+// reveal the names on hover / keyboard focus. Expanded at all times it sat on
+// top of project cards, experience copy and skills tags at every viewport
+// under ~1700px — the page has no gutter wide enough to park it in.
 const SECTIONS = [
-  { id: "intro", label: "_00 / INTRO" },
-  { id: "projects", label: "_01 / PROJECTS" },
-  { id: "experience", label: "_02 / EXPERIENCE" },
-  { id: "skills", label: "_03 / SKILLS" },
-  { id: "contact", label: "_04 / CONTACT" },
+  { id: "intro", index: "_00", name: "INTRO" },
+  { id: "projects", index: "_01", name: "PROJECTS" },
+  { id: "experience", index: "_02", name: "EXPERIENCE" },
+  { id: "skills", index: "_03", name: "SKILLS" },
+  { id: "contact", index: "_04", name: "CONTACT" },
 ] as const;
 
 type SectionId = (typeof SECTIONS)[number]["id"];
@@ -18,11 +22,14 @@ const TRACK_GRADIENT_ID = "welcome-sections-nav-gradient";
 
 export function WelcomeSectionsNav() {
   const navRef = useRef<HTMLElement>(null);
+  const trackHaloRef = useRef<SVGPathElement>(null);
+  const trackNeonRef = useRef<SVGPathElement>(null);
   const [activeId, setActiveId] = useState<SectionId>("intro");
   const [pastHero, setPastHero] = useState(false);
 
-  // Scroll progress → --scroll-progress (0..1), rAF-throttled, drives the lit
-  // portion of the neon path via stroke-dashoffset (tiny paint area, no layout).
+  // Scroll progress is rAF-throttled and written directly to the SVG paths.
+  // Firefox does not reliably repaint this property when it is derived from a
+  // custom CSS property on an ancestor SVG container.
   // The same pass toggles the reveal: the menu mounts mid-hero, hidden behind
   // the hero panel (z-order), and gets uncovered as the panel scrolls away.
   useEffect(() => {
@@ -65,7 +72,9 @@ export function WelcomeSectionsNav() {
           progress = (i + t) / lastIndex;
         }
       }
-      nav.style.setProperty("--scroll-progress", progress.toFixed(4));
+      const dashOffset = String(1 - progress);
+      trackHaloRef.current?.style.setProperty("stroke-dashoffset", dashOffset);
+      trackNeonRef.current?.style.setProperty("stroke-dashoffset", dashOffset);
 
       const revealAt = tops[1] > 0 ? tops[1] * 0.5 : window.innerHeight;
       const isPastHero = window.scrollY > revealAt;
@@ -140,8 +149,13 @@ export function WelcomeSectionsNav() {
               <stop offset="1" className={styles.gradientStopBottomStyle} />
             </linearGradient>
           </defs>
-          <path d={TRACK_PATH} vectorEffect="non-scaling-stroke" className={styles.trackBaseStyle} />
           <path
+            d={TRACK_PATH}
+            vectorEffect="non-scaling-stroke"
+            className={styles.trackBaseStyle}
+          />
+          <path
+            ref={trackHaloRef}
             d={TRACK_PATH}
             pathLength={1}
             vectorEffect="non-scaling-stroke"
@@ -149,6 +163,7 @@ export function WelcomeSectionsNav() {
             className={styles.trackHaloStyle}
           />
           <path
+            ref={trackNeonRef}
             d={TRACK_PATH}
             pathLength={1}
             vectorEffect="non-scaling-stroke"
@@ -165,7 +180,8 @@ export function WelcomeSectionsNav() {
               aria-current={activeId === section.id ? "true" : undefined}
               className={styles.linkStyle}
             >
-              {section.label}
+              <span className={styles.linkIndexStyle}>{section.index}</span>
+              <span className={styles.linkNameStyle}> / {section.name}</span>
             </a>
           </li>
         ))}

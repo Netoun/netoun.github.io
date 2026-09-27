@@ -1,4 +1,4 @@
-import { style } from "@vanilla-extract/css";
+import { globalStyle, style } from "@vanilla-extract/css";
 import { motion } from "@/styles/motion.css";
 import { breakpoints } from "@/styles/responsive.css";
 import { vars } from "@/styles/theme.css";
@@ -8,9 +8,6 @@ import { vars } from "@/styles/theme.css";
 // the hero has been scrolled past. Hidden below `md` (mobile handled later).
 export const navStyle = style({
   display: "none",
-  vars: {
-    "--scroll-progress": "0",
-  },
 
   "@media": {
     [breakpoints.md]: {
@@ -26,9 +23,10 @@ export const navStyle = style({
       zIndex: 40,
       padding: vars.spacing.md,
       borderRadius: vars.radius.md,
-      border: vars.border.subtle,
-      backdropFilter: "blur(8px)",
-      backgroundColor: `color-mix(in srgb, ${vars.colors.accent} 50%, transparent)`,
+      // At rest the menu is marks in the margin, not a floating card: the
+      // panel chrome only materialises once it is hovered or focused.
+      border: "1px solid transparent",
+      backgroundColor: "transparent",
 
       // Hidden until the hero is scrolled past; visibility keeps the links
       // out of the tab order while hidden.
@@ -36,7 +34,7 @@ export const navStyle = style({
       visibility: "hidden",
       pointerEvents: "none",
       transform: "translateY(16px)",
-      transitionProperty: "opacity, transform, visibility",
+      transitionProperty: "opacity, transform, visibility, background-color, border-color",
       transitionDuration: motion.duration.base,
       transitionTimingFunction: motion.easing.signature,
     },
@@ -92,7 +90,6 @@ export const trackHaloStyle = style({
   opacity: 0.4,
   filter: "blur(3px)",
   strokeDasharray: 1,
-  strokeDashoffset: "calc(1 - var(--scroll-progress))",
 });
 
 // Crisp neon line, lit up to the current scroll progress.
@@ -101,7 +98,6 @@ export const trackNeonStyle = style({
   strokeWidth: 2.5,
   strokeLinecap: "round",
   strokeDasharray: 1,
-  strokeDashoffset: "calc(1 - var(--scroll-progress))",
 });
 
 export const gradientStopTopStyle = style({
@@ -123,6 +119,31 @@ export const listStyle = style({
   listStyle: "none",
   padding: 0,
   margin: 0,
+});
+
+// Collapsed by default: the index alone, ~26px of marginalia. The section name
+// slides open on hover / focus-within, so the menu only covers content while
+// the reader is actually pointing at it.
+export const linkIndexStyle = style({
+  display: "inline-block",
+});
+
+export const linkNameStyle = style({
+  display: "inline-block",
+  verticalAlign: "bottom",
+  overflow: "hidden",
+  whiteSpace: "nowrap",
+  maxWidth: 0,
+  opacity: 0,
+  transitionProperty: "max-width, opacity",
+  transitionDuration: motion.duration.base,
+  transitionTimingFunction: motion.easing.signature,
+
+  "@media": {
+    "(prefers-reduced-motion: reduce)": {
+      transitionDuration: "0.01ms",
+    },
+  },
 });
 
 export const linkStyle = style({
@@ -152,4 +173,22 @@ export const linkStyle = style({
       outlineColor: vars.colors.foreground,
     },
   },
+});
+
+// Expansion: names slide open and the panel chrome fades in, together, only
+// while the menu is pointed at or keyboard-focused.
+globalStyle(`${navStyle}:hover ${linkNameStyle}, ${navStyle}:focus-within ${linkNameStyle}`, {
+  // Longest label (" / EXPERIENCE") measures ~77px in Doto at this size;
+  // 6rem leaves headroom so a font swap can never clip a name mid-word.
+  maxWidth: "6rem",
+  opacity: 1,
+});
+
+// Opaque once open: expanded, the menu sits over project imagery, and a
+// half-transparent panel made small grey Doto labels unreadable against a
+// bright card. Same paper stock and resting elevation as the cards.
+globalStyle(`${navStyle}:hover, ${navStyle}:focus-within`, {
+  borderColor: `color-mix(in srgb, ${vars.colors.cardBorder} 50%, transparent)`,
+  backgroundColor: vars.colors.card,
+  boxShadow: vars.boxShadow.restCard,
 });

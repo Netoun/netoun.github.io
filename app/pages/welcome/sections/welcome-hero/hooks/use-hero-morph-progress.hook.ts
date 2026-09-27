@@ -50,6 +50,7 @@ export function useHeroMorphProgress({ containerRef, enabled = true }: HeroMorph
   const stageElRef = useRef<HTMLElement | null>(null);
   const rafRef = useRef<number | null>(null);
   const paramsRef = useRef<MorphParams>(getInitialParams());
+  const lastScaleRef = useRef<string | null>(null);
   const desktopMorphRef = useRef(false);
   const reducedMotionRef = useRef(false);
   const activeRef = useRef(false);
@@ -63,6 +64,7 @@ export function useHeroMorphProgress({ containerRef, enabled = true }: HeroMorph
     }
 
     paramsRef.current = getInitialParams();
+    lastScaleRef.current = null;
   }, []);
 
   const updatePositions = useCallback(() => {
@@ -94,9 +96,14 @@ export function useHeroMorphProgress({ containerRef, enabled = true }: HeroMorph
     const raw = (window.scrollY - p.start) / (p.end - p.start);
     const progress = clamp(raw, 0, 1);
     const s = easeInOutQuad(progress);
-    const scale = 1 - (1 - p.targetScale) * s;
+    const scale = (1 - (1 - p.targetScale) * s).toFixed(4);
 
-    el.style.setProperty("--hero-scale", scale.toFixed(4));
+    // Outside the morph range the clamped value repeats: skip the write so
+    // scrolling elsewhere on the page doesn't re-invalidate the hero styles.
+    if (scale === lastScaleRef.current) return;
+    lastScaleRef.current = scale;
+
+    el.style.setProperty("--hero-scale", scale);
   }, []);
 
   const scheduleTick = useCallback(() => {

@@ -30,9 +30,13 @@ export const tagStyle = recipe({
         backgroundColor: `color-mix(in srgb, ${vars.colors.primary} 18%, transparent)`,
         color: vars.colors.foreground,
       },
-      // Neutral — tooling, process, meta
+      // Neutral — tooling, process, meta.
+      // Ink-tinted rather than white-tinted: on the warm page a 50% white wash
+      // was invisible, so neutral tags read as bare text next to the coloured
+      // ones and the row looked half-finished. Same perceived weight as the
+      // 18% accent tints, no hue.
       default: {
-        backgroundColor: `color-mix(in srgb, ${vars.colors.muted} 50%, transparent)`,
+        backgroundColor: `color-mix(in srgb, ${vars.colors.foreground} 8%, transparent)`,
         color: vars.colors.foreground,
       },
     },

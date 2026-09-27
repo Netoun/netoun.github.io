@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MeshBackgroundCanvas } from "@/components/misc/mesh-background/mesh-background-canvas.component";
+import { SHADER_CONFIG } from "@/components/misc/shaders/mesh-background/mesh-background.shader";
 import { LabsDemoLayout } from "../../components/labs-experiment-frame/labs-experiment-frame.component";
 import {
   ButtonGroupControl,
@@ -13,10 +14,10 @@ import * as styles from "./mesh-background.demo.css";
 const STATES = ["paused", "running"] as const;
 type PlayState = (typeof STATES)[number];
 
-const DEFAULT_QUALITY = 0.45;
+const DEFAULT_QUALITY = SHADER_CONFIG.defaultQuality;
 
 export function MeshBackgroundDemo() {
-  const [quality, setQuality] = useState(DEFAULT_QUALITY);
+  const [quality, setQuality] = useState<number>(DEFAULT_QUALITY);
   const [state, setState] = useState<PlayState>("running");
 
   const reset = () => {
@@ -49,7 +50,7 @@ export function MeshBackgroundDemo() {
               label="Quality"
               value={quality}
               min={0}
-              max={0.75}
+              max={1}
               step={0.05}
               onChange={setQuality}
               format={(value) => value.toFixed(2)}

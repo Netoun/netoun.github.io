@@ -7,7 +7,10 @@ const colors = {
   // Couleurs d'interface
   muted: "oklch(0.96 0 0)",
   mutedForeground: "oklch(0.45 0 0)",
-  card: "oklch(1 0 0 / 0.55)",
+  // Opaque warm paper stock. It used to be translucent white paired with a
+  // backdrop blur — over an opaque beige page that bought no visible effect,
+  // only softer text and extra paint.
+  card: "oklch(0.975 0.012 88)",
 
   // Bordures
   border: "oklch(0.9 0 0)",
@@ -120,10 +123,12 @@ const boxShadow = {
   innerSm: "inset 0 0 2px 0 oklch(0 0 0 / 0.05)",
   innerMd: "inset 0 0 4px 0 oklch(0 0 0 / 0.05)",
   innerLg: "inset 0 0 6px 0 oklch(0 0 0 / 0.05)",
-  // Cards at rest: discreet halo. On hover: assertive lift + accent ring.
+  // Cards at rest: neutral, tight elevation — the gold used to sit under every
+  // surface at once, which turned the accent into ambient hum. Colour is now
+  // spent only on hover, where it means "this one".
   restCard: `
-    0 4px 24px color-mix(in srgb, ${colors.primary} 14%, transparent),
-    0 1px 4px color-mix(in srgb, ${colors.foreground} 6%, transparent)
+    0 1px 2px color-mix(in srgb, ${colors.foreground} 5%, transparent),
+    0 8px 24px -12px color-mix(in srgb, ${colors.foreground} 18%, transparent)
   `,
   hoverCard: `
     0 24px 60px color-mix(in srgb, ${colors.foreground} 14%, transparent),

@@ -11,11 +11,15 @@ const square = (value: number) => value * value;
 
 export const SHADER_CONFIG = {
   animationSpeed: 0.06,
+  scrollAnimationSpeed: 0.01,
 
-  // Grain beaucoup moins cher.
-  filmGrainFlickerBase: 0.98,
-  filmGrainFlickerRange: 0.02,
-  filmGrainStrength: 0.16,
+  // A balanced coarse layer keeps the grain readable without looking digital.
+  filmGrainFlickerBase: 1,
+  filmGrainFlickerRange: 0.22,
+  filmGrainStrength: 0.4,
+  filmGrainCoarseMix: 0.42,
+  filmGrainCoarseSize: 2.25,
+  filmGrainResponse: 0.94,
 
   blob1: {
     centerX: 0.16,
@@ -63,18 +67,14 @@ export const SHADER_CONFIG = {
   vignetteStrength: 0.28,
   baseColor: [0.02, 0.03, 0.05] as const,
 
-  // Le mesh est un single-draw statique (redessiné seulement en debounce au
-  // resize), donc supersampler ne coûte presque rien en continu. On force un
-  // plancher de rendu pour que le film grain reste fin même sur les écrans en
-  // devicePixelRatio=1 (gros moniteurs 2K/4K), et un plafond pour borner la
-  // mémoire GPU du buffer.
-  minRenderScale: 1.5,
-  maxRenderScale: 1.5,
-  // Plafond plus élevé quand la qualité est forcée à "high".
-  maxRenderScaleHigh: 2,
+  // Keep the buffer aligned with physical pixels: resampling softens the grain.
+  // A 3x cap preserves native detail on high-density displays.
+  minRenderScale: 1,
+  maxRenderScale: 3,
 
-  defaultQuality: 0.45,
-  highQuality: 0.75,
+  defaultQuality: 0.6,
+  highQuality: 1.5,
+  heroQualityMultiplier: 0.5,
   webgpuInitTimeoutMs: 250,
 } as const;
 
@@ -87,11 +87,13 @@ varying vec2 v_c2;
 varying vec2 v_c3;
 
 uniform mediump float u_time;
+uniform float u_scroll;
 
 const float ANIMATION_SPEED = ${toGlslFloat(SHADER_CONFIG.animationSpeed)};
+const float SCROLL_ANIMATION_SPEED = ${toGlslFloat(SHADER_CONFIG.scrollAnimationSpeed)};
 
 void main() {
-  float t = u_time * ANIMATION_SPEED;
+  float t = u_time * ANIMATION_SPEED + u_scroll * SCROLL_ANIMATION_SPEED;
 
   v_uv = a_position * 0.5 + 0.5;
 
@@ -115,7 +117,11 @@ void main() {
 `;
 
 export const FRAGMENT_SHADER = `
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
 precision mediump float;
+#endif
 
 varying vec2 v_uv;
 varying vec2 v_c1;
@@ -123,12 +129,15 @@ varying vec2 v_c2;
 varying vec2 v_c3;
 
 uniform vec2 u_resolution;
-uniform float u_time;
+uniform mediump float u_time;
 uniform float u_quality;
 
 const float FILM_GRAIN_FLICKER_BASE = ${toGlslFloat(SHADER_CONFIG.filmGrainFlickerBase)};
 const float FILM_GRAIN_FLICKER_RANGE = ${toGlslFloat(SHADER_CONFIG.filmGrainFlickerRange)};
 const float FILM_GRAIN_STRENGTH = ${toGlslFloat(SHADER_CONFIG.filmGrainStrength)};
+const float FILM_GRAIN_COARSE_MIX = ${toGlslFloat(SHADER_CONFIG.filmGrainCoarseMix)};
+const float FILM_GRAIN_COARSE_SIZE = ${toGlslFloat(SHADER_CONFIG.filmGrainCoarseSize)};
+const float FILM_GRAIN_RESPONSE = ${toGlslFloat(SHADER_CONFIG.filmGrainResponse)};
 
 float hash12(vec2 p) {
   vec3 p3 = fract(vec3(p.xyx) * 0.1031);
@@ -183,11 +192,20 @@ void main() {
   color *= ${toGlslFloat(SHADER_CONFIG.vignetteBase)} + ${toGlslFloat(SHADER_CONFIG.vignetteStrength)} * vignette;
   color += ${glslVec3(SHADER_CONFIG.baseColor)};
 
+  vec2 px = uv * u_resolution;
+
+  // Dither sub-perceptuel (~1.5/255) : casse le banding 8 bits des dégradés
+  // sans texture visible, même quand le film grain est coupé (u_quality = 0).
+  color += (hash12(floor(px)) - 0.5) * 0.012;
+
   if (u_quality > 0.001) {
-    vec2 px = uv * u_resolution;
     float frame = mod(floor(u_time * 18.0), 1024.0);
 
-    float grain = hash12(floor(px * 0.75) + vec2(frame, frame * 1.37)) - 0.5;
+    vec2 grainSeed = vec2(frame, frame * 1.37);
+    float fineGrain = hash12(floor(px) + grainSeed) - 0.5;
+    float coarseGrain = hash12(floor(px / FILM_GRAIN_COARSE_SIZE) + grainSeed * 1.71) - 0.5;
+    float grain = mix(fineGrain, coarseGrain, FILM_GRAIN_COARSE_MIX);
+    grain = sign(grain) * pow(min(abs(grain) * 2.0, 1.0), FILM_GRAIN_RESPONSE) * 0.5;
     float flicker = FILM_GRAIN_FLICKER_BASE + (hash12(vec2(frame, 91.7)) - 0.5) * FILM_GRAIN_FLICKER_RANGE;
 
     color += grain * flicker * FILM_GRAIN_STRENGTH * u_quality;
@@ -210,14 +228,19 @@ struct Uniforms {
   resolution : vec2f,
   time : f32,
   quality : f32,
+  scroll : f32,
 };
 
 @group(0) @binding(0) var<uniform> u : Uniforms;
 
 const ANIMATION_SPEED : f32 = ${toWgslFloat(SHADER_CONFIG.animationSpeed)};
+const SCROLL_ANIMATION_SPEED : f32 = ${toWgslFloat(SHADER_CONFIG.scrollAnimationSpeed)};
 const FILM_GRAIN_FLICKER_BASE : f32 = ${toWgslFloat(SHADER_CONFIG.filmGrainFlickerBase)};
 const FILM_GRAIN_FLICKER_RANGE : f32 = ${toWgslFloat(SHADER_CONFIG.filmGrainFlickerRange)};
 const FILM_GRAIN_STRENGTH : f32 = ${toWgslFloat(SHADER_CONFIG.filmGrainStrength)};
+const FILM_GRAIN_COARSE_MIX : f32 = ${toWgslFloat(SHADER_CONFIG.filmGrainCoarseMix)};
+const FILM_GRAIN_COARSE_SIZE : f32 = ${toWgslFloat(SHADER_CONFIG.filmGrainCoarseSize)};
+const FILM_GRAIN_RESPONSE : f32 = ${toWgslFloat(SHADER_CONFIG.filmGrainResponse)};
 
 @vertex
 fn vsMain(@builtin(vertex_index) i : u32) -> VertexOut {
@@ -231,7 +254,7 @@ fn vsMain(@builtin(vertex_index) i : u32) -> VertexOut {
   );
 
   let pos = p[i];
-  let t = u.time * ANIMATION_SPEED;
+  let t = u.time * ANIMATION_SPEED + u.scroll * SCROLL_ANIMATION_SPEED;
 
   var out : VertexOut;
   out.pos = vec4f(pos, 0.0, 1.0);
@@ -309,11 +332,21 @@ fn fsMain(in: VertexOut) -> @location(0) vec4f {
   color *= ${toWgslFloat(SHADER_CONFIG.vignetteBase)} + ${toWgslFloat(SHADER_CONFIG.vignetteStrength)} * vignette;
   color += ${wgslVec3(SHADER_CONFIG.baseColor)};
 
-  if (u.quality > 0.001) {
-    let px = uv * u.resolution;
-    let frame = min(floor(u.time * 18.0), 1024.0);
+  let px = uv * u.resolution;
 
-    let grain = hash12(floor(px * 0.75) + vec2f(frame, frame * 1.37)) - 0.5;
+  // Dither sub-perceptuel (~1.5/255) : casse le banding 8 bits des dégradés
+  // sans texture visible, même quand le film grain est coupé (quality = 0).
+  color += vec3f((hash12(floor(px)) - 0.5) * 0.012);
+
+  if (u.quality > 0.001) {
+    let elapsedFrames = floor(u.time * 18.0);
+    let frame = elapsedFrames - floor(elapsedFrames / 1024.0) * 1024.0;
+
+    let grainSeed = vec2f(frame, frame * 1.37);
+    let fineGrain = hash12(floor(px) + grainSeed) - 0.5;
+    let coarseGrain = hash12(floor(px / FILM_GRAIN_COARSE_SIZE) + grainSeed * 1.71) - 0.5;
+    var grain = mix(fineGrain, coarseGrain, FILM_GRAIN_COARSE_MIX);
+    grain = sign(grain) * pow(min(abs(grain) * 2.0, 1.0), FILM_GRAIN_RESPONSE) * 0.5;
     let flicker = FILM_GRAIN_FLICKER_BASE + (hash12(vec2f(frame, 91.7)) - 0.5) * FILM_GRAIN_FLICKER_RANGE;
 
     color += vec3f(grain * flicker * FILM_GRAIN_STRENGTH * u.quality);
@@ -349,16 +382,17 @@ export function getShaderQuality() {
     : SHADER_CONFIG.defaultQuality;
 }
 
+export function getShaderRenderScale() {
+  return {
+    min: SHADER_CONFIG.minRenderScale,
+    max: SHADER_CONFIG.maxRenderScale,
+  };
+}
+
 export function getCanvasSize(canvas: HTMLCanvasElement) {
   const rect = canvas.getBoundingClientRect();
-  const maxScale =
-    document.documentElement.dataset.quality === "high"
-      ? SHADER_CONFIG.maxRenderScaleHigh
-      : SHADER_CONFIG.maxRenderScale;
-  const dpr = Math.min(
-    Math.max(window.devicePixelRatio || 1, SHADER_CONFIG.minRenderScale),
-    maxScale,
-  );
+  const renderScale = getShaderRenderScale();
+  const dpr = Math.min(Math.max(window.devicePixelRatio || 1, renderScale.min), renderScale.max);
 
   return {
     width: Math.max(1, Math.floor(rect.width * dpr)),

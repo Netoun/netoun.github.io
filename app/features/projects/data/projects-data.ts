@@ -12,7 +12,6 @@ export const projects: Project[] = [
     url: "https://github.com/netoun/netoun.github.io",
     featured: true,
     type: "personal" as ProjectType,
-    rotate: -0.5,
   },
   {
     slug: "procedural-map",
@@ -25,7 +24,6 @@ export const projects: Project[] = [
     url: "https://r-noise-map.vercel.app/",
     featured: false,
     type: "personal" as ProjectType,
-    rotate: 0.4,
   },
   {
     slug: "treashunt",
@@ -37,7 +35,6 @@ export const projects: Project[] = [
     url: "https://github.com/Netoun/treashunt",
     featured: true,
     type: "personal" as ProjectType,
-    rotate: -0.5,
   },
   {
     slug: "game-ntnh",
@@ -49,7 +46,6 @@ export const projects: Project[] = [
     url: "https://game-ntnh.netoun.com",
     featured: true,
     type: "personal" as ProjectType,
-    rotate: 0.6,
   },
   {
     slug: "lonestone-boilerplate",
@@ -61,7 +57,6 @@ export const projects: Project[] = [
     url: "https://github.com/lonestone/lonestone-boilerplate",
     featured: true,
     type: "project" as ProjectType,
-    rotate: -0.5,
   },
   {
     slug: "nzoth",
@@ -74,6 +69,5 @@ export const projects: Project[] = [
     url: "https://github.com/lonestone/nzoth",
     featured: true,
     type: "project" as ProjectType,
-    rotate: 0.5,
   },
 ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());

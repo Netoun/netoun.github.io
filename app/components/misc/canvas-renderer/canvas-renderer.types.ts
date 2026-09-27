@@ -16,6 +16,7 @@ export type Uniforms = Record<string, UniformValue>;
 
 export interface RendererOptions {
   animate?: boolean;
+  animateOnScroll?: boolean;
   debounceResize?: number;
   respectReducedMotion?: boolean;
   respectVisibility?: boolean;

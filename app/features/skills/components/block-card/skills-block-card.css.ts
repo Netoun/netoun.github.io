@@ -6,8 +6,6 @@ export const blockStyle = style({
   borderRadius: vars.radius.md,
   border: vars.border.subtle,
   backgroundColor: vars.colors.card,
-  backdropFilter: "blur(20px)",
-  WebkitBackdropFilter: "blur(20px)",
   overflow: "hidden",
   opacity: 1,
   boxShadow: vars.boxShadow.restCard,
@@ -43,8 +41,12 @@ export const blockTitleStyle = style({
   fontWeight: vars.fontWeight.medium,
 });
 
+// The glyph used to carry the block accent, but with six blocks and four
+// accents it coloured nothing legible — and it contradicted the legend, whose
+// three colours the *tags* already follow. Neutral glyph, colour left to the
+// tags; the accent survives only as the hover border.
 export const blockTitlePromptStyle = style({
-  color: "var(--block-accent)",
+  color: vars.colors.mutedForeground,
   fontWeight: vars.fontWeight.extrabold,
   marginRight: vars.spacing.xs,
 });
@@ -53,18 +55,19 @@ export const blockBodyStyle = style({
   paddingInline: `${vars.spacing.md} ${vars.spacing.md}`,
   paddingBlock: `${vars.spacing.md} ${vars.spacing.md}`,
   position: "relative",
-  minHeight: "5.625rem",
   display: "flex",
   flexDirection: "column",
-  justifyContent: "space-between",
   flex: 1,
 });
 
+// Cards in a row stretch to a common height; tag rows hug the top so every
+// block starts on the same line instead of floating at its own centre.
 export const tagsWrapStyle = style({
   display: "flex",
   flexWrap: "wrap",
   gap: vars.spacing.xs,
   alignItems: "center",
+  alignContent: "flex-start",
   position: "relative",
   flex: 1,
   zIndex: 1,

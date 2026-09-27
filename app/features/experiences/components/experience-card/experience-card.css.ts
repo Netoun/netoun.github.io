@@ -19,7 +19,16 @@ export const entryStyle = style({
     left: "-26px",
     width: "1px",
     top: 12,
-    background: `linear-gradient(${vars.colors.kirby}, ${vars.colors.primary}, ${vars.colors.kirby})`,
+    // The connector is structure, not signal: a quiet hairline that fades at
+    // both ends. It used to be a pink→gold→pink gradient, which put the most
+    // saturated colour on the page onto a plain rule — and pink is reserved
+    // for the Kirby component.
+    background: `linear-gradient(
+      transparent,
+      ${vars.colors.cardBorder} 12%,
+      ${vars.colors.cardBorder} 88%,
+      transparent
+    )`,
   },
 
   "@media": {
@@ -44,17 +53,19 @@ export const timelineDotStyle = style({
   width: "12px",
   height: "12px",
   borderRadius: vars.radius.full,
-  backgroundColor: vars.colors.kirby,
-  border: `2px solid color-mix(in srgb, ${vars.colors.kirby} 460%, transparent)`,
-  boxShadow: `0 0 0 2px color-mix(in srgb, ${vars.colors.kirby} 40%, transparent)`,
+  // Gold station mark on a neutral rail — the accent marks the entry, the rail
+  // stays quiet. (The old border used a 460% colour-mix, which is out of range
+  // and simply clamped to solid pink.)
+  backgroundColor: vars.colors.primary,
+  boxShadow: `0 0 0 3px ${vars.colors.background}`,
 
   "@media": {
     [breakpoints.md]: {
       display: "block",
       left: "-35px",
-      width: "14px",
-      height: "14px",
-      top: "12px",
+      width: "10px",
+      height: "10px",
+      top: "14px",
     },
   },
 });
@@ -63,8 +74,8 @@ export const timelineDotPingStyle = style({
   position: "absolute",
   inset: "-2px",
   borderRadius: vars.radius.full,
-  backgroundColor: vars.colors.kirby,
-  opacity: 0.4,
+  backgroundColor: vars.colors.primary,
+  opacity: 0.35,
   animation: `${ping} 2s cubic-bezier(0, 0, 0.2, 1) infinite`,
 });
 
@@ -119,15 +130,25 @@ export const companyStyle = style({
   textTransform: "uppercase",
 });
 
+// Same demotion as the project card status: annotation + lit dot, not a pill.
 export const currentBadgeStyle = style({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: `calc(${vars.spacing.xs} * 1.5)`,
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize["2xs"],
   letterSpacing: "0.14em",
-  backgroundColor: vars.colors.primary,
-  color: vars.colors.primaryForeground,
-  padding: `calc(${vars.spacing.xs} / 2) calc(${vars.spacing.sm} * 0.875)`,
-  borderRadius: vars.radius.sm,
-  fontWeight: vars.fontWeight.bold,
+  color: vars.colors.mutedForeground,
+  fontWeight: vars.fontWeight.medium,
+
+  "::before": {
+    content: '""',
+    width: "5px",
+    height: "5px",
+    borderRadius: vars.radius.full,
+    backgroundColor: vars.colors.primary,
+    boxShadow: `0 0 6px color-mix(in srgb, ${vars.colors.primary} 60%, transparent)`,
+  },
 });
 
 export const periodStyle = style({

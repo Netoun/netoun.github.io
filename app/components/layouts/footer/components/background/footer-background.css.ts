@@ -34,16 +34,6 @@ export const footerMeshShapeStyle = style({
   backfaceVisibility: "hidden",
 });
 
-export const footerNoiseOverlayStyle = style({
-  position: "absolute",
-  inset: 0,
-  width: "100%",
-  zIndex: 10,
-  height: "100%",
-  pointerEvents: "none",
-  opacity: 0.25,
-});
-
 export const footerMeshGradientPathStyle = style({
   backfaceVisibility: "hidden",
   fill: "currentColor",

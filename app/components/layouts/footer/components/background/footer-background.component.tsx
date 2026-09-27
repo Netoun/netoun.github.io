@@ -1,24 +1,12 @@
-import { memo, useRef } from "react";
-import { useShaderCanvas } from "@/components/misc/canvas-renderer/use-canvas-shader.hook";
+import { memo } from "react";
+import { MeshBackgroundCanvas } from "@/components/misc/mesh-background/mesh-background-canvas.component";
 import {
   SHADER_CONFIG,
-  VERTEX_SHADER,
-  FRAGMENT_SHADER,
-  WEBGPU_SHADER,
+  getShaderQuality,
 } from "@/components/misc/shaders/mesh-background/mesh-background.shader";
 import * as styles from "./footer-background.css";
 
-const footerShader = {
-  vertexGLSL: VERTEX_SHADER,
-  fragmentGLSL: FRAGMENT_SHADER,
-  webgpuWGSL: WEBGPU_SHADER,
-} as const;
-
-function getShaderQuality() {
-  return document.documentElement.dataset.quality === "high"
-    ? SHADER_CONFIG.highQuality
-    : SHADER_CONFIG.defaultQuality;
-}
+const getFooterShaderQuality = () => getShaderQuality() * SHADER_CONFIG.heroQualityMultiplier;
 
 const MESH_SHAPES = [
   {
@@ -48,13 +36,9 @@ const normalizeSvgId = (id: string) => id.replace(/:/g, "-");
 
 interface FooterSharedSvgIds {
   meshBlurId: string;
-  noiseId: string;
 }
 
-const FooterSharedDefsSVG = memo(function FooterSharedDefsSVG({
-  meshBlurId,
-  noiseId,
-}: FooterSharedSvgIds) {
+const FooterSharedDefsSVG = memo(function FooterSharedDefsSVG({ meshBlurId }: FooterSharedSvgIds) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -67,15 +51,6 @@ const FooterSharedDefsSVG = memo(function FooterSharedDefsSVG({
       <defs>
         <filter id={meshBlurId} x="-100%" y="-100%" width="300%" height="300%">
           <feGaussianBlur in="SourceGraphic" stdDeviation="25" />
-        </filter>
-        <filter id={noiseId} x="0" y="0" width="100%" height="100%">
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="1.26"
-            result="turbulence"
-            stitchTiles="stitch"
-          />
-          <feBlend in="SourceGraphic" in2="turbulence" mode="overlay" />
         </filter>
       </defs>
     </svg>
@@ -113,53 +88,21 @@ const FooterMeshShapeSVG = memo(function FooterMeshShapeSVG({
   );
 });
 
-const FooterNoiseOverlaySVG = memo(function FooterNoiseOverlaySVG({
-  noiseId,
-}: Pick<FooterSharedSvgIds, "noiseId">) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 1000 500"
-      preserveAspectRatio="none"
-      className={styles.footerNoiseOverlayStyle}
-      aria-hidden="true"
-      focusable="false"
-    >
-      <rect
-        x="0"
-        y="0"
-        width="1000"
-        height="500"
-        filter={`url(#${noiseId})`}
-        fill="white"
-        opacity="0.08"
-      />
-    </svg>
-  );
-});
-
 const FooterMeshShaderBackground = memo(function FooterMeshShaderBackground({
   meshBlurId,
-  noiseId,
 }: FooterSharedSvgIds) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  const { type } = useShaderCanvas(canvasRef, footerShader, {
-    animate: false,
-    quality: getShaderQuality,
-    powerPreference: "high-performance",
-    webgpuTimeout: SHADER_CONFIG.webgpuInitTimeoutMs,
-  });
-
   return (
     <div className={styles.footerMeshContainerStyle}>
       {MESH_SHAPES.map((mesh) => (
         <FooterMeshShapeSVG key={mesh.id} {...mesh} meshBlurId={meshBlurId} />
       ))}
-      <FooterNoiseOverlaySVG noiseId={noiseId} />
-      {type !== "svg" && (
-        <canvas ref={canvasRef} className={styles.footerShaderCanvasStyle} aria-hidden="true" />
-      )}
+      <MeshBackgroundCanvas
+        animate={false}
+        animateOnScroll
+        className={styles.footerShaderCanvasStyle}
+        powerPreference="high-performance"
+        quality={getFooterShaderQuality}
+      />
     </div>
   );
 });
@@ -167,12 +110,11 @@ const FooterMeshShaderBackground = memo(function FooterMeshShaderBackground({
 export function FooterBackground() {
   const svgId = normalizeSvgId("footer-bg");
   const meshBlurId = `${svgId}-mesh-blur`;
-  const noiseId = `${svgId}-noise`;
 
   return (
     <>
-      <FooterSharedDefsSVG meshBlurId={meshBlurId} noiseId={noiseId} />
-      <FooterMeshShaderBackground meshBlurId={meshBlurId} noiseId={noiseId} />
+      <FooterSharedDefsSVG meshBlurId={meshBlurId} />
+      <FooterMeshShaderBackground meshBlurId={meshBlurId} />
     </>
   );
 }

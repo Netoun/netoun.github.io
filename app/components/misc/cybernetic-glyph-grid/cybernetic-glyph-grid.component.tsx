@@ -59,6 +59,9 @@ const GAP_PX = 2;
 const MAX_DPR = 1.25;
 
 const TICK_MS = 100;
+// Repaints capped at 30fps: cells mutate every TICK_MS and the pulse period
+// is 2.9s, so redrawing on every rAF frame only burns CPU for no visible gain.
+const FRAME_MS = 1000 / 30;
 const UPDATE_RATIO = 0.12;
 
 const PULSE_PERIOD_S = 2.9;
@@ -510,6 +513,8 @@ export const CyberneticGlyphGrid = memo(
       lastTickRef.current = animStartRef.current;
       tickStepRef.current = 0;
 
+      let lastDraw = 0;
+
       const loop = (now: number) => {
         if (!mountedRef.current) return;
 
@@ -518,7 +523,8 @@ export const CyberneticGlyphGrid = memo(
           updateCells(now);
         }
 
-        if (!document.hidden) {
+        if (!document.hidden && now - lastDraw >= FRAME_MS) {
+          lastDraw = now;
           draw(now);
         }
 

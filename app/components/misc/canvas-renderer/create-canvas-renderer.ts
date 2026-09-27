@@ -28,6 +28,7 @@ type WebGLData = {
   resolutionLoc: WebGLUniformLocation | null;
   timeLoc: WebGLUniformLocation | null;
   qualityLoc: WebGLUniformLocation | null;
+  scrollLoc: WebGLUniformLocation | null;
   positionBuffer: WebGLBuffer;
 };
 
@@ -148,11 +149,13 @@ function setupWebGL(
   const resolutionLoc = gl.getUniformLocation(program, "u_resolution");
   const timeLoc = gl.getUniformLocation(program, "u_time");
   const qualityLoc = gl.getUniformLocation(program, "u_quality");
+  const scrollLoc = gl.getUniformLocation(program, "u_scroll");
 
   const uniformMap = new Map<string, WebGLUniformLocation>();
   if (resolutionLoc) uniformMap.set("u_resolution", resolutionLoc);
   if (timeLoc) uniformMap.set("u_time", timeLoc);
   if (qualityLoc) uniformMap.set("u_quality", qualityLoc);
+  if (scrollLoc) uniformMap.set("u_scroll", scrollLoc);
 
   return {
     gl,
@@ -161,6 +164,7 @@ function setupWebGL(
     resolutionLoc,
     timeLoc,
     qualityLoc,
+    scrollLoc,
     positionBuffer,
   };
 }
@@ -224,7 +228,7 @@ async function setupWebGPU(
   });
 
   const uniformBuffer = device.createBuffer({
-    size: 16,
+    size: 32,
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
   });
 
@@ -240,6 +244,7 @@ function drawWebGPU(ctx: WebGPUContext, canvas: HTMLCanvasElement, uniforms: Uni
   const resolution = uniforms.u_resolution as [number, number] | undefined;
   const time = (uniforms.u_time as number) ?? 0;
   const quality = (uniforms.u_quality as number) ?? 0;
+  const scroll = (uniforms.u_scroll as number) ?? 0;
 
   const w = canvas.width;
   const h = canvas.height;
@@ -247,7 +252,7 @@ function drawWebGPU(ctx: WebGPUContext, canvas: HTMLCanvasElement, uniforms: Uni
   ctx.device.queue.writeBuffer(
     ctx.uniformBuffer,
     0,
-    new Float32Array([resolution?.[0] ?? w, resolution?.[1] ?? h, time, quality]),
+    new Float32Array([resolution?.[0] ?? w, resolution?.[1] ?? h, time, quality, scroll]),
   );
 
   const encoder = ctx.device.createCommandEncoder();
@@ -284,8 +289,10 @@ export function createCanvasRenderer(
     let webgpuCtx: WebGPUContext | null = null;
     let isVisible = true;
     let reducedMotion = false;
-
-    const dpr = getDevicePixelRatio(options);
+    let sizeDirty = true;
+    let lastDpr = 0;
+    let bufferWidth = 1;
+    let bufferHeight = 1;
 
     function destroy() {
       cancelled = true;
@@ -328,19 +335,32 @@ export function createCanvasRenderer(
       }
     }
 
-    function renderFrame(_now: number) {
+    function renderFrame(now: number) {
       drawQueued = false;
       frameId = null;
       if (cancelled) return;
       if (!isVisible || reducedMotion) return;
 
-      const { width, height } = resizeCanvas(canvas, dpr);
+      // Reading offsetWidth forces style/layout, so only measure when the
+      // observers flagged a size change or the dpr changed (display move) —
+      // never on the per-frame scroll/animate path.
+      const dpr = getDevicePixelRatio(options);
+      if (sizeDirty || dpr !== lastDpr) {
+        const size = resizeCanvas(canvas, dpr);
+        bufferWidth = size.width;
+        bufferHeight = size.height;
+        lastDpr = dpr;
+        sizeDirty = false;
+      }
+      const width = bufferWidth;
+      const height = bufferHeight;
 
       const quality = options.quality?.() ?? 0;
       const uniforms: Uniforms = {
         u_resolution: [width, height],
-        u_time: 0,
+        u_time: options.animate ? now / 1000 : 0,
         u_quality: quality,
+        u_scroll: options.animateOnScroll ? window.scrollY : 0,
         ...options.uniforms,
       };
 
@@ -352,7 +372,11 @@ export function createCanvasRenderer(
         webglData.gl.drawArrays(webglData.gl.TRIANGLES, 0, 6);
       }
 
-      canvas.dataset.ready = "true";
+      // Guard: rewriting the same attribute every frame would re-run style
+      // invalidation for the [data-ready] selector on each scroll draw.
+      if (canvas.dataset.ready !== "true") {
+        canvas.dataset.ready = "true";
+      }
 
       if (options.animate) {
         scheduleDraw();
@@ -361,6 +385,7 @@ export function createCanvasRenderer(
 
     function onResize() {
       if (cancelled) return;
+      sizeDirty = true;
       scheduleDraw();
     }
 
@@ -368,6 +393,11 @@ export function createCanvasRenderer(
       if (cancelled) return;
       if (resizeDebounceId !== null) clearTimeout(resizeDebounceId);
       resizeDebounceId = window.setTimeout(onResize, options.debounceResize ?? 0);
+    }
+
+    function onScroll() {
+      if (!options.animateOnScroll) return;
+      scheduleDraw();
     }
 
     async function init() {
@@ -394,12 +424,14 @@ export function createCanvasRenderer(
       const resizeObserver = new ResizeObserver(onResizeDebounced);
       resizeObserver.observe(canvas);
       window.addEventListener("resize", onResizeDebounced, { passive: true });
+      if (options.animateOnScroll) window.addEventListener("scroll", onScroll, { passive: true });
 
       cleanupFn = () => {
         motionQuery.removeEventListener("change", handleMotion);
         visibilityObserver?.disconnect();
         resizeObserver.disconnect();
         window.removeEventListener("resize", onResizeDebounced);
+        if (options.animateOnScroll) window.removeEventListener("scroll", onScroll);
         if (webglData) {
           const { gl, program, positionBuffer } = webglData;
           gl.deleteBuffer(positionBuffer);
