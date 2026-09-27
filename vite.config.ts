@@ -117,6 +117,10 @@ export default defineConfig({
       },
     },
   },
+  // React Router prerenders through a Vite preview server and requests it over
+  // IPv4. Where `localhost` resolves to ::1 first (Linux / Cloudflare Pages), an
+  // unpinned host listens on IPv6 only and every prerender request is refused.
+  preview: { host: "127.0.0.1" },
   test: {
     environment: "happy-dom",
     setupFiles: ["./test-setup.ts"],
