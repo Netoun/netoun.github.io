@@ -14,9 +14,3 @@ export const contentStyle = style({
   position: "relative",
   zIndex: 1,
 });
-
-export const gridStyle = style({
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 360px), 1fr))",
-  gap: vars.spacing.xl,
-});

@@ -1,4 +1,5 @@
 /// <reference types="vitest/config" />
+import { execSync } from "node:child_process";
 import fs from "node:fs";
 import { reactRouter } from "@react-router/dev/vite";
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
@@ -6,6 +7,9 @@ import { defineConfig, type Plugin } from "vite";
 import { EXPERIMENT_SLUGS } from "./app/features/labs/data/experiment-slugs.ts";
 
 const SITE_URL = "https://www.netoun.com";
+
+/** Every prerendered path; mirrors the prerender list in `react-router.config.ts`. */
+const PRERENDERED_PATHS = ["/", "/labs", ...EXPERIMENT_SLUGS.map((slug) => `/labs/${slug}`)];
 
 /**
  * Loads `*.css.ts?raw` imports as plain strings.
@@ -49,6 +53,12 @@ function rawCssTsPlugin(): Plugin {
   };
 }
 
+/** Sitemap priority: the home, then the Labs index, then each Lab. */
+function sitemapPriority(path: string): string {
+  if (path === "/") return "1.0";
+  return path === "/labs" ? "0.8" : "0.6";
+}
+
 /**
  * Emits `sitemap.xml` into the client build output (not `public/`), so builds
  * and typechecks never dirty the working tree. Routes mirror the prerender
@@ -61,11 +71,10 @@ function sitemapPlugin(): Plugin {
     generateBundle() {
       if (this.environment.name !== "client") return;
 
-      const pages = [
-        { url: `${SITE_URL}/`, priority: "1.0" },
-        { url: `${SITE_URL}/labs`, priority: "0.8" },
-        ...EXPERIMENT_SLUGS.map((slug) => ({ url: `${SITE_URL}/labs/${slug}`, priority: "0.6" })),
-      ];
+      const pages = PRERENDERED_PATHS.map((path) => ({
+        url: `${SITE_URL}${path}`,
+        priority: sitemapPriority(path),
+      }));
       const urls = pages
         .map(
           (page) => `  <url>
@@ -89,7 +98,58 @@ ${urls}
   };
 }
 
+/**
+ * Each Lab's tags, read from its descriptor. The Skills section cites the Labs as evidence,
+ * but importing the descriptors would pull every demo and its `?raw` sources into the home
+ * bundle; only these strings ship.
+ */
+function readLabTags(): Record<string, string[]> {
+  return Object.fromEntries(
+    EXPERIMENT_SLUGS.map((slug) => {
+      const file = `./app/features/labs/experiments/${slug}/${slug}.experiment.ts`;
+      const source = fs.readFileSync(new URL(file, import.meta.url), "utf-8");
+      const list = source.match(/\btags:\s*\[([^\]]*)\]/)?.[1];
+      if (list === undefined) throw new Error(`${file}: no tags array`);
+      return [slug, [...list.matchAll(/"([^"]+)"/g)].map((match) => match[1])];
+    }),
+  );
+}
+
+/**
+ * The short commit the build ran on: Cloudflare Pages exposes it, a local build asks git.
+ * Empty when neither knows (the footer then prints no commit).
+ */
+function readBuildCommit(): string {
+  const fromPages = process.env.CF_PAGES_COMMIT_SHA;
+  if (fromPages) return fromPages.slice(0, 7);
+  try {
+    return execSync("git rev-parse --short=7 HEAD", { stdio: ["ignore", "pipe", "ignore"] })
+      .toString()
+      .trim();
+  } catch {
+    return "";
+  }
+}
+
+/** The site's own dependencies and package manager, cited as evidence by the Skills section. */
+function readSitePackages(): { dependencies: string[]; packageManager: string } {
+  const manifest = JSON.parse(fs.readFileSync(new URL("./package.json", import.meta.url), "utf-8"));
+  return {
+    dependencies: Object.keys({ ...manifest.dependencies, ...manifest.devDependencies }).toSorted(),
+    packageManager: String(manifest.packageManager ?? "").split("@")[0],
+  };
+}
+
 export default defineConfig({
+  // The day this build ran (UTC). Prerendered markup is frozen at that date, so anything
+  // that reads the calendar must hydrate from it, then move to the visitor's date.
+  define: {
+    __BUILD_DATE__: JSON.stringify(new Date().toISOString().slice(0, 10)),
+    __BUILD_COMMIT__: JSON.stringify(readBuildCommit()),
+    __PRERENDERED_ROUTES__: JSON.stringify(PRERENDERED_PATHS.length),
+    __LAB_TAGS__: JSON.stringify(readLabTags()),
+    __SITE_PACKAGES__: JSON.stringify(readSitePackages()),
+  },
   plugins: [
     rawCssTsPlugin(),
     sitemapPlugin(),

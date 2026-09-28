@@ -7,6 +7,7 @@ import { ContactIcon } from "@/components/primitives/icons/contact-icon.componen
 import { WelcomeHeroContactHoverCardBeam } from "./components/beam/welcome-hero-contact-hover-card-beam.component";
 import * as buttonStyles from "../../welcome-hero.css";
 import * as styles from "./welcome-hero-contact-hover-card.css";
+import { Glyph } from "@/components/primitives/glyph/glyph.component";
 
 export function WelcomeHeroContactHoverCard() {
   // Flipped after hydration as a transition: React renders it time-sliced, in
@@ -40,7 +41,7 @@ export function WelcomeHeroContactHoverCard() {
   const label = (
     <>
       <span className={buttonStyles.welcomeButtonLabelStyles}>_Get in touch_</span>
-      <span className={buttonStyles.welcomeButtonArrowStyles}>⤘</span>
+      <Glyph className={buttonStyles.welcomeButtonArrowStyles}>⤘</Glyph>
     </>
   );
 
@@ -67,7 +68,8 @@ export function WelcomeHeroContactHoverCard() {
               {label}
             </a>
           )}
-          <WelcomeHeroContactHoverCardBeam />
+          {/* Mounted only while open: at rest its SMIL and CSS loops ran for nothing. */}
+          {isOpen && <WelcomeHeroContactHoverCardBeam />}
         </span>
         <Popover
           placement={isMobile ? "bottom left" : "right top"}

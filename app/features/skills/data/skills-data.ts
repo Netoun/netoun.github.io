@@ -1,104 +1,80 @@
-import { vars } from "@styles/theme.css";
-import type { AccentType, SkillBlock } from "./skills-data.types";
+import type { Practice } from "./skills-data.types";
 
-export const SKILL_BLOCKS = [
-  {
-    title: "Creative Frontend",
-    accent: "secondary",
-    shape: "sparkle",
-    tags: [
-      { name: "React", level: 3 },
-      { name: "TypeScript", level: 3 },
-      { name: "Next.js", level: 2 },
-      { name: "CSS + Vanilla Extract", level: 3 },
-      { name: "Tailwind CSS", level: 2 },
-      { name: "React Router", level: 2 },
-      { name: "Remix", level: 2 },
-      { name: "React Aria", level: 2 },
-      { name: "shadcn/ui", level: 2 },
-      { name: "anime.js", level: 2 },
-      { name: "Motion", level: 2 },
-    ],
-  },
-  {
-    title: "Backend & Infra",
-    accent: "tertiary",
-    shape: "cube",
-    tags: [
-      { name: "NestJS", level: 3 },
-      { name: "Node.js", level: 3 },
-      { name: "PostgreSQL", level: 2 },
-      { name: "Drizzle", level: 2 },
-      { name: "MikroORM", level: 2 },
-      { name: "Bun", level: 2 },
-      { name: "Elysia", level: 2 },
-      { name: "Docker", level: 2 },
-      { name: "Cloudflare", level: 2 },
-      { name: "Keycloak", level: 1 },
-      { name: "Ansible", level: 1 },
-    ],
-  },
-  {
-    title: "Web Architecture",
-    accent: "tertiary",
-    shape: "diamond",
-    tags: [
-      { name: "TypeScript", level: 3 },
-      { name: "Design Systems", level: 3 },
-      { name: "REST / GraphQL", level: 2 },
-      { name: "Accessibility", level: 2 },
-      { name: "SSE", level: 2 },
-      { name: "Zod", level: 2 },
-      { name: "Monorepos", level: 2 },
-    ],
-  },
-  {
-    title: "Realtime Systems",
-    accent: "tertiary",
-    shape: "circle",
-    tags: [
-      { name: "WebSockets", level: 2 },
-      { name: "Queues", level: 2 },
-      { name: "Streaming", level: 2 },
-      { name: "AI", level: 2 },
-    ],
-  },
-  {
-    title: "Game / Procedural",
-    accent: "primary",
-    shape: "hexagon",
-    tags: [
-      { name: "Three.js", level: 2 },
-      { name: "Canvas 2D", level: 2 },
-      { name: "WebGL", level: 2 },
-      { name: "Rust", level: 2 },
-      { name: "Bevy", level: 2 },
-      { name: "WebGPU", level: 1 },
-    ],
-  },
-  {
-    title: "Workflow & Collaboration",
-    accent: "primary",
-    shape: "ring",
-    tags: [
-      { name: "Agile", level: 3 },
-      { name: "Notion", level: 3 },
-      { name: "AI Workflow", level: 3 },
-      { name: "Git + CI/CD", level: 3 },
-      { name: "Collaboration", level: 3 },
-      { name: "Product Thinking", level: 2 },
-      { name: "Figma", level: 2 },
-      { name: "Vite", level: 2 },
-      { name: "Vitest", level: 2 },
-      { name: "MDX", level: 2 },
-      { name: "Python", level: 1 },
-    ],
-  },
-] satisfies SkillBlock[];
+/**
+ * The stack, in reading order. Only tools that ship somewhere are listed: each one must be
+ * found in a project, a job, a Lab or this site's package.json (the page's evidence test
+ * enforces it). Domains come from the tag primitive's colour map, never from here.
+ */
+export const STACK_TOOLS = [
+  "React",
+  "TypeScript",
+  "Next.js",
+  "Vanilla Extract",
+  "Tailwind CSS",
+  "React Router",
+  "React Aria",
+  "anime.js",
+  "NestJS",
+  "Node.js",
+  "PostgreSQL",
+  "Drizzle",
+  "MikroORM",
+  "Bun",
+  "Elysia",
+  "Cloudflare",
+  "Keycloak",
+  "Zod",
+  "Monorepos",
+  "Queues",
+  "Streaming",
+  "Three.js",
+  "Canvas 2D",
+  "WebGL",
+  "WebGPU",
+  "Rust",
+  "Python",
+  "Vite",
+  "Vitest",
+];
 
-export const ACCENT_VARS: Record<AccentType, string> = {
-  primary: vars.colors.primary,
-  secondary: vars.colors.secondary,
-  tertiary: vars.colors.tertiary,
-  kirby: vars.colors.kirby,
-};
+/**
+ * How the work gets done with agents and LLMs. Client work stays unnamed ("not listed", as in
+ * the work log); tool names are evidence, never a headline.
+ */
+export const PRACTICES: Practice[] = [
+  {
+    id: "agents",
+    title: "Agentic workflow",
+    body: "Spec → plan → task → review → audit, one commit per task. Rules, skills and hooks shared by every agent, wired to MCP tools for browser and IDE checks.",
+    withLabel: "works with",
+    with: ["Claude Code", "Codex", "Cursor", "opencode"],
+    receipt: {
+      text: "this site's AGENTS.md",
+      href: "https://github.com/netoun/netoun.github.io/blob/main/AGENTS.md",
+    },
+  },
+  {
+    id: "pipelines",
+    title: "Tool-calling LLM pipelines",
+    body: "Subagents call tools and return schema-validated output, turning 100+ page PDFs into structured data. Every quoted piece of evidence is checked against the source text.",
+    withLabel: "built with",
+    with: ["AI SDK", "zod", "queues", "OCR"],
+    receipt: { text: "client work, not listed · Cuevr" },
+  },
+  {
+    id: "evals",
+    title: "LLM evaluation",
+    body: "Ground-truth datasets, field-level accuracy weighted by criticality, prompt and model comparison, replay of past runs.",
+    withLabel: "built with",
+    with: ["NestJS", "React", "Langfuse"],
+    receipt: { text: "client work, not listed" },
+  },
+  {
+    id: "llmops",
+    title: "LLMOps",
+    body: "Prompts versioned in git and promoted from development to production, every step traced.",
+    withLabel: "built with",
+    with: ["Langfuse", "OpenTelemetry", "Sentry"],
+    receipt: { text: "client work, not listed" },
+  },
+];

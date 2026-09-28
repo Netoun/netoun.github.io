@@ -2,49 +2,38 @@
 # AI-Readable Information about Nicolas (Netoun)
 
 ## About
-Nicolas is a Full Stack Engineer and Creative Developer based in Nantes, France.
-Currently working at Lonestone as a Software Engineer.
+Nicolas is a full-stack engineer based in Nantes, France.
+Currently working at Lonestone as a Full-stack engineer.
 
 ## Contact & Links
 - Website: https://www.netoun.com
 - GitHub: https://github.com/netoun
-- LinkedIn: https://www.linkedin.com/in/nicolas-garnier
+- LinkedIn: https://www.linkedin.com/in/nicolas-coulonnier-66416813b/
 - Location: Nantes, France
 
-## Expertise
-### Frontend Development
-- React, TypeScript, Next.js
-- React Router, Vanilla Extract, Tailwind CSS
-- React Aria, shadcn/ui
-- anime.js, Motion
+## Skills
+### Practice: agents & LLM
+- Agentic workflow: spec → plan → task → review → audit, one commit per task; rules, skills and hooks shared by every agent, wired to MCP tools for browser and IDE checks. Works with Claude Code, Codex, Cursor, opencode. See https://github.com/netoun/netoun.github.io/blob/main/AGENTS.md
+- Tool-calling LLM pipelines: subagents call tools and return schema-validated output, turning 100+ page PDFs into structured data; every quoted piece of evidence is checked against the source text (AI SDK, zod, queues, OCR; client work, not listed; Cuevr)
+- LLM evaluation: ground-truth datasets, field-level accuracy weighted by criticality, prompt and model comparison, replay of past runs (client work, not listed)
+- LLMOps: prompts versioned in git and promoted from development to production, every step traced (Langfuse, OpenTelemetry, Sentry; client work, not listed)
 
-### Backend Development
-- NestJS, Node.js
-- PostgreSQL, Drizzle, MikroORM
-- Bun, Elysia
-
-### Real-time Systems
-- WebSockets, Server-Sent Events (SSE)
-- Queues, Streaming
-
-### Creative & Game Development
-- Three.js, Canvas 2D, WebGL
-- Rust, Bevy, WebGPU
-
-### Infrastructure
-- Docker, Cloudflare
-- Keycloak, Ansible
+### Stack (each tool ships in a project, a job, a Lab or this site)
+- Frontend: React, TypeScript, Next.js, Vanilla Extract, Tailwind CSS, React Router, React Aria, anime.js
+- Backend: NestJS, Node.js, PostgreSQL, Drizzle, MikroORM, Bun, Elysia, Cloudflare, Keycloak, Zod, Monorepos, Queues, Streaming
+- Creative: Three.js, Canvas 2D, WebGL, WebGPU, Rust, Python
+- Tooling: Vite, Vitest
 
 ## Projects
 ### Treashunt
-- URL: https://github.com/Netoun/treashunt
+- URL: https://treashunt.com
 - Description: Personal project - Adventure design platform with exciting challenges
 - Tech: React, Drizzle, Cloudflare, Bun, Elysia
 
-### Game NTNH
-- URL: https://game-ntnh.netoun.com/
-- Description: Experimental procedural game built with Rust and Bevy
-- Tech: Rust, Bevy, WebGPU
+### Commun'île
+- URL: https://communile.fr/
+- Description: Website of Commun'île, a cooperative running open, convivial places in Nantes, built in a team of three
+- Tech: Astro, TypeScript, Tailwind CSS, anime.js, Cloudflare
 
 ### Procedural Maps
 - URL: https://r-noise-map.vercel.app/
@@ -63,7 +52,7 @@ Currently working at Lonestone as a Software Engineer.
 
 ## Professional Experience
 ### Lonestone (Jul 2021 - Present)
-- Role: Software Developer
+- Role: Full-stack engineer
 - Location: Nantes, FR
 - Projects: Desoutter, Cuevr, Mon Rét@b' d'abord
 
@@ -71,7 +60,7 @@ Currently working at Lonestone as a Software Engineer.
 - Role: Full Stack Developer
 - Location: Nantes, FR
 
-### Sogeti (Sep 2017 - Oct 2019)
+### Sogeti (Sep 2017 - Jul 2019)
 - Role: Work-Study Program
 - Location: Nantes, FR
 

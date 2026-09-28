@@ -1,3 +1,4 @@
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 import { useState } from "react";
 import { LabsDemoLayout } from "../../components/labs-experiment-frame/labs-experiment-frame.component";
 import {
@@ -28,7 +29,10 @@ export function ScrollMorphDemo() {
         <div className={styles.stageInner}>
           <div
             className={styles.morphCard}
-            style={{ transform: `translateY(${translateY}px) scale(${scale})` }}
+            style={assignInlineVars({
+              [styles.morphTranslateY]: `${translateY}px`,
+              [styles.morphScale]: String(scale),
+            })}
           >
             {percent}%
           </div>

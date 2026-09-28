@@ -2,8 +2,9 @@ import { tagStyle, type TagColor, type TagSize } from "./tag.css";
 import { memo } from "react";
 
 // Tags are coloured by tech domain so the palette reads as a system, not
-// decoration. Three accents map to three domains; everything else stays
-// neutral. Keep the legend in the skills section in sync with these buckets.
+// decoration. Four accents map to four domains; everything else stays
+// neutral. This map is the site's one taxonomy: the monitor meters, the work
+// log lanes and the Skills readout all read their domains from it.
 const TAG_COLOR_MAP: Record<string, TagColor> = {
   // Teal — frontend & UI (React ecosystem, styling, animation, design)
   React: "frontend",
@@ -14,6 +15,7 @@ const TAG_COLOR_MAP: Record<string, TagColor> = {
   "Next.js": "frontend",
   Next: "frontend",
   Remix: "frontend",
+  Astro: "frontend",
   "React Router": "frontend",
   "React Aria": "frontend",
   "shadcn/ui": "frontend",
@@ -54,22 +56,24 @@ const TAG_COLOR_MAP: Record<string, TagColor> = {
   Monorepo: "backend",
   Monorepos: "backend",
 
-  // Gold — creative & systems (graphics, games, low-level, AI)
+  // Gold — creative (graphics, games, shaders)
   "Three.js": "creative",
   "Canvas 2D": "creative",
   Canvas: "creative",
   WebGL: "creative",
   WebGPU: "creative",
-  Rust: "creative",
   Bevy: "creative",
   Game: "creative",
   Creative: "creative",
   Interactive: "creative",
-  AI: "creative",
-  TensorFlow: "creative",
-  DialogFlow: "creative",
-  Python: "creative",
   "Nova.js": "creative",
+
+  // Azure — systems & AI (low-level languages, ML, LLM)
+  Rust: "systems",
+  Python: "systems",
+  AI: "systems",
+  TensorFlow: "systems",
+  DialogFlow: "systems",
 
   // Neutral — tooling, process, meta
   Vite: "default",
@@ -87,7 +91,7 @@ const TAG_COLOR_MAP: Record<string, TagColor> = {
   Web: "default",
 };
 
-function getTagColor(tag: string): TagColor {
+export function getTagColor(tag: string): TagColor {
   return TAG_COLOR_MAP[tag] ?? "default";
 }
 

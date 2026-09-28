@@ -1,4 +1,3 @@
-import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
 import { style } from "@vanilla-extract/css";
 
@@ -14,16 +13,4 @@ export const sectionStyle = style({
 export const contentStyle = style({
   position: "relative",
   zIndex: 1,
-});
-
-export const timelineStyle = style({
-  position: "relative",
-  display: "flex",
-  flexDirection: "column",
-
-  "@media": {
-    [breakpoints.md]: {
-      paddingLeft: vars.spacing["2xl"],
-    },
-  },
 });

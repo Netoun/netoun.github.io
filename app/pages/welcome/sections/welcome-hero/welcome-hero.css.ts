@@ -16,6 +16,8 @@ export const welcomeSectionStyles = style({
   position: "relative",
   flex: 1,
   display: "flex",
+  // Dark panel: every focus ring inside it is gold.
+  vars: { [vars.colors.ring]: vars.colors.primary },
 });
 
 // Stacked layout (narrow or short viewports): the laptop sits under the text,

@@ -4,7 +4,9 @@ import { useWelcomeHeroSpec } from "../../hooks/use-welcome-hero-spec.hook";
 import { heroSpecGroup } from "../../welcome-hero-spec.css";
 import { WelcomeHeroContactHoverCard } from "../contact-hover-card/welcome-hero-contact-hover-card.component";
 import { WelcomeHeroSpecNote } from "../spec-note/welcome-hero-spec-note.component";
+import { WelcomeHeroSpecSwatches } from "../spec-swatches/welcome-hero-spec-swatches.component";
 import * as styles from "./welcome-hero-section-content.css";
+import { Glyph } from "@/components/primitives/glyph/glyph.component";
 
 // The entrance is CSS (see welcome-hero-section-content.css.ts): it starts at
 // first paint, before hydration, so nothing already painted is ever hidden again.
@@ -29,8 +31,11 @@ export function WelcomeHeroSectionContent() {
 
       <div className={clsx(styles.welcomeDescriptionBlockStyles, heroSpecGroup.lead)}>
         <p className={styles.welcomeDescriptionStyles} data-spec-target="lead">
-          <b>_</b>❯ I build fast, polished web products — from expressive interfaces to robust
-          backend systems. Currently building at{" "}
+          <Glyph>
+            <b>_</b>❯
+          </Glyph>{" "}
+          I build fast, polished web products — from expressive interfaces to robust backend
+          systems. Currently building at{" "}
           <a
             className={styles.welcomeLinkStyles}
             href="https://www.lonestone.io"
@@ -39,7 +44,7 @@ export function WelcomeHeroSectionContent() {
           >
             Lonestone
           </a>
-          .<span className={styles.welcomeDescriptionCursorStyles}>▐</span>
+          .<Glyph className={styles.welcomeDescriptionCursorStyles}>▐</Glyph>
         </p>
         <WelcomeHeroSpecNote
           group="lead"
@@ -60,6 +65,8 @@ export function WelcomeHeroSectionContent() {
           accent="gold"
         />
       </div>
+
+      <WelcomeHeroSpecSwatches />
     </div>
   );
 }

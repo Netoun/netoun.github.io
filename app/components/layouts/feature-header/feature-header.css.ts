@@ -1,14 +1,7 @@
 import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
-import { globalKeyframes, style } from "@vanilla-extract/css";
+import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
-
-globalKeyframes("blink", {
-  "0%": { opacity: 1 },
-  "50%": { opacity: 1 },
-  "51%": { opacity: 0 },
-  "100%": { opacity: 0 },
-});
 
 const ACCENT_MAP = {
   primary: vars.colors.primary,
@@ -63,8 +56,8 @@ export const titleStyle = recipe({
       },
     },
     // Paper does not glow. The section accent now lives only in the `_❯`
-    // prefix and the blinking cursor — two small deliberate marks instead of a
-    // coloured haze spread behind the headline. Glows stay a dark-world
+    // prefix — a small deliberate mark instead of a coloured haze spread
+    // behind the headline. Glows stay a dark-world
     // (hero / footer) vocabulary.
     variant: {
       primary: {},
@@ -100,26 +93,11 @@ export const prefixStyle = recipe({
   },
 });
 
-export const cursorStyle = recipe({
-  base: {
-    animation: "blink 1s step-end infinite",
-  },
-  variants: {
-    variant: {
-      primary: { color: ACCENT_MAP.primary },
-      secondary: { color: ACCENT_MAP.secondary },
-      tertiary: { color: ACCENT_MAP.tertiary },
-    },
-  },
-  defaultVariants: {
-    variant: "primary",
-  },
-});
-
+// Doto read at 14px: weight 800 is the floor (DESIGN.md › The Legible Dot-Matrix Rule).
 export const descriptionStyle = style({
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.sm,
-  fontWeight: 600,
+  fontWeight: 800,
   color: vars.colors.mutedForeground,
   letterSpacing: "0.14em",
   textTransform: "uppercase",
@@ -131,7 +109,7 @@ export const indexStyle = style({
   display: "block",
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.sm,
-  fontWeight: 600,
+  fontWeight: 800,
   color: vars.colors.mutedForeground,
   letterSpacing: "0.14em",
   marginBottom: vars.spacing.xs,

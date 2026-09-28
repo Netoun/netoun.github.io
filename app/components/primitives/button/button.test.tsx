@@ -12,4 +12,12 @@ describe("Button", () => {
     render(<Button isDisabled>Disabled</Button>);
     expect(screen.getByRole("button", { name: "Disabled" })).toBeDisabled();
   });
+
+  it("forwards its id", () => {
+    render(<Button id="contact-trigger">Contact</Button>);
+    expect(screen.getByRole("button", { name: "Contact" })).toHaveAttribute(
+      "id",
+      "contact-trigger",
+    );
+  });
 });

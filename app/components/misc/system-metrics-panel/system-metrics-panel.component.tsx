@@ -1,4 +1,5 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
+import { memo, useEffect, useState } from "react";
 import * as styles from "./system-metrics-panel.css";
 
 export interface SystemMetricsPanelProps {
@@ -29,14 +30,31 @@ const buildInitialValues = () => {
   });
 };
 
+interface MetricsState {
+  tick: number;
+  values: number[];
+}
+
+const nextMetrics = ({ tick, values }: MetricsState): MetricsState => {
+  const nextTick = tick + 1;
+  return {
+    tick: nextTick,
+    values: values.map((value, index) => {
+      const sequence = DRIFT_SEQUENCES[index % DRIFT_SEQUENCES.length] ?? [0];
+      const drift = sequence[nextTick % sequence.length] ?? 0;
+      const pulse = (nextTick + index * 3) % 12 === 0 ? 1 : 0;
+      return clamp(value + drift + pulse, 8, 96);
+    }),
+  };
+};
+
 export const SystemMetricsPanel = memo(
   ({ isAnimating, className }: SystemMetricsPanelProps) => {
-    const [values, setValues] = useState<number[]>(() => buildInitialValues());
+    const [{ tick, values }, setMetrics] = useState<MetricsState>(() => ({
+      tick: 0,
+      values: buildInitialValues(),
+    }));
     const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-    const shouldAnimateRef = useRef(isAnimating);
-    const tickRef = useRef(0);
-
-    shouldAnimateRef.current = isAnimating;
 
     useEffect(() => {
       const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -53,22 +71,7 @@ export const SystemMetricsPanel = memo(
     useEffect(() => {
       if (!isAnimating || prefersReducedMotion) return;
 
-      const updateValues = () => {
-        if (!shouldAnimateRef.current) return;
-        tickRef.current += 1;
-        const tick = tickRef.current;
-
-        setValues((previous) => {
-          return previous.map((value, index) => {
-            const sequence = DRIFT_SEQUENCES[index % DRIFT_SEQUENCES.length] ?? [0];
-            const drift = sequence[tick % sequence.length] ?? 0;
-            const pulse = (tick + index * 3) % 12 === 0 ? 1 : 0;
-            return clamp(value + drift + pulse, 8, 96);
-          });
-        });
-      };
-
-      const intervalId = window.setInterval(updateValues, UPDATE_INTERVAL_MS);
+      const intervalId = window.setInterval(() => setMetrics(nextMetrics), UPDATE_INTERVAL_MS);
 
       return () => {
         window.clearInterval(intervalId);
@@ -90,9 +93,7 @@ export const SystemMetricsPanel = memo(
 
         <div className={styles.headerStyles}>
           <span className={styles.headerLabelStyles}>SYS.M</span>
-          <span className={styles.headerTickStyles}>
-            T+{String(112 + tickRef.current).padStart(3, "0")}
-          </span>
+          <span className={styles.headerTickStyles}>T+{String(112 + tick).padStart(3, "0")}</span>
         </div>
 
         <div className={styles.metricsListStyles}>
@@ -108,7 +109,7 @@ export const SystemMetricsPanel = memo(
                   className={styles.metricBarStyles}
                   data-band={band}
                   data-pulse={shouldPulse ? "true" : "false"}
-                  style={{ ["--metric-fill" as string]: `${value}%` }}
+                  style={assignInlineVars({ [styles.metricFill]: `${value}%` })}
                 />
               </div>
             );

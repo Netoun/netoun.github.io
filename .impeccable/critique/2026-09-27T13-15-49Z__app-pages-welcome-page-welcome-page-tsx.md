@@ -5,9 +5,9 @@ max_score: 32
 na_heuristics: 7,10
 p0_count: 0
 p1_count: 4
-target_identity: "file:/Users/nicolqs/Workspace/netoun-website/app/pages/welcome/page/welcome.page.tsx"
+target_identity: "file:app/pages/welcome/page/welcome.page.tsx"
 target_fingerprint: "sha256:197fcc3de2d36ce67a63e6d990c50abe109a3c7aeef6a9d8fa6f55dfc4e54f1e"
-target_path: /Users/nicolqs/Workspace/netoun-website/app/pages/welcome/page/welcome.page.tsx
+target_path: app/pages/welcome/page/welcome.page.tsx
 timestamp: 2026-09-27T13-15-49Z
 slug: app-pages-welcome-page-welcome-page-tsx
 ---

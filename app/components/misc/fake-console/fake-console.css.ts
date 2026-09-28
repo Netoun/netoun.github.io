@@ -1,4 +1,4 @@
-import { keyframes, style } from "@vanilla-extract/css";
+import { createVar, keyframes, style } from "@vanilla-extract/css";
 import { breakpoints } from "@/styles/responsive.css";
 import { vars } from "@/styles/theme.css";
 
@@ -108,6 +108,11 @@ export const linesWrapperStyles = style({
   alignItems: "flex-end",
 });
 
+/** One line plus its gap: how far the reel rolls up on each tick (set before it moves). */
+export const reelShift = createVar();
+
+// At rest the reel sits at 0 with no transition; `moving` rolls it up by one line, then the
+// component snaps it back to rest with the lines already shifted.
 export const reelStyles = style({
   display: "grid",
   gap: "2px",
@@ -115,12 +120,12 @@ export const reelStyles = style({
   width: "100%",
   willChange: "transform",
   transform: "translate3d(0, 0, 0)",
-  transition: "transform 250ms linear",
   selectors: {
-    '&[data-animating="false"]': {
-      transition: "none",
+    '&[data-shifting="moving"]': {
+      transform: `translate3d(0, calc(-1 * ${reelShift}), 0)`,
+      transition: "transform 250ms linear",
     },
-    '&[data-shifting="false"]': {
+    '&[data-animating="false"]': {
       transition: "none",
     },
   },

@@ -2,6 +2,10 @@ import { style, keyframes } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css";
 import { breakpoints } from "@/styles/responsive.css";
 
+const beamIn = keyframes({
+  from: { opacity: 0 },
+});
+
 const beamDashFlow = keyframes({
   "0%": { strokeDashoffset: "24" },
   "100%": { strokeDashoffset: "0" },
@@ -46,6 +50,7 @@ export const beamStyles = style({
     "[data-open=true] &": {
       opacity: 1,
       display: "block",
+      animation: `${beamIn} 300ms ease`,
     },
     "[data-open=false] &:hover": {
       opacity: 0.3,

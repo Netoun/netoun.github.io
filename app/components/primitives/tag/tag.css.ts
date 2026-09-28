@@ -1,9 +1,9 @@
 import { vars } from "@styles/theme.css";
 import { recipe } from "@vanilla-extract/recipes";
 
-// Three intentional tech domains, one per brand accent. Keep in sync with the
-// skills section colour legend.
-export type TagColor = "frontend" | "backend" | "creative" | "default";
+// Four intentional tech domains, one accent each (the domain map lives in
+// tag.component.tsx).
+export type TagColor = "frontend" | "backend" | "creative" | "systems" | "default";
 export type TagSize = "small" | "medium" | "large";
 
 export const tagStyle = recipe({
@@ -11,7 +11,8 @@ export const tagStyle = recipe({
     fontFamily: vars.fontFamily.doto,
     letterSpacing: "0.08em",
     borderRadius: vars.radius.full,
-    fontWeight: 500,
+    // Doto read at 12–14px: weight 800 is the floor (DESIGN.md › The Legible Dot-Matrix Rule).
+    fontWeight: 800,
   },
   variants: {
     color: {
@@ -25,9 +26,14 @@ export const tagStyle = recipe({
         backgroundColor: `color-mix(in srgb, ${vars.colors.tertiary} 18%, transparent)`,
         color: vars.colors.foreground,
       },
-      // Gold — creative & systems
+      // Gold — creative (graphics, games, shaders)
       creative: {
         backgroundColor: `color-mix(in srgb, ${vars.colors.primary} 18%, transparent)`,
+        color: vars.colors.foreground,
+      },
+      // Azure — systems & AI
+      systems: {
+        backgroundColor: `color-mix(in srgb, ${vars.colors.azure} 18%, transparent)`,
         color: vars.colors.foreground,
       },
       // Neutral — tooling, process, meta.

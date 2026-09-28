@@ -159,6 +159,9 @@ const buildDotCells = (width: number, height: number): DotCell[] => {
   }));
 };
 
+/** Placeholder grid until the first measure; replaced, never mutated. */
+const INITIAL_LAYOUT: GridLayout = { cols: 4, rows: 18, bx: PAD_PX, by: PAD_PX, bw: 10, bh: 6 };
+
 export const GlitchSignalMap = memo(function GlitchSignalMap({
   isAnimating,
   className,
@@ -171,17 +174,10 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
   const runningRef = useRef(false);
   const reducedMotionRef = useRef(false);
 
-  const layoutRef = useRef<GridLayout>({
-    cols: 4,
-    rows: 18,
-    bx: PAD_PX,
-    by: PAD_PX,
-    bw: 10,
-    bh: 6,
-  });
+  const layoutRef = useRef<GridLayout>(INITIAL_LAYOUT);
 
-  const blocksRef = useRef<BlockCell[]>(buildBlocks(4 * 18));
-  const rectsRef = useRef<RectCell[]>(buildRects(layoutRef.current));
+  const blocksRef = useRef<BlockCell[]>(buildBlocks(INITIAL_LAYOUT.cols * INITIAL_LAYOUT.rows));
+  const rectsRef = useRef<RectCell[]>(buildRects(INITIAL_LAYOUT));
   const dotsRef = useRef<DotCell[]>([]);
 
   const cssWidthRef = useRef(0);
@@ -202,8 +198,6 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
   const startLoopRef = useRef<() => void>(() => {});
   const stopLoopRef = useRef<() => void>(() => {});
   const drawOnceRef = useRef<() => void>(() => {});
-
-  isAnimatingRef.current = isAnimating;
 
   useEffect(() => {
     const root = rootRef.current;
@@ -279,8 +273,6 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
         canvas.width = pixelWidth;
         canvas.height = pixelHeight;
       }
-
-      canvas.style.cssText = `width:${width}px;height:${height}px`;
 
       const layout = computeLayout(width, height);
       layoutRef.current = layout;
@@ -593,6 +585,7 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
   }, []);
 
   useEffect(() => {
+    isAnimatingRef.current = isAnimating;
     if (!isAnimating) return;
     startLoopRef.current();
     return () => {

@@ -8,16 +8,9 @@ export interface ButtonProps {
   className?: string;
 }
 
-export function Button({
-  id: _id,
-  children,
-  onPress,
-  isDisabled = false,
-  className,
-  ...props
-}: ButtonProps) {
+export function Button({ id, children, onPress, isDisabled = false, className }: ButtonProps) {
   return (
-    <AriaButton onPress={onPress} isDisabled={isDisabled} className={className} {...props}>
+    <AriaButton id={id} onPress={onPress} isDisabled={isDisabled} className={className}>
       {children}
     </AriaButton>
   );

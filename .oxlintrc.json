@@ -19,10 +19,15 @@
     "no-underscore-dangle": "off",
     "vitest/require-mock-type-parameters": "off",
 
-    // React Compiler-era rules: real signals in animation code. Fix during the UI pass, then promote to error.
-    "react/refs": "warn",
-    "react/set-state-in-effect": "warn",
-    "react-hooks/exhaustive-deps": "warn"
+    // React Compiler-era rules: real signals in animation code. The backlog reached 0 on
+    // 2026-09-28; every rule that ever warned here now blocks.
+    "react/refs": "error",
+    "react/set-state-in-effect": "error",
+    "react/exhaustive-effect-dependencies": "error",
+    "react/memo-dependencies": "error",
+    "react/no-array-index-key": "error",
+    "react-hooks/exhaustive-deps": "error",
+    "no-shadow": "error"
   },
   "overrides": [
     {

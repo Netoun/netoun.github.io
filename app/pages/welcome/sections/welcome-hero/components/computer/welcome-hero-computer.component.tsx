@@ -1,3 +1,4 @@
+import { setElementVars } from "@vanilla-extract/dynamic";
 import clsx from "clsx";
 import { memo, type RefObject, useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { Computer } from "@/components/misc/computer/computer.component";
@@ -15,8 +16,7 @@ import { WelcomeHeroSpecNote } from "../spec-note/welcome-hero-spec-note.compone
 import { WelcomeHeroComputerSplash } from "./components/splash/welcome-hero-computer-splash.component";
 import * as styles from "./welcome-hero-computer.css";
 
-const BASE_ROTATION_X = 3;
-const BASE_ROTATION_Y = -3;
+const { x: BASE_ROTATION_X, y: BASE_ROTATION_Y } = styles.heroComputerBaseTilt;
 // Tilt amplitude in pre-multiplier units: the CSS transform multiplies the
 // vars by 1.8, so ±2.8 here ≈ ±5deg of visible tilt — subtle, not gimmicky.
 const TILT_AMPLITUDE = 2.8;
@@ -29,6 +29,14 @@ const tiltLabel = ({ x, y }: { x: number; y: number }) =>
 
 const TILT_LINE_INDEX = 1;
 const BASE_TILT_LABEL = tiltLabel({ x: BASE_ROTATION_X, y: BASE_ROTATION_Y });
+
+function writeTilt(element: HTMLElement | null, rotation: { x: number; y: number }) {
+  if (!element) return;
+  setElementVars(element, {
+    [styles.heroComputerTiltX]: `${rotation.x}deg`,
+    [styles.heroComputerTiltY]: `${rotation.y}deg`,
+  });
+}
 
 /** Rewrites the spec note's tilt line, only when its text changes. */
 function writeTiltLine(line: HTMLSpanElement | null, rotation: { x: number; y: number }) {
@@ -80,7 +88,6 @@ function WelcomeHeroComputerComponentInner({
   }, []);
 
   const lastRotationRef = useRef({ x: BASE_ROTATION_X, y: BASE_ROTATION_Y });
-  const shouldAnimateRef = useRef(true);
 
   const { ref: intersectionRef, isIntersecting } = useIntersectionObserver({
     threshold: 0.1,
@@ -92,7 +99,6 @@ function WelcomeHeroComputerComponentInner({
       priority: "medium",
       isVisible: isIntersecting,
     }) && heroAnimationEnabled;
-  shouldAnimateRef.current = shouldAnimate;
 
   const [visibleZones, dispatch] = useReducer((_state: number, action: number) => action, 0);
   const hasRevealedRef = useRef(false);
@@ -145,10 +151,7 @@ function WelcomeHeroComputerComponentInner({
     const resetToBasePose = () => {
       lastRotationRef.current = { x: BASE_ROTATION_X, y: BASE_ROTATION_Y };
       writeTiltLine(tiltLineRef.current, lastRotationRef.current);
-      const capturesElement = capturesRef.current;
-      if (!capturesElement) return;
-      capturesElement.style.setProperty("--mouse-position-x", `${BASE_ROTATION_X}deg`);
-      capturesElement.style.setProperty("--mouse-position-y", `${BASE_ROTATION_Y}deg`);
+      writeTilt(capturesRef.current, lastRotationRef.current);
     };
 
     if (!canTilt) {
@@ -156,18 +159,13 @@ function WelcomeHeroComputerComponentInner({
       return;
     }
 
-    let frameId: number | null = null;
+    // Hero out of view / animations disabled: hold the last pose, no loop.
+    if (!shouldAnimate) return;
 
     // Single rAF loop: pointer position (mutated ref, no rerenders) → tilt
     // target, lerped each frame for damping. Only the two CSS vars feeding a
     // GPU-composited rotateX/rotateY transform are written — no layout work.
     const animate = () => {
-      if (!shouldAnimateRef.current) {
-        // Hero out of view / animations disabled: detach the loop.
-        frameId = null;
-        return;
-      }
-
       frameId = requestAnimationFrame(animate);
 
       const currentMousePos = mousePositionRef.current;
@@ -195,21 +193,12 @@ function WelcomeHeroComputerComponentInner({
 
       lastRotationRef.current = next;
       writeTiltLine(tiltLineRef.current, next);
-
-      const capturesElement = capturesRef.current;
-      if (!capturesElement) return;
-      capturesElement.style.setProperty("--mouse-position-x", `${next.x}deg`);
-      capturesElement.style.setProperty("--mouse-position-y", `${next.y}deg`);
+      writeTilt(capturesRef.current, next);
     };
 
-    // Only start animation if component is visible
-    if (shouldAnimateRef.current) {
-      frameId = requestAnimationFrame(animate);
-    }
+    let frameId = requestAnimationFrame(animate);
 
-    return () => {
-      if (frameId) cancelAnimationFrame(frameId);
-    };
+    return () => cancelAnimationFrame(frameId);
   }, [shouldAnimate, canTilt, mousePositionRef]);
 
   return (
@@ -227,12 +216,6 @@ function WelcomeHeroComputerComponentInner({
       <div
         aria-hidden="true"
         ref={capturesRef}
-        style={
-          {
-            "--mouse-position-x": `${BASE_ROTATION_X}deg`,
-            "--mouse-position-y": `${BASE_ROTATION_Y}deg`,
-          } as React.CSSProperties
-        }
         className={styles.welcomeHeroComputerCapturesStyles}
       >
         <Computer>
@@ -248,12 +231,7 @@ function WelcomeHeroComputerComponentInner({
               <WelcomeHeroComputerSplash />
             ) : (
               HERO_COMPUTER_ZONES.map(({ id, className, render }, index) => (
-                <div
-                  key={id}
-                  id={id}
-                  className={className}
-                  style={{ opacity: index < visibleZones ? 1 : 0 }}
-                >
+                <div key={id} id={id} className={className} data-revealed={index < visibleZones}>
                   {/* Offscreen or text selected: every widget loop pauses, not just the tilt. */}
                   {render(index < visibleZones && shouldAnimate)}
                 </div>

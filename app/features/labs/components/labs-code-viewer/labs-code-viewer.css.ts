@@ -4,6 +4,8 @@ import { vars } from "@/styles/theme.css";
 const MONO = '"JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, monospace';
 
 export const codeViewer = style({
+  // Ink surface: its tabs and copy button ring gold.
+  vars: { [vars.colors.ring]: vars.colors.primary },
   display: "flex",
   flexDirection: "column",
   borderRadius: vars.radius.md,

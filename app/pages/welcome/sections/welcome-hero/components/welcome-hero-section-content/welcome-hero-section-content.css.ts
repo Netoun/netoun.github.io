@@ -5,8 +5,8 @@ import { vars } from "@/styles/theme.css";
 import { specNoteDelay } from "../spec-note/welcome-hero-spec-note.css";
 import {
   heroSpecLit,
-  heroSpecMedia,
-  heroSpecMotionMedia,
+  heroSpecRulesMedia,
+  heroSpecRulesMotionMedia,
   heroSpecOnSelector,
   specDim,
   specDrawX,
@@ -37,6 +37,9 @@ const reducedMotion = "(prefers-reduced-motion: reduce)";
 export const welcomeContentStyle = style({
   position: "relative",
   zIndex: 20,
+  // A flex item: without this the swatch block's min-content width stretched the column
+  // past a 320px screen and clipped the headline.
+  minWidth: 0,
   color: vars.colors.background,
   display: "flex",
   flexDirection: "column",
@@ -136,7 +139,7 @@ export const welcomeHeadingStyles = style({
     },
     // Spec layer: a mint rule on every baseline (::after), and a pulse running
     // along them each time the headline lights up (::before).
-    [heroSpecMedia]: {
+    [heroSpecRulesMedia]: {
       selectors: {
         [`${heroSpecOnSelector} &::after`]: {
           ...headingSpecLayer,
@@ -154,7 +157,7 @@ export const welcomeHeadingStyles = style({
         },
       },
     },
-    [heroSpecMotionMedia]: {
+    [heroSpecRulesMotionMedia]: {
       selectors: {
         [`${heroSpecOnSelector} &::after`]: {
           animation: `${specDrawX} 900ms ${motion.easing.signature} 500ms backwards`,
@@ -202,7 +205,7 @@ export const welcomeDescriptionBlockStyles = style({
     [breakpoints["2k"]]: {
       maxWidth: leadMeasure["2k"],
     },
-    [heroSpecMedia]: {
+    [heroSpecRulesMedia]: {
       selectors: {
         [`${heroSpecOnSelector} &::before`]: {
           ...leadSpecLayer,
@@ -223,7 +226,7 @@ export const welcomeDescriptionBlockStyles = style({
         },
       },
     },
-    [heroSpecMotionMedia]: {
+    [heroSpecRulesMotionMedia]: {
       selectors: {
         [`${heroSpecOnSelector} &::before`]: {
           animation: `${specDrawY} 700ms ${motion.easing.signature} 1100ms backwards`,
@@ -247,7 +250,9 @@ export const welcomeDescriptionStyles = style({
   maxWidth: leadMeasure.base,
   // A lead paragraph, not a headline: 1.25 packed its lines at 24–30px.
   lineHeight: vars.lineHeight.snug,
-  zIndex: 9999,
+  // Its own stacking context, over the spec notes beside it; the content column
+  // (z 20) already lifts the whole text above the laptop.
+  zIndex: 1,
   position: "relative",
   textShadow: vars.textShadow.glowSm,
   animation: settle("600ms", "120ms"),
@@ -271,7 +276,7 @@ export const welcomeDescriptionStyles = style({
       animation: "none",
     },
     // Spec layer: the pulse along the measure line when the lead lights up.
-    [heroSpecMotionMedia]: {
+    [heroSpecRulesMotionMedia]: {
       selectors: {
         [heroSpecLit.lead.replaceAll("&", "&::after")]: {
           content: "",

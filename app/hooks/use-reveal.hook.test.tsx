@@ -1,8 +1,26 @@
 import { act, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { revealIndex } from "@/styles/animations.css";
 import { useReveal } from "./use-reveal.hook";
 
-type ObserverCallback = (entries: Array<{ isIntersecting: boolean }>) => void;
+// `createVar()` returns `var(--name)`; inline styles are read by the bare name.
+const REVEAL_INDEX = revealIndex.replace(/^var\((.+)\)$/, "$1");
+
+interface EntryShape {
+  isIntersecting: boolean;
+  intersectionRect: { height: number };
+  boundingClientRect: { height: number };
+  rootBounds: { height: number } | null;
+}
+type ObserverCallback = (entries: EntryShape[]) => void;
+
+/** `visible` px of an element `height` px tall, in a viewport `viewport` px tall. */
+const entry = (visible: number, height = 400, viewport = 800): EntryShape => ({
+  isIntersecting: visible > 0,
+  intersectionRect: { height: visible },
+  boundingClientRect: { height },
+  rootBounds: { height: viewport },
+});
 
 let observerCallback: ObserverCallback | null = null;
 const disconnect = vi.fn();
@@ -54,14 +72,14 @@ describe("useReveal", () => {
     const container = screen.getByTestId("container");
     expect(container.dataset.reveal).toBe("idle");
     const items = container.querySelectorAll<HTMLElement>("[data-reveal-item]");
-    expect(items[0]?.style.getPropertyValue("--reveal-index")).toBe("0");
-    expect(items[1]?.style.getPropertyValue("--reveal-index")).toBe("1");
+    expect(items[0]?.style.getPropertyValue(REVEAL_INDEX)).toBe("0");
+    expect(items[1]?.style.getPropertyValue(REVEAL_INDEX)).toBe("1");
   });
 
   it("transitions idle → revealed on viewport entry, once", () => {
     mockMatchMedia(false);
     render(<Probe />);
-    act(() => observerCallback?.([{ isIntersecting: true }]));
+    act(() => observerCallback?.([entry(200)]));
     expect(screen.getByTestId("container").dataset.reveal).toBe("revealed");
     expect(disconnect).toHaveBeenCalled();
   });
@@ -69,8 +87,23 @@ describe("useReveal", () => {
   it("stays idle while not intersecting", () => {
     mockMatchMedia(false);
     render(<Probe />);
-    act(() => observerCallback?.([{ isIntersecting: false }]));
+    act(() => observerCallback?.([entry(0)]));
     expect(screen.getByTestId("container").dataset.reveal).toBe("idle");
+  });
+
+  it("waits for the threshold share of a short element", () => {
+    mockMatchMedia(false);
+    render(<Probe />);
+    act(() => observerCallback?.([entry(40)]));
+    expect(screen.getByTestId("container").dataset.reveal).toBe("idle");
+  });
+
+  it("reveals an element taller than the viewport once it fills its share of the screen", () => {
+    mockMatchMedia(false);
+    render(<Probe />);
+    // 2616px tall in a 390px screen: at most 14.9 % of it can ever be visible.
+    act(() => observerCallback?.([entry(130, 2616, 390)]));
+    expect(screen.getByTestId("container").dataset.reveal).toBe("revealed");
   });
 
   it("goes static with prefers-reduced-motion (no observer)", () => {

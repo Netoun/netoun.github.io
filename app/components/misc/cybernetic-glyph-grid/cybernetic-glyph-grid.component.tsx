@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useEffectEvent, useRef, useState } from "react";
 import * as styles from "./cybernetic-glyph-grid.css";
 
 export interface CyberneticGlyphGridProps {
@@ -252,14 +252,9 @@ export const CyberneticGlyphGrid = memo(
     const lastTickRef = useRef(0);
     const tickStepRef = useRef(0);
 
-    const isAnimatingRef = useRef(isAnimating);
-    const reducedMotionRef = useRef(false);
     const mountedRef = useRef(false);
 
     const [reducedMotion, setReducedMotion] = useState(false);
-
-    isAnimatingRef.current = isAnimating;
-    reducedMotionRef.current = reducedMotion;
 
     const getGlyph = (
       value: string,
@@ -278,12 +273,14 @@ export const CyberneticGlyphGrid = memo(
       return bitmap;
     };
 
-    const ensureCells = (count: number) => {
+    // Effect events: called from the resize observer, font loading and the frame
+    // loop, they read the latest props without restarting those effects.
+    const ensureCells = useEffectEvent((count: number) => {
       if (cellsRef.current.length === count) return;
       cellsRef.current = buildCells(count);
-    };
+    });
 
-    const updateCells = (now: number) => {
+    const updateCells = useEffectEvent((now: number) => {
       tickStepRef.current += 1;
 
       const cells = cellsRef.current;
@@ -317,9 +314,9 @@ export const CyberneticGlyphGrid = memo(
           cell.glitchUntil = 0;
         }
       }
-    };
+    });
 
-    const draw = (now: number) => {
+    const draw = useEffectEvent((now: number) => {
       const ctx = ctxRef.current;
       if (!ctx) return;
 
@@ -331,7 +328,7 @@ export const CyberneticGlyphGrid = memo(
 
       if (w <= 0 || h <= 0 || cells.length === 0) return;
 
-      const running = isAnimatingRef.current && !reducedMotionRef.current;
+      const running = isAnimating && !reducedMotion;
       const elapsed = running ? (now - animStartRef.current) / 1000 : 0;
       const fontSize = fontSizeRef.current;
 
@@ -398,7 +395,7 @@ export const CyberneticGlyphGrid = memo(
       }
 
       ctx.globalAlpha = 1;
-    };
+    });
 
     useEffect(() => {
       const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -462,7 +459,6 @@ export const CyberneticGlyphGrid = memo(
 
         canvas.width = Math.max(1, Math.ceil(w * dpr));
         canvas.height = Math.max(1, Math.ceil(h * dpr));
-        canvas.style.cssText = `width:${w}px;height:${h}px;`;
 
         if (dprChanged || fontChanged) {
           glyphAtlasRef.current.clear();

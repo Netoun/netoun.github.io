@@ -1,4 +1,4 @@
-import { keyframes, style } from "@vanilla-extract/css";
+import { createVar, keyframes, style } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css";
 import { breakpoints } from "@/styles/responsive.css";
 
@@ -129,6 +129,9 @@ export const metricValueStyles = style({
   color: `color-mix(in srgb, ${vars.colors.secondary} 82%, ${vars.colors.foreground} 18%)`,
 });
 
+/** Fill of one metric bar, `0%`–`100%` (set inline per bar). */
+export const metricFill = createVar();
+
 export const metricBarStyles = style({
   position: "relative",
   display: "block",
@@ -156,7 +159,7 @@ export const metricBarStyles = style({
     top: 0,
     left: 0,
     height: "100%",
-    width: "var(--metric-fill)",
+    width: metricFill,
     borderRadius: "2px",
     boxShadow: "0 0 6px oklch(0.75 0.06 210 / 0.22)",
   },

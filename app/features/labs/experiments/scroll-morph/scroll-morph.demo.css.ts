@@ -1,4 +1,8 @@
-import { style } from "@vanilla-extract/css";
+import { createVar, style } from "@vanilla-extract/css";
+
+/** Set inline from the progress slider. */
+export const morphTranslateY = createVar();
+export const morphScale = createVar();
 import { vars } from "@/styles/theme.css";
 
 export const stageInner = style({
@@ -21,6 +25,7 @@ export const morphCard = style({
   color: vars.colors.foreground,
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize["2xl"],
+  transform: `translateY(${morphTranslateY}) scale(${morphScale})`,
   willChange: "transform",
   transition: "transform 0.08s linear",
 });

@@ -1,7 +1,8 @@
-import { createVar, globalStyle, keyframes, style } from "@vanilla-extract/css";
+import { createVar, fallbackVar, globalStyle, keyframes, style } from "@vanilla-extract/css";
 import { motion } from "@/styles/motion.css";
 import { vars } from "@/styles/theme.css";
 import { breakpoints } from "@/styles/responsive.css";
+import { magnetOffset } from "../../hooks/use-magnetic.css";
 import {
   iconGradientEndStopStyles,
   iconGradientMiddleStopStyles,
@@ -35,7 +36,7 @@ export const welcomeHeroContactHoverCardTriggerStyles = style({
   display: "inline-flex",
   width: "fit-content",
   // Magnetic CTA : suit le curseur de ±4px max via use-magnetic.hook
-  transform: "translate3d(var(--magnet-x, 0px), var(--magnet-y, 0px), 0)",
+  transform: `translate3d(${fallbackVar(magnetOffset.x, "0px")}, ${fallbackVar(magnetOffset.y, "0px")}, 0)`,
   transition: `transform ${motion.duration.fast} ${motion.easing.out}`,
 });
 
@@ -140,6 +141,8 @@ const scanline = keyframes({
 
 export const popoverStyles = style({
   vars: {
+    // Portaled out of the hero, so it restates the dark panel's gold ring.
+    [vars.colors.ring]: vars.colors.primary,
     [highlightBackground]: `color-mix(in srgb, ${vars.colors.background} 22%, transparent)`,
     [highlightBorder]: `color-mix(in srgb, ${vars.colors.secondary} 50%, transparent)`,
   },

@@ -1,6 +1,6 @@
 import { ContentSection } from "@/components/layouts/content-section/content-section.component";
+import { ProjectMonitor } from "@/features/projects/components/project-monitor/project-monitor.component";
 import { projects } from "@/features/projects/data/projects-data";
-import { ProjectCard } from "@/features/projects/components/project-card/project-card.component";
 import * as styles from "./welcome-projects.css";
 
 export function WelcomeProjectsSection() {
@@ -15,12 +15,9 @@ export function WelcomeProjectsSection() {
       contentClassName={styles.contentStyle}
     >
       {({ shouldAnimate }) => (
-        <div className={styles.gridStyle}>
-          {projects.map(({ slug, ...project }) => (
-            <div key={slug} data-card data-reveal-item>
-              <ProjectCard {...project} animationsEnabled={shouldAnimate} />
-            </div>
-          ))}
+        // Rises with the header, then plays its own arrival (command, meters, rows).
+        <div data-reveal-item>
+          <ProjectMonitor projects={projects} isOnScreen={shouldAnimate} />
         </div>
       )}
     </ContentSection>

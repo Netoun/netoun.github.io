@@ -8,6 +8,8 @@ Personal site of Nicolas Coulonnier (Netoun), full-stack engineer at Lonestone. 
 
 **Never invent content** — bio, experiences, links, dates, metrics, legal text. Missing content stays missing; ask. Known content inconsistencies are listed in PRODUCT.md › Evidence on Hand.
 
+**Public repo.** Code is MIT (`LICENSE`); content (texts, captures, logo, OG image, identity) is all rights reserved, and fonts keep their own licences — see README › License. Never commit secrets, absolute local paths or client names (Lonestone client work stays unnamed). The one exception: the client projects Nicolas approved in the work log (`experiences-data.ts`: Desoutter, Cuevr, Mon Rét@b' d'abord; 2026-09-28).
+
 ## Stack
 
 React Router 8 (framework mode, `ssr: false`, static prerender) · React 19 · TypeScript 7 (native `tsc`) strict · Vite 8 (Rolldown/Oxc) · Vanilla Extract · Anime.js 4 · React Aria Components · Vitest 5 + happy-dom · oxlint + oxfmt · knip · Bun 1.4 · Node 24 (`.node-version`)
@@ -17,7 +19,8 @@ Deployed as static files (`build/client`) on Cloudflare Pages — headers/redire
 ## Commands
 
 ```bash
-bun run dev          # http://localhost:5173
+bun run dev          # https://netoun.localhost via portless (proxy already running, else asks sudo once)
+bun run dev:vite     # plain Vite on http://localhost:5173 (no proxy)
 bun run check        # typecheck + lint + fmt:check + tests — run before calling anything done
 bun run build        # prerender to build/client (+ sitemap.xml)
 bun run typecheck    # react-router typegen && tsc
@@ -37,16 +40,18 @@ app/
   routes.ts                 # / → welcome · /labs → labs layout (index + :slug) · /misc → redirect
   components/               # shared UI — must NOT import features/ or pages/ (lint-enforced)
     layouts/                #   container, content-section, feature-header, footer
-    primitives/             #   button, slider, tag, terminal-buttons, icons
+    primitives/             #   button, glyph, slider, tag, terminal-buttons, icons
     misc/                   #   decorative/3D/canvas pieces: computer, server-unit, mesh-background, shaders/, canvas-renderer/…
   features/<domain>/        # business code shared across pages — must NOT import pages/ (lint-enforced)
-    projects/ experiences/ skills/   # data + cards + hooks
+    projects/               #   process monitor (`htop`) + data + hooks
+    experiences/            #   work log (`git log --graph`) + data
+    skills/                 #   fetch readout (`fastfetch`) + data
     labs/                   #   experiment registry, shell, code viewer, experiments/<slug>/
   pages/<page>/             # welcome/, labs/ — page/<page>.page.tsx, sections/, components/, data/, hooks/
-  hooks/                    # use-animation-priority, use-intersection-observer, use-mouse-position, use-reveal
+  hooks/                    # use-animation-priority, use-current-month, use-intersection-observer, use-mouse-position, use-paper-grain, use-reveal
   styles/                   # theme (tokens), global, fonts, motion, animations, responsive
-  types/                    # ambient module declarations (?raw)
-scripts/generate-assets.ts  # favicons + OG images (sharp) — `bun run generate-assets`
+  types/                    # ambient declarations (?raw imports, build-time defines)
+scripts/                    # sharp generators: generate-assets (favicon.ico, apple-touch-icon, OG), generate-grain-tile, generate-logo-ascii
 ```
 
 Aliases (from `tsconfig.json` paths, resolved natively by Vite): `@/` → `app/`, `@components/`, `@primitives/`, `@styles/`.
@@ -64,9 +69,13 @@ Aliases (from `tsconfig.json` paths, resolved natively by Vite): `@/` → `app/`
 
 All CSS lives in `.css.ts`. **No Tailwind, no plain CSS files, no `style=` props.**
 
+- Values computed at runtime (a slider, a pointer, a measured size) are a `createVar()` in the `.css.ts`, written from React with `style={assignInlineVars({ [styles.x]: … })}` or from an effect with `setElementVars(el, …)` (`@vanilla-extract/dynamic`). Static or discrete values are classes, `styleVariants` or `data-*` selectors. The one exception is Prism's token styles in the Labs code viewer.
+
 - `vars.*` → runtime CSS variables from `app/styles/theme.css.ts`; raw values (`colors`, `spacing`…) only in `globalStyle` or build-time code.
 - Variants → `recipe()` (`@vanilla-extract/recipes`). Breakpoints → `@styles/responsive.css` (mobile-first). Keyframes → `app/styles/animations.css.ts`. Motion tokens → `app/styles/motion.css.ts`.
 - Selectors: VE has no `:global()` — target ancestors with plain selectors (`'[data-x="y"] &'`). Lightning CSS flags invalid selectors at build.
+- Theme vars are named by position: adding or removing a token in `theme.css.ts` renames every var after it, and a running dev server keeps serving the old names (the page looks unstyled). Restart `bun run dev` after editing the theme.
+- Focus: the global ring reads `vars.colors.ring` (ink). A dark surface remaps it once — `vars: { [vars.colors.ring]: vars.colors.primary }` — rather than restating gold on each control. Terminal glyphs (`_❯ ▐ ⤘ ❯`) go through `<Glyph>` (aria-hidden).
 
 ## Animations & rendering
 
@@ -84,6 +93,7 @@ Each experiment = `app/features/labs/experiments/<slug>/` with `<slug>.experimen
 1. Add the slug to `app/features/labs/data/experiment-slugs.ts` (drives prerender + sitemap).
 2. Register the descriptor in `app/features/labs/data/experiments.ts`.
 3. Source tabs use `?raw` imports; `.css.ts?raw` works thanks to the `raw-css-ts` plugin in `vite.config.ts`.
+4. Add a row to the Labs table in `README.md`.
 
 Labs experiments may import components from any domain — showcasing them is their purpose (documented exception to the cross-domain rule).
 
@@ -96,13 +106,15 @@ Labs experiments may import components from any domain — showcasing them is th
 
 ## Performance
 
-- Fonts: local woff2 in `public/fonts/` (PP Neue Montreal, Mabeo Vintage); Doto from Google Fonts. `Inter` in the theme stack is not loaded (falls back to system-ui).
+- Fonts: all self-hosted in `public/fonts/`, both preloaded in `root.tsx`: PP Neue Montreal (variable, commercial licence from Pangram Pangram; it does not cover subsetting, so it ships whole) and Doto (the Google Fonts latin / latin-ext subsets, SIL OFL). No third-party font request. `Inter` in the theme stack is not loaded (falls back to system-ui).
+- Mobile budget (Lighthouse 12, `--form-factor=mobile`, simulated throttling, production preview, median of 3 on an idle machine; TBT swings with host load): performance ≥ 80, FCP ≤ 2.9 s, LCP ≤ 4.1 s, TBT ≤ 150 ms, CLS ≤ 0.01; accessibility, best practices and SEO 100. Measured 2026-09-28: 82, 2.86 s, 4.06 s (LCP is the hero h1, bound by the 153 KB PP Neue Montreal file), 20 ms, 0. Desktop stays ≥ 99.
+- Paper grain: `bun run generate-grain-tile` bakes `grain.shader.ts` into `public/images/grain-tile@{1,2}x.webp`; `usePaperGrain` sets it after `load` (it cost 240 ms of mobile LCP when requested with the CSS).
 - Images in `public/images/` or `app/pages/<page>/assets/`, WebP preferred, `alt` always set.
 - No new runtime dependency without justification; no heavy libraries (Framer Motion, Tailwind, GSAP…) without approval. No Lighthouse regression.
 
 ## Verification
 
-1. `bun run check` must pass (lint warnings are a tracked backlog; errors block).
+1. `bun run check` must pass. The lint backlog is at 0 and the React Compiler-era rules (`react/refs`, effect and memo dependencies, index keys, `no-shadow`) are errors; a new warning from the `suspicious`/`perf` categories is fixed, not left.
 2. UI changes: run the app (`.claude/launch.json` → port 5175, or `bun run dev`) and check desktop + mobile (390px) with the browser/DevTools tools; include `prefers-reduced-motion`.
 3. Build-affecting changes: `bun run build` and confirm `build/client/**/index.html` + `sitemap.xml`.
 
@@ -116,5 +128,3 @@ Labs experiments may import components from any domain — showcasing them is th
 ## Workflow
 
 1. Explore the code before proposing. 2. Plan when a change spans several files. 3. Implement → `bun run check`. 4. Summarise what changed and what was not verified.
-
-Feature specs (spec-kit) live in `specs/<nnn-feature>/`; `specs/001-premium-polish` is complete.

@@ -1,5 +1,8 @@
-import { globalKeyframes, globalStyle } from "@vanilla-extract/css";
+import { createVar, fallbackVar, globalKeyframes, globalStyle } from "@vanilla-extract/css";
 import { motion } from "./motion.css";
+
+/** Stagger slot of a `data-reveal-item`, set by useReveal. */
+export const revealIndex = createVar();
 
 // Animations globales pour les keyframes CSS
 globalKeyframes("blink", {
@@ -70,7 +73,7 @@ globalStyle("[data-reveal] [data-reveal-item]", {
   transitionProperty: "opacity, transform",
   transitionDuration: motion.duration.slow,
   transitionTimingFunction: motion.easing.signature,
-  transitionDelay: `calc(var(--reveal-index, 0) * ${motion.staggerStep})`,
+  transitionDelay: `calc(${fallbackVar(revealIndex, "0")} * ${motion.staggerStep})`,
 });
 
 globalStyle('[data-reveal="idle"] [data-reveal-item]', {
@@ -84,4 +87,99 @@ globalStyle("[data-reveal] [data-reveal-item]", {
       transition: "none",
     },
   },
+});
+
+// Projects monitor (project-monitor.css.ts): one arrival pass, played when the section
+// reveals — the command types, the meters light segment by segment, the rows print.
+globalKeyframes("monitor-type", {
+  from: { clipPath: "inset(0 100% 0 0)" },
+  to: { clipPath: "inset(0 0 0 0)" },
+});
+
+globalKeyframes("monitor-lit", {
+  from: { opacity: 0.12 },
+  to: { opacity: 1 },
+});
+
+globalKeyframes("monitor-row", {
+  from: { opacity: 0, transform: "translateY(-4px)" },
+  to: { opacity: 1, transform: "none" },
+});
+
+globalKeyframes("monitor-fade", {
+  from: { opacity: 0 },
+  to: { opacity: 1 },
+});
+
+// Projects monitor: a domain cube turns once on arrival (pose from project-monitor-box.css.ts).
+globalKeyframes("monitor-cube-spin", {
+  from: { transform: "rotateX(-24deg) rotateY(-35deg)" },
+  to: { transform: "rotateX(-24deg) rotateY(325deg)" },
+});
+
+// Projects monitor: a chrome glint crosses a capture when it changes.
+globalKeyframes("monitor-chrome-sweep", {
+  "0%": { backgroundPosition: "150% 0%", opacity: 0 },
+  "35%": { opacity: 0.9 },
+  "100%": { backgroundPosition: "-50% 100%", opacity: 0 },
+});
+
+// Sections nav (welcome-sections-nav.css.ts): the current section's name types in when it
+// changes, and the list's names type in when the capsule opens.
+globalKeyframes("nav-type", {
+  from: { clipPath: "inset(0 100% 0 0)" },
+  to: { clipPath: "inset(0 0 0 0)" },
+});
+
+// Work log (experience-log.css.ts): one arrival pass when the section reveals — the command
+// types, the rows print one after the other, each employer's track draws out of its lane.
+globalKeyframes("log-row", {
+  from: { opacity: 0, transform: "translateY(-6px)" },
+  to: { opacity: 1, transform: "none" },
+});
+
+globalKeyframes("log-draw", {
+  from: { clipPath: "inset(0 100% 0 0)" },
+  to: { clipPath: "inset(0 0 0 0)" },
+});
+
+// Work log: HEAD's node pings, the one live mark of the section.
+globalKeyframes("log-ping", {
+  "0%": { transform: "scale(1)", opacity: 0.8 },
+  "75%, 100%": { transform: "scale(2.4)", opacity: 0 },
+});
+
+// Work log: a lane draws down from its top as its rows print.
+globalKeyframes("log-grow", {
+  from: { clipPath: "inset(0 0 100% 0)" },
+  to: { clipPath: "inset(0 0 0 0)" },
+});
+
+// Fetch readout (skill-fetch.css.ts): one arrival pass when the Skills section reveals — the
+// command types, the logo and the readout print line by line, the checks print, the stack's
+// LED segments light one by one.
+globalKeyframes("fetch-type", {
+  from: { clipPath: "inset(0 100% 0 0)" },
+  to: { clipPath: "inset(0 0 0 0)" },
+});
+
+globalKeyframes("fetch-print", {
+  from: { opacity: 0 },
+  to: { opacity: 1 },
+});
+
+globalKeyframes("fetch-check", {
+  from: { opacity: 0, transform: "translateY(-4px)" },
+  to: { opacity: 1, transform: "none" },
+});
+
+globalKeyframes("fetch-lit", {
+  from: { opacity: 0.12 },
+  to: { opacity: 1 },
+});
+
+// Fetch readout: the logo's holo gradient drifts, as the favicon's does (logo.svg).
+globalKeyframes("fetch-holo", {
+  from: { backgroundPosition: "0% 50%" },
+  to: { backgroundPosition: "100% 50%" },
 });

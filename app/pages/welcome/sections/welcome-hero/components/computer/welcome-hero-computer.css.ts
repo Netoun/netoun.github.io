@@ -1,4 +1,4 @@
-import { keyframes, style } from "@vanilla-extract/css";
+import { createVar, keyframes, style } from "@vanilla-extract/css";
 import { motion } from "@/styles/motion.css";
 import { breakpoints } from "@/styles/responsive.css";
 import { vars } from "@/styles/theme.css";
@@ -96,12 +96,23 @@ export const welcomeHeroComputerWrapperStyles = style({
 /** The pointer tilt vars are scaled by this in the transform (the spec note prints the product). */
 export const heroComputerTiltScale = 1.8;
 
+/** Resting pose, in tilt-var degrees (before the scale). */
+export const heroComputerBaseTilt: { readonly x: number; readonly y: number } = { x: 3, y: -3 };
+
+/** Tilt written by the pointer loop, in degrees before the scale. */
+export const heroComputerTiltX = createVar();
+export const heroComputerTiltY = createVar();
+
 export const welcomeHeroComputerCapturesStyles = style({
+  vars: {
+    [heroComputerTiltX]: `${heroComputerBaseTilt.x}deg`,
+    [heroComputerTiltY]: `${heroComputerBaseTilt.y}deg`,
+  },
   width: "100%",
   userSelect: "none",
   pointerEvents: "none",
   transformStyle: "preserve-3d",
-  transform: `rotateY(calc(var(--mouse-position-x) * ${heroComputerTiltScale})) rotateX(calc(var(--mouse-position-y) * ${heroComputerTiltScale})) translateZ(0)`,
+  transform: `rotateY(calc(${heroComputerTiltX} * ${heroComputerTiltScale})) rotateX(calc(${heroComputerTiltY} * ${heroComputerTiltScale})) translateZ(0)`,
   willChange: "transform",
   backfaceVisibility: "hidden",
 });
@@ -110,6 +121,10 @@ const gridBase = {
   borderRadius: vars.radius.sm,
   background: `color-mix(in srgb, ${vars.colors.background} 10%, transparent)`,
   transition: "opacity 0.4s ease-out",
+  // Zones light up one by one after the boot splash.
+  selectors: {
+    '&[data-revealed="false"]': { opacity: 0 },
+  },
 };
 
 export const welcomeHeroComputerStyles = style({

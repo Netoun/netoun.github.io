@@ -1,8 +1,9 @@
-import type { Project, ProjectType } from "../hooks/use-projects.hook.types";
+import type { Project } from "./projects-data.types";
 
+// Order does not matter: the projects monitor sorts by date (and by the column a visitor picks).
 export const projects: Project[] = [
   {
-    slug: "My website",
+    slug: "my-website",
     title: "My website",
     description:
       "My personal portfolio with a neo-retro futuristic design system, built with React Router v8 and Vanilla Extract.",
@@ -10,8 +11,6 @@ export const projects: Project[] = [
     tags: ["React", "TypeScript", "Vanilla Extract", "React Router"],
     image: "/images/projects/website-card.webp",
     url: "https://github.com/netoun/netoun.github.io",
-    featured: true,
-    type: "personal" as ProjectType,
   },
   {
     slug: "procedural-map",
@@ -22,8 +21,6 @@ export const projects: Project[] = [
     tags: ["TypeScript", "React", "Three.js", "Canvas"],
     image: "/images/projects/procedural-map-card.webp",
     url: "https://r-noise-map.vercel.app/",
-    featured: false,
-    type: "personal" as ProjectType,
   },
   {
     slug: "treashunt",
@@ -32,20 +29,18 @@ export const projects: Project[] = [
     date: "2026-03-03",
     tags: ["React", "Drizzle", "Cloudflare", "Bun", "Elysia"],
     image: "/images/projects/treashunt-card.webp",
-    url: "https://github.com/Netoun/treashunt",
-    featured: true,
-    type: "personal" as ProjectType,
+    // The repository is private: link the public product instead.
+    url: "https://treashunt.com",
   },
   {
-    slug: "game-ntnh",
-    title: "Game NTNH",
-    description: "Experimental procedural game built with Rust and Bevy.",
-    date: "2026-02-15",
-    tags: ["Game", "Creative", "Rust", "Bevy"],
-    image: "/images/projects/game-ntnh-card.webp",
-    url: "https://game-ntnh.netoun.com",
-    featured: true,
-    type: "personal" as ProjectType,
+    slug: "communile",
+    title: "Commun'île",
+    description:
+      "Website of Commun'île, a cooperative running open, convivial places in Nantes, built in a team of three.",
+    date: "2025-11-03",
+    tags: ["Astro", "TypeScript", "Tailwind CSS", "anime.js", "Cloudflare"],
+    image: "/images/projects/communile-card.webp",
+    url: "https://communile.fr",
   },
   {
     slug: "lonestone-boilerplate",
@@ -55,8 +50,6 @@ export const projects: Project[] = [
     tags: ["Open Source", "TypeScript", "NestJS", "React", "Monorepo"],
     image: "/images/projects/lonestone-boilerplate-card.webp",
     url: "https://github.com/lonestone/lonestone-boilerplate",
-    featured: true,
-    type: "project" as ProjectType,
   },
   {
     slug: "nzoth",
@@ -67,7 +60,5 @@ export const projects: Project[] = [
     tags: ["Open Source", "TypeScript", "NestJS", "Zod"],
     image: "/images/projects/nzoth-card.webp",
     url: "https://github.com/lonestone/nzoth",
-    featured: true,
-    type: "project" as ProjectType,
   },
-].toSorted((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+];

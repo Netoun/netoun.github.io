@@ -7,31 +7,42 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import { I18nProvider } from "react-aria-components";
 import { Container } from "@/components/layouts/container/container.component";
-import { BodyGrainOverlay } from "@/components/misc/body-grain-overlay/body-grain-overlay.component";
+import { SITE_URL } from "@/features/labs/data/labs-seo";
+import { usePaperGrain } from "@/hooks/use-paper-grain.hook";
+import { contactLinks } from "@/pages/welcome/data/contact-links.data";
 import type { Route } from "./+types/root";
 import * as styles from "./root.css";
 
 import "@styles/global.css";
 import "@styles/fonts.css";
 
+const OG_IMAGE = {
+  url: `${SITE_URL}/og-image-1200x630.png`,
+  alt: "A CSS-3D laptop with a terminal dashboard on its screen, lit mint and gold on a near-black background.",
+};
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  usePaperGrain();
+
   return (
     <html className={theme} lang="en">
       <head>
-        {import.meta.env.DEV && (
-          <script crossOrigin="anonymous" src="//unpkg.com/react-scan/dist/auto.global.js" />
-        )}
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <link rel="icon" href="/logo.svg" />
-        {/* OG / Social */}
+        {/* OG / Social: crawlers need an absolute URL. One image for every route. */}
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="/images/projects/website.webp" />
+        <meta property="og:image" content={OG_IMAGE.url} />
+        <meta property="og:image:type" content="image/png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={OG_IMAGE.alt} />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content="/images/projects/website.webp" />
+        <meta name="twitter:image" content={OG_IMAGE.url} />
+        <meta name="twitter:image:alt" content={OG_IMAGE.alt} />
+        {/* Both faces are self-hosted: the hero's first paint needs them, and nothing else. */}
         <link
           rel="preload"
           href="/fonts/PPNeueMontreal-Variable.woff2"
@@ -41,16 +52,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         />
         <link
           rel="preload"
-          href="/fonts/MabeoVintage-Regular.woff2"
+          href="/fonts/Doto-Variable-latin.woff2"
           as="font"
           type="font/woff2"
           crossOrigin="anonymous"
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Doto:wght@100..900&display=swap"
-          rel="stylesheet"
         />
         <script
           type="application/ld+json"
@@ -60,8 +65,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
               "@type": "Person",
               name: "Nicolas Coulonnier",
               alternateName: "Netoun",
-              url: "https://www.netoun.com",
-              jobTitle: "Full Stack Engineer & Creative Developer",
+              url: SITE_URL,
+              jobTitle: "Full-stack engineer",
               description:
                 "Full-stack engineer crafting fast, clean web experiences. Specialized in React, TypeScript, Next.js, NestJS and creative frontend development.",
               knowsAbout: [
@@ -74,10 +79,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 "Three.js",
                 "Creative Coding",
               ],
-              sameAs: [
-                "https://github.com/nicolqs",
-                "https://www.linkedin.com/in/nicolas-coulonnier/",
-              ],
+              // The footer's profiles, so the two never drift apart again.
+              sameAs: contactLinks
+                .map((link) => link.url)
+                .filter((url) => url.startsWith("https://")),
             }),
           }}
         />
@@ -85,9 +90,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <BodyGrainOverlay />
         <div className={styles.appContent}>
-          {children}
+          {/* React Aria announces in the page's language, not the browser's. */}
+          <I18nProvider locale="en-US">{children}</I18nProvider>
           <ScrollRestoration />
           <Scripts />
         </div>

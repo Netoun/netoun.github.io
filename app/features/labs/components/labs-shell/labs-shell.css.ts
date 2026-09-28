@@ -21,6 +21,8 @@ export const shell = style({
 
 // ── Sidebar ────────────────────────────────────────────────────────────────
 export const sidebar = style({
+  // Dark console: every focus ring inside it is gold.
+  vars: { [vars.colors.ring]: vars.colors.primary },
   // Stacking context so all absolute layers are confined to the sidebar
   position: "sticky",
   inset: vars.spacing.sm,

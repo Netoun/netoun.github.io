@@ -1,3 +1,4 @@
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 import { useState } from "react";
 import { Computer } from "@/components/misc/computer/computer.component";
 import { LabsDemoLayout } from "../../components/labs-experiment-frame/labs-experiment-frame.component";
@@ -24,13 +25,16 @@ export function Computer3dDemo() {
   return (
     <LabsDemoLayout
       stage={
-        <div className={styles.stageInner} style={{ transform: `scale(${scale})` }}>
-          <div
-            className={styles.wrapper3d}
-            style={{
-              transform: `rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) rotateZ(${rotate.z}deg)`,
-            }}
-          >
+        <div
+          className={styles.stageInner}
+          style={assignInlineVars({
+            [styles.stageScale]: String(scale),
+            [styles.stageRotateX]: `${rotate.x}deg`,
+            [styles.stageRotateY]: `${rotate.y}deg`,
+            [styles.stageRotateZ]: `${rotate.z}deg`,
+          })}
+        >
+          <div className={styles.wrapper3d}>
             <Computer />
           </div>
         </div>

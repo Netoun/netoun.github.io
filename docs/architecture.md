@@ -42,30 +42,28 @@ app/
 app/features/
   projects/
     components/
-      project-card/
-        project-card.component.tsx
-        project-card.css.ts
+      project-monitor/
+        project-monitor.component.tsx
+        project-monitor.css.ts
     data/
       projects-data.ts
+      projects-data.types.ts
     hooks/
-      use-projects.hook.ts
-      use-projects.hook.types.ts
+      use-session-uptime.hook.ts
   experiences/
     components/
-      experience-card/
-        experience-card.component.tsx
-        experience-card.css.ts
+      experience-log/
+        experience-log.component.tsx
+        experience-log.css.ts
     data/
       experiences-data.ts
-    hooks/
-      use-experiences.hook.ts
-      use-experiences.hook.types.ts
+      experiences-data.types.ts
 ```
 
 ### Rules
 
 - Plural domain name, aligned with the page (`projects`, `experiences`).
-- Files in `features/<domain>/components/` do not repeat the domain prefix: `project-card.component.tsx`, not `projects-project-card.component.tsx`.
+- Files in `features/<domain>/components/` do not repeat the domain prefix: `project-monitor.component.tsx`, not `projects-project-monitor.component.tsx`.
 - A page may import from `app/features/<domain>/`.
 - A business feature must not import from `app/pages/`.
 
@@ -80,7 +78,7 @@ app/features/
 | Page      | `*.page.tsx`      | `welcome.page.tsx`                  |
 | Styles    | `*.css.ts`        | `button.css.ts`                     |
 | Hook      | `*.hook.ts`       | `use-intersection-observer.hook.ts` |
-| Types     | `*.types.ts`      | `use-projects.hook.types.ts`        |
+| Types     | `*.types.ts`      | `projects-data.types.ts`            |
 | Data      | `*-data.ts`       | `projects-data.ts`                  |
 | Test      | `*.test.tsx`      | `button.test.tsx`                   |
 
@@ -105,16 +103,13 @@ welcome-hero-button-icon         # sub-component of component
 Concrete example:
 
 ```
-pages/welcome/sections/welcome-hero/components/computer/
-  welcome-hero-computer.component.tsx          ✓
-  welcome-hero-computer.css.ts                 ✓
+pages/welcome/sections/welcome-hero/components/contact-hover-card/
+  welcome-hero-contact-hover-card.component.tsx          ✓
+  welcome-hero-contact-hover-card.css.ts                 ✓
   components/
-    character-grid/
-      welcome-hero-computer-character-grid.component.tsx   ✓
-      welcome-hero-computer-character-grid.css.ts          ✓
-    square-grid/
-      welcome-hero-computer-square-grid.component.tsx      ✓
-      welcome-hero-computer-square-grid.css.ts             ✓
+    beam/
+      welcome-hero-contact-hover-card-beam.component.tsx ✓
+      welcome-hero-contact-hover-card-beam.css.ts        ✓
 ```
 
 Any file in `app/pages/` that does not respect this prefix is outside the target architecture.
@@ -163,14 +158,13 @@ pages/welcome/
           welcome-hero-computer.component.tsx
           welcome-hero-computer.css.ts
           components/
-            character-grid/
-              welcome-hero-computer-character-grid.component.tsx
-              welcome-hero-computer-character-grid.css.ts
-            square-grid/
-              welcome-hero-computer-square-grid.component.tsx
-              welcome-hero-computer-square-grid.css.ts
+            splash/
+              welcome-hero-computer-splash.component.tsx
+        scroll-morph/
+          welcome-hero-scroll-morph.component.tsx
+          welcome-hero-scroll-morph.css.ts
       hooks/
-        use-welcome-hero-content-animation.hook.ts
+        use-welcome-hero-spec.hook.ts
     welcome-projects/
       welcome-projects.section.tsx
       welcome-projects.css.ts

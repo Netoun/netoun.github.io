@@ -1,0 +1,286 @@
+import { motion } from "@styles/motion.css";
+import { vars } from "@styles/theme.css";
+import { createVar, fallbackVar, globalStyle, style } from "@vanilla-extract/css";
+
+/** Resting tilt of the card, set from the demo's slider. */
+export const cardRotate = createVar();
+/** Pointer tilt, written by the parallax loop. */
+export const cardTiltX = createVar();
+export const cardTiltY = createVar();
+/** Pointer position over the card, `0%`–`100%`: drives the sheen and the halo. */
+export const cardPointerX = createVar();
+export const cardPointerY = createVar();
+
+const pointerX = fallbackVar(cardPointerX, "50%");
+const pointerY = fallbackVar(cardPointerY, "50%");
+
+export const cardStyle = style({
+  borderRadius: vars.radius.md,
+  height: "100%",
+  border: vars.border.subtle,
+  backgroundColor: vars.colors.card,
+  overflow: "hidden",
+  display: "flex",
+  flexDirection: "column",
+  transition:
+    "transform 0.25s cubic-bezier(.22,1,.36,1), box-shadow 0.35s cubic-bezier(.22,1,.36,1)",
+  opacity: 1,
+  transform: `rotate(${fallbackVar(cardRotate, "0deg")})`,
+  position: "relative",
+  transformStyle: "preserve-3d",
+  perspective: "1000px",
+  cursor: "pointer",
+  backfaceVisibility: "hidden",
+  WebkitBackfaceVisibility: "hidden",
+  boxShadow: vars.boxShadow.restCard,
+});
+
+globalStyle(`${cardStyle}:hover`, {
+  boxShadow: vars.boxShadow.hoverCard,
+  transform: `rotate(0deg) rotateX(${fallbackVar(cardTiltX, "0deg")}) rotateY(${fallbackVar(cardTiltY, "0deg")}) translateY(-4px) scale(1.02)`,
+  transition:
+    "transform 0.15s ease-out, box-shadow 0.35s cubic-bezier(.22,1,.36,1), opacity 0.5s ease",
+});
+
+export const perspectiveWrapper = style({
+  perspective: "1000px",
+  height: "100%",
+});
+
+export const linkStyle = style({
+  textDecoration: "none",
+  color: "inherit",
+  display: "flex",
+  flexDirection: "column",
+  height: "100%",
+  position: "relative",
+  zIndex: 2,
+  transform: "translateZ(0)",
+  transformStyle: "preserve-3d",
+  // ring intérieur : la carte est en overflow hidden, un offset positif serait rogné
+  outline: "2px solid transparent",
+  outlineOffset: "-2px",
+  borderRadius: "inherit",
+
+  ":focus-visible": {
+    outlineColor: vars.colors.foreground,
+  },
+});
+
+export const terminalBarStyle = style({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: vars.spacing.sm,
+  padding: `${vars.spacing.sm} ${vars.spacing.md}`,
+  backgroundColor: `color-mix(in srgb, ${vars.colors.card} 55%, transparent)`,
+  borderBottom: vars.border.subtle,
+  fontFamily: vars.fontFamily.doto,
+  fontSize: vars.fontSize.xs,
+  color: vars.colors.mutedForeground,
+  letterSpacing: "0.12em",
+  textTransform: "uppercase",
+});
+
+export const terminalLeftStyle = style({
+  display: "flex",
+  alignItems: "center",
+  gap: `calc(${vars.spacing.sm} * 1.25)`,
+});
+
+export const terminalDateStyle = style({
+  fontFamily: vars.fontFamily.doto,
+  fontSize: vars.fontSize.xs,
+  letterSpacing: "0.12em",
+  color: vars.colors.mutedForeground,
+});
+
+export const imageContainerStyle = style({
+  width: "100%",
+  height: "140px",
+  overflow: "hidden",
+  position: "relative",
+  boxShadow: vars.boxShadow.innerLg,
+});
+
+export const imageStyle = style({
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  transform: "scale(1.05)",
+  transition: `transform ${motion.duration.base} ${motion.easing.signature}`,
+});
+
+globalStyle(`${cardStyle}:hover ${imageStyle}`, {
+  transform: "scale(1.15)",
+});
+
+// Lightweight CSS holographic sheen (replaces the per-card WebGL overlay).
+// Reuses the --x/--y vars set by the card parallax so the iridescence
+// tracks the cursor without opening a GPU context.
+export const holoSheenStyle = style({
+  position: "absolute",
+  inset: 0,
+  pointerEvents: "none",
+  zIndex: 3,
+  borderRadius: "inherit",
+  opacity: 0.18,
+  mixBlendMode: "soft-light",
+  transition: "opacity 0.35s ease",
+  backgroundImage: `linear-gradient(
+    115deg,
+    transparent 0%,
+    color-mix(in srgb, ${vars.colors.primary} 50%, transparent) 22%,
+    color-mix(in srgb, ${vars.colors.secondary} 50%, transparent) 42%,
+    color-mix(in srgb, ${vars.colors.tertiary} 50%, transparent) 60%,
+    color-mix(in srgb, ${vars.colors.kirby} 50%, transparent) 80%,
+    transparent 100%
+  )`,
+  backgroundSize: "220% 220%",
+  backgroundPosition: `${pointerX} ${pointerY}`,
+  boxShadow: `inset 0 1px 0 color-mix(in srgb, ${vars.colors.background} 35%, transparent)`,
+});
+
+globalStyle(`${cardStyle}:hover ${holoSheenStyle}`, {
+  opacity: 0.5,
+});
+
+export const contentStyle = style({
+  padding: vars.spacing.lg,
+  display: "flex",
+  flexDirection: "column",
+  gap: vars.spacing.sm,
+  flex: 1,
+});
+
+export const titleStyle = style({
+  fontFamily: vars.fontFamily.ppNeueMontreal,
+  fontWeight: vars.fontWeight.semibold,
+  fontSize: vars.fontSize.base,
+  color: vars.colors.foreground,
+  margin: 0,
+  display: "flex",
+  alignItems: "center",
+  gap: `calc(${vars.spacing.sm} * 0.75)`,
+});
+
+export const promptStyle = style({
+  fontFamily: vars.fontFamily.doto,
+  color: vars.colors.primary,
+  fontSize: vars.fontSize.sm,
+});
+
+export const descriptionStyle = style({
+  fontFamily: vars.fontFamily.ppNeueMontreal,
+  fontSize: vars.fontSize.sm,
+  lineHeight: "1.45",
+  color: vars.colors.foreground,
+  margin: 0,
+  flex: 1,
+  display: "-webkit-box",
+  WebkitLineClamp: 3,
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+});
+
+export const tagsStyle = style({
+  display: "flex",
+  flexWrap: "wrap",
+  gap: `calc(${vars.spacing.xs} * 1.25)`,
+  marginTop: `calc(${vars.spacing.xs} * 1.25)`,
+});
+
+export const footerStyle = style({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: `${vars.spacing.sm} ${vars.spacing.md}`,
+  borderTop: vars.border.strong,
+});
+
+export const linkLabelStyle = style({
+  fontFamily: vars.fontFamily.doto,
+  fontSize: vars.fontSize.xs,
+  letterSpacing: "0.18em",
+  textTransform: "uppercase",
+  color: vars.colors.mutedForeground,
+  background: "none",
+  border: "none",
+  cursor: "pointer",
+  padding: 0,
+  transition: "color 0.2s",
+  display: "inline-flex",
+  alignItems: "center",
+  gap: `calc(${vars.spacing.xs} / 2)`,
+});
+
+export const linkArrowStyle = style({
+  display: "inline-block",
+  opacity: 0,
+  transform: "translateX(-4px)",
+  transition: "opacity 0.2s ease, transform 0.2s ease",
+});
+
+globalStyle(`${cardStyle}:hover ${linkArrowStyle}`, {
+  opacity: 1,
+  transform: "translateX(0)",
+});
+
+globalStyle(`${cardStyle}:hover ${linkLabelStyle}`, {
+  color: vars.colors.foreground,
+});
+
+// Au clavier, répliquer les révélations du hover (flèche + label)
+globalStyle(`${linkStyle}:focus-visible ${linkArrowStyle}`, {
+  opacity: 1,
+  transform: "translateX(0)",
+});
+
+globalStyle(`${linkStyle}:focus-visible ${linkLabelStyle}`, {
+  color: vars.colors.foreground,
+});
+
+export const haloStyle = style({
+  position: "absolute",
+  inset: 0,
+  background: `radial-gradient(at ${pointerX} ${pointerY}, rgb(255 255 240 / 0.18) 0%, transparent 70%)`,
+  pointerEvents: "none",
+  zIndex: 1,
+  borderRadius: vars.radius.md,
+  opacity: 0,
+  transition: "opacity 0.3s ease",
+});
+
+globalStyle(`${cardStyle}:hover ${haloStyle}`, {
+  opacity: 1,
+});
+
+// Status is metadata, not a call to action. A filled gold pill on every card
+// made the loudest element on the page also the least informative — it now
+// reads as a Doto annotation with a single lit dot carrying the accent.
+export const statusBadgeStyle = style({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: `calc(${vars.spacing.xs} * 1.5)`,
+  fontFamily: vars.fontFamily.doto,
+  fontSize: vars.fontSize.xs,
+  letterSpacing: "0.14em",
+  color: vars.colors.mutedForeground,
+  fontWeight: vars.fontWeight.medium,
+
+  "::before": {
+    content: '""',
+    width: "5px",
+    height: "5px",
+    borderRadius: vars.radius.full,
+    backgroundColor: vars.colors.primary,
+    boxShadow: `0 0 6px color-mix(in srgb, ${vars.colors.primary} 60%, transparent)`,
+  },
+});
+
+export const footerAccentStyle = style({
+  width: 16,
+  height: 3,
+  backgroundColor: vars.colors.primary,
+  borderRadius: vars.radius.sm,
+});

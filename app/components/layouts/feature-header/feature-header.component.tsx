@@ -1,5 +1,6 @@
 import { animate } from "animejs";
 import { createContext, useEffect, useMemo, useRef, use } from "react";
+import { Glyph } from "@/components/primitives/glyph/glyph.component";
 import * as styles from "./feature-header.css";
 
 type AccentVariant = "primary" | "secondary" | "tertiary";
@@ -77,9 +78,8 @@ export function FeatureHeaderTitle({ children, size = "lg" }: FeatureHeaderTitle
 
   return (
     <Tag className={styles.titleStyle({ size, variant })} data-reveal-item>
-      <span className={styles.prefixStyle({ variant })}>_❯</span>
+      <Glyph className={styles.prefixStyle({ variant })}>_❯</Glyph>
       {children}
-      <span className={styles.cursorStyle({ variant })} />
     </Tag>
   );
 }

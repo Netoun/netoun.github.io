@@ -4,6 +4,7 @@ import { MeshBackgroundCanvas } from "@/components/misc/mesh-background/mesh-bac
 import { labs } from "../../data/experiments";
 import { LabsIsoIcon } from "../labs-iso-icon/labs-iso-icon.component";
 import * as styles from "./labs-shell.css";
+import { Glyph } from "@/components/primitives/glyph/glyph.component";
 
 interface LabsShellProps {
   children: React.ReactNode;
@@ -61,12 +62,10 @@ export function LabsShell({ children }: LabsShellProps) {
 
             {/* Status line: prompt · dot · count · cursor */}
             <div className={styles.statusLine}>
-              <span className={styles.statusPrompt}>_❯</span>
+              <Glyph className={styles.statusPrompt}>_❯</Glyph>
               <span className={styles.statusDot} aria-hidden="true" />
               <span>{totalCount} experiments online</span>
-              <span className={styles.blinkCursor} aria-hidden="true">
-                ▐
-              </span>
+              <Glyph className={styles.blinkCursor}>▐</Glyph>
             </div>
 
             {/* Mobile menu toggle — hidden on desktop */}
@@ -94,16 +93,12 @@ export function LabsShell({ children }: LabsShellProps) {
                     data-accent={experiment.accent}
                     onClick={closeMenu}
                   >
-                    <span className={styles.navPrompt} aria-hidden="true">
-                      ❯
-                    </span>
+                    <Glyph className={styles.navPrompt}>❯</Glyph>
                     <span className={styles.navIcon} aria-hidden="true">
                       <LabsIsoIcon slug={experiment.slug} />
                     </span>
                     <span className={styles.navText}>{experiment.title}</span>
-                    <span className={styles.navArrow} aria-hidden="true">
-                      ⤘
-                    </span>
+                    <Glyph className={styles.navArrow}>⤘</Glyph>
                   </NavLink>
                 ))}
               </div>

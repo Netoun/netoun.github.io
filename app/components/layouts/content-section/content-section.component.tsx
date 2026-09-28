@@ -8,6 +8,7 @@ import {
 import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
 import { useReveal } from "@/hooks/use-reveal.hook";
+import * as styles from "./content-section.css";
 
 type HeaderVariant = "primary" | "secondary" | "tertiary";
 
@@ -26,6 +27,8 @@ interface ContentSectionProps {
   index?: number;
   /** Stable id for anchor navigation (e.g. sticky section nav) */
   id?: string;
+  /** Rendered beside the header from xl, under it below. */
+  aside?: ReactNode;
   children: ReactNode | ((state: ContentSectionState) => ReactNode);
 }
 
@@ -38,6 +41,7 @@ export function ContentSection({
   threshold = 0.1,
   index,
   id,
+  aside,
   children,
 }: ContentSectionProps) {
   const { ref: sectionRef, isIntersecting } = useIntersectionObserver<HTMLElement>({
@@ -48,6 +52,13 @@ export function ContentSection({
     priority: "medium",
     isVisible: isIntersecting,
   });
+
+  const header = (
+    <FeatureHeader variant={variant} index={index}>
+      <FeatureHeaderTitle>{title}</FeatureHeaderTitle>
+      <FeatureHeaderDescription>{description}</FeatureHeaderDescription>
+    </FeatureHeader>
+  );
 
   return (
     <section
@@ -61,10 +72,14 @@ export function ContentSection({
       data-reveal={revealState ?? undefined}
     >
       <Container className={contentClassName}>
-        <FeatureHeader variant={variant} index={index}>
-          <FeatureHeaderTitle>{title}</FeatureHeaderTitle>
-          <FeatureHeaderDescription>{description}</FeatureHeaderDescription>
-        </FeatureHeader>
+        {aside ? (
+          <div className={styles.headerRowStyle}>
+            {header}
+            <div className={styles.asideStyle}>{aside}</div>
+          </div>
+        ) : (
+          header
+        )}
         {typeof children === "function" ? children({ shouldAnimate }) : children}
       </Container>
     </section>

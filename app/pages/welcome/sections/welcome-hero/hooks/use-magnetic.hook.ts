@@ -1,4 +1,6 @@
+import { setElementVars } from "@vanilla-extract/dynamic";
 import { useEffect, type RefObject } from "react";
+import { magnetOffset } from "./use-magnetic.css";
 
 const ATTRACTION_RADIUS = 80;
 const MAX_OFFSET = 4;
@@ -21,7 +23,7 @@ export function computeMagnetOffset(
   };
 }
 
-// Sets --magnet-x/--magnet-y on the element so CSS can translate it toward the
+// Sets magnetOffset on the element so CSS can translate it toward the
 // cursor. Inert on coarse pointers and when the user prefers reduced motion.
 export function useMagnetic<T extends HTMLElement>(ref: RefObject<T | null>) {
   useEffect(() => {
@@ -61,8 +63,7 @@ export function useMagnetic<T extends HTMLElement>(ref: RefObject<T | null>) {
         if (nextX === lastX && nextY === lastY) return;
         lastX = nextX;
         lastY = nextY;
-        element.style.setProperty("--magnet-x", nextX);
-        element.style.setProperty("--magnet-y", nextY);
+        setElementVars(element, { [magnetOffset.x]: nextX, [magnetOffset.y]: nextY });
       });
     };
 
@@ -74,8 +75,7 @@ export function useMagnetic<T extends HTMLElement>(ref: RefObject<T | null>) {
       window.removeEventListener("scroll", invalidateRect);
       window.removeEventListener("resize", invalidateRect);
       if (frame) cancelAnimationFrame(frame);
-      element.style.removeProperty("--magnet-x");
-      element.style.removeProperty("--magnet-y");
+      setElementVars(element, { [magnetOffset.x]: "0px", [magnetOffset.y]: "0px" });
     };
   }, [ref]);
 }

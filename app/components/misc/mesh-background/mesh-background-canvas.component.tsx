@@ -1,4 +1,4 @@
-import { memo, useMemo, useRef } from "react";
+import { memo, useLayoutEffect, useMemo, useRef } from "react";
 import clsx from "clsx";
 import type { RendererType } from "@/components/misc/canvas-renderer/canvas-renderer.types";
 import { useShaderCanvas } from "@/components/misc/canvas-renderer/use-canvas-shader.hook";
@@ -61,8 +61,11 @@ function MeshBackgroundCanvasComponent({
         : meshShader,
     [compositionWindow],
   );
+  // Latest quality for the renderer's frame loop, without re-creating the GPU session.
   const qualityRef = useRef(quality);
-  qualityRef.current = quality;
+  useLayoutEffect(() => {
+    qualityRef.current = quality;
+  });
 
   const { type } = useShaderCanvas(canvasRef, shader, {
     animate,

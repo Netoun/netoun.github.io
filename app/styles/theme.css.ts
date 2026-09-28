@@ -6,7 +6,11 @@ const colors = {
 
   // Couleurs d'interface
   muted: "oklch(0.96 0 0)",
+  // Secondary text on paper. Never on the dark panels (2.72:1 there).
   mutedForeground: "oklch(0.45 0 0)",
+  // Secondary text on the dark panels: paper mixed with ink, opaque so it reads the same over
+  // any panel shade (6.9:1 on the footer panel; paper at 50% is the 4.5:1 floor).
+  mutedForegroundOnDark: "color-mix(in srgb, oklch(0.93 0.03 80) 64%, oklch(0.07 0 0))",
   // Opaque warm paper stock. It used to be translucent white paired with a
   // backdrop blur — over an opaque beige page that bought no visible effect,
   // only softer text and extra paint.
@@ -37,6 +41,9 @@ const colors = {
   kirby: "oklch(0.8455 0.0872 355.09)",
   kirbyForeground: "oklch(0.15 0 0)",
 
+  // Azur : le domaine systems & AI (plus clair que le violet, loin de la menthe en teinte)
+  azure: "oklch(0.7 0.15 240)",
+
   // Couleurs d'accent
   accent: "oklch(0.96 0 0)",
   accentForeground: "oklch(0.15 0 0)",
@@ -46,8 +53,9 @@ const colors = {
   warning: "oklch(0.8 0.15 85)",
   error: "oklch(0.55 0.22 29)",
 
-  // Ring (focus)
-  ring: "oklch(0.7 0.15 264)",
+  // Focus ring: ink on paper. Dark surfaces remap it to `primary` (`vars: { [vars.colors.ring]: … }`),
+  // so everything inside them rings gold without restating it.
+  ring: "oklch(0.07 0 0)",
 };
 
 const spacing = {
@@ -71,6 +79,7 @@ const radius = {
 };
 
 const fontSize = {
+  // Below the Doto floor (DESIGN.md › The Legible Dot-Matrix Rule): aria-hidden decoration only.
   "2xs": "0.6rem",
   xs: "0.75rem",
   sm: "0.875rem",
@@ -109,7 +118,6 @@ const fontFamily = {
   inter: "Inter, system-ui, sans-serif",
   doto: "Doto, system-ui, sans-serif",
   ppNeueMontreal: "PPNeueMontreal, system-ui, sans-serif",
-  mabeoVintage: "MabeoVintage, system-ui, sans-serif",
   // The code voice: system monospace, never downloaded. Only the hero's spec
   // layer (file tabs, annotations) uses it, to print values read from the code.
   mono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace',

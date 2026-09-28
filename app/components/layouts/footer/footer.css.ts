@@ -1,29 +1,34 @@
 import { vars } from "@styles/theme.css";
-import { createVar, style, styleVariants, keyframes } from "@vanilla-extract/css";
+import { keyframes, style } from "@vanilla-extract/css";
 import { motion } from "@/styles/motion.css";
 import { breakpoints } from "@/styles/responsive.css";
+import { serverRackVars } from "@/components/misc/server-unit/server-unit.css";
 
-const pulse = keyframes({
-  "0%, 100%": { transform: "scale(1)", opacity: 1 },
-  "50%": { transform: "scale(1.2)", opacity: 0.8 },
-});
+const paper = (percent: number) =>
+  `color-mix(in srgb, ${vars.colors.background} ${percent}%, transparent)`;
 
+// The panel is the bottom bookend of the hero: full-bleed, inset by the same 0.5rem. Its
+// content stays on the page column (Container), padded like the hero's text.
 export const footerStyle = style({
   paddingTop: vars.spacing["3xl"],
-  paddingBottom: vars.spacing.xl,
+  paddingBottom: vars.spacing.sm,
   backgroundColor: "transparent",
 });
 
 export const footerVisualContainerStyle = style({
+  // Dark panel: every focus ring inside it is gold.
+  vars: { [vars.colors.ring]: vars.colors.primary },
   position: "relative",
   overflow: "hidden",
+  marginInline: vars.spacing.sm,
   borderRadius: vars.radius.md,
   backgroundColor: `color-mix(in srgb, ${vars.colors.foreground} 98%, ${vars.colors.accent})`,
-  padding: vars.spacing.md,
   paddingTop: vars.spacing.xl,
+  paddingBottom: vars.spacing.md,
   boxShadow: `
     inset 0 0 200px color-mix(in srgb, ${vars.colors.foreground} 80%, transparent),
-    inset 0 0 40px color-mix(in srgb, ${vars.colors.foreground} 60%, transparent)
+    inset 0 0 40px color-mix(in srgb, ${vars.colors.foreground} 60%, transparent),
+    inset 0 1px 0 ${paper(8)}
   `,
 
   ":after": {
@@ -32,6 +37,7 @@ export const footerVisualContainerStyle = style({
     inset: 0,
     zIndex: 10,
     opacity: 0.2,
+    pointerEvents: "none",
     backgroundImage: `
       radial-gradient(at 0% 10%, ${vars.colors.foreground} 0, transparent 50%),
       radial-gradient(at 0% 1%, ${vars.colors.foreground} 0, transparent 50%)
@@ -41,99 +47,144 @@ export const footerVisualContainerStyle = style({
   "@media": {
     [breakpoints.md]: {
       borderRadius: vars.radius.xl,
-      padding: vars.spacing["3xl"],
+      paddingBlock: vars.spacing["3xl"],
     },
   },
 });
 
+// Stacked below xl (rack, contact, status); from xl the rack takes the left column and the
+// faceplate the right one, which is where the patch cable can hang between them.
 export const footerContentStyle = style({
   position: "relative",
   zIndex: 20,
   display: "grid",
-  gridTemplateColumns: "1fr 2fr",
-  gap: vars.spacing.xl,
-  alignItems: "center",
+  gridTemplateColumns: "minmax(0, 1fr)",
+  gridTemplateAreas: '"rack" "contact" "status"',
+  rowGap: vars.spacing.xl,
+  paddingInline: vars.spacing.sm,
 
   "@media": {
-    "screen and (max-width: 767px)": {
-      gridTemplateColumns: "1fr",
-      gridTemplateRows: "auto auto",
-      gap: vars.spacing.lg,
+    [breakpoints.md]: { paddingInline: vars.spacing["3xl"] },
+    [breakpoints.xl]: {
+      gridTemplateColumns: "24.5rem minmax(0, 1fr)",
+      gridTemplateAreas: '"rack contact" "status status"',
+      columnGap: vars.spacing["2xl"],
+      rowGap: "2.75rem",
+      alignItems: "start",
     },
   },
 });
 
+export const rackColumnStyle = style({
+  gridArea: "rack",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: vars.spacing.md,
+
+  "@media": {
+    [breakpoints.xl]: {
+      alignItems: "flex-start",
+      paddingTop: vars.spacing.md,
+      paddingLeft: vars.spacing.sm,
+    },
+  },
+});
+
+// The rack sizes itself from these (ServerUnitRack size="inherit").
 export const rackWrapperStyle = style({
   display: "flex",
-  justifyContent: "flex-start",
+  justifyContent: "center",
   alignItems: "center",
   transformStyle: "preserve-3d",
   transform: "rotateX(4deg) rotateY(24deg)",
+  vars: {
+    [serverRackVars.width]: "13rem",
+    [serverRackVars.unitHeight]: "60px",
+    [serverRackVars.gap]: "8px",
+    [serverRackVars.patchHeight]: "76px",
+  },
 
   "@media": {
-    "screen and (max-width: 767px)": {
-      justifyContent: "center",
+    [breakpoints.md]: {
+      vars: {
+        [serverRackVars.width]: "15rem",
+        [serverRackVars.unitHeight]: "84px",
+        [serverRackVars.gap]: "10px",
+        [serverRackVars.patchHeight]: "80px",
+      },
+    },
+    [breakpoints.xl]: {
+      justifyContent: "flex-start",
+      vars: {
+        [serverRackVars.width]: "15.625rem",
+        [serverRackVars.unitHeight]: "100px",
+        [serverRackVars.patchHeight]: "84px",
+      },
     },
   },
 });
 
-export const messageWrapperStyle = style({
-  display: "flex",
-  flexDirection: "column",
-  gap: vars.spacing.sm,
-  textAlign: "right",
+export const rackCaptionStyle = style({
+  display: "inline-flex",
+  alignItems: "center",
+  minHeight: "2.75rem",
+  fontFamily: vars.fontFamily.doto,
+  fontWeight: vars.fontWeight.extrabold,
+  fontSize: "0.9375rem",
+  letterSpacing: "0.08em",
+  // Brighter than mutedForegroundOnDark: it sits over the mesh's gold bloom, where the
+  // muted tone fell to 3.8:1.
+  color: `color-mix(in oklab, ${vars.colors.background} 82%, ${vars.colors.foreground})`,
+  textDecoration: "none",
+  borderRadius: vars.radius.xs,
+  outline: "2px solid transparent",
+  outlineOffset: "2px",
+  transition: `color ${motion.duration.fast} ${motion.easing.out}`,
+
+  selectors: {
+    "&:hover": { color: vars.colors.primary },
+    "&:focus-visible": { color: vars.colors.primary, outlineColor: vars.colors.primary },
+  },
 
   "@media": {
-    "screen and (max-width: 767px)": {
-      textAlign: "center",
-    },
+    [breakpoints.xl]: { marginLeft: "2.25rem" },
   },
+});
+
+export const rackCaptionArrowStyle = style({
+  marginRight: "0.5em",
+});
+
+export const contactColumnStyle = style({
+  gridArea: "contact",
+  display: "flex",
+  flexDirection: "column",
+  gap: "1.25rem",
+  minWidth: 0,
 });
 
 export const headingStyle = style({
-  fontFamily: vars.fontFamily.ppNeueMontreal,
-  fontSize: vars.fontSize["2xl"],
-  fontWeight: vars.fontWeight.semibold,
-  color: vars.colors.background,
-  margin: 0,
-});
-
-export const sparkleStyle = style({
-  color: vars.colors.primary,
-  marginLeft: vars.spacing.xs,
-
-  display: "inline-block",
-  animation: `${pulse} 2s ease-in-out infinite`,
-});
-
-export const subtextStyle = style({
-  fontFamily: vars.fontFamily.doto,
-  fontSize: vars.fontSize.base,
-  color: vars.colors.kirby,
-  margin: 0,
-});
-
-// Terminal "connection" block: header prompt + one row per link, each with an
-// identity-accent LED that lights up on hover — echoes the rack next to it.
-export const contactNavStyle = style({
   display: "flex",
-  flexDirection: "column",
-  alignItems: "flex-end",
-  gap: vars.spacing.sm,
-  marginTop: vars.spacing.md,
+  alignItems: "center",
+  margin: 0,
+  fontFamily: vars.fontFamily.doto,
+  fontWeight: vars.fontWeight.extrabold,
+  fontSize: vars.fontSize["2xl"],
+  lineHeight: 1.2,
+  letterSpacing: "0.05em",
+  textTransform: "uppercase",
+  color: vars.colors.background,
 
   "@media": {
-    "screen and (max-width: 767px)": {
-      alignItems: "center",
-    },
+    [breakpoints.md]: { fontSize: "1.75rem" },
+    [breakpoints.xl]: { fontSize: "2rem" },
   },
 });
 
-export const contactHeaderStyle = style({
-  fontFamily: vars.fontFamily.doto,
-  fontSize: vars.fontSize.xs,
-  letterSpacing: "0.12em",
-  color: `color-mix(in srgb, ${vars.colors.background} 55%, transparent)`,
+export const promptStyle = style({
+  marginRight: "0.75rem",
+  color: vars.colors.primary,
 });
 
 const cursorBlink = keyframes({
@@ -141,148 +192,17 @@ const cursorBlink = keyframes({
   "50%, 100%": { opacity: 0 },
 });
 
-export const contactCursorStyle = style({
-  display: "inline-block",
-  marginLeft: vars.spacing.xs,
+export const cursorStyle = style({
+  marginLeft: "0.375rem",
   color: vars.colors.primary,
   animation: `${cursorBlink} 1.2s step-end infinite`,
 
   "@media": {
-    "(prefers-reduced-motion: reduce)": {
-      animation: "none",
-    },
+    "(prefers-reduced-motion: reduce)": { animation: "none" },
   },
 });
 
-export const contactListStyle = style({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "flex-end",
-  gap: vars.spacing.xs,
-  listStyle: "none",
-  margin: 0,
-  padding: 0,
-
-  "@media": {
-    "screen and (max-width: 767px)": {
-      alignItems: "center",
-    },
-  },
-});
-
-// Per-link accent, consumed by the label hover color and the LED.
-const contactAccentVar = createVar();
-
-export const contactLinkStyle = style({
-  vars: { [contactAccentVar]: vars.colors.kirby },
-  display: "inline-flex",
-  alignItems: "center",
-  gap: vars.spacing.sm,
-  fontFamily: vars.fontFamily.doto,
-  fontSize: vars.fontSize.sm,
-  letterSpacing: "0.06em",
-  textTransform: "uppercase",
-  color: `color-mix(in srgb, ${vars.colors.background} 75%, transparent)`,
-  textDecoration: "none",
-  borderRadius: vars.radius.sm,
-  outline: "2px solid transparent",
-  outlineOffset: "4px",
-  transition: `color ${motion.duration.fast} ${motion.easing.out}`,
-
-  selectors: {
-    "&:hover": {
-      color: contactAccentVar,
-    },
-    // fond sombre du footer : le ring primary y est très contrasté
-    "&:focus-visible": {
-      color: contactAccentVar,
-      outlineColor: vars.colors.primary,
-    },
-  },
-});
-
-export const contactLinkAccentStyles = styleVariants({
-  primary: { vars: { [contactAccentVar]: vars.colors.primary } },
-  secondary: { vars: { [contactAccentVar]: vars.colors.secondary } },
-  tertiary: { vars: { [contactAccentVar]: vars.colors.tertiary } },
-  kirby: { vars: { [contactAccentVar]: vars.colors.kirby } },
-});
-
-// The prompt arrow slides in when the row is hovered/focused.
-export const contactArrowStyle = style({
-  display: "inline-block",
-  opacity: 0,
-  transform: "translateX(-4px)",
-  transition: `opacity ${motion.duration.fast} ${motion.easing.out}, transform ${motion.duration.fast} ${motion.easing.out}`,
-  color: contactAccentVar,
-
-  selectors: {
-    [`${contactLinkStyle}:hover &, ${contactLinkStyle}:focus-visible &`]: {
-      opacity: 1,
-      transform: "translateX(0)",
-    },
-  },
-
-  "@media": {
-    "(prefers-reduced-motion: reduce)": {
-      transition: "none",
-      transform: "none",
-    },
-  },
-});
-
-// Square status LED, dimmed at rest, lit with a soft glow on hover.
-export const contactLedStyle = style({
-  width: "8px",
-  height: "8px",
-  borderRadius: "2px",
-  backgroundColor: `color-mix(in srgb, ${contactAccentVar} 35%, transparent)`,
-  transition: `background-color ${motion.duration.fast} ${motion.easing.out}, box-shadow ${motion.duration.fast} ${motion.easing.out}`,
-
-  selectors: {
-    [`${contactLinkStyle}:hover &, ${contactLinkStyle}:focus-visible &`]: {
-      backgroundColor: contactAccentVar,
-      boxShadow: `0 0 10px color-mix(in srgb, ${contactAccentVar} 70%, transparent)`,
-    },
-  },
-});
-
-export const copyrightStyle = style({
-  fontFamily: vars.fontFamily.ppNeueMontreal,
-  fontSize: vars.fontSize.sm,
-  color: vars.colors.mutedForeground,
-  margin: 0,
-  marginTop: vars.spacing.md,
-});
-
-export const labsLinkStyle = style({
-  display: "inline-flex",
-  alignItems: "center",
-  gap: vars.spacing.xs,
-  alignSelf: "flex-end",
-  fontFamily: vars.fontFamily.doto,
-  fontSize: vars.fontSize.sm,
-  letterSpacing: "0.08em",
-  color: vars.colors.background,
-  textDecoration: "none",
-  transition: `color ${motion.duration.fast} ${motion.easing.out}`,
-  borderRadius: vars.radius.sm,
-  outline: "2px solid transparent",
-  outlineOffset: "4px",
-  selectors: {
-    "&:hover": {
-      color: vars.colors.primary,
-    },
-    // fond sombre du footer : le ring primary y est très contrasté
-    "&:focus-visible": {
-      color: vars.colors.primary,
-      outlineColor: vars.colors.primary,
-    },
-  },
-
-  "@media": {
-    "screen and (max-width: 767px)": {
-      alignSelf: "center",
-    },
-  },
+export const statusRowStyle = style({
+  gridArea: "status",
+  minWidth: 0,
 });

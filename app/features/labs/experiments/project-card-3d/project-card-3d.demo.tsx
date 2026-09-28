@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ProjectCard } from "@/features/projects/components/project-card/project-card.component";
+import { ProjectCard } from "./project-card.component";
 import { LabsDemoLayout } from "../../components/labs-experiment-frame/labs-experiment-frame.component";
 import {
   ButtonGroupControl,

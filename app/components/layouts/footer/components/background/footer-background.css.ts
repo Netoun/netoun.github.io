@@ -1,4 +1,4 @@
-import { style } from "@vanilla-extract/css";
+import { style, styleVariants } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css";
 
 export const footerMeshContainerStyle = style({
@@ -48,4 +48,17 @@ export const footerMeshGradientPathStyle = style({
       fill: `color-mix(in srgb, ${vars.colors.tertiary} 20%, transparent)`,
     },
   },
+});
+
+/** Where each blurred shape sits in the panel, keyed by the shape's id. */
+export const footerMeshShapePlacements = styleVariants({
+  "footer-mesh-1": { top: "0%", left: "0%", width: "55%", height: "50%" },
+  "footer-mesh-2": { bottom: "0", left: "0%", width: "20%", height: "30%" },
+  "footer-mesh-3": { top: "40%", left: "50%", width: "35%", height: "55%" },
+});
+
+/** Holds the shared blur filter only: never painted. */
+export const footerSvgDefsStyle = style({
+  position: "absolute",
+  visibility: "hidden",
 });

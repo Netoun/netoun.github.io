@@ -1,7 +1,7 @@
 import { vars } from "@styles/theme.css";
 import { style } from "@vanilla-extract/css";
 
-/** Keeps page content above the fixed `BodyGrainOverlay` canvas. */
+/** Root stacking context: z-indices inside the app never compete with overlays portaled to `body`. */
 export const appContent = style({
   position: "relative",
   zIndex: 1,

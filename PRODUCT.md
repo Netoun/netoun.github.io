@@ -25,7 +25,7 @@ Success = peers explore the Labs and share them; visitors leave knowing what Nic
 
 - Visitors arrive from shared links (GitHub `netoun`, LinkedIn, X `netoun`, email) and from search — each page ships SEO meta, a sitemap and `public/llms.txt` for AI crawlers.
 - Routes: `/` (hero, projects, experience, skills, contact footer), `/labs` (experiment index), `/labs/:slug` (live demo + source viewer). `/misc` redirects to `/labs`.
-- Static prerendered site (React Router framework mode, `ssr: false`) deployed on Cloudflare Pages (`public/_headers`, `_redirects`, `_routes.json`). No backend, no forms, no analytics in the codebase.
+- Static prerendered site (React Router framework mode, `ssr: false`) deployed on Cloudflare Pages (`public/_headers`, `_redirects`). No backend, no forms, no analytics in the codebase.
 
 ## Capabilities and Constraints
 
@@ -44,15 +44,14 @@ Success = peers explore the Labs and share them; visitors leave knowing what Nic
 
 ## Evidence on Hand
 
-- Real projects with links (personal + Lonestone open source): website, Procedural Maps, Treashunt, Game NTNH, Nzoth, Lonestone Boilerplate — see `projects-data.ts`.
+- Real projects with links (personal + Lonestone open source): website, Procedural Maps, Treashunt, Commun'île, Nzoth, Lonestone Boilerplate — see `projects-data.ts`.
 - Real experience: Lonestone (Jul 2021 — present), Easilys, Sogeti — see `experiences-data.ts`.
 - 10 Labs experiments with live demos and source (`app/features/labs/experiments/`).
 - **Missing — to be provided by Nicolas:** résumé PDF. Do not create a download UI or placeholder file until it exists.
 - **Absent — never fabricate:** testimonials, client quotes, metrics, awards, press.
-- **Known inconsistencies — confirm with Nicolas before touching:**
-  - LinkedIn URL differs across `contact-links.data.ts` (`nicolas-coulonnier-66416813b`), `app/root.tsx` JSON-LD (`nicolas-coulonnier`) and `public/llms.txt` (`nicolas-garnier`).
-  - GitHub handle: `netoun` in contact links / llms.txt vs `nicolqs` in the JSON-LD `sameAs`.
-  - Role label: "Software Developer" (experience data) vs "Software Engineer" (llms.txt) vs "Full Stack Engineer & Creative Developer" (meta, JSON-LD).
+- **Resolved inconsistencies (Nicolas, 2026-09-27/28):**
+  - Profiles: `contact-links.data.ts` is the source (`github.com/netoun`, `linkedin.com/in/nicolas-coulonnier-66416813b`); the JSON-LD `sameAs` reads it, `public/llms.txt` matches it.
+  - Role label: "Full-stack engineer" everywhere (hero, Lonestone role, home title, JSON-LD `jobTitle`, llms.txt). Past job titles (Easilys "Full Stack Developer") stay as they were.
 
 ## Product Principles
 

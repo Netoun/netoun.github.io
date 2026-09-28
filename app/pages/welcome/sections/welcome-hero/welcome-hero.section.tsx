@@ -11,7 +11,7 @@ import type { HeroSpecFileId } from "./welcome-hero-spec-data";
 import { WelcomeHeroFilterBackground } from "./components/background/welcome-hero-filter-background.component";
 import { WelcomeHeroComputerComponent } from "./components/computer/welcome-hero-computer.component";
 import { WelcomeHeroSectionContent } from "./components/welcome-hero-section-content/welcome-hero-section-content.component";
-import { HeroScrollMorph } from "./components/hero-scroll-morph/hero-scroll-morph.component";
+import { WelcomeHeroScrollMorph } from "./components/scroll-morph/welcome-hero-scroll-morph.component";
 import { WelcomeHeroSpecHeader } from "./components/spec-header/welcome-hero-spec-header.component";
 import { WelcomeHeroSpecOverlay } from "./components/spec-overlay/welcome-hero-spec-overlay.component";
 import * as styles from "./welcome-hero.css";
@@ -37,7 +37,7 @@ export function WelcomeHeroSection() {
   return (
     <HeroAnimationContext.Provider value={orchestrator}>
       <WelcomeHeroSpecContext.Provider value={spec}>
-        <HeroScrollMorph>
+        <WelcomeHeroScrollMorph>
           <div
             ref={sectionRef}
             id="intro"
@@ -64,7 +64,7 @@ export function WelcomeHeroSection() {
 
             <WelcomeHeroComputerComponent mousePositionRef={mousePositionRef} />
           </div>
-        </HeroScrollMorph>
+        </WelcomeHeroScrollMorph>
       </WelcomeHeroSpecContext.Provider>
     </HeroAnimationContext.Provider>
   );

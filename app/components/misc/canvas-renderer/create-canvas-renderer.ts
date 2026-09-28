@@ -18,7 +18,7 @@ type WebGPUContext = {
 type WebGLData = {
   gl: WebGLRenderingContext;
   program: WebGLProgram;
-  uniforms: Map<string, WebGLUniformLocation>;
+  uniforms: Map<string, WebGLUniformLocation | null>;
   resolutionLoc: WebGLUniformLocation | null;
   timeLoc: WebGLUniformLocation | null;
   qualityLoc: WebGLUniformLocation | null;
@@ -138,7 +138,7 @@ function setupWebGL(
   const qualityLoc = gl.getUniformLocation(program, "u_quality");
   const scrollLoc = gl.getUniformLocation(program, "u_scroll");
 
-  const uniformMap = new Map<string, WebGLUniformLocation>();
+  const uniformMap = new Map<string, WebGLUniformLocation | null>();
   if (resolutionLoc) uniformMap.set("u_resolution", resolutionLoc);
   if (timeLoc) uniformMap.set("u_time", timeLoc);
   if (qualityLoc) uniformMap.set("u_quality", qualityLoc);
@@ -158,7 +158,13 @@ function setupWebGL(
 
 function applyWebGLUniforms(gl: WebGLRenderingContext, data: WebGLData, uniforms: Uniforms) {
   for (const [name, value] of Object.entries(uniforms)) {
-    const loc = data.uniforms.get(name);
+    // Custom uniforms (anything past the four built-ins) are looked up once, on first use;
+    // a name the program does not declare is cached as null and skipped.
+    let loc = data.uniforms.get(name);
+    if (loc === undefined) {
+      loc = gl.getUniformLocation(data.program, name);
+      data.uniforms.set(name, loc);
+    }
     if (!loc) continue;
     if (typeof value === "number") {
       gl.uniform1f(loc, value);

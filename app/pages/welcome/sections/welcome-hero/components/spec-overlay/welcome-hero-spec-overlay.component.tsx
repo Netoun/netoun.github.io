@@ -1,8 +1,6 @@
 import clsx from "clsx";
 import { memo, useEffect, useRef } from "react";
-import { colorTokens } from "@/styles/theme.css";
 import { useWelcomeHeroSpec } from "../../hooks/use-welcome-hero-spec.hook";
-import { HERO_SPEC_SWATCHES } from "../../welcome-hero-spec-data";
 import { heroSpecGroup, heroSpecShown } from "../../welcome-hero-spec.css";
 import * as styles from "./welcome-hero-spec-overlay.css";
 
@@ -12,7 +10,7 @@ const COUNT_DURATION_MS = 800;
 
 const easeOutCubic = (t: number) => 1 - (1 - t) ** 3;
 
-/** Frame-wide spec layer: dot grid, scanline, gutter dimension, palette swatches. */
+/** Frame-wide spec layer: dot grid, scanline, gutter dimension. */
 export const WelcomeHeroSpecOverlay = memo(function WelcomeHeroSpecOverlay() {
   const spec = useWelcomeHeroSpec();
   const gutter = spec?.gutter;
@@ -61,18 +59,6 @@ export const WelcomeHeroSpecOverlay = memo(function WelcomeHeroSpecOverlay() {
         <span className={styles.welcomeHeroSpecGutterLabelStyles}>
           <span ref={countRef} /> · gutter
         </span>
-      </div>
-
-      <div className={clsx(styles.welcomeHeroSpecSwatchesStyles, heroSpecShown.flex)}>
-        {HERO_SPEC_SWATCHES.map(({ token, name }) => (
-          <span key={token} className={styles.welcomeHeroSpecSwatchStyles}>
-            <span className={styles.welcomeHeroSpecSwatchChipStyles[token]} />
-            <span className={styles.welcomeHeroSpecSwatchTextStyles}>
-              <span>{name}</span>
-              <span>{colorTokens[token]}</span>
-            </span>
-          </span>
-        ))}
       </div>
     </div>
   );

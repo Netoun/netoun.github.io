@@ -11,7 +11,7 @@ file="$(jq -r '.tool_input.file_path // empty')"
 rel="${file#"$root"/}"
 [[ "$rel" == "$file" ]] && exit 0
 case "$rel" in
-  node_modules/* | build/* | .react-router/* | public/* | .specify/* | specs/* | .claude/skills/speckit-*) exit 0 ;;
+  node_modules/* | build/* | .react-router/* | public/*) exit 0 ;;
 esac
 
 bin="$root/node_modules/.bin"

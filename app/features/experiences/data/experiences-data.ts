@@ -1,15 +1,14 @@
-import type { Experience } from "../hooks/use-experiences.hook.types";
+import type { Experience } from "./experiences-data.types";
 
 export const experiences: Experience[] = [
   {
     slug: "lonestone",
     company: "Lonestone",
-    role: "Software Developer",
-    period: "Jul 2021 — Present",
+    role: "Full-stack engineer",
+    start: "2021-07",
     location: "Nantes, FR",
     description:
       "Shipping production web applications for clients across healthcare, SaaS and corporate platforms, with a focus on maintainable architecture, product velocity and polished user interfaces.",
-    active: true,
     projects: [
       {
         title: "Desoutter",
@@ -28,20 +27,16 @@ export const experiences: Experience[] = [
           "Engineered a specialized web application to support mental health recovery, featuring self-assessment tools and wellness management features for individuals dealing with conditions like schizophrenia and bipolar disorder.",
         stack: ["React", "NestJS", "MikroORM", "PostgreSQL", "Keycloak"],
       },
-      {
-        title: "… and many more",
-        description:
-          "Contributed to a wide variety of additional projects across different industries, tackling diverse technical challenges and delivering tailored solutions for each client.",
-        stack: [],
-      },
     ],
+    moreProjects: true,
     stack: [],
   },
   {
     slug: "easilys",
     company: "Easilys",
     role: "Full Stack Developer",
-    period: "Jul 2019 — Jul 2021",
+    start: "2019-07",
+    end: "2021-07",
     location: "Nantes, FR",
     description:
       "Development and maintenance of a web application for collective catering management. Implementation of a new user interface with React and development of new features.",
@@ -52,7 +47,8 @@ export const experiences: Experience[] = [
     slug: "sogeti",
     company: "Sogeti",
     role: "Work-Study Program",
-    period: "Sep 2017 — Oct 2019",
+    start: "2017-09",
+    end: "2019-07",
     location: "Nantes, FR",
     description:
       "Development of new solutions within the innovation pole. Built a GitFlow tool in ReactJS and developed a chatbot using machine learning for emotion understanding.",

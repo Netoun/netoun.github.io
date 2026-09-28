@@ -18,6 +18,14 @@ export const heroSpecMedia = heroSideBySideXlMedia;
 export const heroSpecMotionMedia = `${heroSpecMedia} and (prefers-reduced-motion: no-preference)`;
 export const heroSpecReducedMotion = "(prefers-reduced-motion: reduce)";
 
+/**
+ * The rules that need no room (headline baselines, the lead's bracket and
+ * measure line) show at every width, phones included; the notes, dimensions
+ * and swatches wait for heroSpecMedia.
+ */
+export const heroSpecRulesMedia = "screen";
+export const heroSpecRulesMotionMedia = "screen and (prefers-reduced-motion: no-preference)";
+
 const root = '[data-section="welcome-hero"]';
 
 /**

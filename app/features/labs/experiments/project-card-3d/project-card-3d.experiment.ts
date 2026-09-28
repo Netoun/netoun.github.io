@@ -1,5 +1,5 @@
-import projectCardCss from "@/features/projects/components/project-card/project-card.css.ts?raw";
-import projectCardSource from "@/features/projects/components/project-card/project-card.component.tsx?raw";
+import projectCardCss from "./project-card.css.ts?raw";
+import projectCardSource from "./project-card.component.tsx?raw";
 import type { LabExperiment } from "../../data/labs.types";
 import { ProjectCard3dDemo } from "./project-card-3d.demo";
 import demoSource from "./project-card-3d.demo.tsx?raw";

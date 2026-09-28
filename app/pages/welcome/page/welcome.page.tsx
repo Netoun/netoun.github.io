@@ -1,12 +1,13 @@
 import { Footer } from "@/components/layouts/footer/footer.component";
 import { WelcomeSectionsNav } from "../components/welcome-sections-nav/welcome-sections-nav.component";
 import { contactLinks } from "../data/contact-links.data";
+import { footerLabs, footerRackLabHref, footerStatus } from "../data/footer-status.data";
 import { WelcomeExperienceSection } from "../sections/welcome-experience/welcome-experience.section";
 import { WelcomeHeroSection } from "../sections/welcome-hero/welcome-hero.section";
 import { WelcomeProjectsSection } from "../sections/welcome-projects/welcome-projects.section";
 import { WelcomeSkillsSection } from "../sections/welcome-skills/welcome-skills.section";
 
-const PAGE_TITLE = "Netoun - Full Stack Engineer & Creative Developer";
+const PAGE_TITLE = "Netoun - Full-stack engineer";
 const PAGE_DESCRIPTION =
   "Nicolas - Full-stack engineer crafting fast, clean web experiences. Specialized in React, TypeScript, Next.js, NestJS and creative frontend development.";
 
@@ -20,7 +21,7 @@ export function meta() {
     {
       name: "keywords",
       content:
-        "Full Stack Engineer, React Developer, TypeScript, Next.js, NestJS, Creative Developer, Frontend Engineer, Nantes",
+        "Full-stack engineer, React Developer, TypeScript, Next.js, NestJS, Creative Developer, Frontend Engineer, Nantes",
     },
     { name: "author", content: "Nicolas" },
     { name: "robots", content: "index, follow" },
@@ -44,13 +45,21 @@ export function meta() {
 
 export default function Welcome() {
   return (
-    <main>
-      <WelcomeSectionsNav />
-      <WelcomeHeroSection />
-      <WelcomeProjectsSection />
-      <WelcomeExperienceSection />
-      <WelcomeSkillsSection />
-      <Footer id="contact" links={contactLinks} />
-    </main>
+    <>
+      <main>
+        <WelcomeSectionsNav />
+        <WelcomeHeroSection />
+        <WelcomeProjectsSection />
+        <WelcomeExperienceSection />
+        <WelcomeSkillsSection />
+      </main>
+      <Footer
+        id="contact"
+        links={contactLinks}
+        labs={footerLabs}
+        rackLabHref={footerRackLabHref}
+        status={footerStatus}
+      />
+    </>
   );
 }
