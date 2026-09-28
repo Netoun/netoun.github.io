@@ -1,19 +1,18 @@
-# llms.txt
-# AI-Readable Information about Nicolas (Netoun)
+# Nicolas Coulonnier (Netoun)
 
-## About
-Nicolas is a full-stack engineer based in Nantes, France.
-Currently working at Lonestone as a Full-stack engineer.
+> Nicolas is a full-stack engineer based in Nantes, France.
+> Currently working at Lonestone as a Full-stack engineer.
 
 ## Contact & Links
-- Website: https://www.netoun.com
-- GitHub: https://github.com/netoun
-- LinkedIn: https://www.linkedin.com/in/nicolas-coulonnier-66416813b/
+- [Website](https://www.netoun.com/)
+- [Labs](https://www.netoun.com/labs/)
+- [GitHub](https://github.com/netoun)
+- [LinkedIn](https://www.linkedin.com/in/nicolas-coulonnier-66416813b/)
 - Location: Nantes, France
 
 ## Skills
 ### Practice: agents & LLM
-- Agentic workflow: spec → plan → task → review → audit, one commit per task; rules, skills and hooks shared by every agent, wired to MCP tools for browser and IDE checks. Works with Claude Code, Codex, Cursor, opencode. See https://github.com/netoun/netoun.github.io/blob/main/AGENTS.md
+- Agentic workflow: spec → plan → task → review → audit, one commit per task; rules, skills and hooks shared by every agent, wired to MCP tools for browser and IDE checks. Works with Claude Code, Codex, Cursor, opencode. See [AGENTS.md](https://github.com/netoun/netoun.github.io/blob/main/AGENTS.md)
 - Tool-calling LLM pipelines: subagents call tools and return schema-validated output, turning 100+ page PDFs into structured data; every quoted piece of evidence is checked against the source text (AI SDK, zod, queues, OCR; client work, not listed; Cuevr)
 - LLM evaluation: ground-truth datasets, field-level accuracy weighted by criticality, prompt and model comparison, replay of past runs (client work, not listed)
 - LLMOps: prompts versioned in git and promoted from development to production, every step traced (Langfuse, OpenTelemetry, Sentry; client work, not listed)
@@ -27,32 +26,32 @@ Currently working at Lonestone as a Full-stack engineer.
 
 ## Projects
 ### My website
-- URL: https://github.com/netoun/netoun.github.io
+- URL: [github.com/netoun/netoun.github.io](https://github.com/netoun/netoun.github.io)
 - Description: My personal portfolio with a neo-retro futuristic design system, built with React Router v8 and Vanilla Extract
 - Tech: React, TypeScript, Vanilla Extract, React Router
 
 ### Treashunt
-- URL: https://treashunt.com
+- URL: [treashunt.com](https://treashunt.com)
 - Description: Personal project - Adventure design platform with exciting challenges
 - Tech: React, Drizzle, Cloudflare, Bun, Elysia
 
 ### Commun'île
-- URL: https://communile.fr/
+- URL: [communile.fr](https://communile.fr/)
 - Description: Website of Commun'île, a cooperative running open, convivial places in Nantes, built in a team of three
 - Tech: Astro, TypeScript, Tailwind CSS, anime.js, Cloudflare
 
 ### Procedural Maps
-- URL: https://r-noise-map.vercel.app/
+- URL: [r-noise-map.vercel.app](https://r-noise-map.vercel.app/)
 - Description: Random map generation with procedural algorithms
 - Tech: TypeScript, React, Three.js, Canvas
 
 ### Nzoth
-- URL: https://github.com/lonestone/nzoth
+- URL: [github.com/lonestone/nzoth](https://github.com/lonestone/nzoth)
 - Description: NestJS utilities for building RESTful APIs with filtering, pagination, sorting, and Zod validation
 - Tech: TypeScript, NestJS, Zod
 
 ### Lonestone Boilerplate
-- URL: https://github.com/lonestone/lonestone-boilerplate
+- URL: [github.com/lonestone/lonestone-boilerplate](https://github.com/lonestone/lonestone-boilerplate)
 - Description: Starter kit for full-stack web apps, SaaS and websites
 - Tech: TypeScript, NestJS, React, Monorepo
 
