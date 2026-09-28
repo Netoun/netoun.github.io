@@ -1,6 +1,8 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { EXPERIMENT_SLUGS } from "./experiment-slugs";
 import { labs } from "./experiments";
+import { resolveSourceRef } from "./labs-manual";
 import { SITE_URL } from "@/features/site/data/site";
 
 // `EXPERIMENT_SLUGS` drives prerender (react-router.config.ts) and the sitemap
@@ -26,6 +28,46 @@ describe("labs registry", () => {
 
     expect(grouped).toHaveLength(labs.getAll().length);
     expect(labs.getGrouped().every((section) => section.experiments.length > 0)).toBe(true);
+  });
+
+  it("points every source at the repo file it was imported from", () => {
+    for (const experiment of labs.getAll()) {
+      for (const source of experiment.sources) {
+        expect({
+          path: source.path,
+          matches: readFileSync(source.path, "utf8") === source.code,
+        }).toEqual({
+          path: source.path,
+          matches: true,
+        });
+      }
+    }
+  });
+
+  it("opens the code viewer on the technique, never on the Lab's wiring", () => {
+    for (const experiment of labs.getAll()) {
+      expect({ slug: experiment.slug, role: experiment.sources[0].role }).toEqual({
+        slug: experiment.slug,
+        role: "technique",
+      });
+    }
+  });
+
+  it("anchors every man page reference to lines that exist", () => {
+    for (const experiment of labs.getAll()) {
+      const notes = [...(experiment.manual?.how ?? []), ...(experiment.manual?.cost ?? [])];
+      for (const ref of notes.flatMap((note) => note.refs ?? [])) {
+        const resolved = resolveSourceRef(experiment.sources, ref) !== undefined;
+        expect({ slug: experiment.slug, from: ref.from, resolved }).toEqual({
+          slug: experiment.slug,
+          from: ref.from,
+          resolved: true,
+        });
+      }
+      for (const link of experiment.manual?.seeAlso ?? []) {
+        expect(labs.getBySlug(link.slug)).toBeDefined();
+      }
+    }
   });
 
   it("ships at least one source tab per experiment", () => {

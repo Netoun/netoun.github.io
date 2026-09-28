@@ -64,6 +64,28 @@ interface ButtonGroupControlProps<T extends string> {
   formatOption?: (value: T) => string;
 }
 
+/** A full-width action of the controls panel (step, reseed…). */
+export function ControlButton({
+  onPress,
+  isDisabled,
+  children,
+}: {
+  onPress: () => void;
+  isDisabled?: boolean;
+  children: string;
+}) {
+  return (
+    <Button onPress={onPress} isDisabled={isDisabled} className={styles.resetButton}>
+      {children}
+    </Button>
+  );
+}
+
+/** A value printed on the panel's LCD, e.g. a seed. */
+export function ControlReadout({ children }: { children: string }) {
+  return <span className={styles.controlValue}>{children}</span>;
+}
+
 /** Full-width reset button, styled for the controls panel. */
 export function ResetButton({ onReset, label = "Reset" }: { onReset: () => void; label?: string }) {
   return (

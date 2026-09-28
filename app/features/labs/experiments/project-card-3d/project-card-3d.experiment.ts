@@ -12,10 +12,29 @@ export const projectCard3dExperiment: LabExperiment = {
   tags: ["CSS 3D", "tilt", "parallax", "holographic"],
   group: "3D CSS",
   accent: "tertiary",
+  engine: "CSS 3D",
   Demo: ProjectCard3dDemo,
   sources: [
-    { label: "project-card-3d.demo.tsx", code: demoSource, lang: "tsx" },
-    { label: "project-card.component.tsx", code: projectCardSource, lang: "tsx" },
-    { label: "project-card.css.ts", code: projectCardCss, lang: "ts" },
+    {
+      label: "project-card.component.tsx",
+      code: projectCardSource,
+      lang: "tsx",
+      path: "app/features/labs/experiments/project-card-3d/project-card.component.tsx",
+      role: "technique",
+    },
+    {
+      label: "project-card.css.ts",
+      code: projectCardCss,
+      lang: "ts",
+      path: "app/features/labs/experiments/project-card-3d/project-card.css.ts",
+      role: "styles",
+    },
+    {
+      label: "project-card-3d.demo.tsx",
+      code: demoSource,
+      lang: "tsx",
+      path: "app/features/labs/experiments/project-card-3d/project-card-3d.demo.tsx",
+      role: "demo",
+    },
   ],
 };

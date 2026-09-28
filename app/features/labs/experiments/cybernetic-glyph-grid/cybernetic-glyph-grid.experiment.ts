@@ -12,10 +12,29 @@ export const cyberneticGlyphGridExperiment: LabExperiment = {
   tags: ["Canvas 2D", "glyphs", "hex", "glitch"],
   group: "HUD",
   accent: "secondary",
+  engine: "Canvas 2D",
   Demo: CyberneticGlyphGridDemo,
   sources: [
-    { label: "cybernetic-glyph-grid.demo.tsx", code: demoSource, lang: "tsx" },
-    { label: "cybernetic-glyph-grid.component.tsx", code: componentSource, lang: "tsx" },
-    { label: "cybernetic-glyph-grid.css.ts", code: componentCss, lang: "ts" },
+    {
+      label: "cybernetic-glyph-grid.component.tsx",
+      code: componentSource,
+      lang: "tsx",
+      path: "app/components/misc/cybernetic-glyph-grid/cybernetic-glyph-grid.component.tsx",
+      role: "technique",
+    },
+    {
+      label: "cybernetic-glyph-grid.css.ts",
+      code: componentCss,
+      lang: "ts",
+      path: "app/components/misc/cybernetic-glyph-grid/cybernetic-glyph-grid.css.ts",
+      role: "styles",
+    },
+    {
+      label: "cybernetic-glyph-grid.demo.tsx",
+      code: demoSource,
+      lang: "tsx",
+      path: "app/features/labs/experiments/cybernetic-glyph-grid/cybernetic-glyph-grid.demo.tsx",
+      role: "demo",
+    },
   ],
 };

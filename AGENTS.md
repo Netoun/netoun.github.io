@@ -94,9 +94,10 @@ Each experiment = `app/features/labs/experiments/<slug>/` with `<slug>.experimen
 
 1. Add the slug to `app/features/labs/data/experiment-slugs.ts` (drives prerender + sitemap).
 2. Register the descriptor in `app/features/labs/data/experiments.ts`.
-3. Source tabs use `?raw` imports; `.css.ts?raw` works thanks to the `raw-css-ts` plugin in `vite.config.ts`.
-4. Capture its stage as `app/pages/labs/assets/<slug>.webp` (see README › Labs) and add it to `app/pages/labs/data/labs-captures.data.ts`: the index shows it wherever the demo does not run live, and the record is typed per slug, so a missing capture fails the typecheck.
-5. Add a row to the Labs table in `README.md`.
+3. Source tabs use `?raw` imports; `.css.ts?raw` works thanks to the `raw-css-ts` plugin in `vite.config.ts`. Each source carries its repo `path` (a test checks it matches the import) and a `role`; the technique comes first, the demo's wiring last (the viewer opens on the first tab). `engine` names what draws the piece (`CSS 3D`, `Canvas 2D`, `WebGL`…) for the stage's command bar.
+4. Optional, and what makes a Lab more than a component showcase: a `manual` (the `man` page: `name`, `how`, `cost`, `seeAlso`) whose line references are anchored by line text, not numbers (`{ source, from, to }`, resolved by `labs-manual.ts`, checked by a test); and `xray: true` when the demo reads `useLabsXray()` to show its mechanism (the stage bar then offers RUN | XRAY). Glitch Signal Map is the reference.
+5. Capture its stage as `app/pages/labs/assets/<slug>.webp` (see README › Labs) and add it to `app/pages/labs/data/labs-captures.data.ts`, plus its thumbnail in `assets/thumbs/`: the index shows them wherever the demo does not run live, and the record is typed per slug, so a missing capture fails the typecheck.
+6. Add a row to the Labs table in `README.md` and a line under `## Labs` in `public/llms.txt`.
 
 Labs experiments may import components from any domain — showcasing them is their purpose (documented exception to the cross-domain rule).
 

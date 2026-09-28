@@ -12,10 +12,29 @@ export const serverUnit3dExperiment: LabExperiment = {
   tags: ["CSS 3D", "transforms", "LED seed", "deterministic"],
   group: "3D CSS",
   accent: "secondary",
+  engine: "CSS 3D",
   Demo: ServerUnit3dDemo,
   sources: [
-    { label: "server-unit-3d.demo.tsx", code: demoSource, lang: "tsx" },
-    { label: "server-unit.component.tsx", code: serverUnitSource, lang: "tsx" },
-    { label: "server-unit.css.ts", code: serverUnitCss, lang: "ts" },
+    {
+      label: "server-unit.component.tsx",
+      code: serverUnitSource,
+      lang: "tsx",
+      path: "app/components/misc/server-unit/server-unit.component.tsx",
+      role: "technique",
+    },
+    {
+      label: "server-unit.css.ts",
+      code: serverUnitCss,
+      lang: "ts",
+      path: "app/components/misc/server-unit/server-unit.css.ts",
+      role: "styles",
+    },
+    {
+      label: "server-unit-3d.demo.tsx",
+      code: demoSource,
+      lang: "tsx",
+      path: "app/features/labs/experiments/server-unit-3d/server-unit-3d.demo.tsx",
+      role: "demo",
+    },
   ],
 };

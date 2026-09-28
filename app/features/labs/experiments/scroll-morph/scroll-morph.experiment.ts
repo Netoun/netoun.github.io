@@ -11,9 +11,22 @@ export const scrollMorphExperiment: LabExperiment = {
   tags: ["scroll", "morph", "easing", "CSS"],
   group: "Scroll",
   accent: "tertiary",
+  engine: "CSS",
   Demo: ScrollMorphDemo,
   sources: [
-    { label: "scroll-morph.demo.tsx", code: demoSource, lang: "tsx" },
-    { label: "scroll-morph.demo.css.ts", code: demoCss, lang: "ts" },
+    {
+      label: "scroll-morph.demo.tsx",
+      code: demoSource,
+      lang: "tsx",
+      path: "app/features/labs/experiments/scroll-morph/scroll-morph.demo.tsx",
+      role: "technique",
+    },
+    {
+      label: "scroll-morph.demo.css.ts",
+      code: demoCss,
+      lang: "ts",
+      path: "app/features/labs/experiments/scroll-morph/scroll-morph.demo.css.ts",
+      role: "styles",
+    },
   ],
 };

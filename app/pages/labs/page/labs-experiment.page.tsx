@@ -27,5 +27,5 @@ export default function LabsExperimentPage() {
     );
   }
 
-  return <LabsExperimentFrame experiment={experiment} />;
+  return <LabsExperimentFrame experiment={experiment} stats={labs.getStats(experiment)} />;
 }

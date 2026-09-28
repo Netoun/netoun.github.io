@@ -12,10 +12,29 @@ export const meshBackgroundExperiment: LabExperiment = {
   tags: ["WebGPU", "WebGL", "GLSL", "gradient", "blobs", "vignette"],
   group: "Shaders",
   accent: "tertiary",
+  engine: "WebGPU / WebGL",
   Demo: MeshBackgroundDemo,
   sources: [
-    { label: "mesh-background.demo.tsx", code: demoSource, lang: "tsx" },
-    { label: "mesh-background-canvas.component.tsx", code: meshCanvasSource, lang: "tsx" },
-    { label: "mesh-background.shader.ts", code: meshShaderSource, lang: "ts" },
+    {
+      label: "mesh-background.shader.ts",
+      code: meshShaderSource,
+      lang: "ts",
+      path: "app/components/misc/shaders/mesh-background/mesh-background.shader.ts",
+      role: "technique",
+    },
+    {
+      label: "mesh-background-canvas.component.tsx",
+      code: meshCanvasSource,
+      lang: "tsx",
+      path: "app/components/misc/mesh-background/mesh-background-canvas.component.tsx",
+      role: "technique",
+    },
+    {
+      label: "mesh-background.demo.tsx",
+      code: demoSource,
+      lang: "tsx",
+      path: "app/features/labs/experiments/mesh-background/mesh-background.demo.tsx",
+      role: "demo",
+    },
   ],
 };

@@ -12,10 +12,29 @@ export const fakeConsoleExperiment: LabExperiment = {
   tags: ["typewriter", "console", "animation"],
   group: "HUD",
   accent: "secondary",
+  engine: "DOM",
   Demo: FakeConsoleDemo,
   sources: [
-    { label: "fake-console.demo.tsx", code: demoSource, lang: "tsx" },
-    { label: "fake-console.component.tsx", code: componentSource, lang: "tsx" },
-    { label: "fake-console.css.ts", code: componentCss, lang: "ts" },
+    {
+      label: "fake-console.component.tsx",
+      code: componentSource,
+      lang: "tsx",
+      path: "app/components/misc/fake-console/fake-console.component.tsx",
+      role: "technique",
+    },
+    {
+      label: "fake-console.css.ts",
+      code: componentCss,
+      lang: "ts",
+      path: "app/components/misc/fake-console/fake-console.css.ts",
+      role: "styles",
+    },
+    {
+      label: "fake-console.demo.tsx",
+      code: demoSource,
+      lang: "tsx",
+      path: "app/features/labs/experiments/fake-console/fake-console.demo.tsx",
+      role: "demo",
+    },
   ],
 };

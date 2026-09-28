@@ -1,9 +1,41 @@
 import { memo, useEffect, useRef } from "react";
 import * as styles from "./glitch-signal-map.css";
 
+/** What a cell is showing: its state, or the accent flag drawn over it. */
+export type GlitchCellKind = "idle" | "active" | "accent" | "recal";
+
+/** The grid after a tick, for an xray readout. */
+export interface GlitchSignalMapStats {
+  tick: number;
+  /** Cells rewritten by this tick. */
+  rewritten: number;
+  cells: number;
+  counts: Record<GlitchCellKind, number>;
+}
+
+export interface GlitchSignalMapCell {
+  index: number;
+  row: number;
+  col: number;
+  seed: number;
+  kind: GlitchCellKind;
+}
+
 export interface GlitchSignalMapProps {
   isAnimating: boolean;
   className?: string;
+  /** Milliseconds between two rewrites of the grid. */
+  tickMs?: number;
+  /** Share of the cells rewritten per tick (0–1). */
+  updateRatio?: number;
+  /** Start of the generator every value comes from. */
+  seed?: number;
+  /** Draw the mechanism: cells by state, the ones this tick rewrote ringed in gold. */
+  xray?: boolean;
+  /** Changing it while paused advances the grid by one tick. */
+  stepToken?: number;
+  onTick?: (stats: GlitchSignalMapStats) => void;
+  onHoverCell?: (cell: GlitchSignalMapCell | null) => void;
 }
 
 const BASE_SEED = 0x5e2d91af;
@@ -21,6 +53,13 @@ const UPDATE_RATIO = 0.04;
 const RECALIBRATE_DURATION_MS = 120;
 
 const DOT_COUNT = 12;
+
+/** The tuning the home runs with: what the props default to. */
+export const GLITCH_SIGNAL_MAP_DEFAULTS = {
+  tickMs: TICK_MS,
+  updateRatio: UPDATE_RATIO,
+  seed: BASE_SEED,
+} as const;
 
 const PULSE_PERIOD_S = 3.4;
 const PULSE_RADIANS_PER_SECOND = (Math.PI * 2) / PULSE_PERIOD_S;
@@ -69,9 +108,9 @@ interface GridLayout {
 
 const lcg = (seed: number): number => (seed * LCG_A + LCG_C) >>> 0;
 
-const buildBlocks = (count: number): BlockCell[] => {
+const buildBlocks = (count: number, base: number = BASE_SEED): BlockCell[] => {
   const cells: BlockCell[] = [];
-  let current = BASE_SEED;
+  let current = base;
 
   for (let index = 0; index < count; index += 1) {
     current = lcg(current ^ (index * 2654435761));
@@ -90,9 +129,9 @@ const buildBlocks = (count: number): BlockCell[] => {
   return cells;
 };
 
-const buildDots = (count: number): DotMeta[] => {
+const buildDots = (count: number, base: number = BASE_SEED): DotMeta[] => {
   const dots: DotMeta[] = [];
-  let seed = BASE_SEED ^ 0x00abc123;
+  let seed = base ^ 0x00abc123;
 
   for (let index = 0; index < count; index += 1) {
     seed = lcg(seed);
@@ -148,15 +187,34 @@ const buildRects = ({ cols, rows, bx, by, bw, bh }: GridLayout): RectCell[] => {
   return rects;
 };
 
-const buildDotCells = (width: number, height: number): DotCell[] => {
+const buildDotCells = (width: number, height: number, meta: DotMeta[]): DotCell[] => {
   const innerW = Math.max(1, width - PAD_PX * 2);
   const innerH = Math.max(1, height - PAD_PX * 2);
 
-  return DOT_META.map((dot) => ({
+  return meta.map((dot) => ({
     x: PAD_PX + (innerW * dot.leftPct) / 100,
     y: PAD_PX + (innerH * dot.topPct) / 100,
     accent: dot.accent,
   }));
+};
+
+const cellKind = (block: BlockCell): GlitchCellKind => {
+  if (block.recalUntil > 0) return "recal";
+  if (block.accent) return "accent";
+  return block.state === STATE_ACTIVE ? "active" : "idle";
+};
+
+const countKinds = (blocks: BlockCell[]): Record<GlitchCellKind, number> => {
+  const counts = { idle: 0, active: 0, accent: 0, recal: 0 };
+  for (const block of blocks) counts[cellKind(block)] += 1;
+  return counts;
+};
+
+const XRAY_FILL: Record<GlitchCellKind, string> = {
+  idle: "oklch(0.79 0.16 167)",
+  active: "oklch(0.79 0.16 167)",
+  accent: "oklch(0.71 0.17 335)",
+  recal: "oklch(0.76 0.21 178)",
 };
 
 /** Placeholder grid until the first measure; replaced, never mutated. */
@@ -165,6 +223,13 @@ const INITIAL_LAYOUT: GridLayout = { cols: 4, rows: 18, bx: PAD_PX, by: PAD_PX, 
 export const GlitchSignalMap = memo(function GlitchSignalMap({
   isAnimating,
   className,
+  tickMs = TICK_MS,
+  updateRatio = UPDATE_RATIO,
+  seed = BASE_SEED,
+  xray = false,
+  stepToken = 0,
+  onTick,
+  onHoverCell,
 }: GlitchSignalMapProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -195,7 +260,19 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
   const hoverIdxRef = useRef(-1);
   const needsDrawRef = useRef(true);
 
+  const tickMsRef = useRef(tickMs);
+  const updateRatioRef = useRef(updateRatio);
+  const seedRef = useRef(seed);
+  const xrayRef = useRef(xray);
+  const onTickRef = useRef(onTick);
+  const onHoverCellRef = useRef(onHoverCell);
+  const dotMetaRef = useRef<DotMeta[]>(DOT_META);
+  const touchedRef = useRef<Set<number>>(new Set());
+
   const startLoopRef = useRef<() => void>(() => {});
+  const stepOnceRef = useRef<() => void>(() => {});
+  const reseedRef = useRef<() => void>(() => {});
+  const reportStatsRef = useRef<() => void>(() => {});
   const stopLoopRef = useRef<() => void>(() => {});
   const drawOnceRef = useRef<() => void>(() => {});
 
@@ -280,18 +357,18 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
       const count = layout.cols * layout.rows;
 
       if (blocksRef.current.length !== count) {
-        blocksRef.current = buildBlocks(count);
+        blocksRef.current = buildBlocks(count, seedRef.current);
       }
 
       rectsRef.current = buildRects(layout);
-      dotsRef.current = buildDotCells(width, height);
+      dotsRef.current = buildDotCells(width, height, dotMetaRef.current);
 
       needsDrawRef.current = true;
       drawOnceRef.current();
     };
 
-    const updateBlocks = (now: number) => {
-      if (now - lastTickRef.current < TICK_MS) return;
+    const updateBlocks = (now: number, force = false) => {
+      if (!force && now - lastTickRef.current < tickMsRef.current) return;
 
       lastTickRef.current = now;
       tickStepRef.current += 1;
@@ -301,14 +378,16 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
 
       if (count === 0) return;
 
-      const batch = Math.max(1, Math.floor(count * UPDATE_RATIO));
+      const batch = Math.max(1, Math.floor(count * updateRatioRef.current));
       const step = tickStepRef.current;
+      const touched = new Set<number>();
 
       for (let index = 0; index < batch; index += 1) {
         const blockIndex = (step * 7 + index * 19 + 5) % count;
         const block = blocks[blockIndex];
 
         if (!block) continue;
+        touched.add(blockIndex);
 
         const nextSeed = lcg(block.seed);
         const shouldRecalibrate = (nextSeed & 0x7f) <= 4;
@@ -334,7 +413,58 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
         }
       }
 
+      touchedRef.current = touched;
       needsDrawRef.current = true;
+      onTickRef.current?.({
+        tick: step,
+        rewritten: touched.size,
+        cells: count,
+        counts: countKinds(blocks),
+      });
+    };
+
+    // The mechanism, legible: every cell at full strength in its state's colour (idle as an
+    // outline), the cells this tick rewrote ringed in gold, no pulse, no jitter, no dots.
+    const drawXray = (now: number) => {
+      const { bw, bh } = layoutRef.current;
+      const blocks = blocksRef.current;
+      const rects = rectsRef.current;
+      const touched = touchedRef.current;
+      const hoverIdx = hoverIdxRef.current;
+
+      for (let index = 0; index < blocks.length; index += 1) {
+        const block = blocks[index];
+        const rect = rects[index];
+        if (!block || !rect) continue;
+
+        if (block.recalUntil > 0 && now >= block.recalUntil) {
+          block.state = block.settleState;
+          block.seed = block.settleSeed;
+          block.recalUntil = 0;
+        }
+
+        const kind = cellKind(block);
+        ctx.globalAlpha = 1;
+        if (kind === "idle") {
+          ctx.globalAlpha = 0.45;
+          ctx.strokeStyle = XRAY_FILL.idle;
+          ctx.lineWidth = 1;
+          ctx.strokeRect(rect.x + 0.5, rect.y + 0.5, bw - 1, bh - 1);
+        } else {
+          ctx.fillStyle = XRAY_FILL[kind];
+          ctx.fillRect(rect.x, rect.y, bw, bh);
+        }
+
+        if (touched.has(index) || index === hoverIdx) {
+          ctx.globalAlpha = 1;
+          ctx.strokeStyle =
+            index === hoverIdx ? "oklch(0.93 0.03 80)" : "oklch(0.8858 0.182 95.69)";
+          ctx.lineWidth = index === hoverIdx ? 2 : 1.5;
+          ctx.strokeRect(rect.x - 1, rect.y - 1, bw + 2, bh + 2);
+        }
+      }
+
+      ctx.globalAlpha = 1;
     };
 
     const draw = (now: number) => {
@@ -355,6 +485,12 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
       ctx.globalAlpha = 1;
       ctx.fillStyle = "oklch(0.105 0.022 225 / 0.96)";
       ctx.fillRect(0, 0, width, height);
+
+      if (xrayRef.current) {
+        drawXray(now);
+        needsDrawRef.current = false;
+        return;
+      }
 
       const running = shouldRun();
       const elapsed = running ? (now - animStartRef.current) / 1000 : 0;
@@ -502,9 +638,48 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
       });
     };
 
+    let settleTimer = 0;
+    const stepOnce = () => {
+      const now = performance.now();
+      updateBlocks(now, true);
+      lastTickRef.current = now;
+      draw(now);
+      // A recalibrating cell settles 120 ms later: draw it settled.
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(drawOnce, RECALIBRATE_DURATION_MS + 10);
+    };
+
+    const reseed = () => {
+      blocksRef.current = buildBlocks(blocksRef.current.length, seedRef.current);
+      dotMetaRef.current =
+        seedRef.current === BASE_SEED ? DOT_META : buildDots(DOT_COUNT, seedRef.current);
+      dotsRef.current = buildDotCells(
+        cssWidthRef.current,
+        cssHeightRef.current,
+        dotMetaRef.current,
+      );
+      touchedRef.current = new Set();
+      tickStepRef.current = 0;
+      needsDrawRef.current = true;
+      if (!runningRef.current) drawOnce();
+    };
+
+    const reportStats = () => {
+      const blocks = blocksRef.current;
+      onTickRef.current?.({
+        tick: tickStepRef.current,
+        rewritten: touchedRef.current.size,
+        cells: blocks.length,
+        counts: countKinds(blocks),
+      });
+    };
+
     startLoopRef.current = startLoop;
     stopLoopRef.current = stopLoop;
     drawOnceRef.current = drawOnce;
+    stepOnceRef.current = stepOnce;
+    reseedRef.current = reseed;
+    reportStatsRef.current = reportStats;
 
     const resizeObserver = new ResizeObserver(() => {
       cancelResizeRaf();
@@ -528,6 +703,24 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
       }
     };
 
+    const reportHover = (index: number) => {
+      const report = onHoverCellRef.current;
+      if (!report) return;
+      const block = blocksRef.current[index];
+      if (index < 0 || !block) {
+        report(null);
+        return;
+      }
+      const { cols } = layoutRef.current;
+      report({
+        index,
+        row: Math.floor(index / cols),
+        col: index % cols,
+        seed: block.seed,
+        kind: cellKind(block),
+      });
+    };
+
     const handleMouseMove = (event: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
       const mx = event.clientX - rect.left;
@@ -538,6 +731,7 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
 
       hoverIdxRef.current = hoverIndex;
       needsDrawRef.current = true;
+      reportHover(hoverIndex);
 
       if (!runningRef.current) {
         drawOnce();
@@ -549,6 +743,7 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
 
       hoverIdxRef.current = -1;
       needsDrawRef.current = true;
+      reportHover(-1);
 
       if (!runningRef.current) {
         drawOnce();
@@ -579,6 +774,7 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
 
       cancelMainRaf();
       cancelResizeRaf();
+      window.clearTimeout(settleTimer);
 
       ctxRef.current = null;
     };
@@ -592,6 +788,33 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
       stopLoopRef.current();
     };
   }, [isAnimating]);
+
+  // Tuning props are read by the loop through refs: no restart when they change.
+  useEffect(() => {
+    tickMsRef.current = tickMs;
+    updateRatioRef.current = updateRatio;
+    onTickRef.current = onTick;
+    onHoverCellRef.current = onHoverCell;
+  });
+
+  useEffect(() => {
+    if (seedRef.current === seed) return;
+    seedRef.current = seed;
+    reseedRef.current();
+  }, [seed]);
+
+  useEffect(() => {
+    xrayRef.current = xray;
+    needsDrawRef.current = true;
+    if (!runningRef.current) drawOnceRef.current();
+    // An xray readout opening mid-run gets the grid as it is, not after the next tick.
+    if (xray) reportStatsRef.current();
+  }, [xray]);
+
+  useEffect(() => {
+    if (stepToken === 0 || runningRef.current) return;
+    stepOnceRef.current();
+  }, [stepToken]);
 
   const rootClassName = className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
 
