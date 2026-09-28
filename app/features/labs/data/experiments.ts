@@ -11,6 +11,14 @@ import { systemMetricsExperiment } from "../experiments/system-metrics/system-me
 import type { LabExperiment, LabGroup } from "./labs.types";
 import { LAB_GROUPS } from "./labs.types";
 import { buildExperimentMeta, buildLabsIndexMeta } from "./labs-seo";
+import {
+  experimentStats,
+  groupStats,
+  labsStats,
+  type LabExperimentStats,
+  type LabGroupStats,
+  type LabsStats,
+} from "./labs-stats";
 import { EXPERIMENT_SLUGS } from "./experiment-slugs";
 
 import type { MetaDescriptor } from "./labs-seo";
@@ -37,6 +45,28 @@ export interface LabGroupSection {
   experiments: LabExperiment[];
 }
 
+const GROUPED: LabGroupSection[] = LAB_GROUPS.map((group) => ({
+  group,
+  experiments: EXPERIMENTS.filter((experiment) => experiment.group === group),
+})).filter((section) => section.experiments.length > 0);
+
+// Counted once, from the `?raw` sources the code viewer shows.
+const STATS_BY_SLUG: Record<string, LabExperimentStats> = Object.fromEntries(
+  EXPERIMENTS.map((experiment, position) => [
+    experiment.slug,
+    experimentStats(experiment, position),
+  ]),
+);
+
+const GROUP_STATS: LabGroupStats[] = GROUPED.map((section) =>
+  groupStats(
+    section.group,
+    section.experiments.map((experiment) => STATS_BY_SLUG[experiment.slug]),
+  ),
+);
+
+const TOTALS: LabsStats = labsStats(Object.values(STATS_BY_SLUG), GROUP_STATS);
+
 export const labs = {
   slugs: EXPERIMENT_SLUGS,
 
@@ -50,10 +80,21 @@ export const labs = {
   },
 
   getGrouped(): LabGroupSection[] {
-    return LAB_GROUPS.map((group) => ({
-      group,
-      experiments: EXPERIMENTS.filter((experiment) => experiment.group === group),
-    })).filter((section) => section.experiments.length > 0);
+    return GROUPED;
+  },
+
+  /** Registry position, files, lines and sizes of one experiment. */
+  getStats(experiment: LabExperiment): LabExperimentStats {
+    return STATS_BY_SLUG[experiment.slug];
+  },
+
+  /** One row per non-empty group, in `LAB_GROUPS` order. */
+  getGroupStats(): readonly LabGroupStats[] {
+    return GROUP_STATS;
+  },
+
+  getTotals(): LabsStats {
+    return TOTALS;
   },
 
   buildMeta(experiment: LabExperiment): MetaDescriptor[] {

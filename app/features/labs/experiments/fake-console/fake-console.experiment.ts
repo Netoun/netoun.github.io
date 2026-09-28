@@ -12,7 +12,6 @@ export const fakeConsoleExperiment: LabExperiment = {
   tags: ["typewriter", "console", "animation"],
   group: "HUD",
   accent: "secondary",
-  icon: "⌨️",
   Demo: FakeConsoleDemo,
   sources: [
     { label: "fake-console.demo.tsx", code: demoSource, lang: "tsx" },

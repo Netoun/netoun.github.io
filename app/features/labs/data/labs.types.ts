@@ -29,8 +29,6 @@ export interface LabExperiment {
   tags: string[];
   group: LabGroup;
   accent: LabAccent;
-  /** Emoji shown in the sidebar / landing card. */
-  icon: string;
   /** The interactive demo (live component + its controls). */
   Demo: ComponentType;
   /** Source files displayed in the code viewer. */

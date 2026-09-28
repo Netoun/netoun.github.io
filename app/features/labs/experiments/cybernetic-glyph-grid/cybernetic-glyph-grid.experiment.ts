@@ -12,7 +12,6 @@ export const cyberneticGlyphGridExperiment: LabExperiment = {
   tags: ["Canvas 2D", "glyphs", "hex", "glitch"],
   group: "HUD",
   accent: "secondary",
-  icon: "🔡",
   Demo: CyberneticGlyphGridDemo,
   sources: [
     { label: "cybernetic-glyph-grid.demo.tsx", code: demoSource, lang: "tsx" },

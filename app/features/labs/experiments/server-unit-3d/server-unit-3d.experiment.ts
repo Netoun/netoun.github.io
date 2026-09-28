@@ -12,7 +12,6 @@ export const serverUnit3dExperiment: LabExperiment = {
   tags: ["CSS 3D", "transforms", "LED seed", "deterministic"],
   group: "3D CSS",
   accent: "secondary",
-  icon: "🗄",
   Demo: ServerUnit3dDemo,
   sources: [
     { label: "server-unit-3d.demo.tsx", code: demoSource, lang: "tsx" },

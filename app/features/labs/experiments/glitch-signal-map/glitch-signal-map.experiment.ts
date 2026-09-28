@@ -12,7 +12,6 @@ export const glitchSignalMapExperiment: LabExperiment = {
   tags: ["Canvas 2D", "state machine", "LCG noise", "30fps"],
   group: "HUD",
   accent: "secondary",
-  icon: "📡",
   Demo: GlitchSignalMapDemo,
   sources: [
     { label: "glitch-signal-map.demo.tsx", code: demoSource, lang: "tsx" },

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { LabExperiment } from "../../data/labs.types";
 import { LabsCodeViewer } from "../labs-code-viewer/labs-code-viewer.component";
+import { LabsPreviewFit, useLabsView } from "../labs-preview/labs-preview.component";
 import * as styles from "./labs-experiment-frame.css";
 
 /** Centered stage area for the live demo. */
@@ -8,8 +9,11 @@ export function LabsStage({ children }: { children: ReactNode }) {
   return <div className={styles.stage}>{children}</div>;
 }
 
-/** Side-by-side demo + controls layout (stacks below `lg`). */
+/** Side-by-side demo + controls layout (stacks below `lg`); the stage alone in a preview. */
 export function LabsDemoLayout({ stage, controls }: { stage: ReactNode; controls: ReactNode }) {
+  const view = useLabsView();
+  if (view === "preview") return <LabsPreviewFit>{stage}</LabsPreviewFit>;
+
   return (
     <div className={styles.demoLayout}>
       <LabsStage>{stage}</LabsStage>

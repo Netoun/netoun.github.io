@@ -12,7 +12,6 @@ export const computer3dExperiment: LabExperiment = {
   tags: ["CSS 3D", "3D computer", "transforms", "no-WebGL", "retro"],
   group: "3D CSS",
   accent: "secondary",
-  icon: "🖥",
   Demo: Computer3dDemo,
   sources: [
     { label: "computer-3d.demo.tsx", code: demoSource, lang: "tsx" },

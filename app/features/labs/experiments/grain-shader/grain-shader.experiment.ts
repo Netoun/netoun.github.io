@@ -12,7 +12,6 @@ export const grainShaderExperiment: LabExperiment = {
   tags: ["WebGL", "GLSL", "film grain", "noise"],
   group: "Shaders",
   accent: "primary",
-  icon: "🎞",
   Demo: GrainShaderDemo,
   sources: [
     { label: "grain-shader.demo.tsx", code: demoSource, lang: "tsx" },

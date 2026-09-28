@@ -12,7 +12,6 @@ export const projectCard3dExperiment: LabExperiment = {
   tags: ["CSS 3D", "tilt", "parallax", "holographic"],
   group: "3D CSS",
   accent: "tertiary",
-  icon: "🪪",
   Demo: ProjectCard3dDemo,
   sources: [
     { label: "project-card-3d.demo.tsx", code: demoSource, lang: "tsx" },

@@ -12,7 +12,6 @@ export const systemMetricsExperiment: LabExperiment = {
   tags: ["HUD", "metrics", "animation", "gauges"],
   group: "HUD",
   accent: "secondary",
-  icon: "📊",
   Demo: SystemMetricsDemo,
   sources: [
     { label: "system-metrics.demo.tsx", code: demoSource, lang: "tsx" },

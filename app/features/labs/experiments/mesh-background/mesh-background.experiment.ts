@@ -12,7 +12,6 @@ export const meshBackgroundExperiment: LabExperiment = {
   tags: ["WebGPU", "WebGL", "GLSL", "gradient", "blobs", "vignette"],
   group: "Shaders",
   accent: "tertiary",
-  icon: "🌈",
   Demo: MeshBackgroundDemo,
   sources: [
     { label: "mesh-background.demo.tsx", code: demoSource, lang: "tsx" },

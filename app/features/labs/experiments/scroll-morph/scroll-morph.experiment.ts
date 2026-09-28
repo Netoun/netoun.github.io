@@ -11,7 +11,6 @@ export const scrollMorphExperiment: LabExperiment = {
   tags: ["scroll", "morph", "easing", "CSS"],
   group: "Scroll",
   accent: "tertiary",
-  icon: "🌀",
   Demo: ScrollMorphDemo,
   sources: [
     { label: "scroll-morph.demo.tsx", code: demoSource, lang: "tsx" },

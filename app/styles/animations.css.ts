@@ -131,6 +131,17 @@ globalKeyframes("nav-type", {
   to: { clipPath: "inset(0 0 0 0)" },
 });
 
+// Labs index (labs-index-tree.css.ts): the tree command types, then its lines print, at load.
+globalKeyframes("labs-type", {
+  from: { clipPath: "inset(0 100% 0 0)" },
+  to: { clipPath: "inset(0 0 0 0)" },
+});
+
+globalKeyframes("labs-row", {
+  from: { opacity: 0, transform: "translateY(-4px)" },
+  to: { opacity: 1, transform: "none" },
+});
+
 // Work log (experience-log.css.ts): one arrival pass when the section reveals — the command
 // types, the rows print one after the other, each employer's track draws out of its lane.
 globalKeyframes("log-row", {
