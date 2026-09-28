@@ -1,5 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css";
+import { weight } from "@styles/weight";
 
 export const controlPanel = style({
   display: "flex",
@@ -17,7 +18,7 @@ export const controlGroupTitle = style({
   margin: 0,
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize["2xs"],
-  fontWeight: vars.fontWeight.semibold,
+  ...weight(vars.fontWeight.semibold),
   letterSpacing: "0.14em",
   textTransform: "uppercase",
   color: vars.colors.mutedForeground,
@@ -33,7 +34,7 @@ export const controlLabel = style({
   flexShrink: 0,
   minWidth: "2.5rem",
   fontSize: vars.fontSize.sm,
-  fontWeight: vars.fontWeight.medium,
+  ...weight(vars.fontWeight.medium),
   color: vars.colors.foreground,
 });
 
@@ -66,7 +67,7 @@ export const resetButton = style({
   background: "transparent",
   color: vars.colors.foreground,
   fontSize: vars.fontSize.sm,
-  fontWeight: vars.fontWeight.medium,
+  ...weight(vars.fontWeight.medium),
   cursor: "pointer",
   transition: "background 0.15s ease, border-color 0.15s ease",
   selectors: {
@@ -86,7 +87,7 @@ export const optionButton = style({
   background: "transparent",
   color: vars.colors.mutedForeground,
   fontSize: vars.fontSize.xs,
-  fontWeight: vars.fontWeight.medium,
+  ...weight(vars.fontWeight.medium),
   cursor: "pointer",
   transition: "color 0.15s ease, background 0.15s ease, border-color 0.15s ease",
   selectors: {

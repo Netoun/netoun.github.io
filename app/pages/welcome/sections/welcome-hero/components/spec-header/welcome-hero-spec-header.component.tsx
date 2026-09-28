@@ -36,9 +36,12 @@ export function WelcomeHeroSpecHeader({
   const fpsRef = useRef<HTMLSpanElement>(null);
 
   // Frame rate, measured: frames per second of the page, sampled every second
-  // and written straight to the DOM (no re-render). Only while the hero is on screen.
+  // and written straight to the DOM (no re-render). Only while the hero is on screen, and
+  // never under reduced motion: the page is still then, a rAF loop would be the one thing
+  // running (the readout keeps its dash).
   useEffect(() => {
     if (!isSectionVisible) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     let frames = 0;
     let sampleStart = performance.now();

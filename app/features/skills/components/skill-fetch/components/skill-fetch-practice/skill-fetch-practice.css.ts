@@ -1,9 +1,11 @@
+import { arrival } from "@styles/motion.css";
 import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
 import { globalStyle, style } from "@vanilla-extract/css";
 import { insetVar, machine } from "../../skill-fetch.css";
+import { weight } from "@styles/weight";
 
-const CHECK_START = 1300;
+const CHECK_START = arrival.output + 400;
 const CHECK_STEP = 70;
 const CHECKS = 4;
 
@@ -151,7 +153,7 @@ export const fullRowStyle = style({
 export const checkTitleStyle = style({
   margin: 0,
   fontSize: vars.fontSize.xl,
-  fontWeight: vars.fontWeight.semibold,
+  ...weight(vars.fontWeight.semibold),
   lineHeight: 1.2,
   textWrap: "balance",
 });

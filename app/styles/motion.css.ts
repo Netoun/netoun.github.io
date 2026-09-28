@@ -18,3 +18,14 @@ export const motion = {
   // Stagger des reveals de section : 70ms par élément, plafonné côté consommateur (~400ms).
   staggerStep: "70ms",
 } as const;
+
+/**
+ * Arrival of a section's procedure (monitor, log, fetch), in ms from the section reveal: the
+ * command types, then its output prints from `output`. Three sections arrive this way in a
+ * row, so none holds its content back for more than ~600 ms.
+ */
+export const arrival = {
+  commandDelay: 100,
+  commandDuration: 450,
+  output: 600,
+} as const;

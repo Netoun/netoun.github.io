@@ -88,9 +88,10 @@ export const welcomeHeroSpecSwatchTextStyles = style({
   display: "flex",
   flexDirection: "column",
   gap: "2px",
-  color: `color-mix(in srgb, ${specInk.line} 30%, transparent)`,
+  // The raw values are the swatch's point: legible at 9px on the ink (~5:1), the name above.
+  color: `color-mix(in srgb, ${specInk.line} 50%, transparent)`,
 });
 
 globalStyle(`${welcomeHeroSpecSwatchTextStyles} > :first-child`, {
-  color: `color-mix(in srgb, ${specInk.line} 55%, transparent)`,
+  color: `color-mix(in srgb, ${specInk.line} 65%, transparent)`,
 });

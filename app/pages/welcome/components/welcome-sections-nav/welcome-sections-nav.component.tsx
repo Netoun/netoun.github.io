@@ -183,7 +183,7 @@ export function WelcomeSectionsNav() {
         </div>
 
         <span className={styles.dividerStyle} aria-hidden="true" />
-        <Link to="/labs" className={styles.labsStyle}>
+        <Link to="/labs/" className={styles.labsStyle}>
           Labs <span aria-hidden="true">→</span>
         </Link>
 

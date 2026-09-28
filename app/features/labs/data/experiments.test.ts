@@ -42,7 +42,7 @@ describe("labs SEO meta", () => {
   it("builds a canonical, topic-first meta set per experiment", () => {
     for (const experiment of labs.getAll()) {
       const meta = labs.buildMeta(experiment);
-      const url = `${SITE_URL}/labs/${experiment.slug}`;
+      const url = `${SITE_URL}/labs/${experiment.slug}/`;
 
       expect(meta).toContainEqual({
         title: `${experiment.title} · ${experiment.group} — Netoun Labs`,
@@ -60,7 +60,7 @@ describe("labs SEO meta", () => {
     expect(meta).toContainEqual({
       tagName: "link",
       rel: "canonical",
-      href: `${SITE_URL}/labs`,
+      href: `${SITE_URL}/labs/`,
     });
   });
 });

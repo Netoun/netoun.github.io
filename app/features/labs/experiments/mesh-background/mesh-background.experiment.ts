@@ -9,7 +9,7 @@ export const meshBackgroundExperiment: LabExperiment = {
   title: "Mesh Gradient",
   description:
     "An animated mesh-gradient background: three drifting colour blobs, a vignette and optional film grain, all in one fragment shader.",
-  tags: ["WebGL", "GLSL", "gradient", "blobs", "vignette"],
+  tags: ["WebGPU", "WebGL", "GLSL", "gradient", "blobs", "vignette"],
   group: "Shaders",
   accent: "tertiary",
   icon: "🌈",

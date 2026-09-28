@@ -28,7 +28,7 @@ const disconnect = vi.fn();
 function Probe() {
   const { ref, state } = useReveal<HTMLDivElement>();
   return (
-    <div ref={ref} data-testid="container" data-reveal={state ?? undefined}>
+    <div ref={ref} id="probe" data-testid="container" data-reveal={state ?? undefined}>
       <span data-reveal-item>a</span>
       <span data-reveal-item>b</span>
     </div>
@@ -63,6 +63,7 @@ beforeEach(() => {
 afterEach(() => {
   vi.unstubAllGlobals();
   disconnect.mockClear();
+  window.history.replaceState(null, "", "/");
 });
 
 describe("useReveal", () => {
@@ -121,6 +122,25 @@ describe("useReveal", () => {
       Object.defineProperty(event, "persisted", { value: true });
       window.dispatchEvent(event);
     });
+    expect(screen.getByTestId("container").dataset.reveal).toBe("static");
+  });
+
+  it("goes static when a link to it is followed, before the jump", () => {
+    mockMatchMedia(false);
+    render(
+      <>
+        <a href="#probe">Probe</a>
+        <Probe />
+      </>,
+    );
+    act(() => screen.getByRole("link", { name: "Probe" }).click());
+    expect(screen.getByTestId("container").dataset.reveal).toBe("static");
+  });
+
+  it("starts static when the page opens on its anchor", () => {
+    mockMatchMedia(false);
+    window.history.replaceState(null, "", "/#probe");
+    render(<Probe />);
     expect(screen.getByTestId("container").dataset.reveal).toBe("static");
   });
 });

@@ -1,6 +1,7 @@
 import { breakpoints } from "@styles/responsive.css";
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css";
+import { weight } from "@styles/weight";
 
 // Film grain svg as data-uri (feTurbulence fractalNoise, 160×160 tile)
 const GRAIN_SVG =
@@ -36,7 +37,7 @@ export const sidebar = style({
   "@media": {
     // Mobile/tablet app-bar: symmetric 16px float (top = sides) so it doesn't
     // hug the top edge tighter than the sides.
-    "screen and (max-width: 1023.98px)": {
+    "screen and (max-width: 63.99875em)": {
       top: vars.spacing.md,
       marginBlockStart: vars.spacing.md,
     },
@@ -73,7 +74,7 @@ export const sidebarScrim = style({
   "@media": {
     // Sticky app-bar on mobile/tablet: make the base near-opaque so content
     // scrolling underneath doesn't bleed through (halos above still glow).
-    "screen and (max-width: 1023.98px)": {
+    "screen and (max-width: 63.99875em)": {
       background:
         "linear-gradient(180deg, oklch(0.16 0.014 90 / 0.94) 0%, oklch(0.12 0.012 90 / 0.97) 100%)",
     },
@@ -133,7 +134,7 @@ export const conHead = style({
   "@media": {
     // Mobile: collapse the header into a slim app-bar row (brand ↔ menu);
     // the full nav lives in the overlay so the console chrome isn't needed here.
-    "screen and (max-width: 1023.98px)": {
+    "screen and (max-width: 63.99875em)": {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
@@ -174,7 +175,7 @@ export const brand = style({
   gap: "0.6rem",
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize["2xl"],
-  fontWeight: vars.fontWeight.bold,
+  ...weight(vars.fontWeight.bold),
   letterSpacing: "0.22em",
   textDecoration: "none",
   color: vars.colors.primary,
@@ -189,14 +190,14 @@ export const brandMark = style({
 export const verBadge = style({
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize["2xs"],
-  fontWeight: vars.fontWeight.medium,
+  ...weight(vars.fontWeight.medium),
   letterSpacing: "0.12em",
   borderRadius: vars.radius.full,
   padding: "0.15rem 0.5rem",
   whiteSpace: "nowrap",
   "@media": {
     // Hidden in the slim mobile app-bar to free room for home link + menu
-    "screen and (max-width: 1023.98px)": {
+    "screen and (max-width: 63.99875em)": {
       display: "none",
     },
   },
@@ -213,7 +214,7 @@ export const statusLine = style({
   letterSpacing: "0.08em",
   "@media": {
     // Hidden in the slim mobile app-bar
-    "screen and (max-width: 1023.98px)": {
+    "screen and (max-width: 63.99875em)": {
       display: "none",
     },
   },
@@ -266,7 +267,7 @@ export const menuButton = style({
     },
   },
   "@media": {
-    "screen and (max-width: 1023.98px)": {
+    "screen and (max-width: 63.99875em)": {
       marginTop: 0,
     },
     [breakpoints.lg]: {
@@ -289,7 +290,7 @@ export const nav = style({
   "@media": {
     // Mobile/tablet: when opened the nav becomes a full-screen console overlay
     // (max-width keeps these rules out of the desktop sidebar layout).
-    "screen and (max-width: 1023.98px)": {
+    "screen and (max-width: 63.99875em)": {
       position: "fixed",
       inset: 0,
       zIndex: 40,
@@ -327,7 +328,7 @@ export const navGroupTitle = style({
   padding: `0 ${vars.spacing.sm}`,
   fontFamily: vars.fontFamily.doto,
   fontSize: "0.62rem",
-  fontWeight: vars.fontWeight.semibold,
+  ...weight(vars.fontWeight.semibold),
   letterSpacing: "0.2em",
   textTransform: "uppercase",
   color: vars.colors.primary,
@@ -524,7 +525,7 @@ export const content = style({
   "@media": {
     // Breathing room under the sticky app-bar so the page title isn't jammed
     // against it (sides stay 16px, aligned with the header).
-    "screen and (max-width: 1023.98px)": {
+    "screen and (max-width: 63.99875em)": {
       paddingBlock: vars.spacing.lg,
     },
     [breakpoints.lg]: {

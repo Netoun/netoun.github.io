@@ -50,6 +50,6 @@ describe("WelcomeSectionsNav", () => {
 
   it("routes to the Labs outside the section anchors", () => {
     renderNav();
-    expect(screen.getByRole("link", { name: "Labs" })).toHaveAttribute("href", "/labs");
+    expect(screen.getByRole("link", { name: "Labs" })).toHaveAttribute("href", "/labs/");
   });
 });

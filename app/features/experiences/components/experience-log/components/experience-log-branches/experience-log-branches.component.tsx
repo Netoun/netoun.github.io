@@ -1,5 +1,5 @@
-import type { PointerEvent } from "react";
 import type { LogBranch } from "../../../../data/experience-log";
+import { useBranchHover } from "../../../../hooks/use-branch-hover.hook";
 import * as styles from "./experience-log-branches.css";
 
 export interface ExperienceLogBranchesProps {
@@ -16,9 +16,7 @@ export function ExperienceLogBranches({
   onLitBranchChange,
 }: ExperienceLogBranchesProps) {
   const scale = Math.max(1, ...branches.map((branch) => branch.tenureSegments));
-  const hover = (slug: string | null) => (event: PointerEvent) => {
-    if (event.pointerType === "mouse") onLitBranchChange(slug);
-  };
+  const hover = useBranchHover(onLitBranchChange);
 
   return (
     <div className={styles.branchesStyle}>
@@ -31,8 +29,7 @@ export function ExperienceLogBranches({
             key={branch.slug}
             className={styles.rowStyle({ domain: branch.domain })}
             data-lit={litBranch === branch.slug ? "" : undefined}
-            onPointerEnter={hover(branch.slug)}
-            onPointerLeave={hover(null)}
+            {...hover(branch.slug)}
           >
             <span className={styles.starStyle} aria-hidden="true">
               {branch.isOpen ? "*" : ""}

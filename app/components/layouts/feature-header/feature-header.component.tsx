@@ -54,7 +54,8 @@ export function FeatureHeader({
     <FeatureHeaderContext.Provider value={contextValue}>
       <div ref={containerRef} className={styles.containerStyle({ variant: as })}>
         {index !== undefined && (
-          <span className={styles.indexStyle} data-reveal-item>
+          // The heading says the section; the terminal number is for the eye.
+          <span className={styles.indexStyle} data-reveal-item aria-hidden="true">
             _{String(index).padStart(2, "0")} /
           </span>
         )}

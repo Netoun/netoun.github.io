@@ -2,6 +2,7 @@ import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
 import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
+import { weight } from "@styles/weight";
 
 const ACCENT_MAP = {
   primary: vars.colors.primary,
@@ -97,7 +98,7 @@ export const prefixStyle = recipe({
 export const descriptionStyle = style({
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.sm,
-  fontWeight: 800,
+  ...weight(800),
   color: vars.colors.mutedForeground,
   letterSpacing: "0.14em",
   textTransform: "uppercase",
@@ -109,7 +110,7 @@ export const indexStyle = style({
   display: "block",
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.sm,
-  fontWeight: 800,
+  ...weight(800),
   color: vars.colors.mutedForeground,
   letterSpacing: "0.14em",
   marginBottom: vars.spacing.xs,

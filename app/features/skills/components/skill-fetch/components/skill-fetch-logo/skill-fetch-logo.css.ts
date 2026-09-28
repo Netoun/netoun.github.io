@@ -2,6 +2,7 @@ import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
 import { globalStyle, style, styleVariants } from "@vanilla-extract/css";
 import { domainLights, LOGO_START, LOGO_STEP } from "../../skill-fetch.css";
+import { weight } from "@styles/weight";
 
 export const logoStyle = style({
   position: "relative",
@@ -9,7 +10,7 @@ export const logoStyle = style({
   // Doto, then the system monospace: both advance 0.6em per glyph, so the disc stays round
   // even before Doto has loaded (logo-ascii.ts is generated for 0.6 × 1 cells).
   fontFamily: `Doto, ${vars.fontFamily.mono}`,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   lineHeight: 1,
   letterSpacing: 0,
   whiteSpace: "pre",

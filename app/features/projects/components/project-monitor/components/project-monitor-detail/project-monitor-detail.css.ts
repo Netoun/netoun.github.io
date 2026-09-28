@@ -1,6 +1,7 @@
 import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
 import { style } from "@vanilla-extract/css";
+import { weight } from "@styles/weight";
 
 const rule = `1px solid color-mix(in srgb, ${vars.colors.cardBorder} 55%, transparent)`;
 
@@ -36,7 +37,7 @@ export const bodyStyle = style({
 
 export const inspectStyle = style({
   fontFamily: vars.fontFamily.doto,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   fontSize: vars.fontSize.sm,
   letterSpacing: "0.08em",
   color: vars.colors.mutedForeground,
@@ -45,7 +46,7 @@ export const inspectStyle = style({
 export const titleStyle = style({
   margin: 0,
   fontSize: vars.fontSize["2xl"],
-  fontWeight: vars.fontWeight.semibold,
+  ...weight(vars.fontWeight.semibold),
   lineHeight: vars.lineHeight.tight,
   "@media": {
     [breakpoints.lg]: {
@@ -74,7 +75,7 @@ export const linkStyle = style({
   alignItems: "center",
   minHeight: "2.75rem",
   fontFamily: vars.fontFamily.doto,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   fontSize: vars.fontSize.base,
   letterSpacing: "0.1em",
   color: vars.colors.foreground,

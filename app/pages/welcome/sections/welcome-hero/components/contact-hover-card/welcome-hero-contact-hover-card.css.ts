@@ -8,6 +8,7 @@ import {
   iconGradientMiddleStopStyles,
   iconGradientStartStopStyles,
 } from "@/components/primitives/icons/contact-icon.css";
+import { weight } from "@styles/weight";
 
 // Note: Les styles du beam SVG ont été déplacés dans
 // components/beam/welcome-hero-contact-hover-card-beam.css.ts
@@ -240,7 +241,7 @@ export const linkStyles = style({
   color: vars.colors.background,
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.base,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   textTransform: "uppercase",
   textDecoration: "none",
   letterSpacing: "0.04em",

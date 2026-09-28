@@ -1,5 +1,6 @@
 import { vars } from "@styles/theme.css";
 import { recipe } from "@vanilla-extract/recipes";
+import { weight } from "@styles/weight";
 
 // Four intentional tech domains, one accent each (the domain map lives in
 // tag.component.tsx).
@@ -12,7 +13,7 @@ export const tagStyle = recipe({
     letterSpacing: "0.08em",
     borderRadius: vars.radius.full,
     // Doto read at 12–14px: weight 800 is the floor (DESIGN.md › The Legible Dot-Matrix Rule).
-    fontWeight: 800,
+    ...weight(800),
   },
   variants: {
     color: {

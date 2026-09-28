@@ -1,6 +1,7 @@
 import { motion } from "@styles/motion.css";
 import { vars } from "@styles/theme.css";
 import { createVar, fallbackVar, globalStyle, style } from "@vanilla-extract/css";
+import { weight } from "@styles/weight";
 
 /** Resting tilt of the card, set from the demo's slider. */
 export const cardRotate = createVar();
@@ -155,7 +156,7 @@ export const contentStyle = style({
 
 export const titleStyle = style({
   fontFamily: vars.fontFamily.ppNeueMontreal,
-  fontWeight: vars.fontWeight.semibold,
+  ...weight(vars.fontWeight.semibold),
   fontSize: vars.fontSize.base,
   color: vars.colors.foreground,
   margin: 0,
@@ -266,7 +267,7 @@ export const statusBadgeStyle = style({
   fontSize: vars.fontSize.xs,
   letterSpacing: "0.14em",
   color: vars.colors.mutedForeground,
-  fontWeight: vars.fontWeight.medium,
+  ...weight(vars.fontWeight.medium),
 
   "::before": {
     content: '""',

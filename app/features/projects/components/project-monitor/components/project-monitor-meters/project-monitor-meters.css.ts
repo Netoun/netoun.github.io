@@ -1,10 +1,11 @@
-import { motion } from "@styles/motion.css";
+import { arrival, motion } from "@styles/motion.css";
 import { vars } from "@styles/theme.css";
 import { globalStyle, style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
+import { weight } from "@styles/weight";
 
 // Segments light up one by one after the command has typed (ms from the section reveal).
-const LIT_START = 900;
+const LIT_START = arrival.output - 200;
 const LIT_STEP = 35;
 const MAX_STAGGERED_SEGMENTS = 16;
 const CUBE_STEP = 140;
@@ -21,7 +22,7 @@ export const metersStyle = style({
   flexDirection: "column",
   gap: vars.spacing.sm,
   fontFamily: vars.fontFamily.doto,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   fontSize: vars.fontSize.xs,
   letterSpacing: "0.1em",
   fontVariantNumeric: "tabular-nums",

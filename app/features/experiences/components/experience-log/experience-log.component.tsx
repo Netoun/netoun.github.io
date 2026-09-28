@@ -1,7 +1,7 @@
-import type { PointerEvent } from "react";
 import { Tag } from "@/components/primitives/tag/tag.component";
 import { STACK_DOMAINS } from "../../data/experience-log";
 import type { LogBranch, LogGroup, LogRef, LogRow, LogSummary } from "../../data/experience-log";
+import { useBranchHover } from "../../hooks/use-branch-hover.hook";
 import { ExperienceLogGraph } from "./components/experience-log-graph/experience-log-graph.component";
 import * as styles from "./experience-log.css";
 
@@ -25,7 +25,7 @@ const MAIN_RAILS: Record<LogGroup["main"], { dash?: "nextNode"; rail?: { from: "
 export interface ExperienceLogProps {
   groups: LogGroup[];
   summary: LogSummary;
-  /** Branch under the pointer: the command names it, the other branches fade. */
+  /** Branch lit from `branch -v` or a ref pill: the command names it, the others fade. */
   litBranch: string | null;
   onLitBranchChange: (slug: string | null) => void;
 }
@@ -33,7 +33,8 @@ export interface ExperienceLogProps {
 /**
  * The work history as `git log --graph`, printed on the paper: one branch per employer,
  * HEAD on the current job, client projects as its commits. Everything is readable without
- * pointing at it; hover only filters the log to one branch (mouse only).
+ * pointing at it; hovering a branch's ref pill only filters the log to it (mouse only). The
+ * groups themselves never listen: they fill the screen, a resting mouse would filter on scroll.
  */
 export function ExperienceLog({
   groups,
@@ -46,9 +47,7 @@ export function ExperienceLog({
   const laneDomains = STACK_DOMAINS.filter((domain) =>
     groups.some((group) => group.branch.domain === domain),
   );
-  const hover = (slug: string | null) => (event: PointerEvent) => {
-    if (event.pointerType === "mouse") onLitBranchChange(slug);
-  };
+  const hover = useBranchHover(onLitBranchChange);
   // Print order across groups, read by the arrival stagger.
   let printed = 0;
   const rowProps = (row: LogRow) => ({
@@ -91,8 +90,6 @@ export function ExperienceLog({
               className={styles.groupStyle({ domain: branch.domain })}
               data-dimmed={dimmed ? "" : undefined}
               data-first-row={groupFirstRow}
-              onPointerEnter={hover(branch.slug)}
-              onPointerLeave={hover(null)}
             >
               {rails.dash && (
                 <span
@@ -123,7 +120,7 @@ export function ExperienceLog({
                   <div {...rowProps(tip)}>
                     <ExperienceLogGraph row={tip} />
                     <span className={styles.trackStyle} aria-hidden="true" />
-                    <BranchTip branch={branch} refs={tip.refs} />
+                    <BranchTip branch={branch} refs={tip.refs} refsHover={hover(branch.slug)} />
                   </div>
                   {commits.length > 0 && (
                     <ul
@@ -204,9 +201,10 @@ export function ExperienceLog({
 interface BranchTipProps {
   branch: LogBranch;
   refs: LogRef[];
+  refsHover: ReturnType<ReturnType<typeof useBranchHover>>;
 }
 
-function BranchTip({ branch, refs }: BranchTipProps) {
+function BranchTip({ branch, refs, refsHover }: BranchTipProps) {
   const mixLabel = STACK_DOMAINS.filter((domain) => branch.mix[domain] > 0)
     .map((domain) => `${branch.mix[domain]} ${DOMAIN_LABEL[domain]}`)
     .join(" · ");
@@ -214,7 +212,7 @@ function BranchTip({ branch, refs }: BranchTipProps) {
   return (
     <div className={styles.tipStyle}>
       <div className={styles.tipColumnStyle}>
-        <div className={styles.refsStyle} aria-hidden="true">
+        <div className={styles.refsStyle} aria-hidden="true" {...refsHover}>
           {refs.map((ref) => (
             <RefPill key={ref.label} logRef={ref} slug={branch.slug} />
           ))}
@@ -236,7 +234,7 @@ function BranchTip({ branch, refs }: BranchTipProps) {
       <div className={styles.tipColumnStyle}>
         <p className={styles.periodStyle}>
           <span>
-            <time dateTime={branch.start}>{branch.startLabel}</time> —{" "}
+            <time dateTime={branch.start}>{branch.startLabel}</time> –{" "}
             {branch.end ? <time dateTime={branch.end}>{branch.endLabel}</time> : branch.endLabel}
           </span>
           <span className={styles.durationStyle}>&nbsp;· {branch.duration}</span>

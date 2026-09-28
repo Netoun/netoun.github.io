@@ -1,18 +1,19 @@
-import { motion } from "@styles/motion.css";
+import { arrival, motion } from "@styles/motion.css";
 import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
 import { createVar, globalStyle, style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 import { domainAccents, laneColors } from "../../experience-log.css";
+import { weight } from "@styles/weight";
 
 const machine = {
   fontFamily: vars.fontFamily.doto,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   fontVariantNumeric: "tabular-nums",
 } as const;
 
 // Bars fill left to right once the header has risen (ms from the section reveal).
-const FILL_START = 700;
+const FILL_START = arrival.commandDelay + 200;
 const FILL_STEP = 120;
 
 const segmentColorVar = createVar();
@@ -98,11 +99,11 @@ export const rowStyle = recipe({
 });
 
 export const starStyle = style({
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
 });
 
 export const nameStyle = style({
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
 });
 
 // Same scale for every bar: the longest tenure fills it, one segment per two months.

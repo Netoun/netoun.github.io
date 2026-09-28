@@ -20,7 +20,7 @@ export default function LabsExperimentPage() {
     return (
       <div className={labsNotFound}>
         <p>This experiment doesn't exist (yet).</p>
-        <Link to="/labs" className={labsNotFoundLink}>
+        <Link to="/labs/" className={labsNotFoundLink}>
           ← Back to all experiments
         </Link>
       </div>

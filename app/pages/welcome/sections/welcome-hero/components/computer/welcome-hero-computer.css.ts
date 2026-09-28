@@ -22,6 +22,7 @@ import {
   heroSideBySideXlMedia,
   heroStackedLaptopWidth,
 } from "../../welcome-hero-layout.css";
+import { weight } from "@styles/weight";
 
 // Fin de la cascade d'entrée du hero (titre → texte → CTA → laptop).
 // Pas de `to` : chaque propriété revient à sa valeur de repos (0.94 ou 1 selon data-quality).
@@ -129,7 +130,7 @@ const gridBase = {
 
 export const welcomeHeroComputerStyles = style({
   fontFamily: vars.fontFamily.doto,
-  fontWeight: vars.fontWeight.bold,
+  ...weight(vars.fontWeight.bold),
   display: "grid",
   gridTemplateColumns: "repeat(3, 1fr)",
   gridTemplateRows: "repeat(3, 1fr)",

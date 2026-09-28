@@ -1,6 +1,7 @@
 import { breakpoints } from "@styles/responsive.css";
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css";
+import { weight } from "@styles/weight";
 
 export const frame = style({
   display: "flex",
@@ -19,7 +20,7 @@ export const frameHeader = style({
 
 export const title = style({
   fontSize: vars.fontSize["2xl"],
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   color: vars.colors.mutedForeground,
   fontFamily: vars.fontFamily.doto,
 });

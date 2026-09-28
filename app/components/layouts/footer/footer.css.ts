@@ -3,6 +3,7 @@ import { keyframes, style } from "@vanilla-extract/css";
 import { motion } from "@/styles/motion.css";
 import { breakpoints } from "@/styles/responsive.css";
 import { serverRackVars } from "@/components/misc/server-unit/server-unit.css";
+import { weight } from "@styles/weight";
 
 const paper = (percent: number) =>
   `color-mix(in srgb, ${vars.colors.background} ${percent}%, transparent)`;
@@ -130,7 +131,7 @@ export const rackCaptionStyle = style({
   alignItems: "center",
   minHeight: "2.75rem",
   fontFamily: vars.fontFamily.doto,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   fontSize: "0.9375rem",
   letterSpacing: "0.08em",
   // Brighter than mutedForegroundOnDark: it sits over the mesh's gold bloom, where the
@@ -169,7 +170,7 @@ export const headingStyle = style({
   alignItems: "center",
   margin: 0,
   fontFamily: vars.fontFamily.doto,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   fontSize: vars.fontSize["2xl"],
   lineHeight: 1.2,
   letterSpacing: "0.05em",

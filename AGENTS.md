@@ -39,7 +39,7 @@ app/
   root.tsx                  # <html> layout, fonts, JSON-LD, ErrorBoundary
   routes.ts                 # / → welcome · /labs → labs layout (index + :slug) · /misc → redirect
   components/               # shared UI — must NOT import features/ or pages/ (lint-enforced)
-    layouts/                #   container, content-section, feature-header, footer
+    layouts/                #   container, content-section, error-screen, feature-header, footer
     primitives/             #   button, glyph, slider, tag, terminal-buttons, icons
     misc/                   #   decorative/3D/canvas pieces: computer, server-unit, mesh-background, shaders/, canvas-renderer/…
   features/<domain>/        # business code shared across pages — must NOT import pages/ (lint-enforced)
@@ -72,9 +72,10 @@ All CSS lives in `.css.ts`. **No Tailwind, no plain CSS files, no `style=` props
 - Values computed at runtime (a slider, a pointer, a measured size) are a `createVar()` in the `.css.ts`, written from React with `style={assignInlineVars({ [styles.x]: … })}` or from an effect with `setElementVars(el, …)` (`@vanilla-extract/dynamic`). Static or discrete values are classes, `styleVariants` or `data-*` selectors. The one exception is Prism's token styles in the Labs code viewer.
 
 - `vars.*` → runtime CSS variables from `app/styles/theme.css.ts`; raw values (`colors`, `spacing`…) only in `globalStyle` or build-time code.
-- Variants → `recipe()` (`@vanilla-extract/recipes`). Breakpoints → `@styles/responsive.css` (mobile-first). Keyframes → `app/styles/animations.css.ts`. Motion tokens → `app/styles/motion.css.ts`.
+- Variants → `recipe()` (`@vanilla-extract/recipes`). Breakpoints → `@styles/responsive.css` (mobile-first, in em: a media query in px breaks at 200 % default text size). Keyframes → `app/styles/animations.css.ts`. Motion tokens → `app/styles/motion.css.ts`.
 - Selectors: VE has no `:global()` — target ancestors with plain selectors (`'[data-x="y"] &'`). Lightning CSS flags invalid selectors at build.
 - Theme vars are named by position: adding or removing a token in `theme.css.ts` renames every var after it, and a running dev server keeps serving the old names (the page looks unstyled). Restart `bun run dev` after editing the theme.
+- Font weights → `...weight(x)` from `@styles/weight`, never a bare `fontWeight:` (a test enforces it). WebKit ignores `font-weight` on PP Neue Montreal's variable file and draws it Thin; the helper pins `font-variation-settings` there, and that setting inherits, so one bare weight hands its parent's axis to the whole subtree.
 - Focus: the global ring reads `vars.colors.ring` (ink). A dark surface remaps it once — `vars: { [vars.colors.ring]: vars.colors.primary }` — rather than restating gold on each control. Terminal glyphs (`_❯ ▐ ⤘ ❯`) go through `<Glyph>` (aria-hidden).
 
 ## Animations & rendering
@@ -103,6 +104,7 @@ Labs experiments may import components from any domain — showcasing them is th
 - One `<h1>` per page. Interactive primitives via React Aria Components — no raw native substitutes.
 - Visible `:focus-visible` on everything interactive; WCAG AA contrast.
 - `public/llms.txt`, `public/robots.txt`, and the build-generated `sitemap.xml` must stay consistent with real routes and content.
+- Labs URLs end with a slash everywhere (links, canonical, sitemap, `_redirects`): Pages serves `labs/index.html` there and 308s the slashless form. Unknown paths get `404.html`, a copy of the SPA fallback made in `react-router.config.ts › buildEnd`; the root `ErrorBoundary` renders it.
 
 ## Performance
 
@@ -115,7 +117,7 @@ Labs experiments may import components from any domain — showcasing them is th
 ## Verification
 
 1. `bun run check` must pass. The lint backlog is at 0 and the React Compiler-era rules (`react/refs`, effect and memo dependencies, index keys, `no-shadow`) are errors; a new warning from the `suspicious`/`perf` categories is fixed, not left.
-2. UI changes: run the app (`.claude/launch.json` → port 5175, or `bun run dev`) and check desktop + mobile (390px) with the browser/DevTools tools; include `prefers-reduced-motion`.
+2. UI changes: run the app (`.claude/launch.json` → port 5175, or `bun run dev`) and check desktop + mobile (390px) with the browser/DevTools tools; include `prefers-reduced-motion`. Playwright's WebKit stands in for Safari for layout and fonts, but its screenshots drop CSS perspective: never judge the 3D pieces from them.
 3. Build-affecting changes: `bun run build` and confirm `build/client/**/index.html` + `sitemap.xml`.
 
 ## Forbidden

@@ -2,6 +2,7 @@ import { motion } from "@styles/motion.css";
 import { vars } from "@styles/theme.css";
 import { globalStyle, style, styleVariants } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
+import { weight } from "@styles/weight";
 
 // A real CSS-3D keycap (top plate + front and right walls), in the ink of the laptop's
 // keyboard. It sinks when its button is pressed, and when the matching key is pressed
@@ -97,7 +98,7 @@ export const topShadeStyle = style({
   boxShadow: `inset 0 1px 0 color-mix(in srgb, white 18%, transparent), inset 0 0 0 0.5px color-mix(in srgb, black 40%, transparent)`,
   color: vars.colors.background,
   fontFamily: vars.fontFamily.doto,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   fontSize: "0.75rem",
   lineHeight: 1,
 });

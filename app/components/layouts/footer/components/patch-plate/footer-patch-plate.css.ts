@@ -2,6 +2,7 @@ import { createVar, style, styleVariants } from "@vanilla-extract/css";
 import { breakpoints } from "@/styles/responsive.css";
 import { motion } from "@/styles/motion.css";
 import { vars } from "@/styles/theme.css";
+import { weight } from "@styles/weight";
 
 /** Where the glass catches the light, in % of the plate; written by usePlateLight. */
 export const plateGlass = { x: createVar(), y: createVar() };
@@ -284,7 +285,7 @@ export const portTextStyle = style({
 
 export const portLabelStyle = style({
   fontFamily: vars.fontFamily.doto,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   fontSize: "0.8125rem",
   lineHeight: "1rem",
   letterSpacing: "0.14em",
@@ -327,7 +328,7 @@ export const portAddressStyle = style({
 export const portSchemeStyle = style({
   justifySelf: "end",
   fontFamily: vars.fontFamily.doto,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   fontSize: "0.875rem",
   letterSpacing: "0.1em",
   color: paper(52),
@@ -375,7 +376,7 @@ export const uplinkDisplayStyle = style({
   boxShadow:
     "inset 0 2px 5px #000, inset 0 0 0 1px rgba(255, 255, 255, 0.06), 0 1px 0 rgba(255, 255, 255, 0.05)",
   fontFamily: vars.fontFamily.doto,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   fontSize: vars.fontSize.base,
   letterSpacing: "0.04em",
 

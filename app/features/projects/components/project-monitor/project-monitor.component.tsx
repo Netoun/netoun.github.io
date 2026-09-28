@@ -42,8 +42,9 @@ export interface ProjectMonitorProps {
 }
 
 /**
- * The projects as a light-mode process monitor. Pointing at a row (or moving to it with
- * the arrow keys) selects it and fills the detail pane; Enter opens it, the name is a link.
+ * The projects as a light-mode process monitor. A click or a tap on a row (or the arrow
+ * keys) selects it and fills the detail pane; Enter or a double click opens it, the name is
+ * a link. Hover selects nothing: the pointer crosses rows on its way to the pane.
  */
 export function ProjectMonitor({ projects, isOnScreen }: ProjectMonitorProps) {
   const processes = useMemo(() => toProcesses(projects), [projects]);
@@ -56,6 +57,8 @@ export function ProjectMonitor({ projects, isOnScreen }: ProjectMonitorProps) {
   const [heldKey, setHeldKey] = useState<HeldKey | null>(null);
   const windowRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+  // How the last row press started: React Aria runs the row action on a tap.
+  const pointerTypeRef = useRef<string>("mouse");
 
   useChromeReflection(windowRef, isOnScreen);
 
@@ -64,15 +67,21 @@ export function ProjectMonitor({ projects, isOnScreen }: ProjectMonitorProps) {
     const grid = gridRef.current;
     if (!grid) return;
     const onKeyDown = (event: KeyboardEvent) => {
+      pointerTypeRef.current = "keyboard";
       const key = HELD_KEYS[event.key];
       if (key) setHeldKey(key);
     };
+    const onPointerDown = (event: PointerEvent) => {
+      pointerTypeRef.current = event.pointerType;
+    };
     const release = () => setHeldKey(null);
     grid.addEventListener("keydown", onKeyDown);
+    grid.addEventListener("pointerdown", onPointerDown, { capture: true });
     grid.addEventListener("keyup", release);
     grid.addEventListener("focusout", release);
     return () => {
       grid.removeEventListener("keydown", onKeyDown);
+      grid.removeEventListener("pointerdown", onPointerDown, { capture: true });
       grid.removeEventListener("keyup", release);
       grid.removeEventListener("focusout", release);
     };
@@ -100,9 +109,15 @@ export function ProjectMonitor({ projects, isOnScreen }: ProjectMonitorProps) {
     if (key !== undefined) setSelectedId(String(key));
   };
 
+  // A tap selects like a click; opening a new tab takes the name link or the OPEN key.
   const openRow = (key: Key) => {
     const row = rows.find((candidate) => candidate.id === key);
-    if (row) window.open(row.url, "_blank", "noopener,noreferrer");
+    if (!row) return;
+    if (pointerTypeRef.current === "touch" || pointerTypeRef.current === "pen") {
+      setSelectedId(row.id);
+      return;
+    }
+    window.open(row.url, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -182,12 +197,7 @@ export function ProjectMonitor({ projects, isOnScreen }: ProjectMonitorProps) {
         className={styles.listStyle}
       >
         {(row) => (
-          <GridListItem
-            id={row.id}
-            textValue={row.title}
-            onHoverStart={() => setSelectedId(row.id)}
-            className={styles.rowStyle}
-          >
+          <GridListItem id={row.id} textValue={row.title} className={styles.rowStyle}>
             <span className={styles.cellIdStyle}>
               <Glyph className={styles.caretStyle}>❯</Glyph>
               {row.pid}
@@ -247,7 +257,7 @@ export function ProjectMonitor({ projects, isOnScreen }: ProjectMonitorProps) {
           OPEN
         </a>
         <span className={styles.keysSpacerStyle} />
-        <Link to="/labs" className={styles.keyStyle}>
+        <Link to="/labs/" className={styles.keyStyle}>
           LABS →
         </Link>
       </div>

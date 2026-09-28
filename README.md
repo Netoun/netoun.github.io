@@ -6,7 +6,7 @@
 
 `_❯` I build fast, polished web products, from expressive interfaces to robust backend systems. This is the source of my personal site: a night workbench of machine panels and warm paper, plus **Labs**, a playground of CSS 3D, canvas and shader experiments shown live with their source.`▐`
 
-[`_VISIT THE SITE_ ↗`](https://www.netoun.com) &nbsp; [Explore the Labs →](https://www.netoun.com/labs)
+[`_VISIT THE SITE_ ↗`](https://www.netoun.com) &nbsp; [Explore the Labs →](https://www.netoun.com/labs/)
 
 ```text
 _❯ fastfetch --logo netoun▐

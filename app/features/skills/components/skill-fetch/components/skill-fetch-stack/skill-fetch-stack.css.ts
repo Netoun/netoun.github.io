@@ -1,19 +1,20 @@
 import { dockClearance } from "@styles/dock.css";
-import { motion } from "@styles/motion.css";
+import { arrival, motion } from "@styles/motion.css";
 import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
 import { globalStyle, style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 import { domainFills, domainInks, insetVar, machine } from "../../skill-fetch.css";
+import { weight } from "@styles/weight";
 
 /** A lit LED: brighter at the top, the fill below (as in the monitor meters). */
 const led = (color: string) =>
   `linear-gradient(180deg, color-mix(in srgb, ${color} 58%, white), ${color} 70%)`;
 
-const CHECK_START = 1600;
+const CHECK_START = arrival.output + 700;
 const CHECK_STEP = 70;
 const GROUPS = 5;
-const LIT_START = 1700;
+const LIT_START = arrival.output + 800;
 const LIT_STEP = 35;
 const MAX_STAGGERED_SEGMENTS = 16;
 
@@ -69,8 +70,6 @@ export const groupsStyle = style({
   "@media": {
     [breakpoints.lg]: {
       gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-      columnGap: vars.spacing["3xl"],
-      rowGap: vars.spacing.xl,
     },
   },
 });
@@ -181,7 +180,7 @@ export const groupHeadStyle = style({
 export const groupTitleStyle = style({
   margin: 0,
   fontSize: vars.fontSize.xl,
-  fontWeight: vars.fontWeight.semibold,
+  ...weight(vars.fontWeight.semibold),
   lineHeight: 1.2,
 });
 

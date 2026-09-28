@@ -1,5 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css";
+import { weight } from "@styles/weight";
 
 export const landing = style({
   display: "flex",
@@ -14,7 +15,7 @@ export const header = style({
   marginBottom: vars.spacing["2xl"],
   "@media": {
     // Mobile: the title is hidden, so keep the same uniform rhythm before the grid
-    "screen and (max-width: 1023.98px)": {
+    "screen and (max-width: 63.99875em)": {
       marginBottom: vars.spacing.lg,
     },
   },
@@ -27,7 +28,7 @@ export const title = style({
   margin: 0,
   marginBottom: vars.spacing.md,
   fontSize: vars.fontSize["2xl"],
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   color: vars.colors.mutedForeground,
   fontFamily: vars.fontFamily.doto,
 });
@@ -170,7 +171,7 @@ export const cardIcon = style({
 export const cardGroup = style({
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize["2xs"],
-  fontWeight: vars.fontWeight.semibold,
+  ...weight(vars.fontWeight.semibold),
   letterSpacing: "0.16em",
   textTransform: "uppercase",
   color: vars.colors.mutedForeground,
@@ -189,7 +190,7 @@ export const cardGroup = style({
 export const cardTitle = style({
   margin: 0,
   fontSize: vars.fontSize.lg,
-  fontWeight: vars.fontWeight.semibold,
+  ...weight(vars.fontWeight.semibold),
   letterSpacing: "-0.01em",
 });
 

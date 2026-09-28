@@ -7,7 +7,8 @@ import { revealIndex } from "@/styles/animations.css";
 // - null    → server/prerender markup: no attribute, content fully visible without JS
 // - idle    → hidden, waiting for viewport entry (only ever set by JS, before paint)
 // - revealed → transition to final state (never goes back to idle)
-// - static  → final state with no animation (reduced motion, bfcache restore)
+// - static  → final state with no animation (reduced motion, bfcache restore, reached by an
+//              in-page link: a jump lands on the content, not on an arrival still playing)
 export type RevealState = "idle" | "revealed" | "static";
 
 // Children opt in with data-reveal-item; delay = revealIndex × motion.staggerStep,
@@ -34,7 +35,7 @@ interface UseRevealOptions {
 }
 
 export function useReveal<T extends HTMLElement = HTMLElement>(options: UseRevealOptions = {}) {
-  const { rootMargin = "0px 0px -10% 0px", threshold = 0.15 } = options;
+  const { rootMargin = "0px", threshold = 0.15 } = options;
   const ref = useRef<T>(null);
   const [state, setState] = useState<RevealState | null>(null);
 
@@ -51,10 +52,11 @@ export function useReveal<T extends HTMLElement = HTMLElement>(options: UseRevea
       });
     }
 
+    const isLinkTarget = element.id !== "" && window.location.hash === `#${element.id}`;
     // Intentional: the first render must match the prerendered markup (state = null);
     // the client-only decision lands in a layout effect, before the first paint.
     // oxlint-disable-next-line react/set-state-in-effect
-    setState(reducedMotion ? "static" : "idle");
+    setState(reducedMotion || isLinkTarget ? "static" : "idle");
   }, []);
 
   useEffect(() => {
@@ -67,6 +69,15 @@ export function useReveal<T extends HTMLElement = HTMLElement>(options: UseRevea
       if (event.persisted) setState("static");
     };
     window.addEventListener("pageshow", onPageShow);
+
+    // A link to this element (the sections nav) settles it before the jump scrolls it in.
+    const onClick = (event: MouseEvent) => {
+      const link = event.target instanceof Element ? event.target.closest("a[href]") : null;
+      if (element.id !== "" && link?.getAttribute("href") === `#${element.id}`) {
+        setState("static");
+      }
+    };
+    document.addEventListener("click", onClick, { capture: true });
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -82,6 +93,7 @@ export function useReveal<T extends HTMLElement = HTMLElement>(options: UseRevea
     return () => {
       observer.disconnect();
       window.removeEventListener("pageshow", onPageShow);
+      document.removeEventListener("click", onClick, { capture: true });
     };
   }, [state, rootMargin, threshold]);
 

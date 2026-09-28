@@ -18,6 +18,7 @@ import {
   specSweepWindow,
   specTransition,
 } from "../../welcome-hero-spec.css";
+import { weight } from "@styles/weight";
 
 // Entrance: CSS from first paint, so it runs before hydration and never hides
 // text that is already on screen. It starts from a dimmed, *visible* state (LCP
@@ -96,7 +97,7 @@ export const welcomeHeadingStyles = style({
   position: "relative",
   fontFeatureSettings: '"liga" 1, "clig" 1',
   fontStyle: "italic",
-  fontWeight: vars.fontWeight.bold,
+  ...weight(vars.fontWeight.bold),
   fontSize: vars.fontSize["4xl"],
   letterSpacing: "-0.035em",
   lineHeight: "0.9",
@@ -353,7 +354,7 @@ export const welcomeLabsLinkStyles = style({
   minHeight: "2.75rem",
   fontFamily: vars.fontFamily.doto,
   fontSize: vars.fontSize.base,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   letterSpacing: "0.06em",
   textTransform: "uppercase",
   color: vars.colors.background,

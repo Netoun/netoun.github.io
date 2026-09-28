@@ -1,5 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css";
+import { weight } from "@styles/weight";
 
 export const computerKeyboardStyle = style({
   width: "100%",
@@ -32,7 +33,7 @@ export const computerKeyboardKeyStyle = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  fontWeight: "bold",
+  ...weight(700),
   textTransform: "uppercase",
   userSelect: "none",
   gridColumn: "span 3",

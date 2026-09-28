@@ -1,14 +1,15 @@
-import { motion } from "@styles/motion.css";
+import { arrival, motion } from "@styles/motion.css";
 import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
 import { createVar, globalStyle, style, styleVariants } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 import type { StackDomain } from "../../data/experience-log";
+import { weight } from "@styles/weight";
 
 // The machine voice of the log: Doto at the legible floor (weight ≥ 800), tabular numerals.
 const machine = {
   fontFamily: vars.fontFamily.doto,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   fontVariantNumeric: "tabular-nums",
 } as const;
 
@@ -16,7 +17,7 @@ const machine = {
 // the section title already carries the prompt.
 const COMMAND_STEPS = 24;
 // Arrival timeline (ms from the section reveal): the command types, then the rows print.
-const ROW_START = 1000;
+const ROW_START = arrival.output;
 const ROW_STEP = 55;
 const MAX_STAGGERED_ROWS = 24;
 const TRACK_LAG = 200;
@@ -200,7 +201,7 @@ globalStyle(`[data-reveal="idle"] ${commandTextStyle}`, {
 });
 
 globalStyle(`[data-reveal="revealed"] ${commandTextStyle}`, {
-  animation: `log-draw 800ms steps(${COMMAND_STEPS}) 300ms both`,
+  animation: `log-draw ${arrival.commandDuration}ms steps(${COMMAND_STEPS}) ${arrival.commandDelay}ms both`,
 });
 
 export const argStyle = recipe({
@@ -515,6 +516,8 @@ const order = (value: number) => ({ order: value });
 
 export const refsStyle = style({
   ...order(0),
+  // Hugs the pills: the row is a hover target for the filter, the empty width is not.
+  alignSelf: "flex-start",
   display: "flex",
   flexWrap: "wrap",
   gap: vars.spacing.xs,
@@ -524,7 +527,7 @@ export const refsStyle = style({
 
 const pill = {
   ...machine,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   display: "inline-flex",
   alignItems: "center",
   gap: "0.35em",
@@ -578,7 +581,7 @@ export const companyStyle = style({
   ...order(1),
   margin: `${vars.spacing.xs} 0 0`,
   fontSize: vars.fontSize["3xl"],
-  fontWeight: vars.fontWeight.bold,
+  ...weight(vars.fontWeight.bold),
   lineHeight: 1.02,
   letterSpacing: "-0.025em",
   "@media": {
@@ -738,7 +741,7 @@ export const commitTitleStyle = style({
   // First line centred on the node line, whatever the font size.
   margin: `calc(${geometry.nodeY} - 0.5lh) 0 0`,
   fontSize: vars.fontSize.lg,
-  fontWeight: vars.fontWeight.semibold,
+  ...weight(vars.fontWeight.semibold),
   lineHeight: vars.lineHeight.tight,
   letterSpacing: "-0.01em",
   "@media": {
@@ -818,7 +821,7 @@ export const machineRowStyle = style({
 
 export const mergedNameStyle = style({
   color: vars.colors.foreground,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
 });
 
 // ── Foot: end of log + legend ────────────────────────────────────────────────

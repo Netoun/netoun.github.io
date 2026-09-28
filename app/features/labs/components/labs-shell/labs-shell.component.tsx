@@ -20,7 +20,7 @@ export function LabsShell({ children }: LabsShellProps) {
   // exists below the lg breakpoint, so it never traps desktop scroll).
   useEffect(() => {
     if (!menuOpen) return;
-    const overlay = window.matchMedia("(max-width: 1023.98px)");
+    const overlay = window.matchMedia("(max-width: 63.99875em)");
     if (!overlay.matches) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -53,7 +53,7 @@ export function LabsShell({ children }: LabsShellProps) {
               netoun.com
             </Link>
             <div className={styles.brandRow}>
-              <NavLink to="/labs" end className={styles.brand} onClick={closeMenu}>
+              <NavLink to="/labs/" end className={styles.brand} onClick={closeMenu}>
                 <span className={styles.brandMark}>▚</span>
                 LABS
               </NavLink>
@@ -76,7 +76,9 @@ export function LabsShell({ children }: LabsShellProps) {
               aria-controls="labs-nav"
               onClick={() => setMenuOpen((open) => !open)}
             >
-              {menuOpen ? "_CLOSE_" : "_MENU_"}
+              <Glyph>_</Glyph>
+              {menuOpen ? "CLOSE" : "MENU"}
+              <Glyph>_</Glyph>
             </button>
           </div>
 
@@ -88,7 +90,7 @@ export function LabsShell({ children }: LabsShellProps) {
                 {section.experiments.map((experiment) => (
                   <NavLink
                     key={experiment.slug}
-                    to={`/labs/${experiment.slug}`}
+                    to={`/labs/${experiment.slug}/`}
                     className={styles.navLink}
                     data-accent={experiment.accent}
                     onClick={closeMenu}

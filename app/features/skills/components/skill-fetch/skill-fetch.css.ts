@@ -1,22 +1,24 @@
+import { arrival } from "@styles/motion.css";
 import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
 import { createVar, globalStyle, style, styleVariants } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 import type { StackDomain } from "../../data/skills-data.types";
+import { weight } from "@styles/weight";
 
 // The machine voice of the readout: Doto at the legible floor (weight ≥ 800), tabular numerals.
 export const machine = {
   fontFamily: vars.fontFamily.doto,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   fontVariantNumeric: "tabular-nums",
 } as const;
 
 // Characters in `_❯ fastfetch --logo netoun`: one typing step per character.
 const COMMAND_STEPS = 25;
 // Arrival timeline (ms from the section reveal): command, logo, then the readout lines.
-export const LOGO_START = 500;
+export const LOGO_START = arrival.commandDelay + 200;
 export const LOGO_STEP = 28;
-const LINE_START = 900;
+const LINE_START = arrival.output;
 const LINE_STEP = 55;
 
 /**
@@ -214,7 +216,7 @@ globalStyle(`[data-reveal="idle"] ${commandTextStyle}`, {
 });
 
 globalStyle(`[data-reveal="revealed"] ${commandTextStyle}`, {
-  animation: `fetch-type 800ms steps(${COMMAND_STEPS}) 200ms both`,
+  animation: `fetch-type ${arrival.commandDuration}ms steps(${COMMAND_STEPS}) ${arrival.commandDelay}ms both`,
 });
 
 export const cursorStyle = style({
@@ -347,13 +349,13 @@ export const lineValueStyle = style({
 // like the hero headline (bold italic, tight tracking).
 export const partTones = styleVariants({
   strong: {
-    fontWeight: vars.fontWeight.semibold,
+    ...weight(vars.fontWeight.semibold),
   },
   muted: {
     color: vars.colors.mutedForegroundOnDark,
   },
   role: {
-    fontWeight: vars.fontWeight.bold,
+    ...weight(vars.fontWeight.bold),
     fontStyle: "italic",
     letterSpacing: "-0.01em",
   },

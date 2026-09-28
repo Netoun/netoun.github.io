@@ -21,10 +21,16 @@ Currently working at Lonestone as a Full-stack engineer.
 ### Stack (each tool ships in a project, a job, a Lab or this site)
 - Frontend: React, TypeScript, Next.js, Vanilla Extract, Tailwind CSS, React Router, React Aria, anime.js
 - Backend: NestJS, Node.js, PostgreSQL, Drizzle, MikroORM, Bun, Elysia, Cloudflare, Keycloak, Zod, Monorepos, Queues, Streaming
-- Creative: Three.js, Canvas 2D, WebGL, WebGPU, Rust, Python
+- Creative: Three.js, Canvas 2D, WebGL, WebGPU
+- Systems & AI: Rust, Python
 - Tooling: Vite, Vitest
 
 ## Projects
+### My website
+- URL: https://github.com/netoun/netoun.github.io
+- Description: My personal portfolio with a neo-retro futuristic design system, built with React Router v8 and Vanilla Extract
+- Tech: React, TypeScript, Vanilla Extract, React Router
+
 ### Treashunt
 - URL: https://treashunt.com
 - Description: Personal project - Adventure design platform with exciting challenges

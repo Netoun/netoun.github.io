@@ -1,6 +1,9 @@
 import type { LabExperiment } from "./labs.types";
 
-/** Production origin used for canonical + Open Graph URLs. */
+/**
+ * Production origin used for canonical + Open Graph URLs. Labs URLs end with a slash: Pages
+ * serves `labs/index.html` there and 308s the slashless form to it.
+ */
 export const SITE_URL = "https://www.netoun.com";
 
 const LABS_DESCRIPTION =
@@ -14,7 +17,7 @@ export type MetaDescriptor =
 
 /** Per-experiment SEO meta: title, description, keywords, OG, Twitter, canonical. */
 export function buildExperimentMeta(experiment: LabExperiment): MetaDescriptor[] {
-  const url = `${SITE_URL}/labs/${experiment.slug}`;
+  const url = `${SITE_URL}/labs/${experiment.slug}/`;
   // Topic-first title: the experiment name + its technique group lead, so a
   // query like "computer 3d css" matches "3D Computer · 3D CSS" up front.
   const title = `${experiment.title} · ${experiment.group} — Netoun Labs`;
@@ -36,7 +39,7 @@ export function buildExperimentMeta(experiment: LabExperiment): MetaDescriptor[]
 
 /** SEO meta for the `/labs` index. */
 export function buildLabsIndexMeta(): MetaDescriptor[] {
-  const url = `${SITE_URL}/labs`;
+  const url = `${SITE_URL}/labs/`;
   const title = "Netoun - Labs";
 
   return [

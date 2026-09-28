@@ -3,6 +3,7 @@ import { globalStyle } from "@vanilla-extract/css";
 import { dockClearance } from "./dock.css";
 import { vars } from "./theme.css";
 import "./animations.css";
+import { weight } from "./weight";
 
 // 1. Use a more-intuitive box-sizing model
 globalStyle("*, *::before, *::after", {
@@ -77,6 +78,13 @@ globalStyle("#root, #__next", {
 // Font family for html and body
 globalStyle("html, body", {
   fontFamily: vars.fontFamily.ppNeueMontreal,
+  ...weight(vars.fontWeight.normal),
+});
+
+// The user agent's bold elements, for WebKit's weight axis (see `weight`). Zero specificity:
+// a component's own weight wins.
+globalStyle(":where(h1, h2, h3, h4, h5, h6, b, strong, th)", {
+  ...weight(vars.fontWeight.bold),
 });
 
 // 10. Visible keyboard focus: ink on paper, gold where a dark surface remaps `ring`.

@@ -1,8 +1,10 @@
 import { globalFontFace } from "@vanilla-extract/css";
 
+// The variable file's weight axis runs 200–800 from a Thin default instance.
 const PPNeueMontreal = "PPNeueMontreal";
 globalFontFace(PPNeueMontreal, {
   src: 'url(/fonts/PPNeueMontreal-Variable.woff2) format("woff2")',
+  fontWeight: "200 800",
   fontDisplay: "swap",
 });
 

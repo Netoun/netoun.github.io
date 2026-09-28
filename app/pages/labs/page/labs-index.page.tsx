@@ -24,7 +24,7 @@ export default function LabsIndexPage() {
         {experiments.map((experiment) => (
           <Link
             key={experiment.slug}
-            to={`/labs/${experiment.slug}`}
+            to={`/labs/${experiment.slug}/`}
             className={styles.card}
             data-accent={experiment.accent}
           >

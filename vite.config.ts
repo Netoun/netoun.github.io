@@ -71,8 +71,9 @@ function sitemapPlugin(): Plugin {
     generateBundle() {
       if (this.environment.name !== "client") return;
 
+      // Pages serves each prerendered `index.html` under its folder's slash URL.
       const pages = PRERENDERED_PATHS.map((path) => ({
-        url: `${SITE_URL}${path}`,
+        url: `${SITE_URL}${path.endsWith("/") ? path : `${path}/`}`,
         priority: sitemapPriority(path),
       }));
       const urls = pages

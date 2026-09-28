@@ -11,6 +11,7 @@ import {
   heroSideBySideMedia,
   heroStackedLaptopWidth,
 } from "./welcome-hero-layout.css";
+import { weight } from "@styles/weight";
 
 export const welcomeSectionStyles = style({
   position: "relative",
@@ -90,7 +91,7 @@ export const welcomeButtonStyles = style([
     fontFamily: vars.fontFamily.doto,
     maxWidth: "300px",
     fontSize: vars.fontSize.xl,
-    fontWeight: "900",
+    ...weight("900"),
 
     marginTop: vars.spacing.sm,
     textShadow: vars.textShadow.glowPrimary,

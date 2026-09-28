@@ -25,8 +25,8 @@ function renderFooter() {
         <Footer
           id="contact"
           links={LINKS}
-          labs={{ href: "/labs", count: 10 }}
-          rackLabHref="/labs/server-unit-3d"
+          labs={{ href: "/labs/", count: 10 }}
+          rackLabHref="/labs/server-unit-3d/"
           status={STATUS}
         />
       ),
@@ -84,12 +84,12 @@ describe("Footer", () => {
     renderFooter();
     expect(
       screen.getByRole("link", { name: /10 experiments, live with their source/ }),
-    ).toHaveAttribute("href", "/labs");
+    ).toHaveAttribute("href", "/labs/");
     expect(
       screen.getByRole("link", {
         name: "/labs/server-unit-3d — the server rack, live with its source",
       }),
-    ).toHaveAttribute("href", "/labs/server-unit-3d");
+    ).toHaveAttribute("href", "/labs/server-unit-3d/");
   });
 
   it("prints the build facts and takes the copyright year from the build", () => {
@@ -112,8 +112,8 @@ describe("Footer", () => {
         element: (
           <Footer
             links={LINKS}
-            labs={{ href: "/labs", count: 10 }}
-            rackLabHref="/labs/server-unit-3d"
+            labs={{ href: "/labs/", count: 10 }}
+            rackLabHref="/labs/server-unit-3d/"
             status={{ ...STATUS, commit: "" }}
           />
         ),

@@ -1,6 +1,7 @@
 import { motion } from "@styles/motion.css";
 import { vars } from "@styles/theme.css";
 import { recipe } from "@vanilla-extract/recipes";
+import { weight } from "@styles/weight";
 
 export const buttonRecipe = recipe({
   base: {
@@ -8,7 +9,7 @@ export const buttonRecipe = recipe({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: vars.radius.lg,
-    fontWeight: vars.fontWeight.medium,
+    ...weight(vars.fontWeight.medium),
     fontSize: vars.fontSize.sm,
     lineHeight: vars.lineHeight.tight,
     border: "1px solid transparent",

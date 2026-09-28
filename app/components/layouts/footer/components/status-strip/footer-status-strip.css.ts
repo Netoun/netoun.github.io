@@ -2,6 +2,7 @@ import { keyframes, style } from "@vanilla-extract/css";
 import { breakpoints } from "@/styles/responsive.css";
 import { motion } from "@/styles/motion.css";
 import { vars } from "@/styles/theme.css";
+import { weight } from "@styles/weight";
 
 const paper = (percent: number) =>
   `color-mix(in srgb, ${vars.colors.background} ${percent}%, transparent)`;
@@ -25,7 +26,7 @@ export const stripStyle = style({
     0 6px 16px rgba(0, 0, 0, 0.35)
   `,
   fontFamily: vars.fontFamily.doto,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   fontSize: vars.fontSize.xs,
   letterSpacing: "0.14em",
   lineHeight: 1.6,
@@ -173,7 +174,7 @@ export const copyrightStyle = style({
   margin: 0,
   paddingBottom: vars.spacing.sm,
   fontFamily: vars.fontFamily.ppNeueMontreal,
-  fontWeight: vars.fontWeight.normal,
+  ...weight(vars.fontWeight.normal),
   fontSize: "0.8125rem",
   letterSpacing: 0,
   color: vars.colors.mutedForegroundOnDark,

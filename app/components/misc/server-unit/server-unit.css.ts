@@ -1,5 +1,6 @@
 import { createVar, fallbackVar, keyframes, style, styleVariants } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css";
+import { weight } from "@styles/weight";
 
 /**
  * Rack sizing contract. A `size` preset sets it on the rack; with `size="inherit"` the host
@@ -221,7 +222,7 @@ export const serverBrandTitleStyle = style({
   letterSpacing: "0.6px",
   textTransform: "uppercase",
   color: `color-mix(in srgb, ${vars.colors.primary} 70%, ${vars.colors.foreground})`,
-  fontWeight: vars.fontWeight.bold,
+  ...weight(vars.fontWeight.bold),
   textShadow: vars.textShadow.glow,
 });
 
@@ -229,7 +230,7 @@ export const serverBrandRackStyle = style({
   fontSize: "4px",
   letterSpacing: "0.4px",
   color: `color-mix(in srgb, ${vars.colors.foreground} 38%, transparent)`,
-  fontWeight: vars.fontWeight.bold,
+  ...weight(vars.fontWeight.bold),
 });
 
 // Pull handles: small chrome bars catching the light from the top left.
@@ -518,7 +519,7 @@ export const statusLedStyle = style({
 export const statusLabelStyle = style({
   fontSize: "4px",
   color: `color-mix(in srgb, ${vars.colors.foreground} 38%, transparent)`,
-  fontWeight: vars.fontWeight.bold,
+  ...weight(vars.fontWeight.bold),
   letterSpacing: "0.5px",
   textTransform: "uppercase",
   flex: 1,
@@ -580,7 +581,7 @@ export const patchJackHeadStyle = style({
   height: "5px",
   fontFamily: vars.fontFamily.doto,
   fontSize: "5px",
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   lineHeight: 1,
   letterSpacing: "0.6px",
   color: `color-mix(in srgb, ${vars.colors.background} 55%, transparent)`,

@@ -44,6 +44,8 @@ export function Footer({ className, id, links, labs, rackLabHref, status }: Foot
   const plugged = active ?? resting;
   const pluggedIndex = ports.findIndex((port) => port.id === plugged);
   const pluggedPort = pluggedIndex === -1 ? null : ports[pluggedIndex];
+  // The caption prints the path the way people type it; the link keeps the served slash.
+  const rackLabPath = rackLabHref.replace(/\/$/, "");
 
   // The resting cable draws itself the first time the panel comes into view.
   const { ref: panelRef, isIntersecting } = useIntersectionObserver<HTMLDivElement>({
@@ -71,10 +73,10 @@ export function Footer({ className, id, links, labs, rackLabHref, status }: Foot
               <Link
                 to={rackLabHref}
                 className={styles.rackCaptionStyle}
-                aria-label={`${rackLabHref} — the server rack, live with its source`}
+                aria-label={`${rackLabPath} — the server rack, live with its source`}
               >
                 <Glyph className={styles.rackCaptionArrowStyle}>⤘</Glyph>
-                {rackLabHref}
+                {rackLabPath}
               </Link>
             </div>
 

@@ -24,7 +24,7 @@ export function WelcomeHeroContactHoverCard() {
   }, []);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const mediaQuery = window.matchMedia("(max-width: 47.99875em)");
 
     const updatePlacement = () => {
       setIsMobile(mediaQuery.matches);
@@ -40,7 +40,9 @@ export function WelcomeHeroContactHoverCard() {
 
   const label = (
     <>
-      <span className={buttonStyles.welcomeButtonLabelStyles}>_Get in touch_</span>
+      <span className={buttonStyles.welcomeButtonLabelStyles}>
+        <Glyph>_</Glyph>Get in touch<Glyph>_</Glyph>
+      </span>
       <Glyph className={buttonStyles.welcomeButtonArrowStyles}>⤘</Glyph>
     </>
   );

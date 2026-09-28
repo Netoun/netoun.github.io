@@ -55,7 +55,7 @@ export function WelcomeHeroSectionContent() {
 
       <div className={styles.welcomeActionsStyles}>
         <WelcomeHeroContactHoverCard />
-        <Link to="/labs" className={styles.welcomeLabsLinkStyles}>
+        <Link to="/labs/" className={styles.welcomeLabsLinkStyles}>
           Explore the Labs <span aria-hidden="true">→</span>
         </Link>
         <WelcomeHeroSpecNote

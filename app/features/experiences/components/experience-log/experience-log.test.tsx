@@ -62,15 +62,30 @@ describe("ExperienceLog", () => {
     expect(screen.getByText("Initial commit").closest("[aria-hidden='true']")).not.toBeNull();
   });
 
-  it("filters to a branch under a mouse pointer only", () => {
+  it("filters to a branch from its ref pill, under a mouse pointer only", () => {
     const onLitBranchChange = renderLog();
     const [lonestone] = within(
       screen.getByRole("list", { name: "Work history, newest first" }),
     ).getAllByRole("listitem");
-    fireEvent.pointerEnter(lonestone, { pointerType: "touch" });
+    // The group fills the screen: a mouse resting on it while the page scrolls filters nothing.
+    fireEvent.pointerMove(lonestone, { pointerType: "mouse" });
     expect(onLitBranchChange).not.toHaveBeenCalled();
-    fireEvent.pointerEnter(lonestone, { pointerType: "mouse" });
+    const pills = screen.getByText("lonestone").closest("[aria-hidden='true']");
+    expect(pills).not.toBeNull();
+    fireEvent.pointerMove(pills as HTMLElement, { pointerType: "touch" });
+    expect(onLitBranchChange).not.toHaveBeenCalled();
+    fireEvent.pointerMove(pills as HTMLElement, { pointerType: "mouse" });
     expect(onLitBranchChange).toHaveBeenCalledWith("lonestone");
+    fireEvent.pointerLeave(pills as HTMLElement, { pointerType: "mouse" });
+    expect(onLitBranchChange).toHaveBeenLastCalledWith(null);
+  });
+
+  it("ignores the pointer while the page scrolls", () => {
+    const onLitBranchChange = renderLog();
+    const pills = screen.getByText("lonestone").closest("[aria-hidden='true']");
+    fireEvent.scroll(window);
+    fireEvent.pointerMove(pills as HTMLElement, { pointerType: "mouse" });
+    expect(onLitBranchChange).not.toHaveBeenCalled();
   });
 
   it("fades the other branches while one is lit", () => {

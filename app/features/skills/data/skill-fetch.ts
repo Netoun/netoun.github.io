@@ -29,7 +29,10 @@ const TOOL_ALIASES: Partial<Record<string, string[]>> = {
   Queues: ["Queue"],
 };
 
-/** The package.json entry that proves a tool on this site. */
+/**
+ * The package.json entry that proves a tool on this site. Runtime or build packages only: a
+ * types package proves nothing ships (WebGPU's receipt is the mesh Lab, which renders with it).
+ */
 const SITE_PACKAGES: Partial<Record<string, string>> = {
   React: "react",
   TypeScript: "typescript",
@@ -37,7 +40,6 @@ const SITE_PACKAGES: Partial<Record<string, string>> = {
   "React Router": "react-router",
   "React Aria": "react-aria-components",
   "anime.js": "animejs",
-  WebGPU: "@webgpu/types",
   Vite: "vite",
   Vitest: "vitest",
 };

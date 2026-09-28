@@ -3,6 +3,7 @@ import { DOCK_HEIGHT, DOCK_OFFSET } from "@/styles/dock.css";
 import { motion } from "@/styles/motion.css";
 import { breakpoints } from "@/styles/responsive.css";
 import { vars } from "@/styles/theme.css";
+import { weight } from "@styles/weight";
 
 // Sections nav: a small ink capsule docked at the foot of the screen. At rest it is one status
 // line (the current section, LABS →) with the neon track along its foot; open, it grows upward
@@ -74,14 +75,13 @@ export const navStyle = style({
     `0 14px 32px -14px color-mix(in srgb, ${vars.colors.foreground} 60%, transparent)`,
   ].join(", "),
 
-  // Hidden while the hero is in view and once the footer holds the screen; visibility keeps
-  // the links out of the tab order meanwhile.
+  // Hidden while the hero is in view and once the footer holds the screen, but still in the tab
+  // order: it is the page's first stop, and focus brings it back (above the hero stage too).
   opacity: 0,
-  visibility: "hidden",
   pointerEvents: "none",
   transform: "translateY(1rem)",
-  transitionProperty: "opacity, transform, visibility, grid-template-rows, border-radius",
-  transitionDuration: `${motion.duration.base}, ${motion.duration.base}, ${motion.duration.base}, ${OPEN_DURATION}, ${OPEN_DURATION}`,
+  transitionProperty: "opacity, transform, grid-template-rows, border-radius",
+  transitionDuration: `${motion.duration.base}, ${motion.duration.base}, ${OPEN_DURATION}, ${OPEN_DURATION}`,
   transitionTimingFunction: motion.easing.signature,
 
   "@media": {
@@ -107,12 +107,12 @@ export const navStyle = style({
   },
 
   selectors: {
-    "&[data-visible]": {
+    "&[data-visible], &:focus-within": {
       opacity: 1,
-      visibility: "visible",
       pointerEvents: "auto",
       transform: "none",
     },
+    "&:focus-within": { zIndex: 42 },
     "&[data-open]": {
       gridTemplateRows: "1fr auto auto",
       borderRadius: openRadius,
@@ -269,7 +269,7 @@ export const toggleStyle = style({
   borderRadius: vars.radius.sm,
   backgroundColor: "transparent",
   color: vars.colors.background,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   textAlign: "left",
   cursor: "pointer",
   transition: `color ${motion.duration.fast} ${motion.easing.out}`,
@@ -287,7 +287,7 @@ export const toggleLabelStyle = style({
 });
 
 export const indexStyle = style({
-  fontWeight: 800,
+  ...weight(800),
   color: vars.colors.mutedForegroundOnDark,
 });
 
@@ -339,7 +339,7 @@ export const labsStyle = style({
   marginRight: "0.75rem",
   paddingInline: "0.5rem",
   borderRadius: vars.radius.sm,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   color: paperAt(82),
   textDecoration: "none",
   transition: `color ${motion.duration.fast} ${motion.easing.out}`,
@@ -394,13 +394,13 @@ export const linkStyle = style({
   height: rowHeight,
   paddingInline: vars.spacing.sm,
   borderRadius: vars.radius.sm,
-  fontWeight: 800,
+  ...weight(800),
   color: vars.colors.mutedForegroundOnDark,
   textDecoration: "none",
   transition: `color ${motion.duration.fast} ${motion.easing.out}`,
   selectors: {
     '&[aria-current="true"]': {
-      fontWeight: vars.fontWeight.extrabold,
+      ...weight(vars.fontWeight.extrabold),
       color: vars.colors.background,
       backgroundColor: paperAt(8),
     },

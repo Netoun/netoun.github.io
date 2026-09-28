@@ -54,12 +54,14 @@ export function WelcomeHeroSection() {
             >
               <WelcomeHeroFilterBackground onRendererReady={setRenderer} />
               <WelcomeHeroSpecOverlay />
+              <WelcomeHeroSectionContent />
+              {/* Drawn along the top edge but read after the h1 and the lead: its tabs are
+                  an extra, not the page's first words or first tab stop. */}
               <WelcomeHeroSpecHeader
                 file={specFile}
                 onFileChange={setSpecFile}
                 renderer={renderer}
               />
-              <WelcomeHeroSectionContent />
             </div>
 
             <WelcomeHeroComputerComponent mousePositionRef={mousePositionRef} />

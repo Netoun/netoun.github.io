@@ -1,13 +1,14 @@
-import { motion } from "@styles/motion.css";
+import { arrival, motion } from "@styles/motion.css";
 import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
 import { globalStyle, style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
+import { weight } from "@styles/weight";
 
 // The machine voice of the monitor: Doto at the legible floor (weight ≥ 800), tabular numerals.
 const machine = {
   fontFamily: vars.fontFamily.doto,
-  fontWeight: vars.fontWeight.extrabold,
+  ...weight(vars.fontWeight.extrabold),
   fontVariantNumeric: "tabular-nums",
 } as const;
 
@@ -16,7 +17,7 @@ const rule = `1px solid color-mix(in srgb, ${vars.colors.cardBorder} 55%, transp
 // Characters in `_❯ netoun ps --projects`: one typing step per character.
 const COMMAND_STEPS = 23;
 // Arrival timeline (ms from the section reveal): command, then meters, then rows.
-const ROW_START = 1100;
+const ROW_START = arrival.output;
 const ROW_STEP = 60;
 const MAX_STAGGERED_ROWS = 12;
 
@@ -93,7 +94,7 @@ globalStyle(`[data-reveal="idle"] ${commandTextStyle}`, {
 });
 
 globalStyle(`[data-reveal="revealed"] ${commandTextStyle}`, {
-  animation: `monitor-type 800ms steps(${COMMAND_STEPS}) 300ms both`,
+  animation: `monitor-type ${arrival.commandDuration}ms steps(${COMMAND_STEPS}) ${arrival.commandDelay}ms both`,
 });
 
 export const cursorStyle = style({
@@ -299,7 +300,12 @@ export const rowStyle = style({
       minHeight: "2.75rem",
       padding: `0 ${vars.spacing.lg}`,
       alignItems: "center",
+      cursor: "pointer",
       selectors: {
+        // Pointing previews nothing: a faint wash says the row takes a click.
+        "&[data-hovered]:not([data-selected])": {
+          backgroundColor: `color-mix(in srgb, ${vars.colors.secondary} 8%, transparent)`,
+        },
         // The mint wash fades towards the date, like a phosphor bar.
         "&[data-selected]": {
           backgroundImage: `linear-gradient(90deg, color-mix(in srgb, ${vars.colors.secondary} 32%, transparent), color-mix(in srgb, ${vars.colors.secondary} 18%, transparent) 65%, color-mix(in srgb, ${vars.colors.secondary} 10%, transparent))`,
@@ -360,7 +366,7 @@ export const cellNameStyle = style({
   maxWidth: "100%",
   fontFamily: vars.fontFamily.ppNeueMontreal,
   fontSize: vars.fontSize.xl,
-  fontWeight: vars.fontWeight.semibold,
+  ...weight(vars.fontWeight.semibold),
   lineHeight: vars.lineHeight.tight,
   color: vars.colors.foreground,
   textDecoration: "none",
@@ -411,15 +417,19 @@ export const cellHostStyle = style({
   ...machine,
   gridArea: "host",
   minWidth: 0,
-  overflow: "hidden",
-  textOverflow: "ellipsis",
-  whiteSpace: "nowrap",
+  // Narrow screens have no detail pane to show the rest: the address wraps, never truncates.
+  overflowWrap: "anywhere",
   fontSize: vars.fontSize.sm,
   letterSpacing: "0.04em",
   color: vars.colors.mutedForeground,
   "@media": {
     [breakpoints.md]: { display: "none" },
-    [breakpoints.lg]: { display: "block" },
+    [breakpoints.lg]: {
+      display: "block",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+    },
   },
 });
 
