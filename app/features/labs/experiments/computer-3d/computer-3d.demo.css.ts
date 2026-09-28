@@ -10,11 +10,15 @@ export const stageInner = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  // Full row width, so the laptop's `maxWidth` shrinks it on a phone.
+  width: "100%",
   transform: `scale(${stageScale})`,
 });
 
 export const wrapper3d = style({
-  width: "22rem",
+  // The hero's desktop width: the perspective is in px, so a smaller laptop
+  // reads flatter than the homepage's.
+  width: "40rem",
   maxWidth: "100%",
   transformStyle: "preserve-3d",
   transform: `rotateX(${stageRotateX}) rotateY(${stageRotateY}) rotateZ(${stageRotateZ})`,

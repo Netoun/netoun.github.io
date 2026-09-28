@@ -2,11 +2,16 @@ import { style } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css";
 import { weight } from "@styles/weight";
 
+// The keyboard scales with the chassis face (its container): lengths are in
+// the rem of the Lab's 22rem laptop, whose face is 12.2rem wide — so the keys
+// keep their height whatever size the laptop is drawn at.
+const u = (value: number) => `calc(${value} * 100cqi / 12.2)`;
+
 export const computerKeyboardStyle = style({
   width: "100%",
   display: "grid",
-  padding: "0.3rem",
-  paddingTop: "1rem",
+  padding: u(0.3),
+  paddingTop: u(1),
   boxSizing: "border-box",
   height: "fit-content",
 });
@@ -14,21 +19,21 @@ export const computerKeyboardStyle = style({
 export const computerKeyboardRowStyle = style({
   display: "grid",
   gridTemplateColumns: "repeat(45, 1fr)",
-  gridTemplateRows: "0.9rem",
+  gridTemplateRows: u(0.9),
   height: "fit-content",
 });
 
 export const computerKeyboardKeyStyle = style({
   background: `color-mix(in srgb, ${vars.colors.foreground} 95%, ${vars.colors.tertiary})`,
-  border: `0.05rem solid color-mix(in srgb, ${vars.colors.foreground} 70%, ${vars.colors.tertiary})`,
-  borderRadius: "0.15rem",
+  border: `${u(0.05)} solid color-mix(in srgb, ${vars.colors.foreground} 70%, ${vars.colors.tertiary})`,
+  borderRadius: u(0.15),
   boxShadow: `
-    inset 0 0.05rem 0.1rem color-mix(in srgb, ${vars.colors.foreground} 30%, transparent),
-    0 0.05rem 0 color-mix(in srgb, ${vars.colors.background} 10%, transparent)
+    inset 0 ${u(0.05)} ${u(0.1)} color-mix(in srgb, ${vars.colors.foreground} 30%, transparent),
+    0 ${u(0.05)} 0 color-mix(in srgb, ${vars.colors.background} 10%, transparent)
   `,
   position: "relative",
 
-  fontSize: "0.18rem",
+  fontSize: u(0.18),
   color: vars.colors.background,
   display: "flex",
   alignItems: "center",

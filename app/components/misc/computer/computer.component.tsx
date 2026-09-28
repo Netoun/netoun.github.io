@@ -56,6 +56,7 @@ export function Computer({ children, className, ...props }: ComputerProps) {
       >
         <div id="computer-frame-chassis-front" className={styles.computerFrameChassisFrontStyle}>
           <ComputerKeyboard />
+          <div className={styles.computerTrackpadStyle} />
         </div>
         <div id="computer-frame-chassis-back" className={styles.computerFrameChassisBackStyle} />
         <div

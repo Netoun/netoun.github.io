@@ -191,8 +191,22 @@ export const computerFrameChassisFrontStyle = style([
   chassisFaceWithBackground(),
   {
     padding: vars.spacing.sm,
+    // The keyboard sizes itself on this face's width (`cqi`).
+    containerType: "inline-size",
   },
 ]);
+
+// Palm rest, under the keyboard: sized on the chassis face like the keys.
+export const computerTrackpadStyle = style({
+  width: "38%",
+  aspectRatio: "16 / 10",
+  marginInline: "auto",
+  marginTop: "3cqi",
+  background: `color-mix(in srgb, ${vars.colors.foreground} 92%, ${vars.colors.tertiary})`,
+  border: `0.4cqi solid color-mix(in srgb, ${vars.colors.foreground} 70%, ${vars.colors.tertiary})`,
+  borderRadius: "2.5cqi",
+  boxShadow: `inset 0 0.4cqi 0.8cqi color-mix(in srgb, ${vars.colors.foreground} 30%, transparent)`,
+});
 
 export const computerFrameChassisBackStyle = chassisFaceWithBackground("translateZ(-10px)");
 

@@ -10,7 +10,9 @@ import {
 } from "../../components/labs-control/labs-control.component";
 import * as styles from "./computer-3d.demo.css";
 
-const DEFAULT_ROTATE = { x: 0, y: 0, z: 0 };
+// The home hero's resting pose (its 3deg tilt vars × 1.8), so the Lab opens on
+// the laptop as the homepage draws it.
+const DEFAULT_ROTATE = { x: -5.4, y: 5.4, z: 0 };
 const DEFAULT_SCALE = 1;
 
 export function Computer3dDemo() {
