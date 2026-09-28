@@ -18,6 +18,20 @@ export const pageStyle = style({
   paddingBlock: vars.spacing["3xl"],
 });
 
+// With an aside (the 404's game), the message and the aside share the column below `xl` and
+// sit side by side from there, the aside at the width its content was drawn for.
+export const layoutStyle = style({
+  display: "grid",
+  gap: vars.spacing["3xl"],
+  alignItems: "start",
+});
+
+export const splitStyle = style({
+  "@media": {
+    [breakpoints.xl]: { gridTemplateColumns: "minmax(0, 1fr) minmax(0, 41.25rem)" },
+  },
+});
+
 export const contentStyle = style({
   display: "flex",
   flexDirection: "column",
@@ -107,6 +121,8 @@ export const titleStyle = style({
   textWrap: "balance",
   "@media": {
     [breakpoints.md]: { fontSize: vars.fontSize["7xl"] },
+    // Beside an aside the column is about 29rem wide: the title keeps to one line.
+    [breakpoints.xl]: { selectors: { [`${splitStyle} &`]: { fontSize: vars.fontSize["5xl"] } } },
   },
 });
 
@@ -158,6 +174,23 @@ export const linkStyle = recipe({
       },
       false: {},
     },
+  },
+});
+
+// The LED a page lights on a way back (the 404's game, once won). Gold is legal: it sits on the
+// ink pill of the first link.
+export const litStyle = style({
+  display: "block",
+  flexShrink: 0,
+  width: "0.4375rem",
+  height: "0.4375rem",
+  marginRight: vars.spacing.sm,
+  borderRadius: vars.radius.full,
+  backgroundColor: vars.colors.primary,
+  color: vars.colors.primary,
+  animation: "glowPulse 1.4s ease-out infinite",
+  "@media": {
+    "(prefers-reduced-motion: reduce)": { animation: "none" },
   },
 });
 

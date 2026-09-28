@@ -172,6 +172,28 @@ globalKeyframes("fetch-lit", {
   to: { opacity: 1 },
 });
 
+// 404 game (pages/not-found): the console types each line of the run, a cartridge drops into
+// its bay, the LED of the step being computed flickers, the idle power ring breathes.
+globalKeyframes("rack-type", {
+  from: { clipPath: "inset(0 100% 0 0)" },
+  to: { clipPath: "inset(0 0 0 0)" },
+});
+
+globalKeyframes("rack-drop", {
+  from: { opacity: 0.3, transform: "translateY(-12px)" },
+  to: { opacity: 1, transform: "none" },
+});
+
+globalKeyframes("rack-activity", {
+  "0%, 100%": { opacity: 1 },
+  "50%": { opacity: 0.25 },
+});
+
+globalKeyframes("rack-idle", {
+  "0%, 100%": { opacity: 1 },
+  "50%": { opacity: 0.55 },
+});
+
 // Fetch readout: the logo's holo gradient drifts, as the favicon's does (logo.svg).
 globalKeyframes("fetch-holo", {
   from: { backgroundPosition: "0% 50%" },

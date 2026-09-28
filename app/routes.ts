@@ -7,4 +7,6 @@ export default [
     route(":slug", "pages/labs/page/labs-experiment.page.tsx"),
   ]),
   route("misc", "pages/labs/page/misc-redirect.page.tsx"),
+  // Any other path: the 404 and its game. Not prerendered; Pages serves it as `404.html`.
+  route("*", "pages/not-found/page/not-found.page.tsx"),
 ] satisfies RouteConfig;

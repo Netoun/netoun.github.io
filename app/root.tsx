@@ -8,11 +8,11 @@ import {
   ScrollRestoration,
   useLocation,
 } from "react-router";
-import { useSyncExternalStore } from "react";
 import { I18nProvider } from "react-aria-components";
 import { ErrorScreen } from "@/components/layouts/error-screen/error-screen.component";
 import type { ErrorScreenLink } from "@/components/layouts/error-screen/error-screen.component";
 import { SITE_URL } from "@/features/labs/data/labs-seo";
+import { useIsHydrated } from "@/hooks/use-is-hydrated.hook";
 import { usePaperGrain } from "@/hooks/use-paper-grain.hook";
 import { contactLinks } from "@/pages/welcome/data/contact-links.data";
 import type { Route } from "./+types/root";
@@ -113,57 +113,36 @@ export default function App() {
   return <Outlet />;
 }
 
-const subscribeNever = () => () => {};
-
-// Unknown paths get the SPA fallback as `404.html` (react-router.config.ts): this boundary
-// renders there with the address that failed. The fallback's body is empty, so the boundary
-// hydrates as nothing and paints on the next render (server snapshot `false`, client `true`).
+// A route that throws lands here. Unknown paths do not: the `*` route (pages/not-found) takes
+// them. The boundary can render inside the SPA fallback, whose body is empty, so it hydrates as
+// nothing and paints on the next render.
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   const { pathname } = useLocation();
-  const isHydrated = useSyncExternalStore(
-    subscribeNever,
-    () => true,
-    () => false,
-  );
+  const isHydrated = useIsHydrated();
   if (!isHydrated) return null;
 
-  const isNotFound = isRouteErrorResponse(error) && error.status === 404;
   const code = isRouteErrorResponse(error) ? String(error.status) : "ERROR";
   const stack =
     import.meta.env.DEV && error instanceof Error ? (error.stack ?? error.message) : undefined;
 
   return (
     <>
-      <title>{isNotFound ? "Netoun - Page not found" : "Netoun - Error"}</title>
+      <title>Netoun - Error</title>
       <meta name="robots" content="noindex" />
-      {isNotFound ? (
-        <ErrorScreen
-          code={code}
-          title="Page not found"
-          command={`cd ${pathname}`}
-          output={`cd: no such file or directory: ${pathname}`}
-          links={ERROR_LINKS}
-        >
-          <p>
-            Nothing lives at <code>{pathname}</code>. The link may be old, or the address mistyped.
-          </p>
-        </ErrorScreen>
-      ) : (
-        <ErrorScreen
-          code={code}
-          title="Something broke"
-          command={`open ${pathname}`}
-          output={
-            isRouteErrorResponse(error) && error.statusText
-              ? `error: ${error.statusText}`
-              : "error: the page stopped"
-          }
-          links={ERROR_LINKS}
-          stack={stack}
-        >
-          <p>This page hit an error while loading. Reloading it usually helps.</p>
-        </ErrorScreen>
-      )}
+      <ErrorScreen
+        code={code}
+        title="Something broke"
+        command={`open ${pathname}`}
+        output={
+          isRouteErrorResponse(error) && error.statusText
+            ? `error: ${error.statusText}`
+            : "error: the page stopped"
+        }
+        links={ERROR_LINKS}
+        stack={stack}
+      >
+        <p>This page hit an error while loading. Reloading it usually helps.</p>
+      </ErrorScreen>
     </>
   );
 }

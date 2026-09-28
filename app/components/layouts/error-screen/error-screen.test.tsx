@@ -38,6 +38,30 @@ describe("ErrorScreen", () => {
     expect(screen.getByText("cd /old").closest("[aria-hidden='true']")).not.toBeNull();
   });
 
+  it("sets an aside beside the message", () => {
+    const router = createMemoryRouter([
+      {
+        path: "/",
+        element: (
+          <ErrorScreen
+            code="404"
+            title="Page not found"
+            command="cd /old"
+            output="cd: no such file or directory: /old"
+            links={[{ label: "Back home", to: "/", isLit: true }]}
+            aside={<section aria-label="Game" />}
+          >
+            <p>Nothing lives at /old.</p>
+          </ErrorScreen>
+        ),
+      },
+    ]);
+    render(<RouterProvider router={router} />);
+    expect(screen.getByRole("region", { name: "Game" })).toBeInTheDocument();
+    // The LED is drawn, not read: the link keeps its plain name.
+    expect(screen.getByRole("link", { name: "Back home" })).toBeInTheDocument();
+  });
+
   it("names the ways back without their terminal marks", () => {
     renderScreen();
     const nav = screen.getByRole("navigation", { name: "Ways back" });

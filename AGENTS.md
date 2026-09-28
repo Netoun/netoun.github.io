@@ -37,7 +37,7 @@ bunx vitest run app/components/primitives/button/button.test.tsx   # one test fi
 ```
 app/
   root.tsx                  # <html> layout, fonts, JSON-LD, ErrorBoundary
-  routes.ts                 # / → welcome · /labs → labs layout (index + :slug) · /misc → redirect
+  routes.ts                 # / → welcome · /labs → labs layout (index + :slug) · /misc → redirect · * → not-found
   components/               # shared UI — must NOT import features/ or pages/ (lint-enforced)
     layouts/                #   container, content-section, error-screen, feature-header, footer
     primitives/             #   button, glyph, slider, tag, terminal-buttons, icons
@@ -47,7 +47,7 @@ app/
     experiences/            #   work log (`git log --graph`) + data
     skills/                 #   fetch readout (`fastfetch`) + data
     labs/                   #   experiment registry, shell, code viewer, experiments/<slug>/
-  pages/<page>/             # welcome/, labs/ — page/<page>.page.tsx, sections/, components/, data/, hooks/
+  pages/<page>/             # welcome/, labs/, not-found/ — page/<page>.page.tsx, sections/, components/, data/, hooks/
   hooks/                    # use-animation-priority, use-current-month, use-intersection-observer, use-mouse-position, use-paper-grain, use-reveal
   styles/                   # theme (tokens), global, fonts, motion, animations, responsive
   types/                    # ambient declarations (?raw imports, build-time defines)
@@ -104,7 +104,7 @@ Labs experiments may import components from any domain — showcasing them is th
 - One `<h1>` per page. Interactive primitives via React Aria Components — no raw native substitutes.
 - Visible `:focus-visible` on everything interactive; WCAG AA contrast.
 - `public/llms.txt`, `public/robots.txt`, and the build-generated `sitemap.xml` must stay consistent with real routes and content.
-- Labs URLs end with a slash everywhere (links, canonical, sitemap, `_redirects`): Pages serves `labs/index.html` there and 308s the slashless form. Unknown paths get `404.html`, a copy of the SPA fallback made in `react-router.config.ts › buildEnd`; the root `ErrorBoundary` renders it.
+- Labs URLs end with a slash everywhere (links, canonical, sitemap, `_redirects`): Pages serves `labs/index.html` there and 308s the slashless form. Unknown paths get `404.html`, a copy of the SPA fallback made in `react-router.config.ts › buildEnd`; the `*` route (`pages/not-found`, the 404 and its game) renders it, and the root `ErrorBoundary` only handles thrown errors.
 
 ## Performance
 
