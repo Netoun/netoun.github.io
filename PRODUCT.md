@@ -29,7 +29,7 @@ Success = peers explore the Labs and share them; visitors leave knowing what Nic
 
 ## Capabilities and Constraints
 
-- Content is static TypeScript data: `app/features/projects/data/projects-data.ts`, `app/features/experiences/data/experiences-data.ts`, `app/features/skills/data/skills-data.ts`, `app/features/labs/data/experiments.ts`, `app/pages/welcome/data/contact-links.data.ts`.
+- Content is static TypeScript data: `app/features/projects/data/projects-data.ts`, `app/features/experiences/data/experiences-data.ts`, `app/features/skills/data/skills-data.ts`, `app/features/labs/data/experiments.ts`, `app/features/site/data/contact-links.data.ts`.
 - Every page must render fully without JS (prerender-safe) and respect `prefers-reduced-motion`.
 - Expensive animations are gated by visibility/idle (`use-animation-priority`); no Lighthouse regression is tolerated.
 - New runtime dependencies need justification; no heavy libraries (Framer Motion, Tailwind…).

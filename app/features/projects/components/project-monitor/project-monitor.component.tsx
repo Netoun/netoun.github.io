@@ -11,10 +11,10 @@ import {
   toProcesses,
 } from "../../data/project-processes";
 import type { ProcessSort, ProcessSortKey } from "../../data/project-processes";
-import { useChromeReflection } from "../../hooks/use-chrome-reflection.hook";
+import { useChromeReflection } from "@/hooks/use-chrome-reflection.hook";
 import type { Project } from "../../data/projects-data.types";
 import { ProjectMonitorBox } from "./components/project-monitor-box/project-monitor-box.component";
-import { ProjectMonitorCapture } from "./components/project-monitor-capture/project-monitor-capture.component";
+import { ChromeCapture } from "@/components/misc/chrome-capture/chrome-capture.component";
 import { ProjectMonitorDetail } from "./components/project-monitor-detail/project-monitor-detail.component";
 import { ProjectMonitorKeycap } from "./components/project-monitor-keycap/project-monitor-keycap.component";
 import { ProjectMonitorMeters } from "./components/project-monitor-meters/project-monitor-meters.component";
@@ -221,7 +221,7 @@ export function ProjectMonitor({ projects, isOnScreen }: ProjectMonitorProps) {
             <span className={styles.cellHostStyle}>{row.address}</span>
             <span className={styles.cellStackStyle}>{row.stack}</span>
             <span className={styles.cellDateStyle}>{row.yearMonth}</span>
-            <ProjectMonitorCapture src={row.image} className={styles.cellMediaStyle} />
+            <ChromeCapture src={row.image} className={styles.cellMediaStyle} />
             <p className={styles.cellDescriptionStyle}>{row.description}</p>
           </GridListItem>
         )}

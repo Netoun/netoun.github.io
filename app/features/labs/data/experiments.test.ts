@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { EXPERIMENT_SLUGS } from "./experiment-slugs";
 import { labs } from "./experiments";
-import { SITE_URL } from "./labs-seo";
+import { SITE_URL } from "@/features/site/data/site";
 
 // `EXPERIMENT_SLUGS` drives prerender (react-router.config.ts) and the sitemap
 // (vite.config.ts); the registry drives the UI. They must describe the same set.

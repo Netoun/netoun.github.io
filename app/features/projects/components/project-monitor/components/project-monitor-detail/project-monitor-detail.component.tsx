@@ -1,5 +1,5 @@
 import type { ProjectProcess } from "../../../../data/project-processes";
-import { ProjectMonitorCapture } from "../project-monitor-capture/project-monitor-capture.component";
+import { ChromeCapture } from "@/components/misc/chrome-capture/chrome-capture.component";
 import * as styles from "./project-monitor-detail.css";
 
 export interface ProjectMonitorDetailProps {
@@ -15,7 +15,7 @@ export function ProjectMonitorDetail({ process }: ProjectMonitorDetailProps) {
 
   return (
     <div className={styles.detailStyle} aria-hidden="true">
-      <ProjectMonitorCapture
+      <ChromeCapture
         // Remounted per project: the new capture arrives with one chrome glint.
         key={process.id}
         src={process.image}

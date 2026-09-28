@@ -1,11 +1,12 @@
 import { motion } from "@styles/motion.css";
 import { vars } from "@styles/theme.css";
-import { fallbackVar, globalStyle, style } from "@vanilla-extract/css";
-import { chromeReflection } from "@/features/projects/hooks/use-chrome-reflection.css";
+import { createVar, fallbackVar, globalStyle, style } from "@vanilla-extract/css";
+import { chromeReflection } from "@/hooks/use-chrome-reflection.css";
 
 // Polished chrome: cool silvers, a hair of the brand mint in the glint. The pointer over the
-// monitor turns the bezel (`chromeReflection.x`) and moves the glint (both axes),
-// set by use-chrome-reflection.hook.ts; without it the chrome rests at a fixed angle.
+// surface that runs use-chrome-reflection.hook.ts (the monitor, the Labs loupe) turns the bezel
+// (`chromeReflection.x`) and moves the glint (both axes); without it the chrome rests at a
+// fixed angle.
 const silver = {
   light: "oklch(0.95 0.004 250)",
   bright: "oklch(0.995 0 0)",
@@ -24,6 +25,15 @@ const GLINT = `linear-gradient(115deg,
   color-mix(in srgb, white 30%, transparent) 52%,
   transparent 62%)`;
 
+/**
+ * The screen's own ground behind a `contain` capture (ink glass, lit paper), set by the
+ * consumer's `screenClassName` through these vars: a class never has to out-rank the frame's.
+ */
+export const chromeScreen = {
+  color: createVar(),
+  image: createVar(),
+};
+
 // Glass over the screen: a faint sheen along the top edge, always there.
 const GLASS = `linear-gradient(180deg, color-mix(in srgb, white 16%, transparent), transparent 38%)`;
 
@@ -39,6 +49,12 @@ export const captureStyle = style({
     0 10px 22px -12px color-mix(in srgb, ${vars.colors.foreground} 45%, transparent),
     inset 0 1px 0 color-mix(in srgb, white 70%, transparent)
   `,
+  selectors: {
+    '&[data-size="sm"]': {
+      padding: "3px",
+      borderRadius: "6px",
+    },
+  },
 });
 
 export const frameStyle = style({
@@ -47,9 +63,15 @@ export const frameStyle = style({
   overflow: "hidden",
   aspectRatio: "16 / 10",
   borderRadius: "6px",
-  backgroundColor: vars.colors.cardBorder,
+  backgroundColor: fallbackVar(chromeScreen.color, vars.colors.cardBorder),
+  backgroundImage: fallbackVar(chromeScreen.image, "none"),
   // Seated behind the bezel: a dark lip and the glass sheen over the capture.
   boxShadow: `0 0 0 1px color-mix(in srgb, ${silver.deep} 85%, transparent)`,
+  selectors: {
+    [`${captureStyle}[data-size="sm"] &`]: {
+      borderRadius: "3px",
+    },
+  },
   "::after": {
     content: '""',
     position: "absolute",
@@ -66,6 +88,14 @@ export const imageStyle = style({
   width: "100%",
   height: "100%",
   objectFit: "cover",
+  selectors: {
+    // A cut-out specimen (transparent WebP) sits whole on the screen's own ground.
+    '&[data-fit="contain"]': {
+      objectFit: "contain",
+      padding: "6%",
+      boxSizing: "border-box",
+    },
+  },
 });
 
 export const glintStyle = style({

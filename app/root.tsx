@@ -11,10 +11,10 @@ import {
 import { I18nProvider } from "react-aria-components";
 import { ErrorScreen } from "@/components/layouts/error-screen/error-screen.component";
 import type { ErrorScreenLink } from "@/components/layouts/error-screen/error-screen.component";
-import { SITE_URL } from "@/features/labs/data/labs-seo";
+import { contactLinks } from "@/features/site/data/contact-links.data";
+import { SITE_URL } from "@/features/site/data/site";
 import { useIsHydrated } from "@/hooks/use-is-hydrated.hook";
 import { usePaperGrain } from "@/hooks/use-paper-grain.hook";
-import { contactLinks } from "@/pages/welcome/data/contact-links.data";
 import type { Route } from "./+types/root";
 import * as styles from "./root.css";
 

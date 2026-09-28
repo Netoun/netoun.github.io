@@ -1,10 +1,5 @@
+import { SITE_URL } from "@/features/site/data/site";
 import type { LabExperiment } from "./labs.types";
-
-/**
- * Production origin used for canonical + Open Graph URLs. Labs URLs end with a slash: Pages
- * serves `labs/index.html` there and 308s the slashless form to it.
- */
-export const SITE_URL = "https://www.netoun.com";
 
 const LABS_DESCRIPTION =
   "An interactive playground of the 3D, canvas and shader experiments powering netoun.com — live demos with their source code.";

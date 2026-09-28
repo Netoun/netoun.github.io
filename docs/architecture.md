@@ -58,6 +58,11 @@ app/features/
     data/
       experiences-data.ts
       experiences-data.types.ts
+  site/
+    data/
+      site.ts                  # SITE_URL
+      contact-links.data.ts
+      site-status.data.ts      # what the build says about itself (footer status strip)
 ```
 
 ### Rules
@@ -198,6 +203,7 @@ Enforced by oxlint (`no-restricted-imports` overrides in `.oxlintrc.json`) for `
 - Cross-page import forbidden: no import from `app/pages/<other-feature>/`.
 - Cross-business-domain import forbidden by default (`app/features/projects/` → `app/features/experiences/`). Extract into `app/components/` if generic, or request an architecture decision if truly shared business logic.
 - **Decided exception:** `app/features/labs/experiments/` may import components (and their `?raw` sources) from any domain — showcasing them is the purpose of the Labs.
+- **Decided exception:** `app/features/site/` holds the site's own identity (URL, contact links, build status); any page or domain may import it.
 - Shared components never import business data: pages pass it in as props (e.g. `<Footer links={contactLinks} />`).
 
 ---

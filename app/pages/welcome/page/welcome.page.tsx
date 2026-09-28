@@ -1,7 +1,8 @@
 import { Footer } from "@/components/layouts/footer/footer.component";
 import { WelcomeSectionsNav } from "../components/welcome-sections-nav/welcome-sections-nav.component";
-import { contactLinks } from "../data/contact-links.data";
-import { footerLabs, footerRackLabHref, footerStatus } from "../data/footer-status.data";
+import { contactLinks } from "@/features/site/data/contact-links.data";
+import { siteStatus } from "@/features/site/data/site-status.data";
+import { footerLabs, footerRackLabHref } from "../data/footer-status.data";
 import { WelcomeExperienceSection } from "../sections/welcome-experience/welcome-experience.section";
 import { WelcomeHeroSection } from "../sections/welcome-hero/welcome-hero.section";
 import { WelcomeProjectsSection } from "../sections/welcome-projects/welcome-projects.section";
@@ -58,7 +59,7 @@ export default function Welcome() {
         links={contactLinks}
         labs={footerLabs}
         rackLabHref={footerRackLabHref}
-        status={footerStatus}
+        status={siteStatus}
       />
     </>
   );

@@ -1,6 +1,6 @@
 import { startTransition, useEffect, useRef, useState } from "react";
 import { DialogTrigger, OverlayArrow, Popover } from "react-aria-components";
-import { contactLinks } from "../../../../data/contact-links.data";
+import { contactLinks } from "@/features/site/data/contact-links.data";
 import { useMagnetic } from "../../hooks/use-magnetic.hook";
 import { Button } from "@/components/primitives/button/button.component";
 import { ContactIcon } from "@/components/primitives/icons/contact-icon.component";
