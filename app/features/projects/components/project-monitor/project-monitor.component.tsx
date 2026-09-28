@@ -221,7 +221,10 @@ export function ProjectMonitor({ projects, isOnScreen }: ProjectMonitorProps) {
             <span className={styles.cellHostStyle}>{row.address}</span>
             <span className={styles.cellStackStyle}>{row.stack}</span>
             <span className={styles.cellDateStyle}>{row.yearMonth}</span>
-            <ChromeCapture src={row.image} className={styles.cellMediaStyle} />
+            {/* Wrapped: the capture sets its own `display`, and its CSS chunk loads after this one. */}
+            <span className={styles.cellMediaStyle}>
+              <ChromeCapture src={row.image} />
+            </span>
             <p className={styles.cellDescriptionStyle}>{row.description}</p>
           </GridListItem>
         )}
