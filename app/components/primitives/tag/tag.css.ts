@@ -66,3 +66,26 @@ export const tagStyle = recipe({
     size: "small",
   },
 });
+
+// An optional mark before the label (the work log's `+`): the tag's domain, deepened with ink
+// so it holds on the tint, as the log's lanes do.
+export const tagMarkStyle = recipe({
+  base: {
+    marginRight: "0.35em",
+  },
+  variants: {
+    color: {
+      frontend: {
+        color: `color-mix(in oklab, ${vars.colors.secondary} 70%, ${vars.colors.foreground})`,
+      },
+      backend: { color: vars.colors.tertiary },
+      creative: {
+        color: `color-mix(in oklab, ${vars.colors.primary} 70%, ${vars.colors.foreground})`,
+      },
+      systems: {
+        color: `color-mix(in oklab, ${vars.colors.azure} 70%, ${vars.colors.foreground})`,
+      },
+      default: { color: vars.colors.mutedForeground },
+    },
+  },
+});

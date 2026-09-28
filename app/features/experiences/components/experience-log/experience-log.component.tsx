@@ -1,7 +1,17 @@
 import { Tag } from "@/components/primitives/tag/tag.component";
 import { STACK_DOMAINS } from "../../data/experience-log";
-import type { LogBranch, LogGroup, LogRef, LogRow, LogSummary } from "../../data/experience-log";
+import type {
+  StackDomain,
+  LogBranch,
+  LogCommit,
+  LogGroup,
+  LogRef,
+  LogRow,
+  LogSummary,
+} from "../../data/experience-log";
+import { type ReactNode, useRef } from "react";
 import { useBranchHover } from "../../hooks/use-branch-hover.hook";
+import { useLineSnap } from "../../hooks/use-line-snap.hook";
 import { ExperienceLogGraph } from "./components/experience-log-graph/experience-log-graph.component";
 import * as styles from "./experience-log.css";
 
@@ -11,16 +21,6 @@ const DOMAIN_LABEL = {
   creative: "CREATIVE",
   systems: "SYSTEMS & AI",
 } as const;
-
-// main's rail per group: where it runs dashed, where it runs solid, where it stops.
-const MAIN_RAILS: Record<LogGroup["main"], { dash?: "nextNode"; rail?: { from: "top" | "node" } }> =
-  {
-    // The dash of the group above already runs down to this group's merge node.
-    behind: { dash: "nextNode" },
-    tip: { rail: { from: "node" } },
-    start: { rail: { from: "node" } },
-    solid: { rail: { from: "top" } },
-  };
 
 export interface ExperienceLogProps {
   groups: LogGroup[];
@@ -48,15 +48,18 @@ export function ExperienceLog({
     groups.some((group) => group.branch.domain === domain),
   );
   const hover = useBranchHover(onLitBranchChange);
+  const logRef = useRef<HTMLDivElement>(null);
+  useLineSnap(logRef, styles.linesVar);
   // Print order across groups, read by the arrival stagger.
   let printed = 0;
-  const rowProps = (row: LogRow) => ({
-    className: `${styles.rowStyle} ${styles.rowKindStyle[row.kind]}`,
+  const rowProps = () => ({
+    className: styles.rowStyle,
     "data-row": printed++,
+    "data-line-row": "",
   });
 
   return (
-    <div className={styles.logStyle}>
+    <div className={styles.logStyle} ref={logRef}>
       <div className={styles.commandLineStyle}>
         <p className={styles.terminalStyle} aria-hidden="true">
           <span className={styles.terminalPromptStyle}>$</span>
@@ -74,53 +77,43 @@ export function ExperienceLog({
       </div>
 
       <ol className={styles.groupsStyle} aria-label="Work history, newest first">
-        {groups.map(({ branch, rows, main, endsAtRoot }) => {
+        {groups.map(({ branch, rows, main }) => {
           const tipAt = rows.findIndex((row) => row.kind === "tip");
           const lead = rows.slice(0, tipAt);
           const tip = rows[tipAt];
           const commits = rows.filter((row) => row.kind === "commit");
           const trail = rows.slice(tipAt + 1 + commits.length);
           const dimmed = litBranch !== null && litBranch !== branch.slug;
-          const rails = MAIN_RAILS[main];
-          const groupFirstRow = printed;
+          // main waits (`¦`) above its latest merge: it has not moved since the open branch forked.
+          const mainRun = main === "behind" ? "wait" : "rail";
+          // The branch runs lit to deep across its employer and its projects, row by row.
+          const stretch = 1 + commits.length;
+          const along = (index: number) => (index + 0.5) / stretch;
 
           return (
             <li
               key={branch.slug}
               className={styles.groupStyle({ domain: branch.domain })}
               data-dimmed={dimmed ? "" : undefined}
-              data-first-row={groupFirstRow}
             >
-              {rails.dash && (
-                <span
-                  className={`${styles.mainDashStyle({ to: endsAtRoot ? "root" : rails.dash })} ${styles.laneDrawStyle}`}
-                  aria-hidden="true"
-                />
-              )}
-              {rails.rail && (
-                <span
-                  className={`${styles.mainRailStyle({ from: rails.rail.from, to: endsAtRoot ? "root" : "end" })} ${styles.laneDrawStyle}`}
-                  aria-hidden="true"
-                />
-              )}
-
               {lead.map((row) => (
-                <div key={row.kind} {...rowProps(row)} aria-hidden="true">
-                  <ExperienceLogGraph row={row} />
+                <div key={row.kind} {...rowProps()} aria-hidden="true">
+                  <ExperienceLogGraph row={row} main={mainRun} />
                   <MachineRow row={row} branch={branch} />
                 </div>
               ))}
 
               {tip?.kind === "tip" && (
-                <div className={styles.bodyStyle} data-first-row={printed}>
-                  <span
-                    className={`${styles.branchLaneStyle({ from: branch.isOpen ? "node" : "top" })} ${styles.laneDrawStyle}`}
-                    aria-hidden="true"
-                  />
-                  <div {...rowProps(tip)}>
-                    <ExperienceLogGraph row={tip} />
+                <>
+                  <div {...rowProps()}>
+                    <ExperienceLogGraph row={tip} main={mainRun} along={along(0)} />
                     <span className={styles.trackStyle} aria-hidden="true" />
-                    <BranchTip branch={branch} refs={tip.refs} refsHover={hover(branch.slug)} />
+                    <BranchTip
+                      branch={branch}
+                      hash={tip.hash}
+                      refs={tip.refs}
+                      refsHover={hover(branch.slug)}
+                    />
                   </div>
                   {commits.length > 0 && (
                     <ul
@@ -128,11 +121,15 @@ export function ExperienceLog({
                       aria-label={`Client projects at ${branch.company}`}
                     >
                       {commits.map(
-                        (row) =>
+                        (row, index) =>
                           row.kind === "commit" && (
-                            <li key={row.commit.title} {...rowProps(row)}>
-                              <ExperienceLogGraph row={row} />
-                              <div className={styles.commitStyle}>
+                            <li key={row.commit.title} {...rowProps()}>
+                              <ExperienceLogGraph
+                                row={row}
+                                main={mainRun}
+                                along={along(index + 1)}
+                              />
+                              <div className={styles.commitStyle} data-line-content="">
                                 <div className={styles.commitHeadStyle}>
                                   <h4 className={styles.commitTitleStyle}>{row.commit.title}</h4>
                                   <p className={styles.commitDomainStyle}>
@@ -144,11 +141,17 @@ export function ExperienceLog({
                                     />
                                     MOSTLY {DOMAIN_LABEL[row.commit.domain]}
                                   </p>
+                                  <CommitStat hash={row.hash} commit={row.commit} />
                                 </div>
                                 <div className={styles.commitBodyStyle}>
-                                  <p className={styles.commitDescriptionStyle}>
-                                    {row.commit.description}
-                                  </p>
+                                  <Described
+                                    domain={row.commit.domain}
+                                    className={styles.commitDescriptionStyle}
+                                  >
+                                    <p className={styles.commitDescriptionTextStyle}>
+                                      {row.commit.description}
+                                    </p>
+                                  </Described>
                                   <StackList tags={row.commit.stack} />
                                 </div>
                               </div>
@@ -157,20 +160,20 @@ export function ExperienceLog({
                       )}
                     </ul>
                   )}
-                </div>
+                </>
               )}
 
               {trail.map((row) =>
                 row.kind === "elided" ? (
-                  <div key="elided" {...rowProps(row)}>
-                    <ExperienceLogGraph row={row} />
-                    <p className={styles.machineRowStyle}>
+                  <div key="elided" {...rowProps()}>
+                    <ExperienceLogGraph row={row} main={mainRun} />
+                    <p className={styles.machineRowStyle} data-line-content="">
                       <span aria-hidden="true">⋮</span> more client work, not listed
                     </p>
                   </div>
                 ) : (
-                  <div key={row.kind} {...rowProps(row)} aria-hidden="true">
-                    <ExperienceLogGraph row={row} />
+                  <div key={row.kind} {...rowProps()} aria-hidden="true">
+                    <ExperienceLogGraph row={row} main={row.kind === "root" ? "none" : mainRun} />
                     <MachineRow row={row} branch={branch} />
                   </div>
                 ),
@@ -200,19 +203,21 @@ export function ExperienceLog({
 
 interface BranchTipProps {
   branch: LogBranch;
+  hash: string;
   refs: LogRef[];
   refsHover: ReturnType<ReturnType<typeof useBranchHover>>;
 }
 
-function BranchTip({ branch, refs, refsHover }: BranchTipProps) {
+function BranchTip({ branch, hash, refs, refsHover }: BranchTipProps) {
   const mixLabel = STACK_DOMAINS.filter((domain) => branch.mix[domain] > 0)
     .map((domain) => `${branch.mix[domain]} ${DOMAIN_LABEL[domain]}`)
     .join(" · ");
 
   return (
-    <div className={styles.tipStyle}>
+    <div className={styles.tipStyle} data-line-content="">
       <div className={styles.tipColumnStyle}>
         <div className={styles.refsStyle} aria-hidden="true" {...refsHover}>
+          <span className={styles.tipHashStyle}>{hash}</span>
           {refs.map((ref) => (
             <RefPill key={ref.label} logRef={ref} slug={branch.slug} />
           ))}
@@ -239,7 +244,11 @@ function BranchTip({ branch, refs, refsHover }: BranchTipProps) {
           </span>
           <span className={styles.durationStyle}>&nbsp;· {branch.duration}</span>
         </p>
-        {branch.description && <p className={styles.descriptionStyle}>{branch.description}</p>}
+        {branch.description && (
+          <Described domain="lane" className={styles.descriptionStyle}>
+            <p className={styles.descriptionTextStyle}>{branch.description}</p>
+          </Described>
+        )}
         {branch.stack.length > 0 && <StackList tags={branch.stack} className={styles.stackStyle} />}
       </div>
     </div>
@@ -266,6 +275,47 @@ function RefPill({ logRef, slug }: RefPillProps) {
   return <span className={styles.refStyle({ kind: logRef.kind })}>{logRef.label}</span>;
 }
 
+// More `+` than a description has lines; the gutter clips to the paragraph.
+const DIFF_MARKS = "+\n".repeat(16);
+
+interface DescribedProps {
+  /** The employer's lane, or a client project's own domain. */
+  domain: "lane" | StackDomain;
+  className?: string;
+  children: ReactNode;
+}
+
+/** A description printed as an added hunk: one `+` per line in its gutter, like `git show`. */
+function Described({ domain, className, children }: DescribedProps) {
+  return (
+    <div className={`${styles.diffStyle({ domain })}${className ? ` ${className}` : ""}`}>
+      <span className={styles.diffGutterStyle} aria-hidden="true">
+        {DIFF_MARKS}
+      </span>
+      {children}
+    </div>
+  );
+}
+
+interface CommitStatProps {
+  hash: string;
+  commit: LogCommit;
+}
+
+/** git's `--stat` line under a client project: its hash, then one `+` per tool of its stack. */
+function CommitStat({ hash, commit }: CommitStatProps) {
+  const tools = commit.stack.length;
+  return (
+    <p className={styles.commitStatStyle} aria-hidden="true">
+      <span className={styles.hashStyle}>{hash}</span>
+      <span>
+        stack | {tools}{" "}
+        <span className={styles.statPlusStyle({ domain: commit.domain })}>{"+".repeat(tools)}</span>
+      </span>
+    </p>
+  );
+}
+
 interface MachineRowProps {
   row: LogRow;
   branch: LogBranch;
@@ -275,7 +325,8 @@ interface MachineRowProps {
 function MachineRow({ row, branch }: MachineRowProps) {
   if (row.kind !== "merge" && row.kind !== "root") return null;
   return (
-    <p className={styles.machineRowStyle}>
+    <p className={styles.machineRowStyle} data-line-content="">
+      <span className={styles.hashStyle}>{row.hash}</span>
       {row.kind === "merge" ? (
         <span>
           Merge branch &apos;<span className={styles.mergedNameStyle}>{branch.slug}</span>&apos;
@@ -300,7 +351,9 @@ function StackList({ tags, className = styles.stackStyle }: StackListProps) {
     <ul className={className} aria-label="Stack">
       {tags.map((tag) => (
         <li key={tag}>
-          <Tag size="large">{tag}</Tag>
+          <Tag size="medium" mark="+">
+            {tag}
+          </Tag>
         </li>
       ))}
     </ul>

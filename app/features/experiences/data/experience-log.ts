@@ -148,13 +148,27 @@ export interface LogRef {
   kind: "head" | "branch" | "main" | "tag";
 }
 
+/**
+ * A short, stable commit id for a row: FNV-1a of a seed taken from the data, printed as git's
+ * 7-character abbreviation. Decoration: it identifies nothing outside the log.
+ */
+export function shortHash(seed: string): string {
+  let hash = 0x811c9dc5;
+  for (const char of seed) {
+    hash ^= char.codePointAt(0) ?? 0;
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return (hash >>> 0).toString(16).padStart(8, "0").slice(0, 7);
+}
+
+/** Rows that print a commit carry its `hash`. */
 export type LogRow =
-  | { kind: "tip"; refs: LogRef[] }
-  | { kind: "commit"; commit: LogCommit }
+  | { kind: "tip"; hash: string; refs: LogRef[] }
+  | { kind: "commit"; hash: string; commit: LogCommit }
   /** More client work than listed: the branch keeps going, unprinted. */
   | { kind: "elided" }
-  | { kind: "merge"; refs: LogRef[] }
-  | { kind: "root"; refs: LogRef[] }
+  | { kind: "merge"; hash: string; refs: LogRef[] }
+  | { kind: "root"; hash: string; refs: LogRef[] }
   /** Connector: the branch lane curves into main (the branch was forked there). */
   | { kind: "fork" }
   /** Connector: main curves out to the branch lane (main merged it there). */
@@ -199,23 +213,32 @@ export function toLogGroups(branches: LogBranch[]): LogGroup[] {
         main = index === 0 ? "start" : "tip";
       }
       refs.push({ label: `tag: ${branch.end}`, kind: "tag" });
-      rows.push({ kind: "merge", refs }, { kind: "merge-in" });
+      rows.push(
+        { kind: "merge", hash: shortHash(`merge ${branch.slug}`), refs },
+        { kind: "merge-in" },
+      );
       mainTipSeen = true;
     }
 
     rows.push({
       kind: "tip",
+      hash: shortHash(branch.slug),
       refs: [
         branch.isOpen
           ? { label: `HEAD -> ${branch.slug}`, kind: "head" }
           : { label: branch.slug, kind: "branch" },
       ],
     });
-    for (const commit of branch.commits) rows.push({ kind: "commit", commit });
+    for (const commit of branch.commits)
+      rows.push({ kind: "commit", hash: shortHash(`${branch.slug} ${commit.title}`), commit });
     if (branch.moreProjects) rows.push({ kind: "elided" });
     rows.push({ kind: "fork" });
     if (endsAtRoot)
-      rows.push({ kind: "root", refs: [{ label: `tag: ${branch.start}`, kind: "tag" }] });
+      rows.push({
+        kind: "root",
+        hash: shortHash(`root ${branch.slug}`),
+        refs: [{ label: `tag: ${branch.start}`, kind: "tag" }],
+      });
 
     return { branch, rows, main, endsAtRoot };
   });

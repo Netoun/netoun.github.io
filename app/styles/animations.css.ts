@@ -143,16 +143,10 @@ globalKeyframes("log-draw", {
   to: { clipPath: "inset(0 0 0 0)" },
 });
 
-// Work log: HEAD's node pings, the one live mark of the section.
+// Work log: HEAD's `*` pulses, the one live mark of the section.
 globalKeyframes("log-ping", {
   "0%": { transform: "scale(1)", opacity: 0.8 },
   "75%, 100%": { transform: "scale(2.4)", opacity: 0 },
-});
-
-// Work log: a lane draws down from its top as its rows print.
-globalKeyframes("log-grow", {
-  from: { clipPath: "inset(0 0 100% 0)" },
-  to: { clipPath: "inset(0 0 0 0)" },
 });
 
 // Fetch readout (skill-fetch.css.ts): one arrival pass when the Skills section reveals — the

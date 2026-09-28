@@ -1,7 +1,7 @@
 import { arrival, motion } from "@styles/motion.css";
 import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
-import { createVar, globalStyle, style, styleVariants } from "@vanilla-extract/css";
+import { createVar, fallbackVar, globalStyle, style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 import type { StackDomain } from "../../data/experience-log";
 import { weight } from "@styles/weight";
@@ -29,6 +29,7 @@ export const laneTopVar = createVar();
 export const laneBottomVar = createVar();
 /** The same hue, readable on the ink HEAD pill. */
 const laneOnInkVar = createVar();
+const diffColorVar = createVar();
 
 /** The accent of each domain, as the tag primitive tints it. */
 export const domainAccents: Record<StackDomain, string> = {
@@ -51,7 +52,7 @@ export const laneColors: Record<StackDomain, string> = {
 
 /**
  * Along a branch the lane runs from lit (its tip, the latest) to deep (where it forked off
- * main), and the curves carry it on into main's ink: time reads as light.
+ * main), and the diagonals carry it on into main's ink: time reads as light.
  */
 export const laneTops: Record<StackDomain, string> = {
   frontend: `color-mix(in oklab, ${vars.colors.secondary} 88%, ${vars.colors.foreground})`,
@@ -86,59 +87,46 @@ const led = (color: string) =>
   `linear-gradient(180deg, color-mix(in oklab, ${color} 55%, white), ${color} 60%)`;
 
 /**
- * Graph geometry, stepped up per breakpoint. Lanes sit at 25 % (main) and 75 % (branch) of
- * the graph column at every width, so one connector path scales with it.
+ * The graph is printed, not drawn: git's own glyphs (`*`, `|`, `/`, `\`) in Doto 900, three
+ * glyph cells wide (main, the diagonals, the branch), one printed line per `line`. Every row
+ * is snapped to a whole number of lines (useLineSnap), so the glyph grid never breaks from
+ * one row to the next.
  */
 export const geometry = {
+  /** Font size of the graph's glyphs; Doto's advance is 0.6 of it. */
+  glyph: createVar(),
+  /** One printed line of the graph. */
+  line: createVar(),
   column: createVar(),
   gap: createVar(),
-  stroke: createVar(),
-  /** Height of the node line, from the top of a row. */
-  nodeY: createVar(),
-  connector: createVar(),
-  nodeLarge: createVar(),
-  nodeMedium: createVar(),
-  nodeSmall: createVar(),
-  /** Paper ring that detaches a node from its lane. */
-  halo: createVar(),
 };
+
+/** Lines a row takes once snapped; set from its measured content. */
+export const linesVar = createVar();
+
+/** Centre of a row's first printed line: its node, pill and title sit on it. */
+export const nodeLine = `calc(${geometry.line} / 2)`;
 
 export const logStyle = style({
   vars: {
-    // Lanes sit at 25 % and 75 % of the column: widths of 50 / 82 / 122px put both centres on
-    // a half pixel, so a 3px line covers whole pixels and stays crisp at 1x. Odd node sizes and
-    // a half-pixel node line keep the nodes on whole pixels too.
-    [geometry.column]: "50px",
+    [geometry.glyph]: "22px",
+    [geometry.line]: "20px",
+    // Three glyph cells and a hair.
+    [geometry.column]: `calc(${geometry.glyph} * 1.8 + 4px)`,
     [geometry.gap]: "0.875rem",
-    // One width for every line of the graph, rail and lanes alike.
-    [geometry.stroke]: "3px",
-    [geometry.nodeY]: "22.5px",
-    [geometry.connector]: "2rem",
-    [geometry.nodeLarge]: "19px",
-    [geometry.nodeMedium]: "15px",
-    [geometry.nodeSmall]: "13px",
-    [geometry.halo]: "3px",
   },
   color: vars.colors.foreground,
   "@media": {
     [breakpoints.md]: {
       vars: {
-        [geometry.column]: "82px",
         [geometry.gap]: vars.spacing.md,
-        [geometry.nodeY]: "26.5px",
-        [geometry.connector]: "2.5rem",
       },
     },
     [breakpoints.lg]: {
       vars: {
-        [geometry.column]: "122px",
+        [geometry.glyph]: "28px",
+        [geometry.line]: "24px",
         [geometry.gap]: vars.spacing.lg,
-        [geometry.nodeY]: "32.5px",
-        [geometry.connector]: "3.5rem",
-        [geometry.nodeLarge]: "23px",
-        [geometry.nodeMedium]: "19px",
-        [geometry.nodeSmall]: "17px",
-        [geometry.halo]: "4px",
       },
     },
   },
@@ -165,7 +153,7 @@ export const terminalStyle = style({
   gap: "0.6em",
   minWidth: 0,
   maxWidth: "100%",
-  minHeight: "2.5rem",
+  minHeight: "2.25rem",
   padding: `0 ${vars.spacing.md}`,
   boxSizing: "border-box",
   borderRadius: vars.radius.sm,
@@ -179,9 +167,8 @@ export const terminalStyle = style({
   letterSpacing: "0.04em",
   "@media": {
     [breakpoints.lg]: {
-      minHeight: "2.75rem",
+      minHeight: "2.5rem",
       padding: `0 1.125rem`,
-      fontSize: vars.fontSize.base,
       letterSpacing: "0.05em",
     },
   },
@@ -246,9 +233,6 @@ export const totalStyle = style({
   fontSize: vars.fontSize.xs,
   letterSpacing: "0.1em",
   color: vars.colors.mutedForeground,
-  "@media": {
-    [breakpoints.lg]: { fontSize: vars.fontSize.sm },
-  },
 });
 
 // ── Groups and rows ──────────────────────────────────────────────────────────
@@ -306,127 +290,21 @@ export const groupStyle = recipe({
   },
 });
 
-// ── Lanes, drawn once per group behind its rows ──────────────────────────────
-
-/**
- * Lines are softened with the paper rather than made transparent: the same look as ~72 %
- * opacity, but opaque, so where two pieces of a line overlap (a curve running into a
- * lane) nothing doubles up and the joint disappears.
- */
-const soft = (color: string) => `color-mix(in oklab, ${color} 72%, ${vars.colors.background})`;
-
-/** The lane's softened ends, for the curves and dots drawn by the graph cells. */
-export const softLaneTop = soft(laneTopVar);
-export const softLaneBottom = soft(laneBottomVar);
-
-const MAIN_X = `calc(${geometry.column} * 0.25)`;
-const BRANCH_X = `calc(${geometry.column} * 0.75)`;
-
-export const mainRailStyle = recipe({
-  base: {
-    position: "absolute",
-    left: `calc(${MAIN_X} - ${geometry.stroke} / 2)`,
-    width: geometry.stroke,
-    top: 0,
-    bottom: 0,
-    backgroundColor: railColor,
-    pointerEvents: "none",
-  },
-  variants: {
-    from: {
-      top: {},
-      node: { top: geometry.nodeY },
-    },
-    to: {
-      end: {},
-      root: { bottom: geometry.nodeY },
-    },
-  },
-});
-
-// Where main only marks its place (above its latest merge): a fine dash, not the rail.
-export const mainDashStyle = recipe({
-  base: {
-    position: "absolute",
-    left: `calc(${MAIN_X} - ${geometry.stroke} / 2)`,
-    width: 0,
-    top: 0,
-    borderLeft: `${geometry.stroke} dashed color-mix(in srgb, ${railColor} 55%, transparent)`,
-    pointerEvents: "none",
-  },
-  variants: {
-    to: {
-      // Runs on into the next group, down to main's tip node: one dash pattern, no restart.
-      nextNode: { bottom: `calc(-1 * ${geometry.nodeY})` },
-      root: { bottom: geometry.nodeY },
-    },
-  },
-});
-
-/** The employer and its listed projects: the span the branch lane runs along. */
-export const bodyStyle = style({
-  position: "relative",
-});
-
-// Lit at the tip, deep where it forked: the curves below carry it on into main's ink.
-export const branchLaneStyle = recipe({
-  base: {
-    position: "absolute",
-    left: `calc(${BRANCH_X} - ${geometry.stroke} / 2)`,
-    width: geometry.stroke,
-    bottom: 0,
-    backgroundImage: `linear-gradient(180deg, ${soft(laneTopVar)}, ${soft(laneVar)} 45%, ${soft(laneBottomVar)})`,
-    pointerEvents: "none",
-  },
-  variants: {
-    // The open branch starts at HEAD; a merged one is joined from above by main's curve.
-    from: {
-      node: { top: geometry.nodeY },
-      top: { top: 0 },
-    },
-  },
-});
-
-// Lanes draw down as their rows print.
-export const laneDrawStyle = style({});
-
-globalStyle(`[data-reveal="idle"] ${laneDrawStyle}`, {
-  clipPath: "inset(0 0 100% 0)",
-});
-
-globalStyle(`[data-reveal="revealed"] ${laneDrawStyle}`, {
-  // `backwards`, not `both`: once drawn, no clip-path lingers on the lane.
-  animation: `log-grow 900ms ${motion.easing.signature} backwards`,
-  animationDelay: `${ROW_START + MAX_STAGGERED_ROWS * ROW_STEP}ms`,
-});
-
-for (let index = 0; index < MAX_STAGGERED_ROWS; index += 1) {
-  globalStyle(`[data-reveal="revealed"] [data-first-row="${index}"] > ${laneDrawStyle}`, {
-    animationDelay: `${ROW_START + index * ROW_STEP}ms`,
-  });
-}
-
 export const commitListStyle = style({
   margin: 0,
   padding: 0,
   listStyle: "none",
 });
 
+// One printed line until measured (git's own lines never need more), then whole lines.
 export const rowStyle = style({
   position: "relative",
   display: "grid",
   gridTemplateColumns: `${geometry.column} minmax(0, 1fr)`,
   columnGap: geometry.gap,
-});
-
-export const rowKindStyle = styleVariants({
-  tip: {},
-  commit: {},
-  elided: { minHeight: `calc(${geometry.nodeY} * 2)` },
-  merge: { minHeight: `calc(${geometry.nodeY} * 2)` },
-  root: { minHeight: `calc(${geometry.nodeY} * 2)` },
-  fork: { minHeight: geometry.connector },
-  "merge-in": { minHeight: geometry.connector },
+  // The content keeps its own height (useLineSnap measures it); only the graph cell stretches.
+  alignItems: "start",
+  minHeight: `calc(${fallbackVar(linesVar, "1")} * ${geometry.line})`,
 });
 
 // Rows print one after the other on arrival; the index lives in data-row (no inline style).
@@ -436,7 +314,7 @@ globalStyle(`[data-reveal="idle"] ${rowStyle}`, {
 
 globalStyle(`[data-reveal="revealed"] ${rowStyle}`, {
   // `backwards`, not `both`: a filled opacity/transform animation keeps a stacking context
-  // on every row, and the next row's curve would then paint over this row's node.
+  // on every row for nothing.
   animation: `log-row ${motion.duration.base} ${motion.easing.signature} backwards`,
   animationDelay: `${ROW_START + MAX_STAGGERED_ROWS * ROW_STEP}ms`,
 });
@@ -449,15 +327,25 @@ for (let index = 0; index < MAX_STAGGERED_ROWS; index += 1) {
 
 // ── Employer (branch tip) ────────────────────────────────────────────────────
 
-// The branch runs out as a track under its employer; the pill and the period sit on it.
+// The branch runs out under its employer as a dimension line, like the hero's gutter: a
+// hairline from its `*`, closed by a tick. The hash, the pill and the period sit on it.
 export const trackStyle = style({
   position: "absolute",
-  left: `calc(${geometry.column} * 0.75)`,
+  left: `calc(${geometry.glyph} * 1.8 + 3px)`,
   right: 0,
-  top: `calc(${geometry.nodeY} - ${geometry.stroke} / 2)`,
-  height: geometry.stroke,
-  backgroundImage: `linear-gradient(90deg, ${soft(laneTopVar)}, ${soft(laneVar)} 35%, transparent 94%)`,
+  top: `calc(${nodeLine} - 0.5px)`,
+  height: "1px",
+  backgroundImage: `linear-gradient(90deg, ${laneTopVar}, color-mix(in srgb, ${laneVar} 45%, transparent))`,
   pointerEvents: "none",
+  "::after": {
+    content: '""',
+    position: "absolute",
+    right: 0,
+    top: "-3px",
+    width: "1px",
+    height: "7px",
+    backgroundColor: `color-mix(in srgb, ${laneVar} 45%, transparent)`,
+  },
 });
 
 globalStyle(`[data-reveal="idle"] ${trackStyle}`, {
@@ -482,14 +370,14 @@ export const tipStyle = style({
   display: "flex",
   flexDirection: "column",
   gap: vars.spacing.sm,
-  paddingBottom: "2.5rem",
+  paddingBottom: vars.spacing.xl,
   "@media": {
     [breakpoints.lg]: {
       display: "grid",
       gridTemplateColumns: "minmax(0, 17rem) minmax(0, 1fr)",
       columnGap: "2.5rem",
       alignItems: "start",
-      paddingBottom: "3.5rem",
+      paddingBottom: vars.spacing.xl,
     },
     [breakpoints.xl]: {
       gridTemplateColumns: "minmax(0, 21.25rem) minmax(0, 1fr)",
@@ -521,8 +409,8 @@ export const refsStyle = style({
   display: "flex",
   flexWrap: "wrap",
   gap: vars.spacing.xs,
-  // The pill (1.75rem) is centred on the node line.
-  marginTop: `calc(${geometry.nodeY} - 0.875rem)`,
+  // The pill (1.375rem) is centred on the node line.
+  marginTop: `calc(${nodeLine} - 0.6875rem)`,
 });
 
 const pill = {
@@ -531,16 +419,13 @@ const pill = {
   display: "inline-flex",
   alignItems: "center",
   gap: "0.35em",
-  height: "1.75rem",
-  padding: "0 0.625rem",
+  height: "1.375rem",
+  padding: "0 0.5rem",
   boxSizing: "border-box",
-  borderRadius: vars.radius.sm,
+  borderRadius: vars.radius.xs,
   fontSize: vars.fontSize.xs,
   letterSpacing: "0.05em",
   whiteSpace: "nowrap",
-  "@media": {
-    [breakpoints.lg]: { fontSize: vars.fontSize.sm },
-  },
 } as const;
 
 export const refStyle = recipe({
@@ -555,15 +440,15 @@ export const refStyle = recipe({
         boxShadow: `0 1px 2px color-mix(in srgb, ${vars.colors.foreground} 20%, transparent)`,
       },
       branch: {
-        backgroundColor: `color-mix(in srgb, ${laneVar} 22%, ${vars.colors.background})`,
-        border: `2px solid ${laneVar}`,
+        backgroundColor: `color-mix(in srgb, ${laneVar} 18%, ${vars.colors.background})`,
+        border: `1px solid ${laneVar}`,
       },
       main: {
-        height: "1.5rem",
-        border: `2px solid ${vars.colors.foreground}`,
+        height: "1.25rem",
+        border: `1px solid ${vars.colors.foreground}`,
       },
       tag: {
-        height: "1.5rem",
+        height: "1.25rem",
         backgroundColor: `color-mix(in srgb, ${vars.colors.primary} 34%, ${vars.colors.background})`,
         border: `1px solid color-mix(in oklab, ${vars.colors.primary} 65%, ${vars.colors.foreground})`,
       },
@@ -580,15 +465,15 @@ export const headSlugStyle = style({ color: laneOnInkVar });
 export const companyStyle = style({
   ...order(1),
   margin: `${vars.spacing.xs} 0 0`,
-  fontSize: vars.fontSize["3xl"],
+  fontSize: vars.fontSize["2xl"],
   ...weight(vars.fontWeight.bold),
-  lineHeight: 1.02,
-  letterSpacing: "-0.025em",
+  lineHeight: 1.05,
+  letterSpacing: "-0.02em",
   "@media": {
     [breakpoints.lg]: {
-      marginTop: vars.spacing.md,
-      // Below the section h2 (3.5rem), above everything else in the log.
-      fontSize: "2.5rem",
+      marginTop: vars.spacing.sm,
+      // Well below the section h2 (3.5rem), above everything else in the log.
+      fontSize: vars.fontSize["3xl"],
     },
   },
 });
@@ -596,32 +481,27 @@ export const companyStyle = style({
 export const roleStyle = style({
   ...order(2),
   margin: 0,
-  fontSize: vars.fontSize.lg,
+  fontSize: vars.fontSize.base,
   lineHeight: vars.lineHeight.snug,
-  "@media": {
-    [breakpoints.lg]: { fontSize: vars.fontSize.xl },
-  },
 });
 
 export const periodStyle = style({
   ...machine,
   ...order(3),
   margin: 0,
-  fontSize: vars.fontSize.sm,
-  letterSpacing: "0.08em",
+  fontSize: vars.fontSize.xs,
+  letterSpacing: "0.1em",
   "@media": {
     // Sits on the track: paper behind it hides the line, centred on the node line.
     [breakpoints.lg]: {
       alignSelf: "flex-start",
       display: "inline-flex",
       alignItems: "center",
-      height: "1.75rem",
-      marginTop: `calc(${geometry.nodeY} - 0.875rem)`,
-      marginLeft: "-0.75rem",
-      padding: "0 0.75rem",
+      height: "1.375rem",
+      marginTop: `calc(${nodeLine} - 0.6875rem)`,
+      marginLeft: "-0.625rem",
+      padding: "0 0.625rem",
       backgroundColor: vars.colors.background,
-      fontSize: vars.fontSize.base,
-      letterSpacing: "0.1em",
     },
   },
 });
@@ -642,17 +522,26 @@ export const locationStyle = style({
 
 export const descriptionStyle = style({
   ...order(5),
-  margin: `${vars.spacing.xs} 0 0`,
-  maxWidth: "30em",
-  // Body size at every width, as the client projects under it.
-  fontSize: vars.fontSize.base,
-  lineHeight: 1.55,
-  textWrap: "pretty",
+  marginTop: vars.spacing.xs,
   "@media": {
     [breakpoints.lg]: {
       marginTop: vars.spacing.md,
     },
   },
+});
+
+export const descriptionTextStyle = style({
+  margin: 0,
+  maxWidth: "30em",
+  // Body size at every width, as the client projects under it.
+  fontSize: vars.fontSize.base,
+  lineHeight: 1.55,
+  textWrap: "pretty",
+});
+
+export const commitDescriptionTextStyle = style({
+  margin: 0,
+  textWrap: "pretty",
 });
 
 export const stackStyle = style({
@@ -682,13 +571,10 @@ export const mixLedsStyle = style({
 export const mixLedStyle = recipe({
   base: {
     display: "block",
-    width: "10px",
-    height: "13px",
-    borderRadius: "2px",
+    width: "7px",
+    height: "10px",
+    borderRadius: "1.5px",
     boxShadow: `inset 0 -1px 0 color-mix(in srgb, ${vars.colors.foreground} 18%, transparent)`,
-    "@media": {
-      [breakpoints.lg]: { width: "11px", height: "14px" },
-    },
   },
   variants: {
     domain: {
@@ -714,14 +600,14 @@ export const commitStyle = style({
   display: "flex",
   flexDirection: "column",
   gap: "0.375rem",
-  paddingBottom: "1.75rem",
+  paddingBottom: vars.spacing.lg,
   "@media": {
     [breakpoints.lg]: {
       display: "grid",
       gridTemplateColumns: "minmax(0, 17rem) minmax(0, 1fr)",
       columnGap: "2.5rem",
       alignItems: "start",
-      paddingBottom: vars.spacing.xl,
+      paddingBottom: vars.spacing.lg,
     },
     [breakpoints.xl]: {
       gridTemplateColumns: "minmax(0, 21.25rem) minmax(0, 1fr)",
@@ -739,13 +625,13 @@ export const commitHeadStyle = style({
 
 export const commitTitleStyle = style({
   // First line centred on the node line, whatever the font size.
-  margin: `calc(${geometry.nodeY} - 0.5lh) 0 0`,
-  fontSize: vars.fontSize.lg,
+  margin: `calc(${nodeLine} - 0.5lh) 0 0`,
+  fontSize: vars.fontSize.base,
   ...weight(vars.fontWeight.semibold),
   lineHeight: vars.lineHeight.tight,
   letterSpacing: "-0.01em",
   "@media": {
-    [breakpoints.lg]: { fontSize: vars.fontSize.xl },
+    [breakpoints.lg]: { fontSize: vars.fontSize.lg },
   },
 });
 
@@ -763,9 +649,9 @@ export const commitDomainStyle = style({
 export const commitLedStyle = recipe({
   base: {
     display: "block",
-    width: "8px",
-    height: "8px",
-    borderRadius: "2px",
+    width: "6px",
+    height: "6px",
+    borderRadius: "1.5px",
   },
   variants: {
     domain: {
@@ -784,16 +670,99 @@ export const commitBodyStyle = style({
   minWidth: 0,
 });
 
+// The wrapper carries the margin, so the `+` gutter starts on the text's first line.
 export const commitDescriptionStyle = style({
   margin: `${vars.spacing.xs} 0 0`,
   maxWidth: "34em",
   fontSize: vars.fontSize.base,
   lineHeight: 1.55,
-  textWrap: "pretty",
   "@media": {
     [breakpoints.lg]: {
-      margin: `calc(${geometry.nodeY} - 0.5lh) 0 0`,
+      margin: `calc(${nodeLine} - 0.5lh) 0 0`,
     },
+  },
+});
+
+// ── Commit details: printed as git prints them, quieter than the text ─────────
+
+/** A commit's short hash: the log's own id, a step lighter than the muted labels. */
+export const hashStyle = style({
+  color: `color-mix(in oklab, ${vars.colors.mutedForeground} 72%, ${vars.colors.background})`,
+});
+
+// On the track, before the ref pill (`* 9c1e0b7 (HEAD -> lonestone)`): paper hides the line.
+export const tipHashStyle = style([
+  hashStyle,
+  {
+    ...machine,
+    display: "inline-flex",
+    alignItems: "center",
+    height: "1.375rem",
+    marginLeft: "-0.375rem",
+    padding: "0 0.375rem",
+    backgroundColor: vars.colors.background,
+    fontSize: vars.fontSize.xs,
+    letterSpacing: "0.08em",
+  },
+]);
+
+export const commitStatStyle = style({
+  ...machine,
+  margin: 0,
+  display: "flex",
+  flexWrap: "wrap",
+  gap: `0 ${vars.spacing.sm}`,
+  fontSize: vars.fontSize.xs,
+  letterSpacing: "0.08em",
+  color: vars.colors.mutedForeground,
+});
+
+// git greens its `+`; here they take the project's domain, as its node and LED do.
+export const statPlusStyle = recipe({
+  base: { letterSpacing: "0.02em" },
+  variants: {
+    domain: {
+      frontend: { color: laneColors.frontend },
+      backend: { color: laneColors.backend },
+      creative: { color: laneColors.creative },
+      systems: { color: laneColors.systems },
+    },
+  },
+});
+
+// ── Diff: the text reads as an added hunk ────────────────────────────────────
+
+/** A description with its `+` gutter; the gutter takes the lane (employer) or the domain. */
+export const diffStyle = recipe({
+  base: { position: "relative" },
+  variants: {
+    domain: {
+      lane: { vars: { [diffColorVar]: laneVar } },
+      frontend: { vars: { [diffColorVar]: laneColors.frontend } },
+      backend: { vars: { [diffColorVar]: laneColors.backend } },
+      creative: { vars: { [diffColorVar]: laneColors.creative } },
+      systems: { vars: { [diffColorVar]: laneColors.systems } },
+    },
+  },
+});
+
+// One `+` per line of text: the same size and line height, clipped to the paragraph.
+export const diffGutterStyle = style({
+  ...machine,
+  position: "absolute",
+  top: 0,
+  bottom: 0,
+  // In the gap before the text (the column gap on phones, the tip's column gap from lg).
+  left: "-0.875rem",
+  overflow: "hidden",
+  whiteSpace: "pre",
+  fontSize: vars.fontSize.base,
+  lineHeight: 1.55,
+  color: `color-mix(in srgb, ${diffColorVar} 70%, transparent)`,
+  pointerEvents: "none",
+  userSelect: "none",
+  "@media": {
+    [breakpoints.lg]: { left: "-1.25rem" },
   },
 });
 
@@ -804,19 +773,13 @@ export const machineRowStyle = style({
   display: "flex",
   flexWrap: "wrap",
   alignItems: "center",
-  gap: `0.375rem ${vars.spacing.sm}`,
-  minHeight: `calc(${geometry.nodeY} * 2)`,
-  paddingBlock: vars.spacing.xs,
+  gap: `0.25rem ${vars.spacing.sm}`,
+  // One printed line; when it wraps (narrow screens), the row snaps to two.
+  minHeight: geometry.line,
   boxSizing: "border-box",
   fontSize: vars.fontSize.xs,
-  letterSpacing: "0.06em",
+  letterSpacing: "0.08em",
   color: vars.colors.mutedForeground,
-  "@media": {
-    [breakpoints.lg]: {
-      fontSize: vars.fontSize.sm,
-      letterSpacing: "0.08em",
-    },
-  },
 });
 
 export const mergedNameStyle = style({
@@ -865,7 +828,7 @@ export const legendSwatchStyle = recipe({
   base: {
     display: "block",
     width: "22px",
-    height: geometry.stroke,
+    height: "3px",
     borderRadius: "2px",
   },
   variants: {

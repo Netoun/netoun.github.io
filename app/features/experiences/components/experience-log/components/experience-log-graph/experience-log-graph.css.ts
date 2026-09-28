@@ -1,163 +1,106 @@
 import { vars } from "@styles/theme.css";
+import { weight } from "@styles/weight";
 import { createVar, globalStyle, style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 import {
-  domainAccents,
   geometry,
   laneBottomVar,
   laneColors,
   laneTopVar,
+  nodeLine,
   railColor,
-  softLaneBottom,
-  softLaneTop,
 } from "../../experience-log.css";
 
-const centerVar = createVar();
+/** Where a row sits along its branch: 0 at the tip (the latest), 1 where it forked. */
+export const alongVar = createVar();
 const sizeVar = createVar();
-const commitLineVar = createVar();
-const commitFillVar = createVar();
 
-const MAIN_CENTER = `calc(${geometry.column} * 0.25)`;
-const BRANCH_CENTER = `calc(${geometry.column} * 0.75)`;
+/** The lane between lit (its tip, the latest) and deep (where it forked), in oklab. */
+const along = (t: string) =>
+  `color-mix(in oklab, ${laneTopVar} calc((1 - ${t}) * 100%), ${laneBottomVar})`;
 
-// A bead of the lane colour: a soft highlight up-left, lit to deep across it, like the
-// monitor's LEDs and cubes. Metal and light, never a glow.
-const bead = (lit: string, deep: string) =>
-  `radial-gradient(circle at 34% 30%, color-mix(in oklab, ${lit} 40%, white) 0, ${lit} 42%, ${deep} 100%)`;
+const cell = `calc(${geometry.glyph} * 0.6)`;
 
 export const graphStyle = style({
   position: "relative",
   alignSelf: "stretch",
-  minHeight: "100%",
+  // The printed line, read back by useLineSnap to snap the row.
+  lineHeight: geometry.line,
 });
 
-// The unlisted client work: the branch keeps going, unprinted, as round dots.
-export const elidedLaneStyle = style({
+// Three glyph cells (main, the diagonals, the branch), clipped to the row: the rows are
+// snapped to whole lines, so a run ends on a line boundary and the next row carries on.
+export const columnsStyle = style({
   position: "absolute",
-  top: 0,
-  bottom: 0,
-  left: `calc(${BRANCH_CENTER} - ${geometry.stroke} / 2)`,
-  width: geometry.stroke,
-  backgroundImage: `radial-gradient(circle, ${softLaneBottom} 1.4px, transparent 1.7px)`,
-  backgroundSize: `${geometry.stroke} 8px`,
-  backgroundRepeat: "repeat-y",
-  backgroundPosition: "center 3px",
+  inset: 0,
+  display: "flex",
+  overflow: "hidden",
+  fontFamily: vars.fontFamily.doto,
+  ...weight(vars.fontWeight.extrabold),
+  fontSize: geometry.glyph,
+  lineHeight: geometry.line,
+  letterSpacing: 0,
+  textAlign: "center",
+  whiteSpace: "pre",
+  userSelect: "none",
+  // The page's grayscale smoothing thins Doto on macOS and opens seams between its dots; the
+  // graph's strokes keep the system's default, as a terminal prints them.
+  WebkitFontSmoothing: "auto",
 });
 
-// One path for every width: the viewBox stretches with the row, the stroke does not.
-// Each curve runs on to the centre of its merge node, so the node hides where the
-// coloured lane meets the thinner rail.
-export const connectorStyle = recipe({
-  base: {
-    position: "absolute",
-    left: 0,
-    width: "100%",
-    height: `calc(100% + ${geometry.nodeY})`,
-    overflow: "visible",
-    zIndex: 0,
-  },
-  variants: {
-    kind: {
-      fork: { top: 0 },
-      "merge-in": { top: `calc(-1 * ${geometry.nodeY})` },
-    },
-  },
+export const columnStyle = style({
+  display: "flex",
+  flexDirection: "column",
+  width: cell,
+  minHeight: 0,
 });
 
-export const connectorPathStyle = style({
-  fill: "none",
-  strokeWidth: geometry.stroke,
-  // Butt ends: each path runs a few pixels straight into the lane it joins, same colour.
-  strokeLinecap: "butt",
-  vectorEffect: "non-scaling-stroke",
+const tones = {
+  // main's rail, and its merges and root.
+  rail: { color: railColor },
+  // main above its latest merge: `¦`, it has not moved since the open branch forked.
+  wait: { color: `color-mix(in srgb, ${railColor} 60%, transparent)` },
+  // A tip's `*`, HEAD's included: the lane at its most lit.
+  lit: { color: laneTopVar },
+  // The unlisted client work: `:` in the lane's deep end.
+  deep: { color: laneBottomVar },
+  // The branch folding back into main, and main opening the next one.
+  fork: { color: `color-mix(in oklab, ${laneBottomVar} 60%, ${railColor})` },
+  mergeIn: { color: `color-mix(in oklab, ${railColor} 40%, ${laneTopVar})` },
+  // A client project's `*`: its own domain.
+  frontend: { color: laneColors.frontend },
+  backend: { color: laneColors.backend },
+  creative: { color: laneColors.creative },
+  systems: { color: laneColors.systems },
+  // The branch's `|`: lit at its tip, deeper row by row down to where it forked. One solid
+  // colour per row: a gradient clipped to the text breaks Doto's merged dots apart.
+  lane: { color: along(alongVar) },
+};
+
+export type GlyphTone = keyof typeof tones;
+
+/** A glyph on the row's first line: a node, a diagonal. */
+export const glyphStyle = recipe({
+  base: { display: "block", height: geometry.line, flexShrink: 0 },
+  variants: { tone: tones },
 });
 
-// Gradient stops of the curves: the branch fades into main's rail where they meet.
-export const stopRailStyle = style({ stopColor: railColor });
-export const stopLitStyle = style({ stopColor: softLaneTop });
-export const stopDeepStyle = style({ stopColor: softLaneBottom });
-
-export const nodeStyle = recipe({
-  base: {
-    position: "absolute",
-    width: sizeVar,
-    height: sizeVar,
-    left: `calc(${centerVar} - ${sizeVar} / 2)`,
-    top: `calc(${geometry.nodeY} - ${sizeVar} / 2)`,
-    // Above every curve, including the one of the next row that starts at its centre. No
-    // paper halo: the lines run right up to the nodes, as in git's own graph.
-    zIndex: 2,
-    boxSizing: "border-box",
-    borderRadius: vars.radius.full,
-  },
-  variants: {
-    lane: {
-      main: { vars: { [centerVar]: MAIN_CENTER } },
-      branch: { vars: { [centerVar]: BRANCH_CENTER } },
-    },
-    kind: {
-      // HEAD: a bead of the branch colour in a paper halo and a gold ring, the one lit mark.
-      head: {
-        vars: { [sizeVar]: geometry.nodeLarge },
-        backgroundImage: bead(laneTopVar, laneBottomVar),
-        // The gold ring stands off the bead; paper fills the gap so the lane stays under it.
-        boxShadow: `0 0 0 ${geometry.halo} ${vars.colors.background}`,
-        outline: `2.5px solid ${vars.colors.primary}`,
-        outlineOffset: geometry.halo,
-      },
-      tip: {
-        vars: { [sizeVar]: geometry.nodeMedium },
-        backgroundImage: bead(laneTopVar, laneBottomVar),
-      },
-      // A client project: ringed in its own domain, a lit tint of it inside.
-      commit: {
-        vars: { [sizeVar]: geometry.nodeSmall },
-        backgroundImage: `radial-gradient(circle at 34% 30%, color-mix(in oklab, ${commitFillVar} 18%, white) 0, color-mix(in srgb, ${commitFillVar} 36%, ${vars.colors.background}) 70%)`,
-        border: `2px solid ${commitLineVar}`,
-      },
-      // main merging the branch: a rail ring around a centred dot of the merged branch.
-      merge: {
-        vars: { [sizeVar]: geometry.nodeLarge },
-        backgroundImage: `radial-gradient(circle, ${laneTopVar} 0 3px, ${vars.colors.background} 3.5px)`,
-        border: `2px solid ${railColor}`,
-      },
-      root: {
-        vars: { [sizeVar]: geometry.nodeSmall },
-        backgroundColor: vars.colors.background,
-        border: `2px solid ${railColor}`,
-      },
-    },
-    domain: {
-      none: {},
-      frontend: {
-        vars: { [commitLineVar]: laneColors.frontend, [commitFillVar]: domainAccents.frontend },
-      },
-      backend: {
-        vars: { [commitLineVar]: laneColors.backend, [commitFillVar]: domainAccents.backend },
-      },
-      creative: {
-        vars: { [commitLineVar]: laneColors.creative, [commitFillVar]: domainAccents.creative },
-      },
-      systems: {
-        vars: { [commitLineVar]: laneColors.systems, [commitFillVar]: domainAccents.systems },
-      },
-    },
-  },
-  defaultVariants: {
-    domain: "none",
-  },
+/** The same glyph on every line below, as far as the row goes. */
+export const runStyle = recipe({
+  base: { display: "block", flex: 1, minHeight: 0, overflow: "hidden" },
+  variants: { tone: tones },
 });
 
+// HEAD, the one live mark of the section: a gold pulse behind its `*`.
 export const pingStyle = style({
-  vars: { [sizeVar]: `calc(${geometry.nodeLarge} + 6px)` },
+  vars: { [sizeVar]: `calc(${geometry.glyph} * 0.8)` },
   position: "absolute",
   width: sizeVar,
   height: sizeVar,
-  left: `calc(${BRANCH_CENTER} - ${sizeVar} / 2)`,
-  top: `calc(${geometry.nodeY} - ${sizeVar} / 2)`,
-  zIndex: 1,
+  left: `calc(${cell} * 2.5 - ${sizeVar} / 2)`,
+  top: `calc(${nodeLine} - ${sizeVar} / 2)`,
   borderRadius: vars.radius.full,
-  backgroundColor: vars.colors.primary,
+  backgroundColor: `color-mix(in srgb, ${vars.colors.primary} 70%, transparent)`,
   animation: "log-ping 2.2s cubic-bezier(0, 0, 0.2, 1) infinite",
   "@media": {
     "(prefers-reduced-motion: reduce)": {

@@ -111,6 +111,16 @@ describe("toLogGroups", () => {
     expect(groups.map((group) => group.endsAtRoot)).toEqual([false, false, true]);
   });
 
+  it("gives every printed commit a stable, distinct 7-character hash", () => {
+    const hashes = groups.flatMap((group) =>
+      group.rows.flatMap((row) => ("hash" in row ? [row.hash] : [])),
+    );
+    expect(hashes).toHaveLength(9);
+    expect(new Set(hashes).size).toBe(hashes.length);
+    for (const hash of hashes) expect(hash).toMatch(/^[0-9a-f]{7}$/);
+    expect(toLogGroups(toBranches(experiences, NOW))).toEqual(groups);
+  });
+
   it("puts HEAD on main when nothing is open", () => {
     const closed: Experience[] = experiences.map((experience) => ({
       ...experience,
@@ -118,7 +128,7 @@ describe("toLogGroups", () => {
     }));
     const [first] = toLogGroups(toBranches(closed, NOW));
     expect(first.main).toBe("start");
-    expect(first.rows[0]).toEqual({
+    expect(first.rows[0]).toMatchObject({
       kind: "merge",
       refs: [
         { label: "HEAD -> main", kind: "head" },

@@ -1,77 +1,97 @@
-import { useId } from "react";
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 import type { LogRow } from "../../../../data/experience-log";
 import * as styles from "./experience-log-graph.css";
 
-// viewBox 4 × 4: main runs at x = 1 (25 %), the branch at x = 3 (75 %). Each path starts or
-// ends with a short straight run (0.12 unit, 2–3px) into the lane it joins, so the butt end
-// overlaps a piece of the same colour and no joint shows. The node end sits under the node.
-const CONNECTOR_PATHS = {
-  fork: "M3 -0.12 L3 0 C3 2 1 2 1 4",
-  "merge-in": "M1 0 C1 2 3 2 3 4 L3 4.12",
-} as const;
+/** How main runs through a row: waiting above its latest merge (`¦`), on (`|`), or ended. */
+export type MainRun = "wait" | "rail" | "none";
 
-function nodeOf(row: LogRow) {
+interface Glyph {
+  char: string;
+  tone: styles.GlyphTone;
+}
+
+/** A glyph cell: what its first line prints, and what every line below it repeats. */
+interface Column {
+  head?: Glyph;
+  run?: Glyph;
+}
+
+// More lines than the tallest row holds (a tip on a phone); the column clips the rest.
+const RUN = 48;
+const COLUMNS = ["main", "link", "branch"] as const;
+
+const rail: Glyph = { char: "|", tone: "rail" };
+const lane: Glyph = { char: "|", tone: "lane" };
+
+/** git's own graph for one row, in three cells: main, the diagonals, the branch. */
+function columnsOf(row: LogRow, main: MainRun): Record<(typeof COLUMNS)[number], Column> {
+  const mainRun =
+    main === "none" ? undefined : main === "wait" ? { char: "¦", tone: "wait" as const } : rail;
   switch (row.kind) {
     case "tip":
       return {
-        lane: "branch",
-        kind: row.refs.some((ref) => ref.kind === "head") ? "head" : "tip",
-      } as const;
+        main: { run: mainRun },
+        link: {},
+        branch: { head: { char: "*", tone: "lit" }, run: lane },
+      };
     case "commit":
-      return { lane: "branch", kind: "commit", domain: row.commit.domain } as const;
+      return {
+        main: { run: mainRun },
+        link: {},
+        branch: { head: { char: "*", tone: row.commit.domain }, run: lane },
+      };
+    case "elided":
+      return { main: { run: mainRun }, link: {}, branch: { run: { char: ":", tone: "deep" } } };
+    case "fork":
+      return { main: { run: mainRun }, link: { head: { char: "/", tone: "fork" } }, branch: {} };
     case "merge":
-      return { lane: "main", kind: "merge" } as const;
+      return { main: { head: { char: "*", tone: "rail" }, run: rail }, link: {}, branch: {} };
+    case "merge-in":
+      return { main: { run: rail }, link: { head: { char: "\\", tone: "mergeIn" } }, branch: {} };
     case "root":
-      return { lane: "main", kind: "root" } as const;
-    default:
-      return null;
+      return { main: { head: { char: "*", tone: "rail" } }, link: {}, branch: {} };
   }
 }
 
 export interface ExperienceLogGraphProps {
   row: LogRow;
+  main: MainRun;
+  /** Where the row sits along its branch, 0 (tip) to 1 (fork): the lane's lit-to-deep colour. */
+  along?: number;
 }
 
 /**
- * The graph cell of one log row: its node, or the curve that joins a branch to main.
- * The straight lanes are drawn once per group by the log. Decorative.
+ * The graph cell of one log row, printed as `git log --graph` prints it: `*` for a commit,
+ * `|` for a lane, `/` and `\` where a branch leaves or joins main. Decorative.
  */
-export function ExperienceLogGraph({ row }: ExperienceLogGraphProps) {
-  // SVG gradient ids must be unique on the page and valid in `url(#…)`.
-  const gradientId = `log-curve-${useId().replace(/[^\w-]/g, "")}`;
-  const node = nodeOf(row);
+export function ExperienceLogGraph({ row, main, along }: ExperienceLogGraphProps) {
+  const columns = columnsOf(row, main);
+  const isHead = row.kind === "tip" && row.refs.some((ref) => ref.kind === "head");
 
   return (
-    <div className={styles.graphStyle} aria-hidden="true">
-      {row.kind === "elided" && <span className={styles.elidedLaneStyle} />}
-      {(row.kind === "fork" || row.kind === "merge-in") && (
-        <svg
-          className={styles.connectorStyle({ kind: row.kind })}
-          viewBox="0 0 4 4"
-          preserveAspectRatio="none"
-        >
-          <defs>
-            {/* fork: the deep end of the branch fades into the rail; merge-in: the rail lights the tip. */}
-            <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-              <stop
-                offset="0"
-                className={row.kind === "fork" ? styles.stopDeepStyle : styles.stopRailStyle}
-              />
-              <stop
-                offset="1"
-                className={row.kind === "fork" ? styles.stopRailStyle : styles.stopLitStyle}
-              />
-            </linearGradient>
-          </defs>
-          <path
-            d={CONNECTOR_PATHS[row.kind]}
-            stroke={`url(#${gradientId})`}
-            className={styles.connectorPathStyle}
-          />
-        </svg>
-      )}
-      {node?.kind === "head" && <span className={styles.pingStyle} />}
-      {node && <span className={styles.nodeStyle(node)} />}
+    <div
+      className={styles.graphStyle}
+      aria-hidden="true"
+      style={
+        along === undefined ? undefined : assignInlineVars({ [styles.alongVar]: String(along) })
+      }
+    >
+      {isHead && <span className={styles.pingStyle} />}
+      <span className={styles.columnsStyle}>
+        {COLUMNS.map((name) => {
+          const { head, run } = columns[name];
+          return (
+            <span key={name} className={styles.columnStyle}>
+              {head && <span className={styles.glyphStyle({ tone: head.tone })}>{head.char}</span>}
+              {run && (
+                <span className={styles.runStyle({ tone: run.tone })}>
+                  {`${run.char}\n`.repeat(RUN)}
+                </span>
+              )}
+            </span>
+          );
+        })}
+      </span>
     </div>
   );
 }

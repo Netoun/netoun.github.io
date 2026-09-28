@@ -1,4 +1,4 @@
-import { tagStyle, type TagColor, type TagSize } from "./tag.css";
+import { tagMarkStyle, tagStyle, type TagColor, type TagSize } from "./tag.css";
 import { memo } from "react";
 
 // Tags are coloured by tech domain so the palette reads as a system, not
@@ -99,12 +99,23 @@ export interface TagProps {
   children: string;
   color?: TagColor;
   size?: TagSize;
+  /** A glyph printed before the label in the domain colour, hidden from assistive tech. */
+  mark?: string;
 }
 
-function TagComponent({ children, color, size }: TagProps) {
+function TagComponent({ children, color, size, mark }: TagProps) {
   const resolvedColor = color ?? getTagColor(children);
 
-  return <span className={tagStyle({ color: resolvedColor, size })}>{children}</span>;
+  return (
+    <span className={tagStyle({ color: resolvedColor, size })}>
+      {mark && (
+        <span className={tagMarkStyle({ color: resolvedColor })} aria-hidden="true">
+          {mark}
+        </span>
+      )}
+      {children}
+    </span>
+  );
 }
 
 export const Tag = memo(TagComponent);
