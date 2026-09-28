@@ -27,6 +27,9 @@ export function WelcomeHeroSection() {
   const mousePositionRef = useMousePosition();
 
   const isTextSelected = useHeroAnimationValue(orchestrator, "isTextSelected");
+  // Pauses the text's infinite CSS loops (spec blip, lead cursor) once the hero is under 10 %
+  // visible: only its bottom strip, the laptop, is left, and the laptop gates its own loops.
+  const isSectionVisible = useHeroAnimationValue(orchestrator, "isSectionVisible");
 
   // Spec layer: values measured from the live elements, the picked source file,
   // and the renderer that paints the mesh. The attributes drive its CSS.
@@ -51,6 +54,7 @@ export function WelcomeHeroSection() {
               id="welcome-container"
               className={styles.welcomeContainerStyle}
               data-text-selected={isTextSelected ? "true" : "false"}
+              data-anim-disabled={isSectionVisible ? "false" : "true"}
             >
               <WelcomeHeroFilterBackground onRendererReady={setRenderer} />
               <WelcomeHeroSpecOverlay />

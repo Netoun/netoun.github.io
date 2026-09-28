@@ -1,4 +1,4 @@
-import { memo, useLayoutEffect, useMemo, useRef } from "react";
+import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 import type { RendererType } from "@/components/misc/canvas-renderer/canvas-renderer.types";
 import { useShaderCanvas } from "@/components/misc/canvas-renderer/use-canvas-shader.hook";
@@ -30,6 +30,11 @@ export interface MeshBackgroundCanvasProps {
   powerPreference?: "high-performance" | "low-power";
   respectReducedMotion?: boolean;
   respectVisibility?: boolean;
+  /**
+   * Start the GPU session only once the canvas comes within this margin of the viewport
+   * (an IntersectionObserver `rootMargin`), not at hydration. Default: at mount.
+   */
+  armMargin?: string;
   /** Render only this window of the composition (default: all of it). Read once, at mount. */
   compositionWindow?: MeshCompositionWindow;
   /** Called once with the renderer that won (`svg` = no GPU, the caller's CSS fallback shows). */
@@ -45,10 +50,26 @@ function MeshBackgroundCanvasComponent({
   powerPreference = "low-power",
   respectReducedMotion,
   respectVisibility,
+  armMargin,
   compositionWindow,
   onRendererReady,
 }: MeshBackgroundCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [armed, setArmed] = useState(armMargin === undefined);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || armed || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setArmed(true);
+      },
+      { rootMargin: armMargin },
+    );
+    observer.observe(canvas);
+    return () => observer.disconnect();
+  }, [armed, armMargin]);
+
   // Callers pass a module constant; the bundle's strings key the GPU session.
   const shader = useMemo(
     () =>
@@ -70,6 +91,7 @@ function MeshBackgroundCanvasComponent({
   const { type } = useShaderCanvas(canvasRef, shader, {
     animate,
     animateOnScroll,
+    disabled: !armed,
     debounceResize,
     quality: () => {
       const currentQuality = qualityRef.current;

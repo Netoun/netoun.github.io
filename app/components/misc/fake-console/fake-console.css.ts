@@ -72,6 +72,8 @@ export const scanlineStyles = style({
       opacity: 0.38,
       animationDuration: "5.2s",
     },
+    // Off screen, Blink can't composite the loop and repaints the page every frame.
+    '[data-anim-disabled="true"] &': { animationPlayState: "paused" },
   },
   "@media": {
     "(prefers-reduced-motion: reduce)": {
@@ -91,6 +93,9 @@ export const bottomRevealStyles = style({
   background:
     "linear-gradient(0deg, oklch(1 0 0 / 0.14) 0%, oklch(1 0 0 / 0.02) 60%, transparent 100%)",
   animation: `${bottomRevealKeyframes} 620ms ease-out infinite`,
+  selectors: {
+    '[data-anim-disabled="true"] &': { animationPlayState: "paused" },
+  },
   "@media": {
     "(prefers-reduced-motion: reduce)": {
       animation: "none",

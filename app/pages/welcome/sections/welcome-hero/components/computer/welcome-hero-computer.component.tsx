@@ -209,6 +209,8 @@ function WelcomeHeroComputerComponentInner({
       }}
       className={styles.welcomeHeroComputerWrapperStyles}
       data-spec-target="laptop"
+      // Visibility alone (not text selection): the screen's CSS loops pause only off screen.
+      data-anim-disabled={isIntersecting ? "false" : "true"}
     >
       {/* Decorative on the homepage: the screen's hex and fake metrics are noise
           to a screen reader. No focusable inside, so aria-hidden is enough — inert

@@ -304,6 +304,9 @@ const welcomeDescriptionCursorKeyframes = keyframes({
 
 export const welcomeDescriptionCursorStyles = style({
   animation: `${welcomeDescriptionCursorKeyframes} 800ms steps(1) infinite`,
+  selectors: {
+    '[data-anim-disabled="true"] &': { animationPlayState: "paused" },
+  },
 });
 
 export const welcomeLinkStyles = style({

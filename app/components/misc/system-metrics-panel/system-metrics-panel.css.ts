@@ -59,6 +59,8 @@ export const scanlineStyles = style({
       opacity: 0.3,
       animationDuration: "5.4s",
     },
+    // Off screen, Blink can't composite the loop and repaints the page every frame.
+    '[data-anim-disabled="true"] &': { animationPlayState: "paused" },
     '[data-reduced-motion="true"] &': {
       animation: "none",
       opacity: 0.08,
@@ -143,6 +145,7 @@ export const metricBarStyles = style({
     '&[data-pulse="true"]::after': {
       animation: `${pulseKeyframes} 1.8s ease-in-out infinite`,
     },
+    '[data-anim-disabled="true"] &[data-pulse="true"]::after': { animationPlayState: "paused" },
     '&[data-band="high"]::before': {
       background: `linear-gradient(90deg, color-mix(in srgb, ${vars.colors.tertiary} 24%, transparent) 0%, color-mix(in srgb, ${vars.colors.tertiary} 75%, ${vars.colors.secondary} 25%) 100%)`,
     },

@@ -277,4 +277,7 @@ export const splashFinalStepStyles = style({
 
 export const splashCursorStyles = style({
   animation: `${bootCursorBlink} 530ms steps(1) infinite`,
+  selectors: {
+    '[data-anim-disabled="true"] &': { animationPlayState: "paused" },
+  },
 });

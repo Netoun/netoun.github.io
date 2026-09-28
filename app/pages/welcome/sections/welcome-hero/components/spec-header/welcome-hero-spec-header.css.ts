@@ -166,6 +166,10 @@ export const welcomeHeroSpecHeaderRendererStyles = style({
 export const welcomeHeroSpecHeaderDotStyles = style({
   fontSize: "0.5rem",
   animation: `${specBlip} 2s ease-in-out infinite`,
+  selectors: {
+    // Hero off screen: Blink can't composite the loop and repaints the page every frame.
+    '[data-anim-disabled="true"] &': { animationPlayState: "paused" },
+  },
   "@media": {
     [heroSpecReducedMotion]: { animation: "none" },
   },

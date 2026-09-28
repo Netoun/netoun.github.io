@@ -96,6 +96,8 @@ const FooterMeshShaderBackground = memo(function FooterMeshShaderBackground({
       <MeshBackgroundCanvas
         animate={false}
         animateOnScroll
+        // A viewport ahead: ready before the panel shows, but never on the hydration path.
+        armMargin="100% 0px"
         className={styles.footerShaderCanvasStyle}
         powerPreference="low-power"
         quality={getFooterShaderQuality}
