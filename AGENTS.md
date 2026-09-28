@@ -14,7 +14,7 @@ Personal site of Nicolas Coulonnier (Netoun), full-stack engineer at Lonestone. 
 
 React Router 8 (framework mode, `ssr: false`, static prerender) · React 19 · TypeScript 7 (native `tsc`) strict · Vite 8 (Rolldown/Oxc) · Vanilla Extract · Anime.js 4 · React Aria Components · Vitest 5 + happy-dom · oxlint + oxfmt · knip · Bun 1.4 · Node 24 (`.node-version`)
 
-Deployed as static files (`build/client`) on Cloudflare Pages — headers/redirects in `public/_headers`, `public/_redirects`. No server, no loaders/actions, no API.
+Deployed as static files (`build/client`) on Cloudflare Pages (build command `bun i && bun run build`) — headers/redirects in `public/_headers`, `public/_redirects`. No server, no loaders/actions, no API.
 
 ## Commands
 

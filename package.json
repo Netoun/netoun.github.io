@@ -19,8 +19,7 @@
     "check": "bun run typecheck && bun run lint && bun run fmt:check && bun run test:run",
     "generate-assets": "bun scripts/generate-assets.ts",
     "generate-logo-ascii": "bun scripts/generate-logo-ascii.ts",
-    "generate-grain-tile": "bun scripts/generate-grain-tile.ts",
-    "generate-sitemap": "echo \"sitemap.xml is emitted by the build (vite.config.ts); alias kept for the Cloudflare Pages build command\""
+    "generate-grain-tile": "bun scripts/generate-grain-tile.ts"
   },
   "dependencies": {
     "@react-router/node": "^8.4.0",
