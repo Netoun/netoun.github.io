@@ -8,8 +8,7 @@ export const frame = style({
   flexDirection: "column",
   gap: vars.spacing.xl,
   width: "100%",
-  maxWidth: "72rem",
-  marginInline: "auto",
+  paddingTop: vars.spacing.lg,
 });
 
 export const frameHeader = style({

@@ -1,115 +1,42 @@
-import { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router";
-import { MeshBackgroundCanvas } from "@/components/misc/mesh-background/mesh-background-canvas.component";
+import type { ReactNode } from "react";
+import { useParams } from "react-router";
+import { Container } from "@/components/layouts/container/container.component";
 import { labs } from "../../data/experiments";
-import { LabsIsoIcon } from "../labs-iso-icon/labs-iso-icon.component";
+import { LabsDock } from "../labs-dock/labs-dock.component";
+import { LabsPathLine } from "../labs-path-line/labs-path-line.component";
 import * as styles from "./labs-shell.css";
-import { Glyph } from "@/components/primitives/glyph/glyph.component";
 
 interface LabsShellProps {
-  children: React.ReactNode;
+  children: ReactNode;
+  /** The closing panel, owned by the page (it carries the site's contact data). */
+  footer: ReactNode;
+  /** The footer's id: the dock steps away while it is on screen. */
+  footerId: string;
 }
 
-/** Persistent Labs layout: console sidebar (animated mesh + scrim + grain) + content outlet. */
-export function LabsShell({ children }: LabsShellProps) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const groups = labs.getGrouped();
-  const closeMenu = () => setMenuOpen(false);
-
-  // Lock background scroll while the mobile overlay menu is open (overlay only
-  // exists below the lg breakpoint, so it never traps desktop scroll).
-  useEffect(() => {
-    if (!menuOpen) return;
-    const overlay = window.matchMedia("(max-width: 63.99875em)");
-    if (!overlay.matches) return;
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = previous;
-    };
-  }, [menuOpen]);
-
-  // Total experiment count derived from data — never hardcoded
-  const totalCount = labs.getAll().length;
+/**
+ * The Labs pages on the home's paper: the path line home, the page in the home column, the
+ * footer, and the ink dock that moves between experiments.
+ */
+export function LabsShell({ children, footer, footerId }: LabsShellProps) {
+  const { slug } = useParams();
+  const current = labs.getBySlug(slug);
 
   return (
-    <div className={styles.shell}>
-      <aside className={styles.sidebar}>
-        {/* ── Background layers (z -2 and -1) ── */}
-        <div className={styles.sidebarMeshCanvas}>
-          <MeshBackgroundCanvas quality={0.45} animate />
-        </div>
-        <div className={styles.sidebarScrim} />
-        <div className={styles.sidebarHalos} />
-        <div className={styles.sidebarGrain} />
-
-        {/* ── All console chrome sits above layers (z 1) ── */}
-        <div className={styles.sidebarContent}>
-          {/* Brand header */}
-          <div className={styles.conHead}>
-            {/* Back to the portfolio homepage */}
-            <Link to="/" className={styles.homeLink} onClick={closeMenu}>
-              <span aria-hidden="true">❮</span>
-              netoun.com
-            </Link>
-            <div className={styles.brandRow}>
-              <NavLink to="/labs/" end className={styles.brand} onClick={closeMenu}>
-                <span className={styles.brandMark}>▚</span>
-                LABS
-              </NavLink>
-              <span className={styles.verBadge}>v0.0.2</span>
-            </div>
-
-            {/* Status line: prompt · dot · count · cursor */}
-            <div className={styles.statusLine}>
-              <Glyph className={styles.statusPrompt}>_❯</Glyph>
-              <span className={styles.statusDot} aria-hidden="true" />
-              <span>{totalCount} experiments online</span>
-              <Glyph className={styles.blinkCursor}>▐</Glyph>
-            </div>
-
-            {/* Mobile menu toggle — hidden on desktop */}
-            <button
-              type="button"
-              className={styles.menuButton}
-              aria-expanded={menuOpen}
-              aria-controls="labs-nav"
-              onClick={() => setMenuOpen((open) => !open)}
-            >
-              <Glyph>_</Glyph>
-              {menuOpen ? "CLOSE" : "MENU"}
-              <Glyph>_</Glyph>
-            </button>
-          </div>
-
-          {/* Grouped nav */}
-          <nav id="labs-nav" className={styles.nav} data-open={menuOpen}>
-            {groups.map((section) => (
-              <div key={section.group} className={styles.navGroup}>
-                <p className={styles.navGroupTitle}>{section.group}</p>
-                {section.experiments.map((experiment) => (
-                  <NavLink
-                    key={experiment.slug}
-                    to={`/labs/${experiment.slug}/`}
-                    className={styles.navLink}
-                    data-accent={experiment.accent}
-                    onClick={closeMenu}
-                  >
-                    <Glyph className={styles.navPrompt}>❯</Glyph>
-                    <span className={styles.navIcon} aria-hidden="true">
-                      <LabsIsoIcon slug={experiment.slug} />
-                    </span>
-                    <span className={styles.navText}>{experiment.title}</span>
-                    <Glyph className={styles.navArrow}>⤘</Glyph>
-                  </NavLink>
-                ))}
-              </div>
-            ))}
-          </nav>
-        </div>
-      </aside>
-
-      <main className={styles.content}>{children}</main>
+    <div className={styles.shellStyle}>
+      {/* First in the tab order, as the home's sections nav is. */}
+      <LabsDock
+        experiments={labs.getAll()}
+        currentSlug={current?.slug}
+        hideWhenVisibleId={footerId}
+      />
+      <main className={styles.mainStyle}>
+        <Container>
+          <LabsPathLine slug={current?.slug} />
+          {children}
+        </Container>
+      </main>
+      {footer}
     </div>
   );
 }
