@@ -13,9 +13,10 @@
 /fonts/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Images
+# Images — a year like the fonts, but revalidated on reload (names are not hashed: a changed
+# image ships under a new filename)
 /images/*
-  Cache-Control: public, max-age=86400
+  Cache-Control: public, max-age=31536000
 
 # HTML pages — short cache, must revalidate
 /*.html

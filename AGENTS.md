@@ -111,7 +111,7 @@ Labs experiments may import components from any domain — showcasing them is th
 - Fonts: all self-hosted in `public/fonts/`, both preloaded in `root.tsx`: PP Neue Montreal (variable, commercial licence from Pangram Pangram; it does not cover subsetting, so it ships whole) and Doto (the Google Fonts latin / latin-ext subsets, SIL OFL). No third-party font request. `Inter` in the theme stack is not loaded (falls back to system-ui).
 - Mobile budget (Lighthouse 12, `--form-factor=mobile`, simulated throttling, production preview, median of 3 on an idle machine; TBT swings with host load): performance ≥ 80, FCP ≤ 2.9 s, LCP ≤ 4.1 s, TBT ≤ 150 ms, CLS ≤ 0.01; accessibility, best practices and SEO 100. Measured 2026-09-28: 82, 2.86 s, 4.06 s (LCP is the hero h1, bound by the 153 KB PP Neue Montreal file), 20 ms, 0. Desktop stays ≥ 99.
 - Paper grain: `bun run generate-grain-tile` bakes `grain.shader.ts` into `public/images/grain-tile@{1,2}x.webp`; `usePaperGrain` sets it after `load` (it cost 240 ms of mobile LCP when requested with the CSS).
-- Images in `public/images/` or `app/pages/<page>/assets/`, WebP preferred, `alt` always set.
+- Images in `public/images/` or `app/pages/<page>/assets/`, WebP preferred, `alt` always set. `public/images/*` is cached a year (`public/_headers`) under unhashed names: a changed image gets a new filename, never an overwrite.
 - No new runtime dependency without justification; no heavy libraries (Framer Motion, Tailwind, GSAP…) without approval. No Lighthouse regression.
 
 ## Verification
