@@ -6,6 +6,8 @@ import { labs } from "@/features/labs/data/experiments";
 import { LabsIndexTree } from "./labs-index-tree.component";
 
 const experiments = labs.getAll();
+// The tree prints the experiments directory by directory, not in registry order.
+const inTreeOrder = labs.getGrouped().flatMap((section) => section.experiments);
 
 function renderTree(previewSlug: ExperimentSlug = experiments[0].slug) {
   const onPreview = vi.fn();
@@ -59,9 +61,9 @@ describe("LabsIndexTree", () => {
   it("previews a row when it is pointed at or focused", () => {
     const { onPreview } = renderTree();
     fireEvent.pointerEnter(rows()[2]);
-    expect(onPreview).toHaveBeenLastCalledWith(experiments[2].slug);
+    expect(onPreview).toHaveBeenLastCalledWith(inTreeOrder[2].slug);
     fireEvent.focus(rows()[5]);
-    expect(onPreview).toHaveBeenLastCalledWith(experiments[5].slug);
+    expect(onPreview).toHaveBeenLastCalledWith(inTreeOrder[5].slug);
   });
 
   it("walks the rows with the arrow keys", () => {

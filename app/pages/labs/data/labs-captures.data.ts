@@ -1,23 +1,29 @@
 import type { ExperimentSlug } from "@/features/labs/data/experiment-slugs";
+import asciiRaymarcher from "../assets/ascii-raymarcher.webp?no-inline";
 import computer3d from "../assets/computer-3d.webp?no-inline";
 import cyberneticGlyphGrid from "../assets/cybernetic-glyph-grid.webp?no-inline";
 import fakeConsole from "../assets/fake-console.webp?no-inline";
 import glitchSignalMap from "../assets/glitch-signal-map.webp?no-inline";
 import grainShader from "../assets/grain-shader.webp?no-inline";
 import meshBackground from "../assets/mesh-background.webp?no-inline";
+import patchBay from "../assets/patch-bay.webp?no-inline";
 import projectCard3d from "../assets/project-card-3d.webp?no-inline";
 import scrollMorph from "../assets/scroll-morph.webp?no-inline";
 import serverUnit3d from "../assets/server-unit-3d.webp?no-inline";
+import splitFlap from "../assets/split-flap.webp?no-inline";
 import systemMetrics from "../assets/system-metrics.webp?no-inline";
+import asciiRaymarcherThumb from "../assets/thumbs/ascii-raymarcher.webp?no-inline";
 import computer3dThumb from "../assets/thumbs/computer-3d.webp?no-inline";
 import cyberneticGlyphGridThumb from "../assets/thumbs/cybernetic-glyph-grid.webp?no-inline";
 import fakeConsoleThumb from "../assets/thumbs/fake-console.webp?no-inline";
 import glitchSignalMapThumb from "../assets/thumbs/glitch-signal-map.webp?no-inline";
 import grainShaderThumb from "../assets/thumbs/grain-shader.webp?no-inline";
 import meshBackgroundThumb from "../assets/thumbs/mesh-background.webp?no-inline";
+import patchBayThumb from "../assets/thumbs/patch-bay.webp?no-inline";
 import projectCard3dThumb from "../assets/thumbs/project-card-3d.webp?no-inline";
 import scrollMorphThumb from "../assets/thumbs/scroll-morph.webp?no-inline";
 import serverUnit3dThumb from "../assets/thumbs/server-unit-3d.webp?no-inline";
+import splitFlapThumb from "../assets/thumbs/split-flap.webp?no-inline";
 import systemMetricsThumb from "../assets/thumbs/system-metrics.webp?no-inline";
 
 export interface LabImage {
@@ -95,5 +101,23 @@ export const labCaptures: Record<ExperimentSlug, LabCapture> = {
     width: 704,
     height: 448,
     thumb: { src: scrollMorphThumb, width: 128, height: 82 },
+  },
+  "split-flap": {
+    src: splitFlap,
+    width: 1200,
+    height: 270,
+    thumb: { src: splitFlapThumb, width: 128, height: 29 },
+  },
+  "patch-bay": {
+    src: patchBay,
+    width: 1200,
+    height: 644,
+    thumb: { src: patchBayThumb, width: 128, height: 69 },
+  },
+  "ascii-raymarcher": {
+    src: asciiRaymarcher,
+    width: 614,
+    height: 605,
+    thumb: { src: asciiRaymarcherThumb, width: 128, height: 126 },
   },
 };

@@ -46,7 +46,7 @@ Success = peers explore the Labs and share them; visitors leave knowing what Nic
 
 - Real projects with links (personal + Lonestone open source): website, Procedural Maps, Treashunt, Commun'île, Nzoth, Lonestone Boilerplate — see `projects-data.ts`.
 - Real experience: Lonestone (Jul 2021 — present), Easilys, Sogeti — see `experiences-data.ts`.
-- 10 Labs experiments with live demos and source (`app/features/labs/experiments/`).
+- 13 Labs experiments with live demos and source (`app/features/labs/experiments/`); four of them (Glitch Signal Map, Split-Flap Board, Patch Bay, ASCII Raymarcher) also carry a `man` page and an xray view of their mechanism.
 - **Missing — to be provided by Nicolas:** résumé PDF. Do not create a download UI or placeholder file until it exists.
 - **Absent — never fabricate:** testimonials, client quotes, metrics, awards, press.
 - **Resolved inconsistencies (Nicolas, 2026-09-27/28):**

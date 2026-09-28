@@ -9,6 +9,9 @@ export const EXPERIMENT_SLUGS = [
   "grain-shader",
   "mesh-background",
   "scroll-morph",
+  "split-flap",
+  "patch-bay",
+  "ascii-raymarcher",
 ] as const;
 
 export type ExperimentSlug = (typeof EXPERIMENT_SLUGS)[number];

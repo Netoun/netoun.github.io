@@ -1,12 +1,15 @@
+import { asciiRaymarcherExperiment } from "../experiments/ascii-raymarcher/ascii-raymarcher.experiment";
 import { computer3dExperiment } from "../experiments/computer-3d/computer-3d.experiment";
 import { cyberneticGlyphGridExperiment } from "../experiments/cybernetic-glyph-grid/cybernetic-glyph-grid.experiment";
 import { fakeConsoleExperiment } from "../experiments/fake-console/fake-console.experiment";
 import { glitchSignalMapExperiment } from "../experiments/glitch-signal-map/glitch-signal-map.experiment";
 import { grainShaderExperiment } from "../experiments/grain-shader/grain-shader.experiment";
 import { meshBackgroundExperiment } from "../experiments/mesh-background/mesh-background.experiment";
+import { patchBayExperiment } from "../experiments/patch-bay/patch-bay.experiment";
 import { projectCard3dExperiment } from "../experiments/project-card-3d/project-card-3d.experiment";
 import { scrollMorphExperiment } from "../experiments/scroll-morph/scroll-morph.experiment";
 import { serverUnit3dExperiment } from "../experiments/server-unit-3d/server-unit-3d.experiment";
+import { splitFlapExperiment } from "../experiments/split-flap/split-flap.experiment";
 import { systemMetricsExperiment } from "../experiments/system-metrics/system-metrics.experiment";
 import type { LabExperiment, LabGroup } from "./labs.types";
 import { LAB_GROUPS } from "./labs.types";
@@ -34,6 +37,9 @@ const EXPERIMENTS: LabExperiment[] = [
   grainShaderExperiment,
   meshBackgroundExperiment,
   scrollMorphExperiment,
+  splitFlapExperiment,
+  patchBayExperiment,
+  asciiRaymarcherExperiment,
 ];
 
 const EXPERIMENTS_BY_SLUG: Record<string, LabExperiment> = Object.fromEntries(
