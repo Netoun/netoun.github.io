@@ -249,7 +249,7 @@ A sections nav docks at the foot of the screen once the hero is scrolled past: b
 
 ### Named Rules
 
-**The Bookend Rule.** Dark panels run near-full-bleed at the top and bottom of the page only; everything between lives in the capped paper column. Never introduce a third dark panel mid-page. Ink objects inside the column are not panels: the sections nav capsule, the work log's command line and the Skills terminal (window chrome, no bleed, no mesh canvas).
+**The Bookend Rule.** Dark panels run near-full-bleed at the top and bottom of the page only; everything between lives in the capped paper column. Never introduce a third dark panel mid-page. Ink objects inside the column are not panels: the sections nav capsule, the Labs dock, the work log's and the Labs tree's command lines and the Skills terminal (window chrome, no bleed, no mesh canvas).
 
 ## Elevation & Depth
 
@@ -302,6 +302,8 @@ Precise, tactile, quiet: neutral at rest, colour spent only on hover and focus, 
 ### Navigation
 
 - **Sections nav (ink capsule):** a small ink object, never a third dark panel (same family as the work log's command terminal and the monitor's ink strip). At rest it is one status line: the current section (`_02` in muted-on-dark, the name in paper, Doto 900 at 12px, 14px on touch, typed in when it changes), a hairline divider, and `LABS →` (a route, no index, outside the scroll-spy). Along its foot runs the neon track: the same gentle S as ever, laid down, gold to mint to violet, lit up to the scroll progress with a soft 6px tip, over an unlit paper-at-14% line, with one station per section that turns paper once passed. Hover (mouse), focus or a tap on the label (a React Aria disclosure button) grows it upward into the list: `_0N / NAME` rows, the current one in paper on an 8% wash, gold on hover and focus (legal on ink). Rows are 28px on desktop and 44px on touch, where a light scrim sits behind the open list and a chevron marks the button. Focus is the gold ring (the capsule remaps `ring`); Escape folds the list and returns focus to the label. It is the page's first tab stop even while hidden: focus brings it in, above the hero stage.
+- **Labs dock (ink capsule):** the sections nav's object on the Labs pages, 21rem wide from 768px (bottom-left, 1.5rem), across the foot below. At rest one line: `_09 MESH GRADIENT` and `❮` `❯` links to the neighbours (no wrap: the missing end stays drawn, dimmed, out of the tab order), or `_LABS · 10 EXPERIMENTS` on the index. Its track is straight, one station per experiment, lit gold → mint → violet up to the current one (unlit on the index). Hover or a press on the label grows it into the list, grouped as the registry groups them, each row with its iso icon in its accent (legal on ink), the current one on an 8% wash, and `LABS INDEX →` last. It steps away while the footer is on screen.
+- **Labs path line:** `❮ NETOUN.COM / LABS / <slug>` in Doto 800 at the top of every Labs page, 44px targets, the slug printed lower case as it is typed. The Labs' way home.
 - **Section header:** optional `_0N /` index, then the headline led by the `_❯` prompt in the section accent mixed 50% with ink, then an uppercase Doto description in graphite gray.
 
 ### Machine Panel (signature)
@@ -392,6 +394,23 @@ Beside the message from 1280px (under it below, at most 41.25rem wide), `_❯ Ma
 - **Interaction:** a spare plugs into the first free bay of its kind; a plugged cartridge ejects on press. The spares are one React Aria toolbar (arrow keys move inside it). The result is announced in words (a polite live region); the console is for the eye. Power stays focusable while the run prints.
 - **Reduced motion:** the run prints at once, no drop, no LED flicker, no breathing ring, no cursor blink. **Without JS:** the 404 is the SPA fallback, so the page paints once hydrated.
 
+### Labs Tree (signature)
+
+The Labs index reads the experiments as `tree -d -L 2 ~/labs`, printed straight on the paper like the work log (no card), with a loupe beside it. It is the Labs' own procedure: the monitor lists processes you operate, the log prints a history, the tree lists a directory you open. Every value is counted from the `?raw` sources the code viewer shows (`labs-stats.ts`): sizes as `tree -h` prints them (base 1024, one decimal under ten), lines as `wc -l` counts them. Chosen on the canvas (Labs, round 2, T1) after a full tree with every file listed ("j'aime bien lab T mais pas du tout UX friendly").
+
+- **Header:** `_❯ LABS` (page h1, prompt gold 50% ink), `INTERACTIVE EXPERIMENTS & THEIR SOURCE`, the intro sentence; from 1024px, `netoun du -sh ~/labs/*` beside it (size, group, `N EXP · N LINES`, the total under an ink rule).
+- **Command:** `_❯ tree -d -L 2 ~/labs▐` on an ink pill (the work log's command family), the summary `10 EXPERIMENTS · 29 FILES · 5,153 LINES · 151K`, and from 1280px with a fine pointer the legend `POINT TO PREVIEW · ↑↓ · ⏎ OPENS`.
+- **Tree:** `--charset=ascii` glyphs (`|--`, `` `-- ``, `|`; Doto has no box-drawing), Doto 900 on a line grid (28px from 1024px, glyphs 20px; 24px and 12px below), gutters of eight cells so every text column starts on one edge. `~/labs`, the group directories (`3d-css/` with `3 EXPERIMENTS · 2,031 LINES`), one row per experiment, closed by `14 directories`.
+- **Row:** the whole row is the experiment's link (one click opens). From 1024px two lines: the iso icon in its accent, `_01`, the title (PP Neue Montreal 600, 1.125rem), `3 FILES · 390 LINES`; then the sentence, one line, ellipsis. Below 1024px three lines: the title, the sentence on two, and a 64px capture in a 3px chrome bezel.
+- **Preview:** pointing at a row or focusing it shows it in the loupe: the monitor's selection wash (mint 32% to 10% across the row) and a `❯` caret. A deliberate exception to the monitor's "pointing selects nothing": here the row opens by itself, nobody has to travel to the loupe. ↑↓ walk the rows, Enter opens.
+- **Loupe (from 1024px):** a sticky window of the monitor's family (lit paper, strong border, rest shadow, lamp): `_❯ netoun labs run <slug>▐` with `● LIVE · 01/10`, the stage in the chrome bezel (ink glass with two held lights for the HUDs and shaders, lamp-lit paper for the CSS-3D objects), `_01 / 3D CSS`, the title, the sentence, the tags, the experiment's own files as `tree -h ~/labs/<group>/<slug>` prints them (`[2.5K]`, lines, `0 directories, 3 files`) and `_OPEN_ →`. An on-screen echo, hidden from assistive tech: the row carries the name, the sentence and the link.
+- **Live:** the loupe runs the previewed demo itself, stage only (`LabsPreview`: the demo's `LabsDemoLayout` drops its controls), laid out at the experiment page's size and scaled down to the screen, one demo at a time, once the pointer has rested 250ms on a row, only with a fine pointer from 1024px, while the loupe is on screen and motion is allowed. Its capture (`app/pages/labs/assets/<slug>.webp`, transparent, shot from the demo) is the face everywhere else: without JS, under reduced motion, on touch, and on the phone rows.
+- **Motion:** the command types in steps, the rows print one after another from 600ms, 45ms apart (CSS, so it holds without JS); the loupe's capture arrives with one chrome glint. Under reduced motion nothing moves and nothing runs live.
+
+### Slim Patch Panel (Labs footer)
+
+The Labs pages close on the footer's panel cut down to its contact line ("le footer doit être plus minimaliste"): the dark bookend (0.5rem inset, 1rem corners, 2rem from 768px), the mesh's three lights held still as radial gradients under the panel's inset shadow and a grain, `_❯ ESTABLISH LINK▐`, the three keystone ports (stacked below 1280px, one row from 1280px), the email plugged at rest, and the status strip. No rack, no cable, no glass plate, no shader: a page of live demos does not end on another canvas. Pointing at or focusing a port moves the plug; its LED lights after 150ms (no cable to wait for).
+
 In the hero, the contact popover is a translucent dark card (1.5rem corners, 3px backdrop blur, mint edge) on a 14px blueprint grid, with Doto 900 links that turn mint on hover.
 
 ## Do's and Don'ts
@@ -402,7 +421,7 @@ In the hero, the contact popover is a translucent dark card (1.5rem corners, 3px
 - **Do** keep the footer as a dark machine panel with the server rack and the `_❯ ESTABLISH LINK` patch faceplate.
 - **Do** speak machine in Doto with the established vocabulary: `_❯` prompts, `▐` cursor, `⤘` arrow, underscored labels (`_GET IN TOUCH_`), `_0N /` numbering.
 - **Do** keep cards neutral at rest (rest shadow, subtle hairline, opaque paper) and spend colour only on hover and focus.
-- **Do** show a 2px outline with offset on every interactive element: ink on light surfaces, gold on dark panels. The global ring reads the `ring` token (ink) with zero specificity; a dark surface remaps it once (`vars: { [vars.colors.ring]: vars.colors.primary }`: the hero, the footer panel, the contact popover, the sections nav, the Labs sidebar and code viewer) instead of restating it on each control.
+- **Do** show a 2px outline with offset on every interactive element: ink on light surfaces, gold on dark panels. The global ring reads the `ring` token (ink) with zero specificity; a dark surface remaps it once (`vars: { [vars.colors.ring]: vars.colors.primary }`: the hero, the footer panels, the contact popover, the sections nav, the Labs dock and code viewer) instead of restating it on each control.
 - **Do** set Doto that is read or clicked at 16px or more, or at weight 800 and up.
 - **Do** use the house curve `cubic-bezier(0.22, 1, 0.36, 1)` with the 150/300/600ms durations, and stop every animation under `prefers-reduced-motion`.
 

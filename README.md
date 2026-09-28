@@ -48,18 +48,20 @@ Two dark machine panels bookend a workbench of warm paper. Every value on the pa
 
 <sub>CSS 3D, CANVAS AND SHADER EXPERIMENTS, LIVE WITH THEIR SOURCE</sub>
 
-| Experiment               | Technique                                                                      |                                                                                                                                   |
-| ------------------------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
-| 3D Computer              | A retro workstation built entirely with CSS 3D transforms, no WebGL.           | [`_LIVE_ ↗`](https://www.netoun.com/labs/computer-3d) [`_SOURCE_`](app/features/labs/experiments/computer-3d)                     |
-| 3D Server Rack           | A stacked server rack in CSS 3D with deterministic, seed-driven status LEDs.   | [`_LIVE_ ↗`](https://www.netoun.com/labs/server-unit-3d) [`_SOURCE_`](app/features/labs/experiments/server-unit-3d)               |
-| Holographic Project Card | Mouse-driven CSS 3D tilt, holographic sheen and parallax layers.               | [`_LIVE_ ↗`](https://www.netoun.com/labs/project-card-3d) [`_SOURCE_`](app/features/labs/experiments/project-card-3d)             |
-| Glitch Signal Map        | A Canvas 2D signal grid with a per-cell state machine, throttled to 30fps.     | [`_LIVE_ ↗`](https://www.netoun.com/labs/glitch-signal-map) [`_SOURCE_`](app/features/labs/experiments/glitch-signal-map)         |
-| Cybernetic Glyph Grid    | Canvas 2D hex pairs and glitch glyphs on a deterministic timer.                | [`_LIVE_ ↗`](https://www.netoun.com/labs/cybernetic-glyph-grid) [`_SOURCE_`](app/features/labs/experiments/cybernetic-glyph-grid) |
-| Fake Console             | A faux boot console streaming log lines behind a blinking caret.               | [`_LIVE_ ↗`](https://www.netoun.com/labs/fake-console) [`_SOURCE_`](app/features/labs/experiments/fake-console)                   |
-| System Metrics Panel     | An animated telemetry HUD, gauges easing toward shifting targets.              | [`_LIVE_ ↗`](https://www.netoun.com/labs/system-metrics) [`_SOURCE_`](app/features/labs/experiments/system-metrics)               |
-| Film Grain Shader        | Multi-octave value-noise film grain in WebGL, supersampled for high-DPI.       | [`_LIVE_ ↗`](https://www.netoun.com/labs/grain-shader) [`_SOURCE_`](app/features/labs/experiments/grain-shader)                   |
-| Mesh Gradient            | Three drifting colour blobs, a vignette and film grain in one fragment shader. | [`_LIVE_ ↗`](https://www.netoun.com/labs/mesh-background) [`_SOURCE_`](app/features/labs/experiments/mesh-background)             |
-| Scroll Morph             | A scroll-driven scale and translate morph, scrubbed with a slider.             | [`_LIVE_ ↗`](https://www.netoun.com/labs/scroll-morph) [`_SOURCE_`](app/features/labs/experiments/scroll-morph)                   |
+| Experiment               | Technique                                                                      |                                                                                                                                    |
+| ------------------------ | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| 3D Computer              | A retro workstation built entirely with CSS 3D transforms, no WebGL.           | [`_LIVE_ ↗`](https://www.netoun.com/labs/computer-3d/) [`_SOURCE_`](app/features/labs/experiments/computer-3d)                     |
+| 3D Server Rack           | A stacked server rack in CSS 3D with deterministic, seed-driven status LEDs.   | [`_LIVE_ ↗`](https://www.netoun.com/labs/server-unit-3d/) [`_SOURCE_`](app/features/labs/experiments/server-unit-3d)               |
+| Holographic Project Card | Mouse-driven CSS 3D tilt, holographic sheen and parallax layers.               | [`_LIVE_ ↗`](https://www.netoun.com/labs/project-card-3d/) [`_SOURCE_`](app/features/labs/experiments/project-card-3d)             |
+| Glitch Signal Map        | A Canvas 2D signal grid with a per-cell state machine, throttled to 30fps.     | [`_LIVE_ ↗`](https://www.netoun.com/labs/glitch-signal-map/) [`_SOURCE_`](app/features/labs/experiments/glitch-signal-map)         |
+| Cybernetic Glyph Grid    | Canvas 2D hex pairs and glitch glyphs on a deterministic timer.                | [`_LIVE_ ↗`](https://www.netoun.com/labs/cybernetic-glyph-grid/) [`_SOURCE_`](app/features/labs/experiments/cybernetic-glyph-grid) |
+| Fake Console             | A faux boot console streaming log lines behind a blinking caret.               | [`_LIVE_ ↗`](https://www.netoun.com/labs/fake-console/) [`_SOURCE_`](app/features/labs/experiments/fake-console)                   |
+| System Metrics Panel     | An animated telemetry HUD, gauges easing toward shifting targets.              | [`_LIVE_ ↗`](https://www.netoun.com/labs/system-metrics/) [`_SOURCE_`](app/features/labs/experiments/system-metrics)               |
+| Film Grain Shader        | Multi-octave value-noise film grain in WebGL, supersampled for high-DPI.       | [`_LIVE_ ↗`](https://www.netoun.com/labs/grain-shader/) [`_SOURCE_`](app/features/labs/experiments/grain-shader)                   |
+| Mesh Gradient            | Three drifting colour blobs, a vignette and film grain in one fragment shader. | [`_LIVE_ ↗`](https://www.netoun.com/labs/mesh-background/) [`_SOURCE_`](app/features/labs/experiments/mesh-background)             |
+| Scroll Morph             | A scroll-driven scale and translate morph, scrubbed with a slider.             | [`_LIVE_ ↗`](https://www.netoun.com/labs/scroll-morph/) [`_SOURCE_`](app/features/labs/experiments/scroll-morph)                   |
+
+The index prints the Labs as `tree -d -L 2 ~/labs`: every size and line count is read from the sources the code viewer shows. Where a demo cannot run live (touch screens, reduced motion, no JS), the index shows its capture, `app/pages/labs/assets/<slug>.webp`: the demo's stage shot from the dev server at 2× on a transparent background (Chromium, `omitBackground`), trimmed to the object with a 32px margin, then `cwebp -q 86 -alpha_q 90`, 1200px wide at most. Re-shoot it when the demo's look changes.
 
 ## `_03 /` RUN IT
 

@@ -39,16 +39,17 @@ app/
   root.tsx                  # <html> layout, fonts, JSON-LD, ErrorBoundary
   routes.ts                 # / → welcome · /labs → labs layout (index + :slug) · /misc → redirect · * → not-found
   components/               # shared UI — must NOT import features/ or pages/ (lint-enforced)
-    layouts/                #   container, content-section, error-screen, feature-header, footer
+    layouts/                #   container, content-section, error-screen, feature-header, footer, footer-slim
     primitives/             #   button, glyph, slider, tag, terminal-buttons, icons
-    misc/                   #   decorative/3D/canvas pieces: computer, server-unit, mesh-background, shaders/, canvas-renderer/…
+    misc/                   #   decorative/3D/canvas pieces: computer, server-unit, mesh-background, chrome-capture, shaders/, canvas-renderer/…
   features/<domain>/        # business code shared across pages — must NOT import pages/ (lint-enforced)
     projects/               #   process monitor (`htop`) + data + hooks
     experiences/            #   work log (`git log --graph`) + data
     skills/                 #   fetch readout (`fastfetch`) + data
-    labs/                   #   experiment registry, shell, code viewer, experiments/<slug>/
+    labs/                   #   experiment registry + stats, shell (path line, dock), preview mode, code viewer, experiments/<slug>/
+    site/                   #   the site's own identity: URL, contact links, build status (any domain may import it)
   pages/<page>/             # welcome/, labs/, not-found/ — page/<page>.page.tsx, sections/, components/, data/, hooks/
-  hooks/                    # use-animation-priority, use-current-month, use-intersection-observer, use-mouse-position, use-paper-grain, use-reveal
+  hooks/                    # use-animation-priority, use-chrome-reflection, use-current-month, use-intersection-observer, use-media-query, use-mouse-position, use-paper-grain, use-reveal, use-settled-value
   styles/                   # theme (tokens), global, fonts, motion, animations, responsive
   types/                    # ambient declarations (?raw imports, build-time defines)
 scripts/                    # sharp generators: generate-assets (favicon.ico, apple-touch-icon, OG), generate-grain-tile, generate-logo-ascii
@@ -94,7 +95,8 @@ Each experiment = `app/features/labs/experiments/<slug>/` with `<slug>.experimen
 1. Add the slug to `app/features/labs/data/experiment-slugs.ts` (drives prerender + sitemap).
 2. Register the descriptor in `app/features/labs/data/experiments.ts`.
 3. Source tabs use `?raw` imports; `.css.ts?raw` works thanks to the `raw-css-ts` plugin in `vite.config.ts`.
-4. Add a row to the Labs table in `README.md`.
+4. Capture its stage as `app/pages/labs/assets/<slug>.webp` (see README › Labs) and add it to `app/pages/labs/data/labs-captures.data.ts`: the index shows it wherever the demo does not run live, and the record is typed per slug, so a missing capture fails the typecheck.
+5. Add a row to the Labs table in `README.md`.
 
 Labs experiments may import components from any domain — showcasing them is their purpose (documented exception to the cross-domain rule).
 

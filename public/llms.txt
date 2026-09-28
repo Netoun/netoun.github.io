@@ -55,6 +55,19 @@
 - Description: Starter kit for full-stack web apps, SaaS and websites
 - Tech: TypeScript, NestJS, React, Monorepo
 
+## Labs
+Interactive CSS 3D, canvas and shader experiments, each live with its source code.
+- [3D Computer](https://www.netoun.com/labs/computer-3d/): A retro computer workstation built entirely with CSS 3D transforms — no WebGL, just perspective and transform-style: preserve-3d.
+- [3D Server Rack](https://www.netoun.com/labs/server-unit-3d/): A stacked server rack in CSS 3D with deterministic, seed-driven status LEDs — resize it, reseed it, spin it around.
+- [Holographic Project Card](https://www.netoun.com/labs/project-card-3d/): A project card with mouse-driven CSS 3D tilt, holographic sheen, and image+tag parallax layers — no WebGL.
+- [Glitch Signal Map](https://www.netoun.com/labs/glitch-signal-map/): A Canvas 2D signal grid with a per-cell state machine, pulsing accents and glitchy recalibration — throttled to 30fps.
+- [Cybernetic Glyph Grid](https://www.netoun.com/labs/cybernetic-glyph-grid/): A Canvas 2D grid of hex pairs and glitch glyphs that pulse, flicker and re-randomize on a deterministic timer.
+- [Fake Console](https://www.netoun.com/labs/fake-console/): A faux boot console that types out streaming log lines with a blinking caret and an auto-scrolling viewport.
+- [System Metrics Panel](https://www.netoun.com/labs/system-metrics/): An animated telemetry HUD with live-updating gauges and readouts, easing toward shifting target values.
+- [Film Grain Shader](https://www.netoun.com/labs/grain-shader/): Procedural multi-octave value-noise film grain in WebGL, supersampled to stay fine on high-DPI screens.
+- [Mesh Gradient](https://www.netoun.com/labs/mesh-background/): An animated mesh-gradient background: three drifting colour blobs, a vignette and optional film grain, all in one fragment shader.
+- [Scroll Morph](https://www.netoun.com/labs/scroll-morph/): A scroll-progress-driven scale & translate morph using an easeInOutQuad curve — scrub it here with the slider.
+
 ## Professional Experience
 ### Lonestone (Jul 2021 - Present)
 - Role: Full-stack engineer
