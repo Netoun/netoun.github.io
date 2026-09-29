@@ -1,4 +1,5 @@
 import { asciiRaymarcherExperiment } from "../experiments/ascii-raymarcher/ascii-raymarcher.experiment";
+import { chromeCaptureExperiment } from "../experiments/chrome-capture/chrome-capture.experiment";
 import { computer3dExperiment } from "../experiments/computer-3d/computer-3d.experiment";
 import { cyberneticGlyphGridExperiment } from "../experiments/cybernetic-glyph-grid/cybernetic-glyph-grid.experiment";
 import { fakeConsoleExperiment } from "../experiments/fake-console/fake-console.experiment";
@@ -6,7 +7,6 @@ import { glitchSignalMapExperiment } from "../experiments/glitch-signal-map/glit
 import { grainShaderExperiment } from "../experiments/grain-shader/grain-shader.experiment";
 import { meshBackgroundExperiment } from "../experiments/mesh-background/mesh-background.experiment";
 import { patchBayExperiment } from "../experiments/patch-bay/patch-bay.experiment";
-import { projectCard3dExperiment } from "../experiments/project-card-3d/project-card-3d.experiment";
 import { scrollMorphExperiment } from "../experiments/scroll-morph/scroll-morph.experiment";
 import { serverUnit3dExperiment } from "../experiments/server-unit-3d/server-unit-3d.experiment";
 import { splitFlapExperiment } from "../experiments/split-flap/split-flap.experiment";
@@ -29,7 +29,7 @@ import type { MetaDescriptor } from "./labs-seo";
 const EXPERIMENTS: LabExperiment[] = [
   computer3dExperiment,
   serverUnit3dExperiment,
-  projectCard3dExperiment,
+  chromeCaptureExperiment,
   glitchSignalMapExperiment,
   cyberneticGlyphGridExperiment,
   fakeConsoleExperiment,

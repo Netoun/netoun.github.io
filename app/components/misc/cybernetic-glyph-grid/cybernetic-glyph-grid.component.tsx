@@ -4,6 +4,39 @@ import * as styles from "./cybernetic-glyph-grid.css";
 export interface CyberneticGlyphGridProps {
   isAnimating: boolean;
   className?: string;
+  /** Milliseconds between two rewrites of the grid. */
+  tickMs?: number;
+  /** Share of the cells rewritten each tick (0–1). */
+  updateRatio?: number;
+  /** The Lab's xray: cell boxes, the cells this tick rewrote, the glitching ones. */
+  xray?: boolean;
+  /** Changing it runs one tick by hand (while paused). */
+  stepToken?: number;
+  /** After each tick. */
+  onTick?: (stats: GlyphGridStats) => void;
+  /** Whenever the glyph atlas gains a bitmap. */
+  onAtlas?: (glyphs: readonly GlyphAtlasEntry[]) => void;
+}
+
+export interface GlyphGridStats {
+  tick: number;
+  cells: number;
+  cols: number;
+  rows: number;
+  rewritten: number;
+  /** Rewrites this tick that drew a glitch token. */
+  glitched: number;
+  /** Cells showing a glitch token right now. */
+  glitching: number;
+  atlas: number;
+}
+
+/** One cached bitmap: its key (`value:tone:size:dpr`) and the canvas drawn once for it. */
+export interface GlyphAtlasEntry {
+  key: string;
+  canvas: HTMLCanvasElement;
+  width: number;
+  height: number;
 }
 
 const HEX = "0123456789ABCDEF";
@@ -71,6 +104,13 @@ const GLITCH_DURATION_MS = 92;
 const GLITCH_BASE_ALPHA = 0.58;
 
 const FONT_FAMILY = "Doto, system-ui, sans-serif";
+
+export const CYBERNETIC_GLYPH_GRID_DEFAULTS = {
+  tickMs: TICK_MS,
+  updateRatio: UPDATE_RATIO,
+  glitchMs: GLITCH_DURATION_MS,
+  seed: BASE_SEED,
+} as const;
 
 const lcg = (seed: number): number => (seed * LCG_A + LCG_C) >>> 0;
 
@@ -227,7 +267,16 @@ const createGlyphBitmap = (
 };
 
 export const CyberneticGlyphGrid = memo(
-  ({ isAnimating, className }: CyberneticGlyphGridProps) => {
+  ({
+    isAnimating,
+    className,
+    tickMs = TICK_MS,
+    updateRatio = UPDATE_RATIO,
+    xray = false,
+    stepToken = 0,
+    onTick,
+    onAtlas,
+  }: CyberneticGlyphGridProps) => {
     const rootRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -253,6 +302,11 @@ export const CyberneticGlyphGrid = memo(
     const tickStepRef = useRef(0);
 
     const mountedRef = useRef(false);
+    // What the last tick rewrote, for the xray; whether the atlas grew since it was reported.
+    const touchedRef = useRef<number[]>([]);
+    const glitchedRef = useRef(0);
+    const atlasGrewRef = useRef(false);
+    const xrayRef = useRef(xray);
 
     const [reducedMotion, setReducedMotion] = useState(false);
 
@@ -269,6 +323,7 @@ export const CyberneticGlyphGrid = memo(
 
       const bitmap = createGlyphBitmap(value, tone, fontSize, dpr);
       glyphAtlasRef.current.set(key, bitmap);
+      atlasGrewRef.current = true;
 
       return bitmap;
     };
@@ -288,16 +343,20 @@ export const CyberneticGlyphGrid = memo(
 
       if (count === 0) return;
 
-      const batch = Math.max(2, Math.floor(count * UPDATE_RATIO));
+      const batch = Math.max(2, Math.floor(count * updateRatio));
       const step = tickStepRef.current;
+      const touched: number[] = [];
+      let glitched = 0;
 
       for (let i = 0; i < batch; i += 1) {
         const ci = (step * 11 + i * 37 + 17) % count;
         const cell = cells[ci];
 
         if (!cell) continue;
+        touched.push(ci);
 
         const shouldGlitch = ((cell.seed >>> 1) & 0x1f) <= 2;
+        if (shouldGlitch) glitched += 1;
         const [nextValue, nextSeed] = shouldGlitch ? glitchToken(cell.seed) : hexPair(cell.seed);
 
         cell.value = nextValue;
@@ -314,7 +373,46 @@ export const CyberneticGlyphGrid = memo(
           cell.glitchUntil = 0;
         }
       }
+
+      touchedRef.current = touched;
+      glitchedRef.current = glitched;
     });
+
+    // The readout's numbers, and the atlas when it grew. Only while someone listens.
+    const report = useEffectEvent((now: number) => {
+      if (onTick) {
+        const { cols, rows } = layoutRef.current;
+        const cells = cellsRef.current;
+        onTick({
+          tick: tickStepRef.current,
+          cells: cells.length,
+          cols,
+          rows,
+          rewritten: touchedRef.current.length,
+          glitched: glitchedRef.current,
+          glitching: cells.filter((cell) => cell.glitchUntil > now).length,
+          atlas: glyphAtlasRef.current.size,
+        });
+      }
+      if (onAtlas && atlasGrewRef.current) {
+        atlasGrewRef.current = false;
+        onAtlas(
+          [...glyphAtlasRef.current].map(([key, glyph]) => ({
+            key,
+            canvas: glyph.canvas,
+            width: glyph.width,
+            height: glyph.height,
+          })),
+        );
+      }
+    });
+
+    const tick = useEffectEvent((now: number) => {
+      updateCells(now);
+      report(now);
+    });
+
+    const tickIsDue = useEffectEvent((now: number) => now - lastTickRef.current >= tickMs);
 
     const draw = useEffectEvent((now: number) => {
       const ctx = ctxRef.current;
@@ -395,6 +493,34 @@ export const CyberneticGlyphGrid = memo(
       }
 
       ctx.globalAlpha = 1;
+
+      if (xrayRef.current) {
+        const box = (index: number) => {
+          const col = index % cols;
+          const row = Math.floor(index / cols);
+          return [GAP_PX + col * (cellW + GAP_PX), GAP_PX + row * (cellH + GAP_PX)] as const;
+        };
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "oklch(0.82 0.15 130 / 0.16)";
+        for (let index = 0; index < cols * rows; index += 1) {
+          const [x, y] = box(index);
+          ctx.strokeRect(x + 0.5, y + 0.5, cellW - 1, cellH - 1);
+        }
+        // Glitching now: violet. Rewritten by the last tick: gold, on top.
+        ctx.strokeStyle = "oklch(0.62 0.25 313)";
+        cells.forEach((cell, index) => {
+          if (cell.glitchUntil <= now || index >= cols * rows) return;
+          const [x, y] = box(index);
+          ctx.strokeRect(x + 0.5, y + 0.5, cellW - 1, cellH - 1);
+        });
+        ctx.strokeStyle = "oklch(0.8858 0.182 95.69)";
+        ctx.lineWidth = 1.5;
+        for (const index of touchedRef.current) {
+          if (index >= cols * rows) continue;
+          const [x, y] = box(index);
+          ctx.strokeRect(x + 0.75, y + 0.75, cellW - 1.5, cellH - 1.5);
+        }
+      }
     });
 
     useEffect(() => {
@@ -514,9 +640,9 @@ export const CyberneticGlyphGrid = memo(
       const loop = (now: number) => {
         if (!mountedRef.current) return;
 
-        if (!document.hidden && now - lastTickRef.current >= TICK_MS) {
+        if (!document.hidden && tickIsDue(now)) {
           lastTickRef.current = now;
-          updateCells(now);
+          tick(now);
         }
 
         if (!document.hidden && now - lastDraw >= FRAME_MS) {
@@ -539,6 +665,24 @@ export const CyberneticGlyphGrid = memo(
       };
     }, [isAnimating, reducedMotion]);
 
+    // Paused or under reduced motion, nothing redraws on its own: the xray and a step do. A
+    // readout opening gets the grid and the whole atlas as they are, not after the next tick.
+    useEffect(() => {
+      xrayRef.current = xray;
+      const now = performance.now();
+      draw(now);
+      if (!xray) return;
+      atlasGrewRef.current = true;
+      report(now);
+    }, [xray]);
+
+    useEffect(() => {
+      if (stepToken === 0) return;
+      const now = performance.now();
+      tick(now);
+      draw(now);
+    }, [stepToken]);
+
     const rootClassName = className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
 
     return (
@@ -548,5 +692,4 @@ export const CyberneticGlyphGrid = memo(
       </div>
     );
   },
-  (prev, next) => prev.isAnimating === next.isAnimating && prev.className === next.className,
 );

@@ -21,6 +21,8 @@ export interface ChromeCaptureProps {
   sweep?: boolean;
   /** Something live laid over the capture (a running demo); the capture stays its fallback. */
   children?: ReactNode;
+  /** The Lab's xray: the layers pulled apart in depth (`chromeLayerGap` sets how far). */
+  xray?: boolean;
 }
 
 /** A capture set in a polished chrome bezel, the process monitor's and the Labs loupe's. */
@@ -35,9 +37,14 @@ export function ChromeCapture({
   screenClassName,
   sweep = false,
   children,
+  xray = false,
 }: ChromeCaptureProps) {
   return (
-    <span className={clsx(styles.captureStyle, className)} data-size={size}>
+    <span
+      className={clsx(styles.captureStyle, className)}
+      data-size={size}
+      data-xray={xray || undefined}
+    >
       <span className={clsx(styles.frameStyle, screenClassName)}>
         <img
           src={src}

@@ -2,7 +2,7 @@ import type { ComponentType } from "react";
 import type { ExperimentSlug } from "./experiment-slugs";
 
 /** Sidebar grouping for experiments. Order defined by `LAB_GROUPS`. */
-export type LabGroup = "3D CSS" | "HUD" | "Shaders" | "Scroll" | "SVG";
+export type LabGroup = "3D CSS" | "CSS" | "HUD" | "Shaders" | "Scroll" | "SVG";
 
 /** Accent maps onto the design system's three accent colors. */
 export type LabAccent = "primary" | "secondary" | "tertiary";
@@ -79,4 +79,4 @@ export interface LabExperiment {
 }
 
 /** Ordered groups used to lay out the sidebar. */
-export const LAB_GROUPS: LabGroup[] = ["3D CSS", "HUD", "Shaders", "Scroll", "SVG"];
+export const LAB_GROUPS: LabGroup[] = ["3D CSS", "CSS", "HUD", "Shaders", "Scroll", "SVG"];

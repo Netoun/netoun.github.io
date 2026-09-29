@@ -5,6 +5,34 @@ import * as styles from "./fake-console.css";
 export interface FakeConsoleProps {
   isAnimating: boolean;
   className?: string;
+  /** Milliseconds between two lines. */
+  tickMs?: number;
+  /** How long the reel takes to roll up one line. */
+  shiftMs?: number;
+  /** The Lab's xray: the clip window outlined, the incoming line lit. */
+  xray?: boolean;
+  /** Each time a line is drawn (and once when the xray opens). */
+  onTick?: (trace: FakeConsoleTrace) => void;
+}
+
+/** A line's five fields, as its ten `lcg` draws produced them. */
+export interface ConsoleLineParts {
+  process: string;
+  state: string;
+  load: string;
+  hex: string;
+  tail: string;
+}
+
+export interface FakeConsoleTrace {
+  lines: number;
+  /** The seed the newest line was drawn from, and the one it hands to the next. */
+  seedIn: number;
+  seedOut: number;
+  parts: ConsoleLineParts;
+  /** Lines in the reel: the window's rows plus two, so none pops in at the edge. */
+  rowsCount: number;
+  rowPx: number;
 }
 
 const INITIAL_ROWS_COUNT = 10;
@@ -17,6 +45,12 @@ const TICK_INTERVAL_MS = 500;
 const SHIFT_DURATION_MS = 250;
 
 const INITIAL_SEED = 0x1a2b3c4d;
+
+export const FAKE_CONSOLE_DEFAULTS = {
+  tickMs: TICK_INTERVAL_MS,
+  shiftMs: SHIFT_DURATION_MS,
+  seed: INITIAL_SEED,
+} as const;
 
 const TOKENS_A = ["PROCESS", "GRID", "SYNC", "ION", "RET", "NODE", "CORE", "MUX"];
 const TOKENS_B = ["ONLINE", "IDLE", "TRACE", "LOCK", "FLOW", "READY", "SHIFT", "LINK"];
@@ -33,9 +67,11 @@ const PERCENT_LABELS = Array.from(
 
 const lcg = (seed: number) => (seed * 1664525 + 1013904223) >>> 0;
 
+// Reads the draw's high bits: an LCG's low bits repeat fast (the lowest three every 8 draws),
+// and `% 8` on them made the log loop every four lines.
 const intFromSeed = (seed: number, max: number): [number, number] => {
   const next = lcg(seed);
-  return [next % max, next];
+  return [(next >>> 16) % max, next];
 };
 
 const hexChunk = (seed: number, size: number): [string, number] => {
@@ -51,7 +87,8 @@ const hexChunk = (seed: number, size: number): [string, number] => {
   return [value, current];
 };
 
-const generateLine = (seed: number): [string, number] => {
+/** One line from one seed: five fields, ten `lcg` draws, and the seed for the next line. */
+export const lineParts = (seed: number): [ConsoleLineParts, number] => {
   const [leftIdx, seedA] = intFromSeed(seed, TOKEN_A_LABELS.length);
   const [rightIdx, seedB] = intFromSeed(seedA, TOKENS_B.length);
   const [progress, seedC] = intFromSeed(seedB, PERCENT_LABELS.length);
@@ -59,9 +96,23 @@ const generateLine = (seed: number): [string, number] => {
   const [shortHexTail, nextSeed] = hexChunk(seedD, 3);
 
   return [
-    `${TOKEN_A_LABELS[leftIdx]}  ${TOKENS_B[rightIdx]} ${PERCENT_LABELS[progress]}  ${shortHex}-${shortHexTail}`,
+    {
+      process: TOKEN_A_LABELS[leftIdx],
+      state: TOKENS_B[rightIdx],
+      load: PERCENT_LABELS[progress],
+      hex: shortHex,
+      tail: shortHexTail,
+    },
     nextSeed,
   ];
+};
+
+const formatLine = ({ process, state, load, hex, tail }: ConsoleLineParts) =>
+  `${process}  ${state} ${load}  ${hex}-${tail}`;
+
+const generateLine = (seed: number): [string, number] => {
+  const [parts, nextSeed] = lineParts(seed);
+  return [formatLine(parts), nextSeed];
 };
 
 const createLines = (seed: number, count: number): [string[], number] => {
@@ -114,13 +165,30 @@ const syncLineNode = (node: HTMLElement, index: number, state: ConsoleState) => 
   if (node.dataset.dim !== nextDim) {
     node.dataset.dim = nextDim;
   }
+
+  const nextPending = isPendingIndex ? "true" : "false";
+  if (node.dataset.pending !== nextPending) {
+    node.dataset.pending = nextPending;
+  }
 };
 
-export const FakeConsole = memo(function FakeConsole({ isAnimating, className }: FakeConsoleProps) {
+export const FakeConsole = memo(function FakeConsole({
+  isAnimating,
+  className,
+  tickMs = TICK_INTERVAL_MS,
+  shiftMs = SHIFT_DURATION_MS,
+  xray = false,
+  onTick,
+}: FakeConsoleProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const reelRef = useRef<HTMLDivElement>(null);
   const isAnimatingRef = useRef(isAnimating);
   const updateAnimationStateRef = useRef<(() => void) | null>(null);
+  // Tuning props, read by the reel's timers through refs: no restart when they change.
+  const tickMsRef = useRef(tickMs);
+  const shiftMsRef = useRef(shiftMs);
+  const onTickRef = useRef(onTick);
+  const reportRef = useRef<(() => void) | null>(null);
 
   // The reel is driven imperatively (text, visibility, shift): React renders the
   // empty line nodes once and never re-renders them.
@@ -141,6 +209,9 @@ export const FakeConsole = memo(function FakeConsole({ isAnimating, className }:
     };
 
     let prefersReducedMotion = false;
+    let lineCount = state.lines.length;
+    let lastSeedIn = INITIAL_SEED;
+    let [lastParts] = lineParts(INITIAL_SEED);
     let isShifting = false;
     let shiftDistance = 14;
     let lineHeight = 12;
@@ -234,9 +305,15 @@ export const FakeConsole = memo(function FakeConsole({ isAnimating, className }:
         if (!shouldAnimate()) return;
         if (isShifting) return;
 
-        const [nextLine, nextSeed] = generateLine(state.seed);
+        const seedIn = state.seed;
+        const [parts, nextSeed] = lineParts(seedIn);
+        const nextLine = formatLine(parts);
 
+        lastSeedIn = seedIn;
+        lastParts = parts;
+        lineCount += 1;
         state.seed = nextSeed;
+        report();
         state.pendingLine = nextLine;
         isShifting = true;
 
@@ -257,7 +334,10 @@ export const FakeConsole = memo(function FakeConsole({ isAnimating, className }:
           }
 
           // The pending line is painted at rest; roll the reel on the next frame.
-          setElementVars(reelElement, { [styles.reelShift]: `${shiftDistance}px` });
+          setElementVars(reelElement, {
+            [styles.reelShift]: `${shiftDistance}px`,
+            [styles.reelShiftDuration]: `${shiftMsRef.current}ms`,
+          });
           reelElement.dataset.shifting = "moving";
 
           shiftTimeout = window.setTimeout(() => {
@@ -274,10 +354,21 @@ export const FakeConsole = memo(function FakeConsole({ isAnimating, className }:
             resetReelTransform();
             paintLines();
             scheduleTick();
-          }, SHIFT_DURATION_MS);
+          }, shiftMsRef.current);
         });
-      }, TICK_INTERVAL_MS);
+      }, tickMsRef.current);
     };
+
+    function report() {
+      onTickRef.current?.({
+        lines: lineCount,
+        seedIn: lastSeedIn,
+        seedOut: state.seed,
+        parts: lastParts,
+        rowsCount: state.rowsCount,
+        rowPx: shiftDistance,
+      });
+    }
 
     const stopAnimation = () => {
       clearTickTimeout();
@@ -338,6 +429,7 @@ export const FakeConsole = memo(function FakeConsole({ isAnimating, className }:
     };
 
     updateAnimationStateRef.current = updateAnimationState;
+    reportRef.current = report;
 
     paintLines();
     scheduleLayoutUpdate(rootElement.clientHeight);
@@ -357,6 +449,7 @@ export const FakeConsole = memo(function FakeConsole({ isAnimating, className }:
 
     return () => {
       updateAnimationStateRef.current = null;
+      reportRef.current = null;
 
       resizeObserver.disconnect();
       mediaQuery.removeEventListener("change", updateReducedMotion);
@@ -375,10 +468,27 @@ export const FakeConsole = memo(function FakeConsole({ isAnimating, className }:
     updateAnimationStateRef.current?.();
   }, [isAnimating]);
 
+  useEffect(() => {
+    tickMsRef.current = tickMs;
+    shiftMsRef.current = shiftMs;
+    onTickRef.current = onTick;
+  });
+
+  // A readout opening gets the reel as it is, not after the next line.
+  useEffect(() => {
+    if (xray) reportRef.current?.();
+  }, [xray]);
+
   const rootClassName = className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
 
   return (
-    <div ref={rootRef} className={rootClassName} data-reduced-motion="false" aria-hidden="true">
+    <div
+      ref={rootRef}
+      className={rootClassName}
+      data-reduced-motion="false"
+      data-xray={xray || undefined}
+      aria-hidden="true"
+    >
       <div className={styles.noiseOverlayStyles} />
       <div className={styles.scanlineStyles} />
       <div className={styles.bottomRevealStyles} />

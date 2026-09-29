@@ -45,7 +45,10 @@ describe("LabsIndexTree", () => {
     const groups = labs.getGrouped();
     expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(groups.length);
     for (const section of groups) {
-      expect(screen.getByRole("heading", { name: new RegExp(section.group) })).toBeInTheDocument();
+      // Anchored: `CSS` is also the end of `3D CSS`.
+      expect(
+        screen.getByRole("heading", { name: new RegExp(`^${section.group} `) }),
+      ).toBeInTheDocument();
     }
     expect(screen.getByText(`${labs.getTotals().directories} directories`)).toBeInTheDocument();
   });

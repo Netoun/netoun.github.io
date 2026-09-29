@@ -1,4 +1,4 @@
-import { createVar, keyframes, style } from "@vanilla-extract/css";
+import { createVar, fallbackVar, keyframes, style } from "@vanilla-extract/css";
 import { breakpoints } from "@/styles/responsive.css";
 import { vars } from "@/styles/theme.css";
 
@@ -111,10 +111,16 @@ export const linesWrapperStyles = style({
   overflow: "hidden",
   display: "flex",
   alignItems: "flex-end",
+  selectors: {
+    // Xray (the Lab): the window the reel rolls behind.
+    "[data-xray] &": { outline: `1px dashed ${vars.colors.primary}`, outlineOffset: "-1px" },
+  },
 });
 
 /** One line plus its gap: how far the reel rolls up on each tick (set before it moves). */
 export const reelShift = createVar();
+/** How long that roll takes (set with it; 250ms on the home). */
+export const reelShiftDuration = createVar();
 
 // At rest the reel sits at 0 with no transition; `moving` rolls it up by one line, then the
 // component snaps it back to rest with the lines already shifted.
@@ -128,7 +134,7 @@ export const reelStyles = style({
   selectors: {
     '&[data-shifting="moving"]': {
       transform: `translate3d(0, calc(-1 * ${reelShift}), 0)`,
-      transition: "transform 250ms linear",
+      transition: `transform ${fallbackVar(reelShiftDuration, "250ms")} linear`,
     },
     '&[data-animating="false"]': {
       transition: "none",
@@ -161,6 +167,11 @@ export const lineStyles = style({
   selectors: {
     '&[data-dim="true"]': {
       opacity: 0.72,
+    },
+    // Xray: the line rolling in, drawn below the window before the reel moves.
+    '[data-xray] &[data-pending="true"]': {
+      color: vars.colors.primary,
+      backgroundColor: `color-mix(in srgb, ${vars.colors.primary} 14%, transparent)`,
     },
   },
   ":last-child": {

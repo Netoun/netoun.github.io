@@ -1,5 +1,6 @@
 import type { ExperimentSlug } from "@/features/labs/data/experiment-slugs";
 import asciiRaymarcher from "../assets/ascii-raymarcher.webp?no-inline";
+import chromeCapture from "../assets/chrome-capture.webp?no-inline";
 import computer3d from "../assets/computer-3d.webp?no-inline";
 import cyberneticGlyphGrid from "../assets/cybernetic-glyph-grid.webp?no-inline";
 import fakeConsole from "../assets/fake-console.webp?no-inline";
@@ -7,12 +8,12 @@ import glitchSignalMap from "../assets/glitch-signal-map.webp?no-inline";
 import grainShader from "../assets/grain-shader.webp?no-inline";
 import meshBackground from "../assets/mesh-background.webp?no-inline";
 import patchBay from "../assets/patch-bay.webp?no-inline";
-import projectCard3d from "../assets/project-card-3d.webp?no-inline";
 import scrollMorph from "../assets/scroll-morph.webp?no-inline";
 import serverUnit3d from "../assets/server-unit-3d.webp?no-inline";
 import splitFlap from "../assets/split-flap.webp?no-inline";
 import systemMetrics from "../assets/system-metrics.webp?no-inline";
 import asciiRaymarcherThumb from "../assets/thumbs/ascii-raymarcher.webp?no-inline";
+import chromeCaptureThumb from "../assets/thumbs/chrome-capture.webp?no-inline";
 import computer3dThumb from "../assets/thumbs/computer-3d.webp?no-inline";
 import cyberneticGlyphGridThumb from "../assets/thumbs/cybernetic-glyph-grid.webp?no-inline";
 import fakeConsoleThumb from "../assets/thumbs/fake-console.webp?no-inline";
@@ -20,7 +21,6 @@ import glitchSignalMapThumb from "../assets/thumbs/glitch-signal-map.webp?no-inl
 import grainShaderThumb from "../assets/thumbs/grain-shader.webp?no-inline";
 import meshBackgroundThumb from "../assets/thumbs/mesh-background.webp?no-inline";
 import patchBayThumb from "../assets/thumbs/patch-bay.webp?no-inline";
-import projectCard3dThumb from "../assets/thumbs/project-card-3d.webp?no-inline";
 import scrollMorphThumb from "../assets/thumbs/scroll-morph.webp?no-inline";
 import serverUnit3dThumb from "../assets/thumbs/server-unit-3d.webp?no-inline";
 import splitFlapThumb from "../assets/thumbs/split-flap.webp?no-inline";
@@ -44,9 +44,9 @@ export interface LabCapture extends LabImage {
 export const labCaptures: Record<ExperimentSlug, LabCapture> = {
   "computer-3d": {
     src: computer3d,
-    width: 686,
-    height: 435,
-    thumb: { src: computer3dThumb, width: 128, height: 82 },
+    width: 900,
+    height: 667,
+    thumb: { src: computer3dThumb, width: 128, height: 95 },
   },
   "server-unit-3d": {
     src: serverUnit3d,
@@ -54,11 +54,11 @@ export const labCaptures: Record<ExperimentSlug, LabCapture> = {
     height: 963,
     thumb: { src: serverUnit3dThumb, width: 128, height: 153 },
   },
-  "project-card-3d": {
-    src: projectCard3d,
-    width: 844,
-    height: 954,
-    thumb: { src: projectCard3dThumb, width: 128, height: 145 },
+  "chrome-capture": {
+    src: chromeCapture,
+    width: 1106,
+    height: 740,
+    thumb: { src: chromeCaptureThumb, width: 128, height: 86 },
   },
   "glitch-signal-map": {
     src: glitchSignalMap,
@@ -76,7 +76,7 @@ export const labCaptures: Record<ExperimentSlug, LabCapture> = {
     src: fakeConsole,
     width: 640,
     height: 832,
-    thumb: { src: fakeConsoleThumb, width: 128, height: 167 },
+    thumb: { src: fakeConsoleThumb, width: 128, height: 166 },
   },
   "system-metrics": {
     src: systemMetrics,
@@ -87,8 +87,8 @@ export const labCaptures: Record<ExperimentSlug, LabCapture> = {
   "grain-shader": {
     src: grainShader,
     width: 1152,
-    height: 704,
-    thumb: { src: grainShaderThumb, width: 128, height: 79 },
+    height: 666,
+    thumb: { src: grainShaderThumb, width: 128, height: 74 },
   },
   "mesh-background": {
     src: meshBackground,
@@ -98,9 +98,9 @@ export const labCaptures: Record<ExperimentSlug, LabCapture> = {
   },
   "scroll-morph": {
     src: scrollMorph,
-    width: 704,
-    height: 448,
-    thumb: { src: scrollMorphThumb, width: 128, height: 82 },
+    width: 1088,
+    height: 862,
+    thumb: { src: scrollMorphThumb, width: 128, height: 101 },
   },
   "split-flap": {
     src: splitFlap,

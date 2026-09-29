@@ -138,7 +138,7 @@ function buildIsoIcon(slug: string, scale: number): BuiltIcon {
       dot(1.1, 0.28, 1.0, 1.0);
       dot(1.1, 0.28, 1.66, 1.0);
       break;
-    case "project-card-3d":
+    case "chrome-capture":
       box(0, 0, 0, 1.7, 1.7, 0.18, 0.78);
       seg(0.2, 1.5, 0.18, 1.5, 0.2, 0.18, 1.4, "currentColor", 0.95);
       break;

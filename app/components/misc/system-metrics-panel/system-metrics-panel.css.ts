@@ -1,4 +1,4 @@
-import { createVar, keyframes, style } from "@vanilla-extract/css";
+import { createVar, globalStyle, keyframes, style } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css";
 import { breakpoints } from "@/styles/responsive.css";
 
@@ -191,3 +191,21 @@ export const metricBarStyles = style({
     },
   },
 });
+
+// Xray (the Lab): the band thresholds (40 %, 70 %) ticked on every bar, over its fill, and the
+// meter bumped this tick in gold. The home never sets `data-xray`.
+const tick = (at: number) =>
+  `linear-gradient(90deg, transparent calc(${at}% - 1px), ${vars.colors.primary} calc(${at}% - 1px) calc(${at}% + 1px), transparent calc(${at}% + 1px))`;
+
+globalStyle(`[data-xray] ${metricBarStyles}::after`, {
+  background: `${tick(40)}, ${tick(70)}`,
+  opacity: 1,
+});
+
+globalStyle(
+  `[data-xray] [data-pulsing] ${metricKeyStyles}, [data-xray] [data-pulsing] ${metricValueStyles}`,
+  {
+    color: vars.colors.primary,
+    opacity: 1,
+  },
+);

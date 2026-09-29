@@ -2,6 +2,7 @@ import { motion } from "@styles/motion.css";
 import { vars } from "@styles/theme.css";
 import { createVar, fallbackVar, globalStyle, style } from "@vanilla-extract/css";
 import { chromeReflection } from "@/hooks/use-chrome-reflection.css";
+import { weight } from "@styles/weight";
 
 // Polished chrome: cool silvers, a hair of the brand mint in the glint. The pointer over the
 // surface that runs use-chrome-reflection.hook.ts (the monitor, the Labs loupe) turns the bezel
@@ -129,4 +130,75 @@ export const sweepStyle = style({
 
 globalStyle(`[data-chrome="on"] ${glintStyle}`, {
   opacity: 0.9,
+});
+
+/** Xray only: the depth between two layers of the stack (a length, set by the Lab). */
+export const chromeLayerGap = createVar();
+const gap = fallbackVar(chromeLayerGap, "0px");
+
+// Xray (the Lab): the capture laid down and its four layers lifted apart — bezel, screen,
+// glass, glint — so each reads alone. The frame stops clipping (clipping would flatten the
+// stack into one plane). Nothing else sets `data-xray`.
+const xray = `${captureStyle}[data-xray]`;
+const settle = `transform 420ms ${motion.easing.signature}`;
+
+globalStyle(xray, {
+  transformStyle: "preserve-3d",
+  transform: "rotateX(52deg) rotateZ(-30deg)",
+  transition: settle,
+});
+
+globalStyle(`${xray} ${frameStyle}`, {
+  overflow: "visible",
+  transformStyle: "preserve-3d",
+  transform: `translateZ(${gap})`,
+  transition: settle,
+});
+
+globalStyle(`${xray} ${frameStyle}::after`, {
+  transform: `translateZ(${gap})`,
+  backgroundColor: "color-mix(in srgb, white 12%, transparent)",
+  outline: `1px dashed color-mix(in srgb, ${vars.colors.foreground} 45%, transparent)`,
+  transition: settle,
+});
+
+globalStyle(`${xray} ${glintStyle}`, {
+  opacity: 0.9,
+  transform: `translateZ(calc(2 * ${gap}))`,
+  outline: `1px dashed ${vars.colors.secondary}`,
+  transition: settle,
+});
+
+// Each layer names itself in its corner (the glass is the frame's own ::after: it has no room
+// for a label, the Lab's panel names it).
+const layerLabel = (text: string) =>
+  ({
+    content: `"${text}"`,
+    position: "absolute",
+    zIndex: 1,
+    top: "-1.375rem",
+    left: 0,
+    padding: "1px 5px",
+    borderRadius: "2px",
+    fontFamily: vars.fontFamily.doto,
+    ...weight(800),
+    fontSize: "10px",
+    lineHeight: 1.4,
+    letterSpacing: "0.1em",
+    textTransform: "uppercase",
+    whiteSpace: "nowrap",
+    color: vars.colors.foreground,
+    backgroundColor: vars.colors.primary,
+  }) as const;
+
+globalStyle(`${xray}::before`, { ...layerLabel("0 · bezel"), top: "auto", bottom: "-1.375rem" });
+globalStyle(`${xray} ${frameStyle}::before`, layerLabel("1 · screen"));
+globalStyle(`${xray} ${glintStyle}::before`, {
+  ...layerLabel("3 · glint"),
+  left: "auto",
+  right: 0,
+});
+
+globalStyle(`${xray}, ${xray} ${frameStyle}, ${xray} ${frameStyle}::after, ${xray} ${glintStyle}`, {
+  "@media": { "(prefers-reduced-motion: reduce)": { transition: "none" } },
 });

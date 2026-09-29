@@ -31,6 +31,9 @@ export interface ServerPatch {
 
 type ServerUnitRackProps = ComponentProps<"div"> & {
   seed?: number;
+  /** The Lab's xray: faces outlined, units pulled out of the cabinet by `pull` (0–1). */
+  xray?: boolean;
+  pull?: number;
   /**
    * Unit height preset. `inherit` sets none: `serverRackVars` come from an ancestor, so the
    * host can size the rack per breakpoint in CSS.
@@ -44,18 +47,21 @@ function pseudoRandom(seed: number): number {
   return s - Math.floor(s);
 }
 
-interface StatusLed {
-  seed: number;
+export interface StatusLed {
   label: string;
+  /** What the phase is drawn from: the unit's seed times 110, 120, 130, 140. */
+  input: number;
+  seed: number;
 }
 
-function generateStatusLeds(seed: number): StatusLed[] {
-  return [
-    { seed: parseFloat(pseudoRandom(seed * 110).toFixed(2)), label: "PWR" },
-    { seed: parseFloat(pseudoRandom(seed * 120).toFixed(2)), label: "HDD" },
-    { seed: parseFloat(pseudoRandom(seed * 130).toFixed(2)), label: "LAN" },
-    { seed: parseFloat(pseudoRandom(seed * 140).toFixed(2)), label: "ERR" },
-  ];
+const STATUS_LABELS = ["PWR", "HDD", "LAN", "ERR"] as const;
+
+/** A unit's four status LEDs, each with its phase (`0`–`1`) drawn from the unit's seed. */
+export function generateStatusLeds(seed: number): StatusLed[] {
+  return STATUS_LABELS.map((label, index) => {
+    const input = seed * (110 + index * 10);
+    return { label, input, seed: parseFloat(pseudoRandom(input).toFixed(2)) };
+  });
 }
 
 const VARIANT_META = {
@@ -92,6 +98,18 @@ const PANEL_VARIANT_CLASS: Record<ServerUnitVariant, string> = {
   c: styles.ledGridVariantCStyle,
   link: styles.ledGridLinkStyle,
 };
+
+/** The rack's three servers, top to bottom: each one's variant and its seed's offset. */
+export const RACK_UNITS = [
+  { variant: "a", seedOffset: 0 },
+  { variant: "b", seedOffset: 7 },
+  { variant: "c", seedOffset: 13 },
+] as const;
+
+/** The label a unit prints on its status bar (`CORE-042`). */
+export function serverUnitCode(variant: ServerUnitVariant, seed: number): string {
+  return `${VARIANT_META[variant].code}-${String(seed).padStart(3, "0")}`;
+}
 
 function ServerUnit({
   seed = 42,
@@ -143,9 +161,7 @@ function ServerUnit({
                 style={assignInlineVars({ [styles.serverLedSeed]: String(sl.seed) })}
               />
             ))}
-            <span className={styles.statusLabelStyle}>
-              {meta.code}-{String(seed).padStart(3, "0")}
-            </span>
+            <span className={styles.statusLabelStyle}>{serverUnitCode(variant, seed)}</span>
           </div>
         </div>
         <div className={styles.serverFaceBackStyle} />
@@ -187,7 +203,10 @@ export function ServerUnitRack({
   seed = 42,
   size = "md",
   patch,
+  xray = false,
+  pull = 0,
   className,
+  style,
   ...props
 }: ServerUnitRackProps) {
   const { ref, isIntersecting } = useIntersectionObserver<HTMLDivElement>({
@@ -199,11 +218,15 @@ export function ServerUnitRack({
       ref={ref}
       data-server-rack-paused={isIntersecting ? "false" : "true"}
       data-server-rack-patch={patch ? "true" : "false"}
+      data-server-xray={xray || undefined}
       className={clsx(
         styles.serverUnitRackPerspectiveStyle,
         size !== "inherit" && styles.serverUnitRackSizeStyles[size],
         className,
       )}
+      style={
+        xray ? { ...style, ...assignInlineVars({ [styles.serverPull]: String(pull) }) } : style
+      }
       {...props}
     >
       <div className={styles.serverUnitRackStackStyle}>
@@ -212,9 +235,14 @@ export function ServerUnitRack({
             <ServerPatchJacks ports={patch.ports} plugged={patch.plugged} />
           </ServerUnit>
         )}
-        <ServerUnit seed={seed} variant="a" />
-        <ServerUnit seed={seed + 7} variant="b" />
-        <ServerUnit seed={seed + 13} variant="c" />
+        {RACK_UNITS.map(({ variant, seedOffset }, index) => (
+          <ServerUnit
+            key={variant}
+            seed={seed + seedOffset}
+            variant={variant}
+            style={xray ? assignInlineVars({ [styles.serverUnitIndex]: String(index) }) : undefined}
+          />
+        ))}
         <span className={styles.cabinetSideStyle} data-side="left" />
         <span className={styles.cabinetSideStyle} data-side="right" />
         <span className={styles.cabinetCapStyle} data-edge="top" />

@@ -1,4 +1,11 @@
-import { createVar, fallbackVar, keyframes, style, styleVariants } from "@vanilla-extract/css";
+import {
+  createVar,
+  fallbackVar,
+  globalStyle,
+  keyframes,
+  style,
+  styleVariants,
+} from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css";
 import { weight } from "@styles/weight";
 
@@ -35,6 +42,16 @@ export const serverUnitRackSizeStyles = styleVariants({
 
 /** Per-LED phase, `0`–`1` (set inline): desynchronises the status LEDs. */
 export const serverLedSeed = createVar();
+
+/** A status LED breathes over `period + phase × spread` seconds, started `phase × offset` in. */
+export const serverLedTiming = { periodS: 1.4, spreadS: 1.9, offsetS: 3 } as const;
+
+/** Xray only: how far the servers slide out of the cabinet (`0`–`1`), and each one's row. */
+export const serverPull = createVar();
+export const serverUnitIndex = createVar();
+
+/** How far the lowest server travels at `pull={1}`; each one above it, a third less. */
+export const SERVER_PULL_PX = 150;
 
 const getBackground = (opacity: number) =>
   `linear-gradient(20deg, color-mix(in srgb, ${vars.colors.foreground} ${opacity}%, ${vars.colors.tertiary}), transparent), url(/images/noise.svg)`;
@@ -500,8 +517,8 @@ export const statusLedStyle = style({
     "radial-gradient(circle at 35% 35%, color-mix(in srgb, currentColor 45%, white), currentColor 58%, color-mix(in srgb, currentColor 55%, black) 100%)",
   border: "0.5px solid color-mix(in srgb, currentColor 45%, black)",
   boxShadow: "inset 0 -1px 1px rgba(0,0,0,.55)",
-  animation: `${blinkSlow} calc(1.4s + ${serverLedSeed} * 1.9s) cubic-bezier(.4,0,.2,1) infinite`,
-  animationDelay: `calc(${serverLedSeed} * -3s)`,
+  animation: `${blinkSlow} calc(${serverLedTiming.periodS}s + ${serverLedSeed} * ${serverLedTiming.spreadS}s) cubic-bezier(.4,0,.2,1) infinite`,
+  animationDelay: `calc(${serverLedSeed} * -${serverLedTiming.offsetS}s)`,
   selectors: {
     "&[data-status='HDD']": { color: vars.colors.primary },
     "&[data-status='LAN']": { color: vars.colors.secondary },
@@ -723,4 +740,36 @@ export const cabinetCapStyle = style({
     "&[data-edge='top']": { top: "-3px" },
     "&[data-edge='bottom']": { top: "calc(100% + 3px)" },
   },
+});
+
+// Xray (the Lab): the servers slide out of the cabinet like drawers, the lowest furthest, and
+// every face of every box is outlined. The footer never sets `data-server-xray`.
+const xray = "[data-server-xray]";
+
+globalStyle(`${xray} ${serverUnitContainerStyle}`, {
+  transform: `translateZ(calc(${serverPull} * ${SERVER_PULL_PX}px * (1 + ${serverUnitIndex}) / 3))`,
+  transition: "transform 420ms cubic-bezier(0.22, 1, 0.36, 1)",
+  "@media": { "(prefers-reduced-motion: reduce)": { transition: "none" } },
+});
+
+for (const face of [
+  serverFaceFrontStyle,
+  serverFaceBackStyle,
+  serverFaceTopStyle,
+  serverFaceBottomStyle,
+  serverFaceLeftStyle,
+  serverFaceRightStyle,
+]) {
+  globalStyle(`${xray} ${face}`, {
+    outline: `1px solid color-mix(in srgb, ${vars.colors.primary} 75%, transparent)`,
+    outlineOffset: "-1px",
+  });
+}
+
+globalStyle(`${xray} ${cabinetSideStyle}, ${xray} ${cabinetCapStyle}`, { opacity: 0.35 });
+
+// Each status LED is ringed, so the readout's rows can be found on the bezel.
+globalStyle(`${xray} ${statusLedStyle}`, {
+  outline: `1px solid ${vars.colors.primary}`,
+  outlineOffset: "1px",
 });

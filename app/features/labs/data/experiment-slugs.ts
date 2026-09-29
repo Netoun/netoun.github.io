@@ -1,7 +1,7 @@
 export const EXPERIMENT_SLUGS = [
   "computer-3d",
   "server-unit-3d",
-  "project-card-3d",
+  "chrome-capture",
   "glitch-signal-map",
   "cybernetic-glyph-grid",
   "fake-console",
