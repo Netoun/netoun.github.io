@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { useRef } from "react";
 import { Link } from "react-router";
-import type { FooterPort } from "../../footer-patch";
+import type { FooterFile, FooterPort } from "../../footer-patch";
 import * as styles from "./footer-patch-plate.css";
 import { usePlateLight } from "./use-plate-light.hook";
 
@@ -12,6 +12,8 @@ export interface FooterPatchPlateProps {
   onActivate: (portId: string) => void;
   onRelease: () => void;
   labs: { href: string; count: number };
+  /** A file under the uplink (the résumé), when the page has one to hand over. */
+  file?: FooterFile;
 }
 
 /**
@@ -24,6 +26,7 @@ export function FooterPatchPlate({
   onActivate,
   onRelease,
   labs,
+  file,
 }: FooterPatchPlateProps) {
   const plateRef = useRef<HTMLDivElement>(null);
   usePlateLight(plateRef, plugged);
@@ -82,6 +85,24 @@ export function FooterPatchPlate({
           <span className={styles.portSchemeNameStyle}>/labs </span>→
         </span>
       </Link>
+      {file && (
+        <a href={file.href} download className={styles.uplinkStyle}>
+          <span className={styles.uplinkDisplayStyle} aria-hidden="true">
+            <span className={styles.uplinkGhostStyle}>88</span>
+            <span className={styles.uplinkCountStyle}>{file.format}</span>
+          </span>
+          <span className={styles.portTextStyle}>
+            <span className={styles.uplinkLabelStyle}>{file.label}</span>
+            <span className={styles.portAddressStyle}>{file.detail}</span>
+          </span>
+          <span className={styles.portSchemeStyle} aria-hidden="true">
+            <span className={styles.portSchemeNameStyle}>
+              {file.href.slice(file.href.lastIndexOf("."))}{" "}
+            </span>
+            ↓
+          </span>
+        </a>
+      )}
     </div>
   );
 }

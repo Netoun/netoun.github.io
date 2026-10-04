@@ -22,6 +22,15 @@ export interface FooterPort {
   external: boolean;
 }
 
+/** A file the plate hands over, under the Labs uplink: the résumé. */
+export interface FooterFile {
+  href: string;
+  label: string;
+  /** What its display reads (`A4`). */
+  format: string;
+  detail: string;
+}
+
 export interface FooterPortLink {
   label: string;
   url: string;

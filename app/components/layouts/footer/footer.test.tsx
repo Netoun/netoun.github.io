@@ -17,7 +17,14 @@ const STATUS: FooterStatus = {
   sourceUrl: "https://github.com/netoun/netoun.github.io",
 };
 
-function renderFooter() {
+const RESUME = {
+  href: "/nicolas-coulonnier-cv.pdf",
+  label: "CV · résumé",
+  format: "A4",
+  detail: "One page, printed from this site's data",
+};
+
+function renderFooter(file?: typeof RESUME) {
   const router = createMemoryRouter([
     {
       path: "/",
@@ -28,6 +35,7 @@ function renderFooter() {
           labs={{ href: "/labs/", count: 10 }}
           rackLabHref="/labs/server-unit-3d/"
           status={STATUS}
+          file={file}
         />
       ),
     },
@@ -123,5 +131,14 @@ describe("Footer", () => {
     expect(
       screen.getByText("NETOUN.COM · 12 ROUTES PRERENDERED · BUILD 2026-09-28"),
     ).toBeInTheDocument();
+  });
+
+  it("hands over the résumé under the uplink only when the page has it", () => {
+    renderFooter();
+    expect(screen.queryByRole("link", { name: /CV · résumé/ })).not.toBeInTheDocument();
+    renderFooter(RESUME);
+    const file = screen.getByRole("link", { name: /CV · résumé One page/ });
+    expect(file).toHaveAttribute("href", "/nicolas-coulonnier-cv.pdf");
+    expect(file).toHaveAttribute("download");
   });
 });

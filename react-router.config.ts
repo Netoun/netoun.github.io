@@ -6,7 +6,7 @@ import { EXPERIMENT_SLUGS } from "./app/features/labs/data/experiment-slugs";
 export default {
   ssr: false,
   async prerender() {
-    return ["/", "/labs", ...EXPERIMENT_SLUGS.map((slug) => `/labs/${slug}`)];
+    return ["/", "/labs", ...EXPERIMENT_SLUGS.map((slug) => `/labs/${slug}`), "/cv"];
   },
   // Cloudflare Pages answers a path it has no file for with the top-level `404.html`, status
   // 404. The SPA fallback renders any URL on the client (the not-found route for unknown paths,

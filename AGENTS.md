@@ -29,6 +29,7 @@ bun run fmt          # oxfmt --write
 bun run test         # vitest watch
 bun run test:run     # vitest single run
 bun run knip         # unused files / exports / deps
+bun run generate-cv  # build, print /cv/ to public/nicolas-coulonnier-cv.pdf (needs Chrome), update its lock
 bunx vitest run app/components/primitives/button/button.test.tsx   # one test file
 ```
 
@@ -37,7 +38,7 @@ bunx vitest run app/components/primitives/button/button.test.tsx   # one test fi
 ```
 app/
   root.tsx                  # <html> layout, fonts, JSON-LD, ErrorBoundary
-  routes.ts                 # / → welcome · /labs → labs layout (index + :slug) · /misc → redirect · * → not-found
+  routes.ts                 # / → welcome · /labs → labs layout (index + :slug) · /misc → redirect · /cv → résumé (noindex) · * → not-found
   components/               # shared UI — must NOT import features/ or pages/ (lint-enforced)
     layouts/                #   container, content-section, error-screen, feature-header, footer, footer-slim
     primitives/             #   button, glyph, slider, tag, terminal-buttons, icons
@@ -48,11 +49,11 @@ app/
     skills/                 #   fetch readout (`fastfetch`) + data
     labs/                   #   experiment registry + stats, shell (path line, dock), preview mode, code viewer, experiments/<slug>/
     site/                   #   the site's own identity: URL, contact links, build status (any domain may import it)
-  pages/<page>/             # welcome/, labs/, not-found/ — page/<page>.page.tsx, sections/, components/, data/, hooks/
+  pages/<page>/             # welcome/, labs/, cv/, not-found/ — page/<page>.page.tsx, sections/, components/, data/, hooks/
   hooks/                    # use-animation-priority, use-chrome-reflection, use-current-month, use-intersection-observer, use-media-query, use-mouse-position, use-paper-grain, use-reveal, use-settled-value
   styles/                   # theme (tokens), global, fonts, motion, animations, responsive
   types/                    # ambient declarations (?raw imports, build-time defines)
-scripts/                    # sharp generators: generate-assets (favicon.ico, apple-touch-icon, OG), generate-grain-tile, generate-logo-ascii
+scripts/                    # sharp generators: generate-assets (favicon.ico, apple-touch-icon, OG), generate-grain-tile, generate-logo-ascii · playwright: generate-cv
 ```
 
 Aliases (from `tsconfig.json` paths, resolved natively by Vite): `@/` → `app/`, `@components/`, `@primitives/`, `@styles/`.
@@ -107,6 +108,7 @@ Labs experiments may import components from any domain — showcasing them is th
 - One `<h1>` per page. Interactive primitives via React Aria Components — no raw native substitutes.
 - Visible `:focus-visible` on everything interactive; WCAG AA contrast.
 - `public/llms.txt`, `public/robots.txt`, and the build-generated `sitemap.xml` must stay consistent with real routes and content.
+- The résumé: `/cv/` prints one A4 sheet from the site's data (`pages/cv/data/cv-sheet.data.ts`), with condensed copy in `cv-copy.data.ts`; it is prerendered but `noindex` and out of the sitemap (`UNLISTED_PATHS` in `vite.config.ts`). The PDF is a committed file: after any change to the data it reads, run `bun run generate-cv`, or `cv-pdf-lock.test.ts` fails. Decoration on the sheet (logo, git lanes, prompts) is drawn, never typed, so the PDF's text is what a résumé parser should read. The links to it (hero popover, home footer) show only while `RESUME_IS_PUBLISHED` (`features/site/data/resume.data.ts`) is on.
 - Labs URLs end with a slash everywhere (links, canonical, sitemap, `_redirects`): Pages serves `labs/index.html` there and 308s the slashless form. Unknown paths get `404.html`, a copy of the SPA fallback made in `react-router.config.ts › buildEnd`; the `*` route (`pages/not-found`, the 404 and its game) renders it, and the root `ErrorBoundary` only handles thrown errors.
 
 ## Performance

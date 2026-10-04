@@ -15,7 +15,7 @@ web
 
 Personal site of Nicolas Coulonnier ("Netoun"), full-stack engineer at Lonestone (Nantes, FR). It exists for **visibility and credibility**: being recognised by peers, having the Labs shared, and growing the network.
 
-Success = peers explore the Labs and share them; visitors leave knowing what Nicolas builds and how to reach him (contact links in the footer, résumé download once the PDF exists).
+Success = peers explore the Labs and share them; visitors leave knowing what Nicolas builds and how to reach him (contact links in the footer, and the résumé PDF).
 
 ## Positioning
 
@@ -33,7 +33,7 @@ Success = peers explore the Labs and share them; visitors leave knowing what Nic
 - Every page must render fully without JS (prerender-safe) and respect `prefers-reduced-motion`.
 - Expensive animations are gated by visibility/idle (`use-animation-priority`); no Lighthouse regression is tolerated.
 - New runtime dependencies need justification; no heavy libraries (Framer Motion, Tailwind…).
-- **Undecided:** where the résumé download lives in the UI (blocked on the PDF, see below).
+- **Résumé:** `/cv/` prints one A4 sheet from the site's data; `bun run generate-cv` saves it as `public/nicolas-coulonnier-cv.pdf`. The page is `noindex` and out of the sitemap. The download link sits in the hero's contact popover and on the home footer's plate (Nicolas, 2026-10-01), behind `RESUME_IS_PUBLISHED` (`app/features/site/data/resume.data.ts`), turned on by Nicolas on 2026-10-04. The PDF embeds PP Neue Montreal (as Type 3 subsets).
 
 ## Brand Commitments
 
@@ -47,7 +47,7 @@ Success = peers explore the Labs and share them; visitors leave knowing what Nic
 - Real projects with links (personal + Lonestone open source): website, Procedural Maps, Treashunt, Commun'île, Nzoth, Lonestone Boilerplate — see `projects-data.ts`.
 - Real experience: Lonestone (Jul 2021 — present), Easilys, Sogeti — see `experiences-data.ts`.
 - 13 Labs experiments with live demos and source (`app/features/labs/experiments/`), each with a `man` page and an xray view of its mechanism.
-- **Missing — to be provided by Nicolas:** résumé PDF. Do not create a download UI or placeholder file until it exists.
+- **Résumé:** English, one A4 page, built from the data above; the descriptions are condensed in `app/pages/cv/data/cv-copy.data.ts`. Education (Master's degree, EPSI Nantes, no years) comes from Nicolas (2026-10-01) and lives only there.
 - **Absent — never fabricate:** testimonials, client quotes, metrics, awards, press.
 - **Resolved inconsistencies (Nicolas, 2026-09-27/28):**
   - Profiles: `contact-links.data.ts` is the source (`github.com/netoun`, `linkedin.com/in/nicolas-coulonnier-66416813b`); the JSON-LD `sameAs` reads it, `public/llms.txt` matches it.

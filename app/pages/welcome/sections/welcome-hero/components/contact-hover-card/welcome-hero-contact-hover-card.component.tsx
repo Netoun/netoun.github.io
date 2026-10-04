@@ -1,6 +1,7 @@
 import { startTransition, useEffect, useRef, useState } from "react";
 import { DialogTrigger, OverlayArrow, Popover } from "react-aria-components";
 import { contactLinks } from "@/features/site/data/contact-links.data";
+import { RESUME_HREF, RESUME_IS_PUBLISHED } from "@/features/site/data/resume.data";
 import { useMagnetic } from "../../hooks/use-magnetic.hook";
 import { Button } from "@/components/primitives/button/button.component";
 import { ContactIcon } from "@/components/primitives/icons/contact-icon.component";
@@ -99,6 +100,14 @@ export function WelcomeHeroContactHoverCard() {
                 {link.label}
               </a>
             ))}
+            {RESUME_IS_PUBLISHED && (
+              <a href={RESUME_HREF} download className={styles.linkStyles}>
+                <span className={styles.iconStyles}>
+                  <ContactIcon label="CV" />
+                </span>
+                CV
+              </a>
+            )}
           </div>
         </Popover>
       </DialogTrigger>

@@ -49,6 +49,12 @@ export function ContactIcon({ label }: ContactIconProps) {
     );
   }
 
+  if (label === "CV") {
+    return (
+      <GradientIcon path="M6 2h8.59L20 7.41V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm0 2v16h12V9h-5V4H6Zm9 .41V7h2.59L15 4.41ZM8 12h8v2H8v-2Zm0 4h8v2H8v-2Z" />
+    );
+  }
+
   return (
     <GradientIcon path="M2 5.5A2.5 2.5 0 0 1 4.5 3h15A2.5 2.5 0 0 1 22 5.5v13a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5v-13Zm2.15-.5 7.85 6.45L19.85 5h-15.7Zm15.85 2.58-6.9 5.67a1.73 1.73 0 0 1-2.2 0L4 7.58V18.5c0 .28.22.5.5.5h15a.5.5 0 0 0 .5-.5V7.58Z" />
   );

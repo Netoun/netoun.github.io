@@ -19,7 +19,8 @@
     "check": "bun run typecheck && bun run lint && bun run fmt:check && bun run test:run",
     "generate-assets": "bun scripts/generate-assets.ts",
     "generate-logo-ascii": "bun scripts/generate-logo-ascii.ts",
-    "generate-grain-tile": "bun scripts/generate-grain-tile.ts"
+    "generate-grain-tile": "bun scripts/generate-grain-tile.ts",
+    "generate-cv": "bun scripts/generate-cv.ts"
   },
   "dependencies": {
     "@react-router/node": "^8.4.0",
@@ -51,6 +52,7 @@
     "knip": "^6.38.0",
     "oxfmt": "^0.70.0",
     "oxlint": "^1.85.0",
+    "playwright-core": "^1.63.0",
     "portless": "^0.15.6",
     "sharp": "^0.35.4",
     "typescript": "^7.0.2",

@@ -9,7 +9,10 @@ import { EXPERIMENT_SLUGS } from "./app/features/labs/data/experiment-slugs.ts";
 const SITE_URL = "https://www.netoun.com";
 
 /** Every prerendered path; mirrors the prerender list in `react-router.config.ts`. */
-const PRERENDERED_PATHS = ["/", "/labs", ...EXPERIMENT_SLUGS.map((slug) => `/labs/${slug}`)];
+const PRERENDERED_PATHS = ["/", "/labs", ...EXPERIMENT_SLUGS.map((slug) => `/labs/${slug}`), "/cv"];
+
+/** Prerendered but `noindex`: kept out of the sitemap. */
+const UNLISTED_PATHS = new Set(["/cv"]);
 
 /**
  * Loads `*.css.ts?raw` imports as plain strings.
@@ -72,7 +75,7 @@ function sitemapPlugin(): Plugin {
       if (this.environment.name !== "client") return;
 
       // Pages serves each prerendered `index.html` under its folder's slash URL.
-      const pages = PRERENDERED_PATHS.map((path) => ({
+      const pages = PRERENDERED_PATHS.filter((path) => !UNLISTED_PATHS.has(path)).map((path) => ({
         url: `${SITE_URL}${path.endsWith("/") ? path : `${path}/`}`,
         priority: sitemapPriority(path),
       }));

@@ -97,6 +97,7 @@ bun run build      # prerender every route to build/client + sitemap.xml
 | `generate-assets`               | `favicon.ico`, `apple-touch-icon.png` and the Open Graph image          |
 | `generate-grain-tile`           | Bake the paper's film grain into `public/images/grain-tile@{1,2}x.webp` |
 | `generate-logo-ascii`           | Print `public/logo.svg` as the Skills section's ASCII logo              |
+| `generate-cv`                   | Build, then print `/cv/` to `public/nicolas-coulonnier-cv.pdf` (Chrome) |
 
 </details>
 

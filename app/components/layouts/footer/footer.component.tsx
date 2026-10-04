@@ -11,11 +11,12 @@ import {
   FooterStatusStrip,
   type FooterStatus,
 } from "./components/status-strip/footer-status-strip.component";
-import { restPortId, toFooterPorts, type FooterPortLink } from "./footer-patch";
+import { restPortId, toFooterPorts, type FooterFile, type FooterPortLink } from "./footer-patch";
 import * as styles from "./footer.css";
 import { Glyph } from "@/components/primitives/glyph/glyph.component";
 
 export type FooterLink = FooterPortLink;
+export type { FooterFile };
 export type { FooterStatus };
 
 export interface FooterProps {
@@ -30,6 +31,8 @@ export interface FooterProps {
   rackLabHref: string;
   /** What the build says about itself, for the status strip. */
   status: FooterStatus;
+  /** A file the plate hands over under the Labs uplink (the résumé). */
+  file?: FooterFile;
 }
 
 /**
@@ -37,7 +40,7 @@ export interface FooterProps {
  * link; the contact block is the matching faceplate. Pointing at or focusing a port plugs a
  * patch cable from the rack into it; at rest the cable sits in the email port.
  */
-export function Footer({ className, id, links, labs, rackLabHref, status }: FooterProps) {
+export function Footer({ className, id, links, labs, rackLabHref, status, file }: FooterProps) {
   const ports = useMemo(() => toFooterPorts(links), [links]);
   const resting = restPortId(ports);
   const [active, setActive] = useState<string | null>(null);
@@ -92,6 +95,7 @@ export function Footer({ className, id, links, labs, rackLabHref, status }: Foot
                 onActivate={setActive}
                 onRelease={() => setActive(null)}
                 labs={labs}
+                file={file}
               />
             </div>
 
