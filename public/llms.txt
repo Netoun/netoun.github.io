@@ -13,9 +13,9 @@
 ## Skills
 ### Practice: agents & LLM
 - Agentic workflow: spec → plan → task → review → audit, one commit per task; rules, skills and hooks shared by every agent, wired to MCP tools for browser and IDE checks. Works with Claude Code, Codex, Cursor, opencode. See [AGENTS.md](https://github.com/netoun/netoun.github.io/blob/main/AGENTS.md)
-- Tool-calling LLM pipelines: subagents call tools and return schema-validated output, turning 100+ page PDFs into structured data; every quoted piece of evidence is checked against the source text (AI SDK, zod, queues, OCR; client work, not listed; Cuevr)
-- LLM evaluation: ground-truth datasets, field-level accuracy weighted by criticality, prompt and model comparison, replay of past runs (client work, not listed)
-- LLMOps: prompts versioned in git and promoted from development to production, every step traced (Langfuse, OpenTelemetry, Sentry; client work, not listed)
+- Tool-calling LLM pipelines: subagents call tools and return schema-validated output, turning PDFs up to 100+ pages into structured data; every quoted piece of evidence is checked against the source text (AI SDK, zod, queues, OCR; client work: DigiLog)
+- LLM evaluation: ground-truth datasets, field-level accuracy weighted by criticality, prompt and model comparison, replay of past runs (client work: DigiLog)
+- LLMOps: prompts versioned in git and promoted from development to production, every step traced (Langfuse, OpenTelemetry, Sentry; client work: DigiLog)
 
 ### Stack (each tool ships in a project, a job, a Lab or this site)
 - Frontend: React, TypeScript, Next.js, Vanilla Extract, Tailwind CSS, React Router, React Aria, anime.js
@@ -32,7 +32,7 @@
 
 ### Treashunt
 - URL: [treashunt.com](https://treashunt.com)
-- Description: Personal project - Adventure design platform with exciting challenges
+- Description: Personal project - Adventure design platform: create challenges and take them on
 - Tech: React, Drizzle, Cloudflare, Bun, Elysia
 
 ### Commun'île
@@ -42,7 +42,7 @@
 
 ### Procedural Maps
 - URL: [r-noise-map.vercel.app](https://r-noise-map.vercel.app/)
-- Description: Random map generation with procedural algorithms
+- Description: Browser-based procedural map generator using noise algorithms, rendered with Three.js and Canvas
 - Tech: TypeScript, React, Three.js, Canvas
 
 ### Nzoth
@@ -75,7 +75,7 @@ Interactive CSS 3D, canvas and shader experiments, each live with its source cod
 ### Lonestone (Jul 2021 - Present)
 - Role: Full-stack engineer
 - Location: Nantes, FR
-- Projects: Desoutter, Cuevr, Mon Rét@b' d'abord
+- Projects: DigiLog (lead developer: extraction of structured data from traffic regulations for local authorities), Desoutter, Cuevr, Mon Rét@b' d'abord
 
 ### Easilys (Jul 2019 - Jul 2021)
 - Role: Full Stack Developer

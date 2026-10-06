@@ -23,6 +23,8 @@ import type { StackDomain } from "@/features/skills/data/skills-data.types";
 import {
   CV_CLIENTS,
   CV_EDUCATION,
+  CV_FOLDED_CLIENTS,
+  CV_FOLDED_LEAD,
   CV_JOBS,
   CV_LEAD,
   CV_NAME,
@@ -60,6 +62,8 @@ export interface CvJob {
   text: string;
   tools: CvTool[];
   clients: CvClient[];
+  /** Client projects folded into one line, `corporate websites, e.g. Desoutter (Next.js, …)`. */
+  foldedClients?: string;
   moreClients: boolean;
 }
 
@@ -103,6 +107,17 @@ export interface CvSheet {
   practices: CvPractice[];
   education: CvEducation[];
   labsCount: number;
+}
+
+/** The résumé's closing line for the client projects it does not list one by one. */
+function toFoldedClients(
+  commits: { title: string; stack: string[] }[],
+  folded: string[],
+): string | undefined {
+  const parts = commits
+    .filter((commit) => folded.includes(commit.title))
+    .map((commit) => `${commit.title} (${commit.stack.join(", ")})`);
+  return parts.length > 0 ? `${CV_FOLDED_LEAD} ${parts.join(", ")}` : undefined;
 }
 
 function copyOf(copy: Record<string, string>, key: string): string {
@@ -165,12 +180,15 @@ export function toCvSheet(now: string): CvSheet {
       domain: branch.domain,
       text: copyOf(CV_JOBS, branch.slug),
       tools: toTools(branch.stack),
-      clients: branch.commits.map((commit) => ({
-        title: commit.title,
-        text: copyOf(CV_CLIENTS, commit.title),
-        domain: commit.domain,
-        tools: toTools(commit.stack),
-      })),
+      clients: branch.commits
+        .filter((commit) => !CV_FOLDED_CLIENTS.includes(commit.title))
+        .map((commit) => ({
+          title: commit.title,
+          text: copyOf(CV_CLIENTS, commit.title),
+          domain: commit.domain,
+          tools: toTools(commit.stack),
+        })),
+      foldedClients: toFoldedClients(branch.commits, CV_FOLDED_CLIENTS),
       moreClients: branch.moreProjects,
     })),
     projects: sortProcesses(toProcesses(projects), DEFAULT_SORT).map((process) => ({

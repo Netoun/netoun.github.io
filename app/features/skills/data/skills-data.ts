@@ -56,10 +56,10 @@ export const PRACTICES: Practice[] = [
   {
     id: "pipelines",
     title: "Tool-calling LLM pipelines",
-    body: "Subagents call tools and return schema-validated output, turning 100+ page PDFs into structured data. Every quoted piece of evidence is checked against the source text.",
+    body: "Subagents call tools and return schema-validated output, turning PDFs up to 100+ pages into structured data. Every quoted piece of evidence is checked against the source text.",
     withLabel: "built with",
     with: ["AI SDK", "zod", "queues", "OCR"],
-    receipt: { text: "client work, not listed · Cuevr" },
+    receipt: { text: "client work · DigiLog" },
   },
   {
     id: "evals",
@@ -67,7 +67,7 @@ export const PRACTICES: Practice[] = [
     body: "Ground-truth datasets, field-level accuracy weighted by criticality, prompt and model comparison, replay of past runs.",
     withLabel: "built with",
     with: ["NestJS", "React", "Langfuse"],
-    receipt: { text: "client work, not listed" },
+    receipt: { text: "client work · DigiLog" },
   },
   {
     id: "llmops",
@@ -75,6 +75,6 @@ export const PRACTICES: Practice[] = [
     body: "Prompts versioned in git and promoted from development to production, every step traced.",
     withLabel: "built with",
     with: ["Langfuse", "OpenTelemetry", "Sentry"],
-    receipt: { text: "client work, not listed" },
+    receipt: { text: "client work · DigiLog" },
   },
 ];

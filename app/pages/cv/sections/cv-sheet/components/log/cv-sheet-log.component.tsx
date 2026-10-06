@@ -41,10 +41,14 @@ export function CvSheetLog({ jobs }: CvSheetLogProps) {
                     </div>
                   </li>
                 ))}
-                {job.moreClients && (
+                {(job.foldedClients || job.moreClients) && (
                   <li className={styles.more}>
                     <span className={styles.elision} aria-hidden="true" />
-                    <span>more client work, not listed</span>
+                    <span>
+                      {[job.foldedClients, job.moreClients ? "more client work, not listed" : null]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </span>
                   </li>
                 )}
               </ul>

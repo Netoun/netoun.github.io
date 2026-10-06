@@ -68,8 +68,9 @@ describe("toBranches", () => {
 
   it("colours each lane by the main domain of what shipped there", () => {
     expect(branches.map((branch) => branch.domain)).toEqual(["backend", "frontend", "systems"]);
-    expect(branches[0].mix).toEqual({ frontend: 5, backend: 7, creative: 0, systems: 1 });
+    expect(branches[0].mix).toEqual({ frontend: 6, backend: 11, creative: 0, systems: 2 });
     expect(branches[0].commits.map((commit) => commit.domain)).toEqual([
+      "backend",
       "frontend",
       "backend",
       "backend",
@@ -88,7 +89,7 @@ describe("toLogGroups", () => {
 
   it("prints the rows git log --graph would print", () => {
     expect(kinds).toEqual([
-      ["tip", "commit", "commit", "commit", "elided", "fork"],
+      ["tip", "commit", "commit", "commit", "commit", "elided", "fork"],
       ["merge", "merge-in", "tip", "fork"],
       ["merge", "merge-in", "tip", "fork", "root"],
     ]);
@@ -115,7 +116,7 @@ describe("toLogGroups", () => {
     const hashes = groups.flatMap((group) =>
       group.rows.flatMap((row) => ("hash" in row ? [row.hash] : [])),
     );
-    expect(hashes).toHaveLength(9);
+    expect(hashes).toHaveLength(10);
     expect(new Set(hashes).size).toBe(hashes.length);
     for (const hash of hashes) expect(hash).toMatch(/^[0-9a-f]{7}$/);
     expect(toLogGroups(toBranches(experiences, NOW))).toEqual(groups);

@@ -24,7 +24,10 @@ describe("CvPage", () => {
     renderPage();
     const experience = screen.getByRole("region", { name: "Experience" });
     expect(within(experience).getByText("Lonestone")).toBeInTheDocument();
-    expect(within(experience).getByText("more client work, not listed")).toBeInTheDocument();
+    expect(within(experience).getByText(/more client work, not listed/)).toBeInTheDocument();
+    expect(
+      within(experience).getByText(/corporate websites, e\.g\. Desoutter/),
+    ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "github.com/lonestone/nzoth ↗" })).toHaveAttribute(
       "href",
       "https://github.com/lonestone/nzoth",

@@ -12,7 +12,7 @@ export interface CvEducation {
 export const CV_NAME = "Nicolas Coulonnier";
 export const CV_TAGLINE = "Full-stack engineer & creative developer.";
 export const CV_LEAD =
-  "I build fast, polished web products — from expressive interfaces to robust backend systems. Currently building at Lonestone.";
+  "I build fast, polished web products with TypeScript, React and NestJS — from expressive interfaces to robust backend systems. Currently building at Lonestone.";
 
 /** By experience slug. */
 export const CV_JOBS: Record<string, string> = {
@@ -26,11 +26,19 @@ export const CV_JOBS: Record<string, string> = {
 
 /** By client project title, as the work log names them. */
 export const CV_CLIENTS: Record<string, string> = {
-  Desoutter: "Led the development of a modern corporate website.",
-  Cuevr: "AI-powered platform for creating commercial proposals.",
+  DigiLog:
+    "Lead developer of a platform extracting structured data from traffic regulations: OCR, tool-calling LLM agents, evaluation.",
+  Cuevr: "Lead developer of an AI-powered platform for creating commercial proposals.",
   "Mon Rét@b' d'abord":
-    "Web app supporting mental health recovery, with self-assessment and wellness tools.",
+    "Lead developer of a web app supporting mental health recovery, with self-assessment and wellness tools.",
 };
+
+/**
+ * Client projects the résumé folds into one closing line to stay on one page; the site lists them
+ * in full. The line reads `<lead> <title> (<stack>)`, both taken from the work log.
+ */
+export const CV_FOLDED_CLIENTS: string[] = ["Desoutter"];
+export const CV_FOLDED_LEAD = "corporate websites, e.g.";
 
 /** By project slug. */
 export const CV_PROJECTS: Record<string, string> = {
