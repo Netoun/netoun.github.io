@@ -18,8 +18,7 @@ export const CV_LEAD =
 export const CV_JOBS: Record<string, string> = {
   lonestone:
     "Production web apps for healthcare, SaaS and corporate clients: maintainable architecture, product velocity, polished interfaces.",
-  easilys:
-    "Developed and maintained a collective catering management app: a new React interface and new features.",
+  easilys: "Developed and maintained a collective catering management app, with new features.",
   sogeti:
     "Innovation pole: a GitFlow tool in React and a machine-learning chatbot for emotion understanding.",
 };

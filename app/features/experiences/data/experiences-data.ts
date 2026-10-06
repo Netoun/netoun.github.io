@@ -45,9 +45,9 @@ export const experiences: Experience[] = [
     end: "2021-07",
     location: "Nantes, FR",
     description:
-      "Development and maintenance of a web application for collective catering management. Implementation of a new user interface with React and development of new features.",
+      "Development and maintenance of a web application for collective catering management, with new features.",
     projects: [],
-    stack: ["React", "Node.js", "Vue", "PostgreSQL"],
+    stack: ["Node.js", "Vue", "PostgreSQL"],
   },
   {
     slug: "sogeti",

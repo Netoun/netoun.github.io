@@ -67,7 +67,7 @@ describe("toBranches", () => {
   });
 
   it("colours each lane by the main domain of what shipped there", () => {
-    expect(branches.map((branch) => branch.domain)).toEqual(["backend", "frontend", "systems"]);
+    expect(branches.map((branch) => branch.domain)).toEqual(["backend", "backend", "systems"]);
     expect(branches[0].mix).toEqual({ frontend: 6, backend: 11, creative: 0, systems: 2 });
     expect(branches[0].commits.map((commit) => commit.domain)).toEqual([
       "backend",
