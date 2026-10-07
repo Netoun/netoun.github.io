@@ -25,7 +25,7 @@ export const projects: Project[] = [
   {
     slug: "treashunt",
     title: "Treashunt",
-    description: "Design unforgettable adventures. Take on exciting challenges.",
+    description: "Adventure design platform: create challenges and take them on.",
     date: "2026-03-03",
     tags: ["React", "Drizzle", "Cloudflare", "Bun", "Elysia"],
     image: "/images/projects/treashunt-card.webp",

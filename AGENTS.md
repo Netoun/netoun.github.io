@@ -8,7 +8,7 @@ Personal site of Nicolas Coulonnier (Netoun), full-stack engineer at Lonestone. 
 
 **Never invent content** — bio, experiences, links, dates, metrics, legal text. Missing content stays missing; ask. Known content inconsistencies are listed in PRODUCT.md › Evidence on Hand.
 
-**Public repo.** Code is MIT (`LICENSE`); content (texts, captures, logo, OG image, identity) is all rights reserved, and fonts keep their own licences — see README › License. Never commit secrets, absolute local paths or client names (Lonestone client work stays unnamed). The one exception: the client projects Nicolas approved in the work log (`experiences-data.ts`: Desoutter, Cuevr, Mon Rét@b' d'abord; 2026-09-28).
+**Public repo.** Code is MIT (`LICENSE`); content (texts, captures, logo, OG image, identity) is all rights reserved, and fonts keep their own licences — see README › License. Never commit secrets, absolute local paths or client names (Lonestone client work stays unnamed). The one exception: the client projects Nicolas approved in the work log (`experiences-data.ts`: Desoutter, Cuevr, Mon Rét@b' d'abord; 2026-09-28 — DigiLog; Nicolas, 2026-10-06).
 
 ## Stack
 

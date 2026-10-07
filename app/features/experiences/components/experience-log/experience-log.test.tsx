@@ -28,6 +28,7 @@ describe("ExperienceLog", () => {
       "Sogeti",
     ]);
     expect(screen.getAllByRole("heading", { level: 4 }).map((h) => h.textContent)).toEqual([
+      "DigiLog",
       "Desoutter",
       "Cuevr",
       "Mon Rét@b' d'abord",
@@ -52,7 +53,7 @@ describe("ExperienceLog", () => {
     expect(
       within(lonestone as HTMLElement).getByText(/more client work, not listed/),
     ).toBeVisible();
-    expect(projects.children).toHaveLength(3);
+    expect(projects.children).toHaveLength(4);
     expect(screen.queryByText(/and many more/)).not.toBeInTheDocument();
   });
 

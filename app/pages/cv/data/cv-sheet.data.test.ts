@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { experiences } from "@/features/experiences/data/experiences-data";
 import { projects } from "@/features/projects/data/projects-data";
 import { STACK_TOOLS } from "@/features/skills/data/skills-data";
-import { CV_CLIENTS, CV_JOBS, CV_PROJECTS } from "./cv-copy.data";
+import { CV_CLIENTS, CV_FOLDED_CLIENTS, CV_JOBS, CV_PROJECTS } from "./cv-copy.data";
 import { cvFingerprint, toCvSheet } from "./cv-sheet.data";
 
 const sorted = (keys: string[]) => keys.toSorted();
@@ -12,7 +12,8 @@ describe("cv copy", () => {
   // the entry it condenses.
   it("has one line per job, client project and project, and no other", () => {
     expect(sorted(Object.keys(CV_JOBS))).toEqual(sorted(experiences.map((job) => job.slug)));
-    expect(sorted(Object.keys(CV_CLIENTS))).toEqual(
+    // A client project is either listed on its own line or folded into the closing one.
+    expect(sorted([...Object.keys(CV_CLIENTS), ...CV_FOLDED_CLIENTS])).toEqual(
       sorted(experiences.flatMap((job) => job.projects.map((project) => project.title))),
     );
     expect(sorted(Object.keys(CV_PROJECTS))).toEqual(sorted(projects.map((p) => p.slug)));
@@ -29,6 +30,18 @@ describe("toCvSheet", () => {
     expect(past.map((job) => job.period)).toEqual(["JUL 2019 – JUL 2021", "SEP 2017 – JUL 2019"]);
     expect(sheet.contacts.find((contact) => contact.key === "Uptime")?.value).toBe(
       "9Y 1M · since SEP 2017",
+    );
+  });
+
+  it("folds the listed-by-site-only client projects into one closing line", () => {
+    const lonestone = sheet.jobs.find((job) => job.slug === "lonestone");
+    expect(lonestone?.clients.map((client) => client.title)).toEqual([
+      "DigiLog",
+      "Cuevr",
+      "Mon Rét@b' d'abord",
+    ]);
+    expect(lonestone?.foldedClients).toBe(
+      "corporate websites, e.g. Desoutter (Next.js, Tailwind CSS, TypeScript)",
     );
   });
 

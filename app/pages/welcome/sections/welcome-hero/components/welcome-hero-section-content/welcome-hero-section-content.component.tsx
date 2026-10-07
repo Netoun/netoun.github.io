@@ -34,8 +34,8 @@ export function WelcomeHeroSectionContent() {
           <Glyph>
             <b>_</b>❯
           </Glyph>{" "}
-          I build fast, polished web products — from expressive interfaces to robust backend
-          systems. Currently building at{" "}
+          I build fast, polished web products with TypeScript, React and NestJS — from expressive
+          interfaces to robust backend systems. Currently building at{" "}
           <a
             className={styles.welcomeLinkStyles}
             href="https://www.lonestone.io"

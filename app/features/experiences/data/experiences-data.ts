@@ -11,6 +11,12 @@ export const experiences: Experience[] = [
       "Shipping production web applications for clients across healthcare, SaaS and corporate platforms, with a focus on maintainable architecture, product velocity and polished user interfaces.",
     projects: [
       {
+        title: "DigiLog",
+        description:
+          "Lead developer of a platform that extracts structured data from traffic regulations for local authorities: OCR, tool-calling LLM agents and an evaluation workbench.",
+        stack: ["React", "NestJS", "MikroORM", "PostgreSQL", "AI", "Queue"],
+      },
+      {
         title: "Desoutter",
         description:
           "Led the development of a modern corporate website using Next.js, Tailwind CSS, and TypeScript, delivering an enhanced digital presence for the company.",
@@ -18,13 +24,13 @@ export const experiences: Experience[] = [
       },
       {
         title: "Cuevr",
-        description: "AI-powered platform for creating commercial proposals.",
+        description: "Lead developer of an AI-powered platform for creating commercial proposals.",
         stack: ["React", "NestJS", "AI", "Queue", "Streaming"],
       },
       {
         title: "Mon Rét@b' d'abord",
         description:
-          "Engineered a specialized web application to support mental health recovery, featuring self-assessment tools and wellness management features for individuals dealing with conditions like schizophrenia and bipolar disorder.",
+          "Lead developer of a specialized web application to support mental health recovery, featuring self-assessment tools and wellness management features for individuals dealing with conditions like schizophrenia and bipolar disorder.",
         stack: ["React", "NestJS", "MikroORM", "PostgreSQL", "Keycloak"],
       },
     ],
@@ -39,9 +45,9 @@ export const experiences: Experience[] = [
     end: "2021-07",
     location: "Nantes, FR",
     description:
-      "Development and maintenance of a web application for collective catering management. Implementation of a new user interface with React and development of new features.",
+      "Development and maintenance of a web application for collective catering management, with new features.",
     projects: [],
-    stack: ["React", "Node.js", "Vue", "PostgreSQL"],
+    stack: ["Node.js", "Vue", "PostgreSQL"],
   },
   {
     slug: "sogeti",

@@ -45,7 +45,7 @@ Success = peers explore the Labs and share them; visitors leave knowing what Nic
 ## Evidence on Hand
 
 - Real projects with links (personal + Lonestone open source): website, Procedural Maps, Treashunt, Commun'île, Nzoth, Lonestone Boilerplate — see `projects-data.ts`.
-- Real experience: Lonestone (Jul 2021 — present), Easilys, Sogeti — see `experiences-data.ts`.
+- Real experience: Lonestone (Jul 2021 — present), Easilys, Sogeti — see `experiences-data.ts`. Client projects named in the work log are the ones Nicolas approved: Desoutter, Cuevr, Mon Rét@b' d'abord (2026-09-28), DigiLog (2026-10-06, lead developer; the three LLM practices cite it as their receipt). The résumé lists DigiLog, Cuevr and Mon Rét@b' d'abord on their own lines and folds Desoutter into one closing line (`CV_FOLDED_CLIENTS`).
 - 13 Labs experiments with live demos and source (`app/features/labs/experiments/`), each with a `man` page and an xray view of its mechanism.
 - **Résumé:** English, one A4 page, built from the data above; the descriptions are condensed in `app/pages/cv/data/cv-copy.data.ts`. Education (Master's degree, EPSI Nantes, no years) comes from Nicolas (2026-10-01) and lives only there.
 - **Absent — never fabricate:** testimonials, client quotes, metrics, awards, press.

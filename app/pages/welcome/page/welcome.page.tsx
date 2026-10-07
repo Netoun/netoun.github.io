@@ -10,7 +10,7 @@ import { WelcomeSkillsSection } from "../sections/welcome-skills/welcome-skills.
 
 const PAGE_TITLE = "Netoun - Full-stack engineer";
 const PAGE_DESCRIPTION =
-  "Nicolas - Full-stack engineer crafting fast, clean web experiences. Specialized in React, TypeScript, Next.js, NestJS and creative frontend development.";
+  "Nicolas Coulonnier (Netoun) - Full-stack engineer crafting fast, clean web experiences. Specialized in React, TypeScript, Next.js, NestJS and creative frontend development.";
 
 export function meta() {
   return [
@@ -24,20 +24,22 @@ export function meta() {
       content:
         "Full-stack engineer, React Developer, TypeScript, Next.js, NestJS, Creative Developer, Frontend Engineer, Nantes",
     },
-    { name: "author", content: "Nicolas" },
+    { name: "author", content: "Nicolas Coulonnier" },
     { name: "robots", content: "index, follow" },
 
     { property: "og:title", content: PAGE_TITLE },
     {
       property: "og:description",
-      content: "Nicolas - Full-stack engineer crafting fast, clean web experiences.",
+      content:
+        "Nicolas Coulonnier (Netoun) - Full-stack engineer crafting fast, clean web experiences.",
     },
     { property: "og:url", content: "https://www.netoun.com" },
 
     { name: "twitter:title", content: PAGE_TITLE },
     {
       name: "twitter:description",
-      content: "Nicolas - Full-stack engineer crafting fast, clean web experiences.",
+      content:
+        "Nicolas Coulonnier (Netoun) - Full-stack engineer crafting fast, clean web experiences.",
     },
 
     { tagName: "link", rel: "canonical", href: "https://www.netoun.com" },
