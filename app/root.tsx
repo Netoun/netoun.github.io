@@ -11,8 +11,10 @@ import {
 import { I18nProvider } from "react-aria-components";
 import { ErrorScreen } from "@/components/layouts/error-screen/error-screen.component";
 import type { ErrorScreenLink } from "@/components/layouts/error-screen/error-screen.component";
+import { ANALYTICS_SNIPPET } from "@/features/site/data/analytics-snippet.data";
 import { contactLinks } from "@/features/site/data/contact-links.data";
 import { SITE_URL } from "@/features/site/data/site";
+import { useAnalytics } from "@/features/site/hooks/use-analytics.hook";
 import { useIsHydrated } from "@/hooks/use-is-hydrated.hook";
 import { usePaperGrain } from "@/hooks/use-paper-grain.hook";
 import type { Route } from "./+types/root";
@@ -94,6 +96,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
             }),
           }}
         />
+        {/* GoatCounter on the production hosts only; see analytics-snippet.data.ts. */}
+        {ANALYTICS_SNIPPET && <script dangerouslySetInnerHTML={{ __html: ANALYTICS_SNIPPET }} />}
         <Meta />
         <Links />
       </head>
@@ -110,6 +114,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  useAnalytics();
   return <Outlet />;
 }
 

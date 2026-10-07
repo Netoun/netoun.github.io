@@ -25,7 +25,7 @@ Success = peers explore the Labs and share them; visitors leave knowing what Nic
 
 - Visitors arrive from shared links (GitHub `netoun`, LinkedIn, X `netoun`, email) and from search — each page ships SEO meta, a sitemap and `public/llms.txt` for AI crawlers.
 - Routes: `/` (hero, projects, experience, skills, contact footer), `/labs` (experiment index), `/labs/:slug` (live demo + source viewer). `/misc` redirects to `/labs`. Any other path is the 404 (`*` route), with a small game: make 404 from five numbers on a server rack.
-- Static prerendered site (React Router framework mode, `ssr: false`) deployed on Cloudflare Pages (`public/_headers`, `_redirects`). No backend, no forms, no analytics in the codebase.
+- Static prerendered site (React Router framework mode, `ssr: false`) deployed on Cloudflare Pages (`public/_headers`, `_redirects`). No backend, no forms. Audience measurement is cookieless GoatCounter, self-hosted by Nicolas, its origin read from `VITE_ANALYTICS_ORIGIN` (`app/features/site/data/analytics.data.ts`), loaded on netoun.com and www.netoun.com only.
 
 ## Capabilities and Constraints
 
