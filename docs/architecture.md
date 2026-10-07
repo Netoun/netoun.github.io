@@ -63,6 +63,10 @@ app/features/
       site.ts                  # SITE_URL
       contact-links.data.ts
       site-status.data.ts      # what the build says about itself (footer status strip)
+      analytics.data.ts        # GoatCounter origin (VITE_ANALYTICS_ORIGIN) + the hosts that load it
+      analytics-snippet.data.ts # inline <head> script that loads its count.js (root.tsx)
+    hooks/
+      use-analytics.hook.ts    # route changes + click events, from root.tsx
 ```
 
 ### Rules
