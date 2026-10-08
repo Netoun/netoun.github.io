@@ -64,10 +64,9 @@ export const rowStyle = style({
 });
 
 const edge = `color-mix(in srgb, ${vars.colors.foreground} 78%, transparent)`;
-const shade = `color-mix(in srgb, ${vars.colors.foreground} 30%, transparent)`;
-const keyRest = `0 3px 0 ${edge}, 0 10px 16px -12px ${shade}`;
-const keyHover = `0 5px 0 ${edge}, 0 16px 22px -14px ${shade}`;
-const keyPressed = `0 1px 0 ${edge}, 0 4px 8px -6px ${shade}`;
+const keyRest = `0 3px 0 ${edge}, 0 10px 16px -12px ${faint}`;
+const keyHover = `0 5px 0 ${edge}, 0 16px 22px -14px ${faint}`;
+const keyPressed = `0 1px 0 ${edge}, 0 4px 8px -6px ${faint}`;
 
 // Composed rather than spread, so the parts' own selectors and media queries add to it.
 const partSize = style({

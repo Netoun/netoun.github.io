@@ -30,7 +30,6 @@ export interface RendererOptions {
 
 export interface RendererSession {
   type: RendererType;
-  redraw(): void;
   updateUniforms(uniforms: Uniforms): void;
   destroy(): void;
 }

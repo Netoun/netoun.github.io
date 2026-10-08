@@ -29,8 +29,10 @@ export interface FooterSlimProps {
 export function FooterSlim({ className, id, links, status }: FooterSlimProps) {
   const ports = useMemo(() => toFooterPorts(links), [links]);
   const resting = restPortId(ports);
-  const [active, setActive] = useState<string | null>(null);
-  const plugged = active ?? resting;
+  // Hover and focus are tracked apart: leaving a hovered port must not unplug a focused one.
+  const [hovered, setHovered] = useState<string | null>(null);
+  const [focused, setFocused] = useState<string | null>(null);
+  const plugged = hovered ?? focused ?? resting;
 
   return (
     <footer id={id} className={clsx(styles.footerStyle, className)}>
@@ -55,10 +57,10 @@ export function FooterSlim({ className, id, links, status }: FooterSlimProps) {
                     data-plugged={port.id === plugged ? "true" : "false"}
                     target={port.external ? "_blank" : undefined}
                     rel={port.external ? "noopener noreferrer" : undefined}
-                    onPointerEnter={() => setActive(port.id)}
-                    onPointerLeave={() => setActive(null)}
-                    onFocus={() => setActive(port.id)}
-                    onBlur={() => setActive(null)}
+                    onPointerEnter={() => setHovered(port.id)}
+                    onPointerLeave={() => setHovered(null)}
+                    onFocus={() => setFocused(port.id)}
+                    onBlur={() => setFocused(null)}
                   >
                     <span className={plate.socketStyle} aria-hidden="true">
                       <span className={plate.socketCavityStyle} />
@@ -81,7 +83,7 @@ export function FooterSlim({ className, id, links, status }: FooterSlimProps) {
                 </li>
               ))}
             </ul>
-            <FooterStatusStrip status={status} busy={active !== null} />
+            <FooterStatusStrip status={status} busy={hovered !== null || focused !== null} />
           </div>
         </Container>
       </div>

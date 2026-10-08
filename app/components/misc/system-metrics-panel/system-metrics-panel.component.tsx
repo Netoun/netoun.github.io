@@ -1,5 +1,6 @@
 import { assignInlineVars } from "@vanilla-extract/dynamic";
 import { memo, useEffect, useState } from "react";
+import { useMediaQuery } from "@/hooks/use-media-query.hook";
 import * as styles from "./system-metrics-panel.css";
 
 export interface SystemMetricsPanelProps {
@@ -63,19 +64,7 @@ export const SystemMetricsPanel = memo(
   }: SystemMetricsPanelProps) => {
     const [tick, setTick] = useState(0);
     const values = metricsAt(tick);
-    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-    useEffect(() => {
-      const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-      const updateMotion = () => setPrefersReducedMotion(mediaQuery.matches);
-
-      updateMotion();
-      mediaQuery.addEventListener("change", updateMotion);
-
-      return () => {
-        mediaQuery.removeEventListener("change", updateMotion);
-      };
-    }, []);
+    const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 
     useEffect(() => {
       if (!isAnimating || prefersReducedMotion) return;
@@ -112,7 +101,7 @@ export const SystemMetricsPanel = memo(
 
         <div className={styles.metricsListStyles}>
           {METRICS.map((metric, index) => {
-            const value = values[index] ?? 0;
+            const value = values[index];
             const band = bandOf(value);
 
             return (

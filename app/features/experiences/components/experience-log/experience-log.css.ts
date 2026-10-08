@@ -7,7 +7,7 @@ import type { StackDomain } from "../../data/experience-log";
 import { weight } from "@styles/weight";
 
 // The machine voice of the log: Doto at the legible floor (weight ≥ 800), tabular numerals.
-const machine = {
+export const machine = {
   fontFamily: vars.fontFamily.doto,
   ...weight(vars.fontWeight.extrabold),
   fontVariantNumeric: "tabular-nums",
@@ -415,7 +415,6 @@ export const refsStyle = style({
 
 const pill = {
   ...machine,
-  ...weight(vars.fontWeight.extrabold),
   display: "inline-flex",
   alignItems: "center",
   gap: "0.35em",

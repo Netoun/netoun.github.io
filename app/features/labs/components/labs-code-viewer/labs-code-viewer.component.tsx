@@ -1,5 +1,6 @@
 import { Highlight, themes } from "prism-react-renderer";
 import { memo, useEffect, useRef, useState } from "react";
+import { Button, Tab, TabList, Tabs } from "react-aria-components";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
 import { siteStatus } from "@/features/site/data/site-status.data";
 import { formatLineRange, type LabLineRange } from "../../data/labs-manual";
@@ -90,6 +91,7 @@ export function LabsCodeViewer({ sources, stats, highlight = null }: LabsCodeVie
   });
   const [highlighted, setHighlighted] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const copyTimer = useRef<number | undefined>(undefined);
 
   // Tokenize once, the first time the viewer comes near the screen (or is cited).
   if (!highlighted && (nearScreen || highlight)) setHighlighted(true);
@@ -120,6 +122,9 @@ export function LabsCodeViewer({ sources, stats, highlight = null }: LabsCodeVie
     });
   }, [highlight]);
 
+  // Clear the pending "Copied" reset on unmount, so it never sets state on a dead component.
+  useEffect(() => () => window.clearTimeout(copyTimer.current), []);
+
   if (!active) return null;
   const activeStats = stats?.[activeIndex];
 
@@ -127,7 +132,9 @@ export function LabsCodeViewer({ sources, stats, highlight = null }: LabsCodeVie
     try {
       await navigator.clipboard.writeText(active.code);
       setCopied(true);
-      window.setTimeout(() => setCopied(false), 1500);
+      // A second copy restarts the reset window instead of being cut short by the first timer.
+      window.clearTimeout(copyTimer.current);
+      copyTimer.current = window.setTimeout(() => setCopied(false), 1500);
     } catch {
       // Clipboard unavailable (e.g. insecure context) — fail silently.
     }
@@ -139,33 +146,35 @@ export function LabsCodeViewer({ sources, stats, highlight = null }: LabsCodeVie
     <div ref={viewerRef} className={styles.codeViewer}>
       <div className={styles.codeHeader}>
         <span className={styles.lights} aria-hidden="true" />
-        <div className={styles.tabRow} role="tablist" aria-label="Source files">
-          {sources.map((source, index) => (
-            <button
-              key={source.label}
-              type="button"
-              role="tab"
-              aria-selected={index === activeIndex}
-              className={styles.tab}
-              data-active={index === activeIndex}
-              onClick={() => setActiveIndex(index)}
-            >
-              {source.label}
-              <span className={styles.tabRole} aria-hidden="true">
-                {ROLE_LABEL[source.role]}
-              </span>
-            </button>
-          ))}
-        </div>
-        <button
-          type="button"
+        <Tabs
+          className={styles.tabs}
+          selectedKey={String(activeIndex)}
+          onSelectionChange={(key) => setActiveIndex(Number(key))}
+        >
+          <TabList className={styles.tabRow} aria-label="Source files">
+            {sources.map((source, index) => (
+              <Tab
+                key={source.label}
+                id={String(index)}
+                className={styles.tab}
+                data-active={index === activeIndex}
+              >
+                {source.label}
+                <span className={styles.tabRole} aria-hidden="true">
+                  {ROLE_LABEL[source.role]}
+                </span>
+              </Tab>
+            ))}
+          </TabList>
+        </Tabs>
+        <Button
           className={styles.copyButton}
           data-copied={copied}
           aria-label={copied ? "Copied" : `Copy ${active.label}`}
-          onClick={handleCopy}
+          onPress={handleCopy}
         >
           {copied ? "_Copied ✓_" : "_Copy_"}
-        </button>
+        </Button>
       </div>
 
       <div ref={scrollRef} className={styles.codeScroll}>

@@ -1,4 +1,4 @@
-import { arrival } from "@styles/motion.css";
+import { arrival, motion } from "@styles/motion.css";
 import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
 import { globalStyle, style } from "@vanilla-extract/css";
@@ -109,7 +109,7 @@ globalStyle(`[data-reveal="idle"] ${checkStyle}`, {
 
 for (let index = 0; index < CHECKS; index += 1) {
   globalStyle(`[data-reveal="revealed"] ${checkStyle}:nth-child(${index + 1})`, {
-    animation: `fetch-check 300ms cubic-bezier(0.22, 1, 0.36, 1) ${CHECK_START + index * CHECK_STEP}ms both`,
+    animation: `fetch-check ${motion.duration.base} ${motion.easing.signature} ${CHECK_START + index * CHECK_STEP}ms both`,
   });
 }
 
@@ -194,7 +194,7 @@ export const proofLinkStyle = style({
   textDecorationThickness: "1px",
   textUnderlineOffset: "0.2em",
   borderRadius: vars.radius.xs,
-  transition: "text-decoration-thickness 150ms ease-out",
+  transition: `text-decoration-thickness ${motion.duration.fast} ${motion.easing.out}`,
   selectors: {
     "&:hover": {
       textDecorationThickness: "2px",

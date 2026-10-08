@@ -6,12 +6,12 @@ import * as styles from "./server-unit.css";
 
 type ServerUnitVariant = "a" | "b" | "c" | "link";
 
-type ServerUnitProps = Omit<ComponentProps<"div">, "children"> & {
+interface ServerUnitProps extends Omit<ComponentProps<"div">, "children"> {
   seed?: number;
   children?: ReactNode;
   variant?: ServerUnitVariant;
   rackLabel?: string;
-};
+}
 
 type ServerUnitSize = "xs" | "sm" | "md" | "lg";
 
@@ -29,7 +29,7 @@ export interface ServerPatch {
   plugged?: string | null;
 }
 
-type ServerUnitRackProps = ComponentProps<"div"> & {
+interface ServerUnitRackProps extends ComponentProps<"div"> {
   seed?: number;
   /** The Lab's xray: faces outlined, units pulled out of the cabinet by `pull` (0–1). */
   xray?: boolean;
@@ -40,7 +40,7 @@ type ServerUnitRackProps = ComponentProps<"div"> & {
    */
   size?: ServerUnitSize | "inherit";
   patch?: ServerPatch;
-};
+}
 
 function pseudoRandom(seed: number): number {
   const s = Math.sin(seed * 127.1 + 311.7) * 43758.5453;

@@ -1,6 +1,6 @@
 import { setElementVars } from "@vanilla-extract/dynamic";
 import clsx from "clsx";
-import { memo, type RefObject, useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { memo, type RefObject, useCallback, useEffect, useRef } from "react";
 import { Computer } from "@/components/misc/computer/computer.component";
 import { useAnimationPriority } from "@/hooks/use-animation-priority.hook";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer.hook";
@@ -9,7 +9,9 @@ import { CyberneticGlyphGrid } from "@/components/misc/cybernetic-glyph-grid/cyb
 import { FakeConsole } from "@/components/misc/fake-console/fake-console.component";
 import { GlitchSignalMap } from "@/components/misc/glitch-signal-map/glitch-signal-map.component";
 import { SystemMetricsPanel } from "@/components/misc/system-metrics-panel/system-metrics-panel.component";
+import { useCanTilt } from "../../hooks/use-can-tilt.hook";
 import { formatLaptopTilt, useWelcomeHeroSpec } from "../../hooks/use-welcome-hero-spec.hook";
+import { useZoneReveal } from "../../hooks/use-zone-reveal.hook";
 import { useHeroAnimation, useHeroAnimationValue } from "../../orchestrator/hero-animation.context";
 import { heroSpecGroup, heroSpecShown } from "../../welcome-hero-spec.css";
 import { WelcomeHeroSpecNote } from "../spec-note/welcome-hero-spec-note.component";
@@ -77,7 +79,6 @@ function WelcomeHeroComputerComponentInner({
   mousePositionRef,
 }: WelcomeHeroComputerComponentProps) {
   const heroAnimationEnabled = useHeroAnimationValue(useHeroAnimation(), "shouldAnimate");
-  const containerRef = useRef<HTMLDivElement>(null);
   const capturesRef = useRef<HTMLDivElement>(null);
   const tiltLineRef = useRef<HTMLSpanElement | null>(null);
   const spec = useWelcomeHeroSpec();
@@ -100,52 +101,9 @@ function WelcomeHeroComputerComponentInner({
       isVisible: isIntersecting,
     }) && heroAnimationEnabled;
 
-  const [visibleZones, dispatch] = useReducer((_state: number, action: number) => action, 0);
-  const hasRevealedRef = useRef(false);
-
-  useEffect(() => {
-    if (!shouldAnimate) return;
-
-    // Reduced motion: no staggered fade-in — the screen is complete at once.
-    if (hasRevealedRef.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      hasRevealedRef.current = true;
-      dispatch(4);
-      return;
-    }
-
-    let zone = 1;
-    const interval = setInterval(() => {
-      dispatch(zone);
-      zone += 1;
-      if (zone > 4) {
-        hasRevealedRef.current = true;
-        clearInterval(interval);
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [shouldAnimate]);
-
+  const visibleZones = useZoneReveal(shouldAnimate);
   // Tilt only for desktop pointers, never under prefers-reduced-motion.
-  const [canTilt, setCanTilt] = useState(false);
-
-  useEffect(() => {
-    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-    const update = () => {
-      setCanTilt(finePointer.matches && !reducedMotion.matches);
-    };
-
-    update();
-    finePointer.addEventListener("change", update);
-    reducedMotion.addEventListener("change", update);
-
-    return () => {
-      finePointer.removeEventListener("change", update);
-      reducedMotion.removeEventListener("change", update);
-    };
-  }, []);
+  const canTilt = useCanTilt();
 
   useEffect(() => {
     const resetToBasePose = () => {
@@ -204,7 +162,6 @@ function WelcomeHeroComputerComponentInner({
   return (
     <div
       ref={(element) => {
-        containerRef.current = element;
         intersectionRef.current = element;
       }}
       className={styles.welcomeHeroComputerWrapperStyles}

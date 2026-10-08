@@ -18,7 +18,21 @@ const STATES = ["paused", "running"] as const;
 const SHAPES = ["box", "torus"] as const satisfies readonly AsciiShape[];
 const RAMP_NAMES = ["classic", "netoun"] as const satisfies readonly AsciiRamp[];
 const PALETTES = ["phosphor", "ink"] as const satisfies readonly AsciiPalette[];
-const DEFAULTS = { cellPx: 14, light: 35 };
+const DEFAULTS = {
+  state: "running",
+  shape: "box",
+  ramp: "classic",
+  palette: "phosphor",
+  cellPx: 14,
+  light: 35,
+} as const satisfies {
+  state: (typeof STATES)[number];
+  shape: AsciiShape;
+  ramp: AsciiRamp;
+  palette: AsciiPalette;
+  cellPx: number;
+  light: number;
+};
 const capitalize = (value: string) => value[0].toUpperCase() + value.slice(1);
 
 interface LookupProps {
@@ -70,20 +84,20 @@ function Lookup({ ramp, counts, probe }: LookupProps) {
 
 export function AsciiRaymarcherDemo() {
   const xray = useLabsXray();
-  const [state, setState] = useState<(typeof STATES)[number]>("running");
-  const [shape, setShape] = useState<AsciiShape>("box");
-  const [ramp, setRamp] = useState<AsciiRamp>("classic");
-  const [palette, setPalette] = useState<AsciiPalette>("phosphor");
-  const [cellPx, setCellPx] = useState(DEFAULTS.cellPx);
-  const [light, setLight] = useState(DEFAULTS.light);
+  const [state, setState] = useState<(typeof STATES)[number]>(DEFAULTS.state);
+  const [shape, setShape] = useState<AsciiShape>(DEFAULTS.shape);
+  const [ramp, setRamp] = useState<AsciiRamp>(DEFAULTS.ramp);
+  const [palette, setPalette] = useState<AsciiPalette>(DEFAULTS.palette);
+  const [cellPx, setCellPx] = useState<number>(DEFAULTS.cellPx);
+  const [light, setLight] = useState<number>(DEFAULTS.light);
   const [counts, setCounts] = useState<number[] | null>(null);
   const [probe, setProbe] = useState<AsciiProbe | null>(null);
 
   const reset = () => {
-    setState("running");
-    setShape("box");
-    setRamp("classic");
-    setPalette("phosphor");
+    setState(DEFAULTS.state);
+    setShape(DEFAULTS.shape);
+    setRamp(DEFAULTS.ramp);
+    setPalette(DEFAULTS.palette);
     setCellPx(DEFAULTS.cellPx);
     setLight(DEFAULTS.light);
   };

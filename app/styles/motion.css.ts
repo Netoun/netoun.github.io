@@ -1,6 +1,5 @@
 // Shared motion vocabulary — durations and named easings.
-// `signature` is the house curve (historically the cards' cubic-bezier(.22,1,.36,1)),
-// promoted to a token to unify reveals and hovers.
+// `signature` is the house curve: one easing for reveals and hovers, shared by CSS and JS.
 
 /** Control points of the signature curve — shared by CSS and JS (anime.js `cubicBezier`). */
 export const SIGNATURE_CURVE = [0.22, 1, 0.36, 1] as const;
@@ -15,7 +14,7 @@ export const motion = {
     signature: `cubic-bezier(${SIGNATURE_CURVE.join(", ")})`,
     out: "ease-out",
   },
-  // Stagger des reveals de section : 70ms par élément, plafonné côté consommateur (~400ms).
+  // Section reveal stagger: 70ms per element, capped by the consumer (~400ms).
   staggerStep: "70ms",
 } as const;
 

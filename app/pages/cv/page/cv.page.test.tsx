@@ -1,6 +1,9 @@
 import { render, screen, within } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { describe, expect, it } from "vitest";
+import { toAddress } from "@/features/projects/data/project-processes";
+import { projects } from "@/features/projects/data/projects-data";
+import { contactLinks } from "@/features/site/data/contact-links.data";
 import CvPage, { meta } from "./cv.page";
 
 function renderPage() {
@@ -28,13 +31,17 @@ describe("CvPage", () => {
     expect(
       within(experience).getByText(/corporate websites, e\.g\. Desoutter/),
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "github.com/lonestone/nzoth ↗" })).toHaveAttribute(
+    const [project] = projects;
+    if (!project) throw new Error("no project");
+    expect(screen.getByRole("link", { name: `${toAddress(project.url)} ↗` })).toHaveAttribute(
       "href",
-      "https://github.com/lonestone/nzoth",
+      project.url,
     );
-    expect(screen.getByRole("link", { name: "netoun@proton.me" })).toHaveAttribute(
+    const mail = contactLinks.find((link) => link.url.startsWith("mailto:"));
+    if (!mail) throw new Error("no mail link");
+    expect(screen.getByRole("link", { name: mail.url.slice("mailto:".length) })).toHaveAttribute(
       "href",
-      "mailto:netoun@proton.me",
+      mail.url,
     );
   });
 

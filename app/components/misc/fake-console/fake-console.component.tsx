@@ -110,19 +110,14 @@ export const lineParts = (seed: number): [ConsoleLineParts, number] => {
 const formatLine = ({ process, state, load, hex, tail }: ConsoleLineParts) =>
   `${process}  ${state} ${load}  ${hex}-${tail}`;
 
-const generateLine = (seed: number): [string, number] => {
-  const [parts, nextSeed] = lineParts(seed);
-  return [formatLine(parts), nextSeed];
-};
-
 const createLines = (seed: number, count: number): [string[], number] => {
-  // oxlint-disable-next-line unicorn/no-new-array
+  // oxlint-disable-next-line unicorn/no-new-array -- preallocated, every slot is written by the loop below
   const lines = new Array<string>(count);
   let current = seed;
 
   for (let index = 0; index < count; index += 1) {
-    const [line, next] = generateLine(current);
-    lines[index] = line;
+    const [parts, next] = lineParts(current);
+    lines[index] = formatLine(parts);
     current = next;
   }
 
@@ -424,7 +419,6 @@ export const FakeConsole = memo(function FakeConsole({
 
     const updateReducedMotion = () => {
       prefersReducedMotion = mediaQuery.matches;
-      rootElement.dataset.reducedMotion = mediaQuery.matches ? "true" : "false";
       updateAnimationState();
     };
 
@@ -482,13 +476,7 @@ export const FakeConsole = memo(function FakeConsole({
   const rootClassName = className ? `${styles.rootStyles} ${className}` : styles.rootStyles;
 
   return (
-    <div
-      ref={rootRef}
-      className={rootClassName}
-      data-reduced-motion="false"
-      data-xray={xray || undefined}
-      aria-hidden="true"
-    >
+    <div ref={rootRef} className={rootClassName} data-xray={xray || undefined} aria-hidden="true">
       <div className={styles.noiseOverlayStyles} />
       <div className={styles.scanlineStyles} />
       <div className={styles.bottomRevealStyles} />

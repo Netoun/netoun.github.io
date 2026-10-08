@@ -11,8 +11,8 @@ import * as styles from "./welcome-hero-filter-background.css";
 const getHeroShaderQuality = () => getShaderQuality() * SHADER_CONFIG.heroQualityMultiplier;
 
 // The hero shows the lower-left two thirds of the mesh composition (gold low
-// left, violet high right). The canvas used to be 150 % × 150 % of the frame and
-// clipped — 2.25× the fragments and GPU memory for pixels nobody saw.
+// left, violet high right). A canvas at 150 % × 150 % of the frame would clip and
+// pay 2.25x the fragments and GPU memory for pixels nobody sees.
 const HERO_COMPOSITION_WINDOW: MeshCompositionWindow = {
   scale: [2 / 3, 2 / 3],
   offset: [0, 0],

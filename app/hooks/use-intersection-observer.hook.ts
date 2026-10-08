@@ -15,7 +15,6 @@ export function useIntersectionObserver<T extends HTMLElement = HTMLElement>(
 ) {
   const { threshold = 0, rootMargin = "0px", enabled = true } = options;
   const [isIntersecting, setIsIntersecting] = useState(false);
-  const [entry, setEntry] = useState<IntersectionObserverEntry | null>(null);
   const elementRef = useRef<T>(null);
 
   useEffect(() => {
@@ -25,7 +24,6 @@ export function useIntersectionObserver<T extends HTMLElement = HTMLElement>(
     const observer = new IntersectionObserver(
       ([observed]) => {
         setIsIntersecting(observed.isIntersecting);
-        setEntry(observed);
       },
       {
         threshold,
@@ -40,5 +38,5 @@ export function useIntersectionObserver<T extends HTMLElement = HTMLElement>(
     };
   }, [threshold, rootMargin, enabled]);
 
-  return { ref: elementRef, isIntersecting, entry };
+  return { ref: elementRef, isIntersecting };
 }

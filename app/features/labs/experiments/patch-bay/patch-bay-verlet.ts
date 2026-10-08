@@ -9,6 +9,7 @@ const SOCKET_HEIGHT = 44;
 export const BOOT = 14;
 const PITCH = 66;
 const FIRST_COL = 210;
+export const COLS = 8;
 const ROWS = [
   { id: "A", top: 59 },
   { id: "B", top: 155 },
@@ -28,7 +29,7 @@ export interface Jack {
 }
 
 export const JACKS: readonly Jack[] = ROWS.flatMap((row, rowIndex) =>
-  Array.from({ length: 8 }, (_, col) => ({
+  Array.from({ length: COLS }, (_, col) => ({
     id: `${row.id}${col + 1}`,
     row: rowIndex,
     col,

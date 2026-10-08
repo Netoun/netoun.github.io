@@ -2,7 +2,7 @@ import { vars } from "@styles/theme.css";
 import { createVar, style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 
-// Variables CSS pour le slider
+// CSS variables for the slider
 const sliderTrackHeight = createVar();
 const sliderThumbSize = createVar();
 
@@ -12,37 +12,18 @@ export const sliderRecipe = recipe({
     flexDirection: "column",
     gap: vars.spacing.xs,
     width: "100%",
+    vars: {
+      [sliderTrackHeight]: "6px",
+      [sliderThumbSize]: "20px",
+    },
   },
 
   variants: {
     orientation: {
-      horizontal: {
-        flexDirection: "column",
-      },
+      horizontal: {},
       vertical: {
         flexDirection: "row",
         height: "200px",
-      },
-    },
-
-    size: {
-      small: {
-        vars: {
-          [sliderTrackHeight]: "4px",
-          [sliderThumbSize]: "16px",
-        },
-      },
-      medium: {
-        vars: {
-          [sliderTrackHeight]: "6px",
-          [sliderThumbSize]: "20px",
-        },
-      },
-      large: {
-        vars: {
-          [sliderTrackHeight]: "8px",
-          [sliderThumbSize]: "24px",
-        },
       },
     },
 
@@ -57,12 +38,11 @@ export const sliderRecipe = recipe({
 
   defaultVariants: {
     orientation: "horizontal",
-    size: "medium",
     disabled: false,
   },
 });
 
-// Styles pour les éléments du slider utilisant les variables
+// Styles for the slider elements, using the variables
 export const sliderTrackStyle = style({
   height: sliderTrackHeight,
   backgroundColor: vars.colors.muted,

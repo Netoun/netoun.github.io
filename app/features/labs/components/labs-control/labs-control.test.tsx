@@ -34,7 +34,7 @@ describe("SliderControl", () => {
 
     // Simulate value change — React Aria Slider exposes value via onChange
     fireEvent.change(slider, { target: { value: "75" } });
-    expect(onChange).toHaveBeenCalled();
+    expect(onChange).toHaveBeenLastCalledWith(75);
   });
 });
 
@@ -45,11 +45,11 @@ describe("ButtonGroupControl", () => {
       <ButtonGroupControl options={["paused", "running"]} value="running" onChange={onChange} />,
     );
 
-    const pausedBtn = screen.getByRole("button", { name: "paused" });
-    const runningBtn = screen.getByRole("button", { name: "running" });
+    const pausedBtn = screen.getByRole("radio", { name: "paused" });
+    const runningBtn = screen.getByRole("radio", { name: "running" });
 
-    expect(pausedBtn).toHaveAttribute("aria-pressed", "false");
-    expect(runningBtn).toHaveAttribute("aria-pressed", "true");
+    expect(pausedBtn).toHaveAttribute("aria-checked", "false");
+    expect(runningBtn).toHaveAttribute("aria-checked", "true");
   });
 
   it("fires onChange on click", () => {
@@ -58,7 +58,7 @@ describe("ButtonGroupControl", () => {
       <ButtonGroupControl options={["left", "right"]} value="left" onChange={onChange} />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "right" }));
+    fireEvent.click(screen.getByRole("radio", { name: "right" }));
     expect(onChange).toHaveBeenCalledWith("right");
   });
 
@@ -73,8 +73,8 @@ describe("ButtonGroupControl", () => {
       />,
     );
 
-    expect(screen.getByRole("button", { name: "A" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "B" })).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: "A" })).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: "B" })).toBeInTheDocument();
   });
 });
 

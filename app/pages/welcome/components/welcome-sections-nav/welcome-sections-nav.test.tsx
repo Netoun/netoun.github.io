@@ -20,13 +20,15 @@ describe("WelcomeSectionsNav", () => {
 
   it("keeps the section links out of reach until the list opens", () => {
     renderNav();
-    const list = document.getElementById(toggle().getAttribute("aria-controls") ?? "");
+    const listId = toggle().getAttribute("aria-controls");
+    const list = listId ? document.getElementById(listId) : null;
+    if (!list) throw new Error("sections list not rendered");
     expect(list).toHaveAttribute("inert");
 
     fireEvent.click(toggle());
     expect(toggle()).toHaveAttribute("aria-expanded", "true");
     expect(list).not.toHaveAttribute("inert");
-    const links = within(list as HTMLElement).getAllByRole("link");
+    const links = within(list).getAllByRole("link");
     expect(links.map((link) => link.textContent)).toEqual([
       "_00 / Intro",
       "_01 / Projects",

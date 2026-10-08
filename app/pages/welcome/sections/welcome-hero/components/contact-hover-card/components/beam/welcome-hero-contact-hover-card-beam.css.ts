@@ -1,6 +1,7 @@
 import { style, keyframes } from "@vanilla-extract/css";
 import { vars } from "@/styles/theme.css";
 import { breakpoints } from "@/styles/responsive.css";
+import { motion } from "@styles/motion.css";
 
 const beamIn = keyframes({
   from: { opacity: 0 },
@@ -34,7 +35,7 @@ export const beamStyles = style({
   overflow: "visible",
   opacity: 0,
   zIndex: 1,
-  transition: "opacity 300ms ease",
+  transition: `opacity ${motion.duration.base} ease`,
   filter: `blur(0.04rem)`,
   display: "none",
 
@@ -50,7 +51,7 @@ export const beamStyles = style({
     "[data-open=true] &": {
       opacity: 1,
       display: "block",
-      animation: `${beamIn} 300ms ease`,
+      animation: `${beamIn} ${motion.duration.base} ease`,
     },
     "[data-open=false] &:hover": {
       opacity: 0.3,

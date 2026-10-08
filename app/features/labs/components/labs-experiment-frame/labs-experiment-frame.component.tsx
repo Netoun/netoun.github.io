@@ -32,8 +32,12 @@ export function useLabsXray(): boolean {
   return Boolean(bench?.xray && bench.experiment.xray);
 }
 
+interface LabsStageProps {
+  children: ReactNode;
+}
+
 /** Centered stage area for the live demo (no bench around it). */
-export function LabsStage({ children }: { children: ReactNode }) {
+export function LabsStage({ children }: LabsStageProps) {
   return <div className={styles.stage}>{children}</div>;
 }
 

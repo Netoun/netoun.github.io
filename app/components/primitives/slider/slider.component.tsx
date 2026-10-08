@@ -3,53 +3,35 @@ import {
   SliderThumb as AriaSliderThumb,
   SliderTrack as AriaSliderTrack,
   Label,
+  type SliderProps as AriaSliderProps,
 } from "react-aria-components";
 import { sliderRecipe, sliderThumbStyle, sliderTrackStyle } from "./slider.css";
 
-export interface SliderProps {
+export interface SliderProps extends Omit<
+  AriaSliderProps<number>,
+  "children" | "className" | "style"
+> {
   label?: string;
-  "aria-label"?: string;
-  value?: number;
-  defaultValue?: number;
-  minValue?: number;
-  maxValue?: number;
-  step?: number;
-  isDisabled?: boolean;
-  isReadOnly?: boolean;
-  orientation?: "horizontal" | "vertical";
-  formatOptions?: Intl.NumberFormatOptions;
-  onChange?: (value: number) => void;
-  onChangeEnd?: (value: number) => void;
   className?: string;
 }
 
 export function Slider({
   label,
-  value,
-  defaultValue,
   minValue = 0,
   maxValue = 100,
   step = 1,
   isDisabled = false,
   orientation = "horizontal",
-  formatOptions,
-  onChange,
-  onChangeEnd,
   className,
   ...props
 }: SliderProps) {
   return (
     <AriaSlider
-      value={value}
-      defaultValue={defaultValue}
       minValue={minValue}
       maxValue={maxValue}
       step={step}
       isDisabled={isDisabled}
       orientation={orientation}
-      formatOptions={formatOptions}
-      onChange={onChange}
-      onChangeEnd={onChangeEnd}
       className={
         sliderRecipe({ orientation, disabled: isDisabled }) + (className ? ` ${className}` : "")
       }

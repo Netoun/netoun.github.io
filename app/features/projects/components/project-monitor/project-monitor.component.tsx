@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Button, GridList, GridListItem, Toolbar } from "react-aria-components";
 import type { Key, Selection } from "react-aria-components";
 import { Link } from "react-router";
@@ -19,19 +19,12 @@ import { ProjectMonitorDetail } from "./components/project-monitor-detail/projec
 import { ProjectMonitorKeycap } from "./components/project-monitor-keycap/project-monitor-keycap.component";
 import { ProjectMonitorMeters } from "./components/project-monitor-meters/project-monitor-meters.component";
 import { ProjectMonitorUptime } from "./components/project-monitor-uptime/project-monitor-uptime.component";
+import { useHeldKeys } from "./use-held-keys.hook";
 import * as styles from "./project-monitor.css";
 import { Glyph } from "@/components/primitives/glyph/glyph.component";
 
 const STATUS_LABEL = { live: "LIVE", source: "SRC" } as const;
 const SORTABLE: ProcessSortKey[] = ["name", "status", "date"];
-
-type HeldKey = "up" | "down" | "enter";
-// Keys the grid answers to, mirrored on the key bar's keycaps while held.
-const HELD_KEYS: Partial<Record<string, HeldKey>> = {
-  ArrowUp: "up",
-  ArrowDown: "down",
-  Enter: "enter",
-};
 
 const pad = (value: number) => String(value).padStart(2, "0");
 
@@ -54,38 +47,12 @@ export function ProjectMonitor({ projects, isOnScreen }: ProjectMonitorProps) {
   const [hasSorted, setHasSorted] = useState(false);
   const rows = useMemo(() => sortProcesses(processes, sort), [processes, sort]);
   const [selectedId, setSelectedId] = useState(() => rows[0]?.id);
-  const [heldKey, setHeldKey] = useState<HeldKey | null>(null);
   const windowRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
-  // How the last row press started: React Aria runs the row action on a tap.
-  const pointerTypeRef = useRef<string>("mouse");
+  // Held keys drive the key bar's keycaps; pointerTypeRef tells a tap from a click in openRow.
+  const { heldKey, pointerTypeRef } = useHeldKeys(gridRef);
 
   useChromeReflection(windowRef, isOnScreen);
-
-  // Listens on the grid itself (never the document): only keys typed in the projects count.
-  useEffect(() => {
-    const grid = gridRef.current;
-    if (!grid) return;
-    const onKeyDown = (event: KeyboardEvent) => {
-      pointerTypeRef.current = "keyboard";
-      const key = HELD_KEYS[event.key];
-      if (key) setHeldKey(key);
-    };
-    const onPointerDown = (event: PointerEvent) => {
-      pointerTypeRef.current = event.pointerType;
-    };
-    const release = () => setHeldKey(null);
-    grid.addEventListener("keydown", onKeyDown);
-    grid.addEventListener("pointerdown", onPointerDown, { capture: true });
-    grid.addEventListener("keyup", release);
-    grid.addEventListener("focusout", release);
-    return () => {
-      grid.removeEventListener("keydown", onKeyDown);
-      grid.removeEventListener("pointerdown", onPointerDown, { capture: true });
-      grid.removeEventListener("keyup", release);
-      grid.removeEventListener("focusout", release);
-    };
-  }, []);
 
   const selectedIndex = Math.max(
     0,

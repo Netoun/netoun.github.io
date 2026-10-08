@@ -30,8 +30,8 @@ export const buttonRecipe = recipe({
       transitionDuration: motion.duration.fast,
     },
 
-    // foreground plutôt que primary : le ring doit rester visible sur le fond beige
-    // (primary gold ≈ même luminance que le background, contraste < 3:1)
+    // foreground rather than primary: the ring must stay visible on the beige background
+    // (primary gold has about the same luminance as the background, contrast under 3:1)
     ":focus-visible": {
       outlineColor: vars.colors.foreground,
     },
@@ -50,7 +50,7 @@ export const buttonRecipe = recipe({
         color: vars.colors.primaryForeground,
         boxShadow: vars.boxShadow.glow,
         ":hover": {
-          backgroundColor: `color-mix(in srgb, ${vars.colors.primary} 90%, transparent)`, // primary darker
+          backgroundColor: `color-mix(in srgb, ${vars.colors.primary} 90%, transparent)`,
         },
       },
       secondary: {
@@ -77,7 +77,7 @@ export const buttonRecipe = recipe({
         color: vars.colors.destructiveForeground,
 
         ":hover": {
-          backgroundColor: `color-mix(in srgb, ${vars.colors.destructive} 90%, transparent)`, // destructive darker
+          backgroundColor: `color-mix(in srgb, ${vars.colors.destructive} 90%, transparent)`,
         },
       },
     },

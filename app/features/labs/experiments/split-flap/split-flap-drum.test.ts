@@ -22,7 +22,7 @@ describe("split-flap drum", () => {
     expect(cleanLine("a".repeat(20))).toHaveLength(16);
   });
 
-  it("centres each line on the board", () => {
+  it("centres each line on the board, the spare column going to the right", () => {
     const targets = boardTargets(["LINK", ""]);
     const row = targets
       .slice(0, 16)
@@ -30,6 +30,12 @@ describe("split-flap drum", () => {
       .join("");
     expect(row).toBe("      LINK      ");
     expect(targets.slice(16).every((index) => index === 0)).toBe(true);
+
+    const odd = boardTargets(["ABC", ""])
+      .slice(0, 16)
+      .map((index) => DRUM[index])
+      .join("");
+    expect(odd).toBe("      ABC       ");
   });
 
   it("turns forward only, wrapping past the end", () => {

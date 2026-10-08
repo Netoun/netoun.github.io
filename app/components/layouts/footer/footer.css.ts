@@ -5,9 +5,6 @@ import { breakpoints } from "@/styles/responsive.css";
 import { serverRackVars } from "@/components/misc/server-unit/server-unit.css";
 import { weight } from "@styles/weight";
 
-const paper = (percent: number) =>
-  `color-mix(in srgb, ${vars.colors.background} ${percent}%, transparent)`;
-
 // The panel is the bottom bookend of the hero: full-bleed, inset by the same 0.5rem. Its
 // content stays on the page column (Container), padded like the hero's text.
 export const footerStyle = style({
@@ -29,7 +26,7 @@ export const footerVisualContainerStyle = style({
   boxShadow: `
     inset 0 0 200px color-mix(in srgb, ${vars.colors.foreground} 80%, transparent),
     inset 0 0 40px color-mix(in srgb, ${vars.colors.foreground} 60%, transparent),
-    inset 0 1px 0 ${paper(8)}
+    inset 0 1px 0 color-mix(in srgb, ${vars.colors.background} 8%, transparent)
   `,
 
   ":after": {

@@ -32,12 +32,6 @@ export const rootStyles = style({
   background:
     "linear-gradient(180deg, oklch(0.14 0.03 210 / 0.92) 0%, oklch(0.1 0.02 225 / 0.94) 100%)",
   boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${vars.colors.secondary} 18%, transparent), inset 0 0 24px color-mix(in srgb, ${vars.colors.secondary} 10%, transparent)`,
-  selectors: {
-    '&[data-reduced-motion="true"]::after': {
-      animation: "none",
-      opacity: 0.25,
-    },
-  },
   "@media": {
     [breakpoints.md]: {
       fontSize: "clamp(0.5rem, 0.58vw, 0.86rem)",

@@ -47,10 +47,14 @@ describe("SkillFetch", () => {
   it("lists every practice as a check in the practice card", () => {
     renderFetch();
     const card = screen.getByRole("region", { name: /practice/i });
+    const agentsPractice = PRACTICES.find((practice) =>
+      practice.receipt.href?.endsWith("/AGENTS.md"),
+    );
+    expect(agentsPractice?.receipt.href).toBeDefined();
     expect(within(card).getAllByRole("heading", { level: 4 })).toHaveLength(PRACTICES.length);
     expect(within(card).getByRole("link", { name: /AGENTS\.md/ })).toHaveAttribute(
       "href",
-      "https://github.com/netoun/netoun.github.io/blob/main/AGENTS.md",
+      agentsPractice?.receipt.href,
     );
   });
 

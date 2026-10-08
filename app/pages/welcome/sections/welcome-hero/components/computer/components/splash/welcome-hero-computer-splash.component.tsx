@@ -1,3 +1,4 @@
+import { Glyph } from "@/components/primitives/glyph/glyph.component";
 import * as styles from "../../welcome-hero-computer.css";
 
 const BOOT_STEPS = [
@@ -18,7 +19,7 @@ export function WelcomeHeroComputerSplash() {
       {BOOT_STEPS.map((step) => (
         <span key={step} className={styles.splashStepStyles}>
           {step}
-          <span className={styles.splashCursorStyles}>_</span>
+          <Glyph className={styles.splashCursorStyles}>_</Glyph>
         </span>
       ))}
       <span className={styles.splashFinalStepStyles}>{READY_STEP}</span>

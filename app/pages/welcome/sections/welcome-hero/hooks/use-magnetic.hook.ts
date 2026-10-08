@@ -33,6 +33,8 @@ export function useMagnetic<T extends HTMLElement>(ref: RefObject<T | null>) {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     let frame = 0;
+    let pointerX = 0;
+    let pointerY = 0;
     // getBoundingClientRect forces layout, and the hero tilt loop invalidates
     // styles every pointer frame — measuring here each mousemove would reflow
     // per frame. Cache the rect; refresh after scroll/resize, with a short TTL
@@ -46,6 +48,8 @@ export function useMagnetic<T extends HTMLElement>(ref: RefObject<T | null>) {
     };
 
     const onMouseMove = (event: MouseEvent) => {
+      pointerX = event.clientX;
+      pointerY = event.clientY;
       if (frame) return;
       frame = requestAnimationFrame((now) => {
         frame = 0;
@@ -55,8 +59,8 @@ export function useMagnetic<T extends HTMLElement>(ref: RefObject<T | null>) {
         }
         const rect = cachedRect;
         const { x, y } = computeMagnetOffset(
-          event.clientX - (rect.left + rect.width / 2),
-          event.clientY - (rect.top + rect.height / 2),
+          pointerX - (rect.left + rect.width / 2),
+          pointerY - (rect.top + rect.height / 2),
         );
         const nextX = `${x}px`;
         const nextY = `${y}px`;

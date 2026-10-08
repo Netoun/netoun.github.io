@@ -30,4 +30,9 @@ describe("computeMagnetOffset", () => {
     const far = computeMagnetOffset(70, 0, 80);
     expect(near.x).toBeGreaterThan(far.x);
   });
+
+  it("uses the 80px attraction radius by default", () => {
+    expect(computeMagnetOffset(40, 0).x).toBeGreaterThan(0);
+    expect(computeMagnetOffset(100, 0)).toEqual({ x: 0, y: 0 });
+  });
 });

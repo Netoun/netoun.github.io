@@ -3,6 +3,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { Button } from "react-aria-components";
 import type { PressEvent } from "react-aria-components";
 import { Link } from "react-router";
+import { useWelcomeSectionsDisclosure } from "../../hooks/use-welcome-sections-disclosure.hook";
 import { readSections } from "./welcome-sections-nav-readout";
 import * as styles from "./welcome-sections-nav.css";
 
@@ -34,7 +35,7 @@ export function WelcomeSectionsNav() {
   const trackLitRef = useRef<HTMLSpanElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [pastHero, setPastHero] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, setIsOpen } = useWelcomeSectionsDisclosure(navRef);
   const listId = useId();
   const gradientId = useId();
 
@@ -80,49 +81,6 @@ export function WelcomeSectionsNav() {
       if (rafId !== 0) cancelAnimationFrame(rafId);
     };
   }, []);
-
-  // Listens on the nav itself: hover opens the list for a mouse (touch and keyboard go through
-  // the button), focus leaving the nav or Escape folds it, a tap anywhere else (the scrim
-  // included) closes it.
-  useEffect(() => {
-    const nav = navRef.current;
-    if (!nav) return;
-
-    const onPointerEnter = (event: PointerEvent) => {
-      if (event.pointerType === "mouse") setIsOpen(true);
-    };
-    const onPointerLeave = (event: PointerEvent) => {
-      if (event.pointerType !== "mouse" || nav.contains(document.activeElement)) return;
-      setIsOpen(false);
-    };
-    const onFocusOut = (event: FocusEvent) => {
-      if (!(event.relatedTarget instanceof Node) || !nav.contains(event.relatedTarget)) {
-        setIsOpen(false);
-      }
-    };
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Escape" || !isOpen) return;
-      setIsOpen(false);
-      nav.querySelector("button")?.focus();
-    };
-    const onDocumentPointerDown = (event: PointerEvent) => {
-      if (event.target instanceof Node && nav.contains(event.target)) return;
-      setIsOpen(false);
-    };
-
-    nav.addEventListener("pointerenter", onPointerEnter);
-    nav.addEventListener("pointerleave", onPointerLeave);
-    nav.addEventListener("focusout", onFocusOut);
-    nav.addEventListener("keydown", onKeyDown);
-    if (isOpen) document.addEventListener("pointerdown", onDocumentPointerDown);
-    return () => {
-      nav.removeEventListener("pointerenter", onPointerEnter);
-      nav.removeEventListener("pointerleave", onPointerLeave);
-      nav.removeEventListener("focusout", onFocusOut);
-      nav.removeEventListener("keydown", onKeyDown);
-      document.removeEventListener("pointerdown", onDocumentPointerDown);
-    };
-  }, [isOpen]);
 
   // A mouse already opened the list by pointing at it: its click must not fold it back.
   const onTogglePress = (event: PressEvent) => {

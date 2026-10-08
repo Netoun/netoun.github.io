@@ -1,25 +1,14 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type {
+  RendererOptions,
   RendererSession,
   RendererType,
   ShaderBundle,
-  Uniforms,
 } from "./canvas-renderer.types";
 import { createCanvasRenderer } from "./create-canvas-renderer";
 
-export interface UseShaderCanvasOptions {
-  animate?: boolean;
-  animateOnScroll?: boolean;
-  debounceResize?: number;
-  respectReducedMotion?: boolean;
-  respectVisibility?: boolean;
-  powerPreference?: "high-performance" | "low-power";
-  webgpuTimeout?: number;
-  renderScale?: { min: number; max: number };
-  quality?: () => number;
-  uniforms?: Uniforms;
+export interface UseShaderCanvasOptions extends RendererOptions {
   disabled?: boolean;
-  onReady?: (type: RendererType) => void;
 }
 
 export function useShaderCanvas(

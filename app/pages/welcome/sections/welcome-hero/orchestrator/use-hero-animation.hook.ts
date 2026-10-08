@@ -9,7 +9,7 @@ function getElementFromNode(node: Node): Element | null {
   if (node.nodeType === Node.TEXT_NODE) {
     return node.parentElement;
   }
-  return node as Element;
+  return node instanceof Element ? node : null;
 }
 
 export const INITIAL_HERO_ANIMATION_STATE: HeroAnimationState = {
@@ -44,10 +44,10 @@ export function useHeroAnimationProvider({
   const setCondition = useCallback(
     <K extends keyof HeroAnimationState>(key: K, value: HeroAnimationState[K]) => {
       if (stateRef.current[key] === value) return;
-      stateRef.current = { ...stateRef.current, [key]: value };
+      const next = { ...stateRef.current, [key]: value };
       stateRef.current = {
-        ...stateRef.current,
-        shouldAnimate: !stateRef.current.isTextSelected && stateRef.current.isSectionVisible,
+        ...next,
+        shouldAnimate: !next.isTextSelected && next.isSectionVisible,
       };
       notify();
     },

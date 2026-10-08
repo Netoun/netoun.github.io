@@ -35,8 +35,12 @@ type PlayState = (typeof STATES)[number];
 const DEFAULT_RATIO = CYBERNETIC_GLYPH_GRID_DEFAULTS.updateRatio * 100;
 const ATLAS_WIDTH = 300;
 
+interface GlyphAtlasSheetProps {
+  glyphs: readonly GlyphAtlasEntry[];
+}
+
 /** Every cached bitmap laid out in rows, as the grid holds them. */
-function GlyphAtlasSheet({ glyphs }: { glyphs: readonly GlyphAtlasEntry[] }) {
+function GlyphAtlasSheet({ glyphs }: GlyphAtlasSheetProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
