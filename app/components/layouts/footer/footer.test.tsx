@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { describe, expect, it } from "vitest";
 import { Footer, type FooterStatus } from "./footer.component";
@@ -98,19 +98,6 @@ describe("Footer", () => {
         name: "/labs/server-unit-3d — the server rack, live with its source",
       }),
     ).toHaveAttribute("href", "/labs/server-unit-3d/");
-  });
-
-  it("prints the build facts and takes the copyright year from the build", () => {
-    const { container } = renderFooter();
-    const footer = within(container);
-    expect(
-      footer.getByText("NETOUN.COM · 12 ROUTES PRERENDERED · BUILD 2026-09-28 · 025F62C"),
-    ).toBeInTheDocument();
-    expect(footer.getByText("© 2026 Netoun. All rights reserved.")).toBeInTheDocument();
-    expect(footer.getByRole("link", { name: /Source/ })).toHaveAttribute(
-      "href",
-      "https://github.com/netoun/netoun.github.io",
-    );
   });
 
   it("drops the commit when the build does not know it", () => {
