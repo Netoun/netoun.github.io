@@ -87,6 +87,9 @@ export const led = style({
       fill: vars.colors.kirby,
       filter: `drop-shadow(0 0 4px ${vars.colors.kirby})`,
     },
+    "&:not([data-accent])": {
+      fill: `color-mix(in srgb, ${vars.colors.background} 12%, black)`,
+    },
   },
 });
 

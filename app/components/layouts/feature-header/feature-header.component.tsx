@@ -38,14 +38,17 @@ export function FeatureHeader({
   useEffect(() => {
     if (as !== "page") return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (containerRef.current) {
-      animate(containerRef.current, {
-        opacity: [0, 1],
-        translateY: [20, 0],
-        ease: "outQuad",
-        duration: 600,
-      });
-    }
+    const container = containerRef.current;
+    if (!container) return;
+    const animation = animate(container, {
+      opacity: [0, 1],
+      translateY: [20, 0],
+      ease: "outQuad",
+      duration: 600,
+    });
+    return () => {
+      animation.cancel();
+    };
   }, [as]);
 
   const contextValue = useMemo(() => ({ variant, headerVariant: as }), [variant, as]);
@@ -78,7 +81,7 @@ export function FeatureHeaderTitle({ children, size = "lg" }: FeatureHeaderTitle
   const Tag = headerVariant === "page" ? "h1" : "h2";
 
   return (
-    <Tag className={styles.titleStyle({ size, variant })} data-reveal-item>
+    <Tag className={styles.titleStyle({ size })} data-reveal-item>
       <Glyph className={styles.prefixStyle({ variant })}>_❯</Glyph>
       {children}
     </Tag>

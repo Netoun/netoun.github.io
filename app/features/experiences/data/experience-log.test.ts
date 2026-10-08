@@ -14,6 +14,44 @@ import { experiences } from "./experiences-data";
 
 const NOW = "2026-09";
 
+// Synthetic history, deliberately out of order so the sort is exercised. Assertions on it
+// hold whatever the live content says, and only break when the log's logic changes.
+const fixture: Experience[] = [
+  {
+    slug: "gamma",
+    company: "Gamma",
+    role: "Engineer",
+    location: "Somewhere",
+    start: "2017-09",
+    end: "2019-06",
+    stack: ["WebGL"],
+    projects: [],
+  },
+  {
+    slug: "alpha",
+    company: "Alpha",
+    role: "Engineer",
+    location: "Somewhere",
+    start: "2021-07",
+    stack: ["React", "NestJS"],
+    moreProjects: true,
+    projects: [
+      { title: "P1", description: "", stack: ["React"] },
+      { title: "P2", description: "", stack: ["NestJS"] },
+    ],
+  },
+  {
+    slug: "beta",
+    company: "Beta",
+    role: "Engineer",
+    location: "Somewhere",
+    start: "2019-07",
+    end: "2021-07",
+    stack: ["NestJS"],
+    projects: [],
+  },
+];
+
 describe("dates", () => {
   it("counts whole months across years", () => {
     expect(monthsBetween("2021-07", "2026-09")).toBe(62);
@@ -53,43 +91,56 @@ describe("domains", () => {
 });
 
 describe("toBranches", () => {
-  const branches = toBranches(experiences, NOW);
+  const branches = toBranches(fixture, NOW);
 
   it("lists employers newest first, the current one open", () => {
-    expect(branches.map((branch) => branch.slug)).toEqual(["lonestone", "easilys", "sogeti"]);
+    expect(branches.map((branch) => branch.slug)).toEqual(["alpha", "beta", "gamma"]);
     expect(branches.map((branch) => branch.isOpen)).toEqual([true, false, false]);
     expect(branches[0].endLabel).toBe("NOW");
   });
 
   it("derives tenures from the dates and today's month", () => {
-    expect(branches.map((branch) => branch.duration)).toEqual(["5Y 2M", "2Y", "1Y 10M"]);
+    // gamma: 21 months → 10.5 segments, Math.round sends it to 11.
+    expect(branches.map((branch) => branch.duration)).toEqual(["5Y 2M", "2Y", "1Y 9M"]);
     expect(branches.map((branch) => branch.tenureSegments)).toEqual([31, 12, 11]);
   });
 
   it("colours each lane by the main domain of what shipped there", () => {
-    expect(branches.map((branch) => branch.domain)).toEqual(["backend", "backend", "systems"]);
-    expect(branches[0].mix).toEqual({ frontend: 6, backend: 11, creative: 0, systems: 2 });
-    expect(branches[0].commits.map((commit) => commit.domain)).toEqual([
-      "backend",
-      "frontend",
-      "backend",
-      "backend",
-    ]);
+    // alpha ties 2 frontend / 2 backend: the tie goes to frontend.
+    expect(branches.map((branch) => branch.domain)).toEqual(["frontend", "backend", "creative"]);
+    expect(branches[0].mix).toEqual({ frontend: 2, backend: 2, creative: 0, systems: 0 });
+    expect(branches[0].commits.map((commit) => commit.domain)).toEqual(["frontend", "backend"]);
   });
 
   it("keeps the unlisted client work as a flag, never as a commit", () => {
     expect(branches[0].moreProjects).toBe(true);
     expect(branches[0].commits.map((commit) => commit.title)).not.toContain("… and many more");
   });
+
+  it("keeps the live log in a consistent shape", () => {
+    const live = toBranches(experiences, NOW);
+    const starts = live.map((branch) => branch.start);
+    const open = live.filter((branch) => branch.isOpen);
+
+    expect(starts).toEqual(starts.toSorted().toReversed());
+    expect(open.length).toBeLessThanOrEqual(1);
+    expect(open.every((branch) => branch === live[0])).toBe(true);
+    for (const branch of live) {
+      expect(branch.duration).toBe(formatDuration(branch.months));
+      expect(branch.tenureSegments).toBeGreaterThanOrEqual(1);
+    }
+    const slugs = live.map((branch) => branch.slug);
+    expect(new Set(slugs).size).toBe(slugs.length);
+  });
 });
 
 describe("toLogGroups", () => {
-  const groups = toLogGroups(toBranches(experiences, NOW));
+  const groups = toLogGroups(toBranches(fixture, NOW));
   const kinds = groups.map((group) => group.rows.map((row) => row.kind));
 
   it("prints the rows git log --graph would print", () => {
     expect(kinds).toEqual([
-      ["tip", "commit", "commit", "commit", "commit", "elided", "fork"],
+      ["tip", "commit", "commit", "elided", "fork"],
       ["merge", "merge-in", "tip", "fork"],
       ["merge", "merge-in", "tip", "fork", "root"],
     ]);
@@ -98,9 +149,7 @@ describe("toLogGroups", () => {
   it("points HEAD at the open branch and main at its latest merge", () => {
     const [head] = groups[0].rows;
     const merge = groups[1].rows[0];
-    expect(head.kind === "tip" && head.refs).toEqual([
-      { label: "HEAD -> lonestone", kind: "head" },
-    ]);
+    expect(head.kind === "tip" && head.refs).toEqual([{ label: "HEAD -> alpha", kind: "head" }]);
     expect(merge.kind === "merge" && merge.refs).toEqual([
       { label: "main", kind: "main" },
       { label: "tag: 2021-07", kind: "tag" },
@@ -116,14 +165,14 @@ describe("toLogGroups", () => {
     const hashes = groups.flatMap((group) =>
       group.rows.flatMap((row) => ("hash" in row ? [row.hash] : [])),
     );
-    expect(hashes).toHaveLength(10);
+    expect(hashes).toHaveLength(8);
     expect(new Set(hashes).size).toBe(hashes.length);
     for (const hash of hashes) expect(hash).toMatch(/^[0-9a-f]{7}$/);
-    expect(toLogGroups(toBranches(experiences, NOW))).toEqual(groups);
+    expect(toLogGroups(toBranches(fixture, NOW))).toEqual(groups);
   });
 
   it("puts HEAD on main when nothing is open", () => {
-    const closed: Experience[] = experiences.map((experience) => ({
+    const closed: Experience[] = fixture.map((experience) => ({
       ...experience,
       end: experience.end ?? "2026-01",
     }));
@@ -137,11 +186,35 @@ describe("toLogGroups", () => {
       ],
     });
   });
+
+  it("keeps the live graph in a consistent shape", () => {
+    const live = toLogGroups(toBranches(experiences, NOW));
+    const lastIndex = live.length - 1;
+
+    for (const group of live) {
+      const body = group.rows.filter((row) => row.kind !== "root");
+      expect(body.at(-1)?.kind).toBe("fork");
+    }
+    expect(live.map((group) => group.rows.some((row) => row.kind === "root"))).toEqual(
+      live.map((_, index) => index === lastIndex),
+    );
+    const refs = live.flatMap((group) =>
+      group.rows.flatMap((row) => ("refs" in row ? row.refs : [])),
+    );
+    expect(refs.filter((ref) => ref.kind === "head")).toHaveLength(1);
+    expect(live.map((group) => group.rows.some((row) => row.kind === "merge"))).toEqual(
+      live.map((group) => !group.branch.isOpen),
+    );
+    const hashes = live.flatMap((group) =>
+      group.rows.flatMap((row) => ("hash" in row ? [row.hash] : [])),
+    );
+    expect(new Set(hashes).size).toBe(hashes.length);
+  });
 });
 
 describe("logSummary", () => {
   it("counts from the first job to today", () => {
-    expect(logSummary(toBranches(experiences, NOW), NOW)).toEqual({
+    expect(logSummary(toBranches(fixture, NOW), NOW)).toEqual({
       since: "SEP 2017",
       total: "9Y",
       branches: 3,

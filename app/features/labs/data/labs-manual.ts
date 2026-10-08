@@ -19,9 +19,10 @@ export function resolveSourceRef(
   const fromIndex = lines.findIndex((line) => line.includes(ref.from));
   if (fromIndex === -1) return undefined;
 
-  if (ref.to === undefined) return { sourceIndex, from: fromIndex + 1, to: fromIndex + 1 };
+  const to = ref.to;
+  if (to === undefined) return { sourceIndex, from: fromIndex + 1, to: fromIndex + 1 };
 
-  const offset = lines.slice(fromIndex).findIndex((line) => line.includes(ref.to as string));
+  const offset = lines.slice(fromIndex).findIndex((line) => line.includes(to));
   if (offset === -1) return undefined;
   return { sourceIndex, from: fromIndex + 1, to: fromIndex + offset + 1 };
 }

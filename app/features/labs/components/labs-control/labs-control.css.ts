@@ -125,10 +125,10 @@ export const optionButton = style({
   cursor: "pointer",
   transition: `color ${motion.duration.fast} ${motion.easing.out}, background-color ${motion.duration.fast} ${motion.easing.out}`,
   selectors: {
-    "&:hover:not([data-active='true'])": {
+    "&[data-hovered]:not([data-selected])": {
       color: vars.colors.background,
     },
-    "&[data-active='true']": {
+    "&[data-selected]": {
       color: vars.colors.primaryForeground,
       background: vars.colors.primary,
       boxShadow: `inset 0 1px 0 color-mix(in srgb, white 45%, transparent), 0 1px 2px oklch(0 0 0 / 0.4)`,

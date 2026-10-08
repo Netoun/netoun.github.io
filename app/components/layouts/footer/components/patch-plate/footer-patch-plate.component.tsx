@@ -9,8 +9,10 @@ export interface FooterPatchPlateProps {
   ports: readonly FooterPort[];
   /** Port that holds the cable (pointed at, focused, or the resting one). */
   plugged: string | null;
-  onActivate: (portId: string) => void;
-  onRelease: () => void;
+  /** Pointer over a port (its id), or null when the pointer leaves the port. */
+  onHover: (portId: string | null) => void;
+  /** Keyboard focus on a port (its id), or null when focus leaves it. */
+  onFocusPort: (portId: string | null) => void;
   labs: { href: string; count: number };
   /** A file under the uplink (the résumé), when the page has one to hand over. */
   file?: FooterFile;
@@ -23,8 +25,8 @@ export interface FooterPatchPlateProps {
 export function FooterPatchPlate({
   ports,
   plugged,
-  onActivate,
-  onRelease,
+  onHover,
+  onFocusPort,
   labs,
   file,
 }: FooterPatchPlateProps) {
@@ -44,10 +46,10 @@ export function FooterPatchPlate({
               rel={port.external ? "noopener noreferrer" : undefined}
               // Leaving one port for the next fires both in the same task, so the cable goes
               // straight to the next port without a paint at rest in between.
-              onPointerEnter={() => onActivate(port.id)}
-              onPointerLeave={onRelease}
-              onFocus={() => onActivate(port.id)}
-              onBlur={onRelease}
+              onPointerEnter={() => onHover(port.id)}
+              onPointerLeave={() => onHover(null)}
+              onFocus={() => onFocusPort(port.id)}
+              onBlur={() => onFocusPort(null)}
             >
               <span className={styles.socketStyle} data-footer-socket={port.id} aria-hidden="true">
                 <span className={styles.socketCavityStyle} />

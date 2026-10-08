@@ -23,6 +23,8 @@ const rowTitles = () =>
     .getAllByRole("row")
     .map((row) => within(row).getByRole("link").textContent);
 
+const newestFirst = projects.toSorted((a, b) => b.date.localeCompare(a.date));
+
 describe("ProjectMonitor", () => {
   afterEach(() => {
     vi.restoreAllMocks();
@@ -30,14 +32,7 @@ describe("ProjectMonitor", () => {
 
   it("lists every project newest first, with the newest selected", () => {
     renderMonitor();
-    expect(rowTitles()).toEqual([
-      "My website",
-      "Treashunt",
-      "Commun'île",
-      "Procedural Maps",
-      "Nzoth",
-      "Lonestone Boilerplate",
-    ]);
+    expect(rowTitles()).toEqual(newestFirst.map((project) => project.title));
     const [first] = screen.getAllByRole("row");
     expect(first).toHaveAttribute("aria-selected", "true");
   });
@@ -60,9 +55,10 @@ describe("ProjectMonitor", () => {
     fireEvent.click(screen.getByRole("button", { name: "Next project" }));
     const rows = screen.getAllByRole("row");
     expect(rows[1]).toHaveAttribute("aria-selected", "true");
-    expect(screen.getByRole("link", { name: "Open Treashunt" })).toHaveAttribute(
+    const [, second] = newestFirst;
+    expect(screen.getByRole("link", { name: `Open ${second.title}` })).toHaveAttribute(
       "href",
-      "https://treashunt.com",
+      second.url,
     );
   });
 

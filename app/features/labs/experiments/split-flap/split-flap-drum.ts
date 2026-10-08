@@ -5,7 +5,7 @@
 export const DRUM = [..." ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./-_", "❯"];
 
 export const BOARD_COLS = 16;
-export const BOARD_ROWS = 2;
+const BOARD_ROWS = 2;
 
 /** What the board can print: accents dropped, upper case, `>` typed as `❯`, anything else blank. */
 export function cleanLine(value: string, cols = BOARD_COLS): string {
@@ -56,8 +56,8 @@ export interface BoardState {
 }
 
 export function blankBoard(count = BOARD_COLS * BOARD_ROWS): BoardState {
-  const blank = Array.from({ length: count }, () => 0);
-  return { current: blank, previous: blank, flips: blank, elapsed: 0 };
+  const zeros = () => Array.from({ length: count }, () => 0);
+  return { current: zeros(), previous: zeros(), flips: zeros(), elapsed: 0 };
 }
 
 export function settledBoard(targets: readonly number[]): BoardState {

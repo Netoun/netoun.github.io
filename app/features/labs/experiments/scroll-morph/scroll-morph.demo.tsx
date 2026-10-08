@@ -20,11 +20,11 @@ interface MorphXrayProps {
   scrollTop: number;
   gutter: number;
   range: number;
+  progress: number;
 }
 
 /** What the timeline holds at this scroll, as the Lab reads it back. */
-function MorphXray({ scrollTop, gutter, range }: MorphXrayProps) {
-  const progress = Math.min(1, Math.max(0, scrollTop / range));
+function MorphXray({ scrollTop, gutter, range, progress }: MorphXrayProps) {
   return (
     <div className={styles.xray}>
       <p className={styles.kicker}>_xray / scroll timeline</p>
@@ -50,6 +50,7 @@ export function ScrollMorphDemo() {
   const [range, setRange] = useState(DEFAULTS.range);
   const [radius, setRadius] = useState(DEFAULTS.radius);
   const [scrollTop, setScrollTop] = useState(0);
+  const progress = Math.min(1, Math.max(0, scrollTop / range));
 
   const reset = () => {
     setGutter(DEFAULTS.gutter);
@@ -115,7 +116,9 @@ export function ScrollMorphDemo() {
               the home's does.
             </p>
           </div>
-          {xray && <MorphXray scrollTop={scrollTop} gutter={gutter} range={range} />}
+          {xray && (
+            <MorphXray scrollTop={scrollTop} gutter={gutter} range={range} progress={progress} />
+          )}
         </div>
       }
       controls={
@@ -150,7 +153,7 @@ export function ScrollMorphDemo() {
             />
             <SliderControl
               label="Scrub"
-              value={Math.round(Math.min(1, scrollTop / range) * 100)}
+              value={Math.round(progress * 100)}
               min={0}
               max={100}
               onChange={scrub}

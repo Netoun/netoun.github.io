@@ -13,9 +13,9 @@ import { vars } from "@/styles/theme.css";
  * viewports stack the laptop under the text and let the frame grow instead of
  * clipping (landscape phones, 400 % zoom).
  */
-export const heroSideBySideMedia = "screen and (min-width: 64em) and (min-height: 40em)";
-export const heroSideBySideXlMedia = "screen and (min-width: 80em) and (min-height: 40em)";
-export const heroSideBySide2kMedia = "screen and (min-width: 120em) and (min-height: 40em)";
+export const heroSideBySideMedia = `${breakpoints.lg} and (min-height: 40em)`;
+export const heroSideBySideXlMedia = `${breakpoints.xl} and (min-height: 40em)`;
+export const heroSideBySide2kMedia = `${breakpoints["2k"]} and (min-height: 40em)`;
 
 /** The morph is CSS scroll-driven; without scroll timelines the frame simply stays full-bleed. */
 export const heroScrollTimelineSupports = "(animation-timeline: scroll())";

@@ -151,7 +151,6 @@ export const serverFaceFrontStyle = style([
     padding: "7px 8px 6px",
     gap: "1px",
     overflow: "hidden",
-    background: backgroundServer,
     boxShadow: `
       inset 0 1px 0 color-mix(in srgb, ${vars.colors.background} 18%, transparent),
       inset 0 -8px 18px color-mix(in srgb, ${vars.colors.foreground} 18%, transparent),

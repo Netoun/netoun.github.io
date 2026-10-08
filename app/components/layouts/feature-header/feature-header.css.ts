@@ -33,6 +33,10 @@ export const containerStyle = recipe({
   },
 });
 
+// Paper does not glow. The section accent now lives only in the `_❯`
+// prefix — a small deliberate mark instead of a coloured haze spread
+// behind the headline. Glows stay a dark-world
+// (hero / footer) vocabulary.
 export const titleStyle = recipe({
   base: {
     color: vars.colors.foreground,
@@ -56,19 +60,9 @@ export const titleStyle = recipe({
         "@media": { [breakpoints.md]: { fontSize: vars.fontSize["5xl"] } },
       },
     },
-    // Paper does not glow. The section accent now lives only in the `_❯`
-    // prefix — a small deliberate mark instead of a coloured haze spread
-    // behind the headline. Glows stay a dark-world
-    // (hero / footer) vocabulary.
-    variant: {
-      primary: {},
-      secondary: {},
-      tertiary: {},
-    },
   },
   defaultVariants: {
     size: "lg",
-    variant: "primary",
   },
 });
 

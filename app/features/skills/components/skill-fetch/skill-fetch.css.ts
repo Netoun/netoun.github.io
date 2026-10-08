@@ -14,7 +14,7 @@ export const machine = {
 } as const;
 
 // Characters in `_❯ fastfetch --logo netoun`: one typing step per character.
-const COMMAND_STEPS = 25;
+const COMMAND_STEPS = 26;
 // Arrival timeline (ms from the section reveal): command, logo, then the readout lines.
 export const LOGO_START = arrival.commandDelay + 200;
 export const LOGO_STEP = 28;

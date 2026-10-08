@@ -113,7 +113,7 @@ globalStyle(`[data-reveal="idle"] ${litSegmentStyle}`, {
 });
 
 globalStyle(`[data-reveal="revealed"] ${litSegmentStyle}`, {
-  animation: "monitor-lit 160ms ease-out both",
+  animation: `monitor-lit 160ms ${motion.easing.out} both`,
   animationDelay: `${LIT_START + MAX_STAGGERED_SEGMENTS * LIT_STEP}ms`,
 });
 

@@ -119,7 +119,12 @@ function MeshOverlay() {
   );
 }
 
-function XrayReadout({ renderer, quality }: { renderer: RendererType; quality: number }) {
+interface XrayReadoutProps {
+  renderer: RendererType;
+  quality: number;
+}
+
+function XrayReadout({ renderer, quality }: XrayReadoutProps) {
   return (
     <LabsReadout title="one fragment shader">
       <ReadoutFigure>{renderer === "pending" ? "…" : renderer}</ReadoutFigure>

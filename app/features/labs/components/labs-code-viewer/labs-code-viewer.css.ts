@@ -51,6 +51,11 @@ export const lights = style({
   `,
 });
 
+// Tabs is only the React Aria context: its box vanishes so TabList sits in the header flex row.
+export const tabs = style({
+  display: "contents",
+});
+
 export const tabRow = style({
   display: "flex",
   flex: 1,
@@ -189,7 +194,7 @@ export const statusBar = style({
   minHeight: "2.25rem",
   padding: `0 ${vars.spacing.md}`,
   borderTop: hairline,
-  fontSize: "0.75rem",
+  fontSize: vars.fontSize.xs,
   letterSpacing: "0.06em",
   color: paper(64),
   whiteSpace: "nowrap",

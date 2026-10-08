@@ -212,8 +212,8 @@ void main() {
 
   vec2 px = v_uv * u_resolution;
 
-  // Dither sub-perceptuel (~1.5/255) : casse le banding 8 bits des dégradés
-  // sans texture visible, même quand le film grain est coupé (u_quality = 0).
+  // Sub-perceptual dither (~1.5/255): breaks 8-bit banding in gradients
+  // with no visible texture, even when film grain is off (u_quality = 0).
   color += (hash12(floor(px)) - 0.5) * 0.012;
 
   if (u_quality > 0.001) {
@@ -354,8 +354,8 @@ fn fsMain(in: VertexOut) -> @location(0) vec4f {
 
   let px = in.uv * u.resolution;
 
-  // Dither sub-perceptuel (~1.5/255) : casse le banding 8 bits des dégradés
-  // sans texture visible, même quand le film grain est coupé (quality = 0).
+  // Sub-perceptual dither (~1.5/255): breaks 8-bit banding in gradients
+  // with no visible texture, even when film grain is off (quality = 0).
   color += vec3f((hash12(floor(px)) - 0.5) * 0.012);
 
   if (u.quality > 0.001) {

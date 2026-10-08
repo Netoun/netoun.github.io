@@ -55,7 +55,9 @@ function MeshBackgroundCanvasComponent({
   onRendererReady,
 }: MeshBackgroundCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [armed, setArmed] = useState(armMargin === undefined);
+  const [armed, setArmed] = useState(
+    () => armMargin === undefined || typeof IntersectionObserver === "undefined",
+  );
 
   useEffect(() => {
     const canvas = canvasRef.current;

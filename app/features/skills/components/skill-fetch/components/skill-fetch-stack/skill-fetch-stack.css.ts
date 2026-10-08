@@ -18,7 +18,6 @@ const LIT_START = arrival.output + 800;
 const LIT_STEP = 35;
 const MAX_STAGGERED_SEGMENTS = 16;
 
-// Printed on the paper, on the card's inner edge: the two 2 × 2 grids share their columns.
 // From lg it sits on the card's inner edge so the two 2 × 2 grids share their columns; below,
 // it is printed on the page edge like the head above it.
 export const stackStyle = style({

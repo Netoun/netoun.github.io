@@ -33,7 +33,11 @@ const OG_IMAGE = {
   alt: "A CSS-3D laptop with a terminal dashboard on its screen, lit mint and gold on a near-black background.",
 };
 
-export function Layout({ children }: { children: React.ReactNode }) {
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+export function Layout({ children }: LayoutProps) {
   usePaperGrain();
 
   return (

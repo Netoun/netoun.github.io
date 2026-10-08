@@ -21,7 +21,7 @@ const MAX_LINES = 5;
 export const welcomeHeroSpecNoteStyles = style({
   position: "absolute",
   flexDirection: "column",
-  gap: "0.25rem",
+  gap: vars.spacing.xs,
   fontFamily: vars.fontFamily.mono,
   fontSize: specType.note,
   lineHeight: 1.3,

@@ -70,10 +70,7 @@ export const welcomeHeroSpecSwatchStyles = style({
 });
 
 export const welcomeHeroSpecSwatchChipStyles = styleVariants(
-  Object.fromEntries(HERO_SPEC_SWATCHES.map(({ token }) => [token, token])) as Record<
-    (typeof HERO_SPEC_SWATCHES)[number]["token"],
-    (typeof HERO_SPEC_SWATCHES)[number]["token"]
-  >,
+  Object.fromEntries(HERO_SPEC_SWATCHES.map(({ token }) => [token, token])),
   (token) => ({
     flexShrink: 0,
     width: "8px",

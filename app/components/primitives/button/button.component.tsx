@@ -1,17 +1,8 @@
 import { Button as AriaButton } from "react-aria-components";
+import type { ButtonProps as AriaButtonProps } from "react-aria-components";
 
-export interface ButtonProps {
-  id?: string;
-  children: React.ReactNode;
-  onPress?: () => void;
-  isDisabled?: boolean;
-  className?: string;
-}
+export type ButtonProps = AriaButtonProps;
 
-export function Button({ id, children, onPress, isDisabled = false, className }: ButtonProps) {
-  return (
-    <AriaButton id={id} onPress={onPress} isDisabled={isDisabled} className={className}>
-      {children}
-    </AriaButton>
-  );
+export function Button(props: ButtonProps) {
+  return <AriaButton {...props} />;
 }

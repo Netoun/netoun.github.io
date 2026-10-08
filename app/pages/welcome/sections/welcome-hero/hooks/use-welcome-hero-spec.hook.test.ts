@@ -53,6 +53,12 @@ describe("formatLeadSpec", () => {
       formatLeadSpec(style({ fontSize: "24px", lineHeight: "33px", maxWidth: "640px" }), 16),
     ).toEqual(["40rem · 24 / 1.375"]);
   });
+
+  it("drops the measure when there is no max width", () => {
+    expect(formatLeadSpec(style({ fontSize: "24px", lineHeight: "33px" }), 16)).toEqual([
+      "24 / 1.375",
+    ]);
+  });
 });
 
 describe("formatCtaSpec", () => {

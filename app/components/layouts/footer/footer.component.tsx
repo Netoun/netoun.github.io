@@ -43,8 +43,10 @@ export interface FooterProps {
 export function Footer({ className, id, links, labs, rackLabHref, status, file }: FooterProps) {
   const ports = useMemo(() => toFooterPorts(links), [links]);
   const resting = restPortId(ports);
-  const [active, setActive] = useState<string | null>(null);
-  const plugged = active ?? resting;
+  // Hover and focus are tracked apart: leaving a hovered port must not unplug a focused one.
+  const [hovered, setHovered] = useState<string | null>(null);
+  const [focused, setFocused] = useState<string | null>(null);
+  const plugged = hovered ?? focused ?? resting;
   const pluggedIndex = ports.findIndex((port) => port.id === plugged);
   const pluggedPort = pluggedIndex === -1 ? null : ports[pluggedIndex];
   // The caption prints the path the way people type it; the link keeps the served slash.
@@ -92,15 +94,15 @@ export function Footer({ className, id, links, labs, rackLabHref, status, file }
               <FooterPatchPlate
                 ports={ports}
                 plugged={plugged}
-                onActivate={setActive}
-                onRelease={() => setActive(null)}
+                onHover={setHovered}
+                onFocusPort={setFocused}
                 labs={labs}
                 file={file}
               />
             </div>
 
             <div className={styles.statusRowStyle}>
-              <FooterStatusStrip status={status} busy={active !== null} />
+              <FooterStatusStrip status={status} busy={hovered !== null || focused !== null} />
             </div>
           </div>
         </Container>

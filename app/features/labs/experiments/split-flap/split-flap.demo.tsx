@@ -164,14 +164,14 @@ export function SplitFlapDemo() {
 
   // The board is prerendered printed. Once live, it clears and flips its message in, once.
   useEffect(() => {
-    if (arrived || window.matchMedia(REDUCED_MOTION).matches) return;
+    if (arrived || reducedMotion) return;
     const timer = window.setTimeout(() => {
       setArrived(true);
       setBoard(blankBoard());
       setStart(blankStart());
     }, 300);
     return () => window.clearTimeout(timer);
-  }, [arrived]);
+  }, [arrived, reducedMotion]);
 
   // One timer for the whole board, only while something is still turning.
   useEffect(() => {

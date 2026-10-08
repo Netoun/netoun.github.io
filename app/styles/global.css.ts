@@ -1,5 +1,7 @@
 import { globalStyle } from "@vanilla-extract/css";
 
+import { GRAIN_TILE } from "@/components/misc/shaders/grain/grain.shader";
+
 import { dockClearance } from "./dock.css";
 import { vars } from "./theme.css";
 import "./animations.css";
@@ -34,15 +36,15 @@ globalStyle("body", {
 });
 
 // Film grain on the paper: `grain.shader.ts` baked into a tile by `bun run generate-grain-tile`
-// (one cell per device pixel with the @2x file). Opaque cards and the dark panels cover it, as
-// they covered the canvas it replaces. `usePaperGrain` sets the attribute after `load`, so the
-// tile never competes with the hero's font for the first paint.
+// (one cell per device pixel with the @2x file). Opaque cards and the dark panels cover it.
+// `usePaperGrain` sets the attribute after `load`, so the tile never competes with the hero's
+// font for the first paint.
 globalStyle("html[data-grain] body", {
   backgroundImage: [
     "url(/images/grain-tile@1x.webp)",
     "image-set(url(/images/grain-tile@1x.webp) 1x, url(/images/grain-tile@2x.webp) 2x)",
   ],
-  backgroundSize: "128px 128px",
+  backgroundSize: `${GRAIN_TILE.size}px ${GRAIN_TILE.size}px`,
 });
 
 // 5. Improve media defaults
@@ -68,11 +70,6 @@ globalStyle("p", {
 
 globalStyle("h1, h2, h3, h4, h5, h6", {
   textWrap: "balance",
-});
-
-// 9. Create a root stacking context
-globalStyle("#root, #__next", {
-  isolation: "isolate",
 });
 
 // Font family for html and body

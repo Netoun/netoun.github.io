@@ -3,14 +3,8 @@ import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
 import { createVar, globalStyle, style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
-import { domainAccents, laneColors } from "../../experience-log.css";
+import { domainAccents, laneColors, machine } from "../../experience-log.css";
 import { weight } from "@styles/weight";
-
-const machine = {
-  fontFamily: vars.fontFamily.doto,
-  ...weight(vars.fontWeight.extrabold),
-  fontVariantNumeric: "tabular-nums",
-} as const;
 
 // Bars fill left to right once the header has risen (ms from the section reveal).
 const FILL_START = arrival.commandDelay + 200;

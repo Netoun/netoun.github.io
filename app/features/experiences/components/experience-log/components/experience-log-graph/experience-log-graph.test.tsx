@@ -6,7 +6,7 @@ import { ExperienceLogGraph, type MainRun } from "./experience-log-graph.compone
 /** The first printed line of a row, main to branch (a space where a cell is empty). */
 function firstLine(row: LogRow, main: MainRun = "rail") {
   const { container } = render(<ExperienceLogGraph row={row} main={main} />);
-  const columns = container.querySelectorAll('[class*="columnStyle"]');
+  const columns = container.querySelectorAll("[data-column]");
   return [...columns].map((column) => column.textContent?.[0] ?? " ").join("");
 }
 

@@ -77,7 +77,7 @@ function done(run: Run): GamePhase {
   return run.ok ? "won" : "failed";
 }
 
-export function gameReducer(state: GameState, action: Action): GameState {
+function gameReducer(state: GameState, action: Action): GameState {
   if (state.phase === "running" && action.type !== "tick" && action.type !== "reroll") {
     return state;
   }
@@ -167,18 +167,13 @@ function describeResult(phase: GamePhase, attempts: readonly Attempt[]) {
   return `${head} The server reached ${run.acc}, ${gap} ${run.acc < 404 ? "short of" : "over"} 404.`;
 }
 
-export interface UseNotFoundGameOptions {
-  /** Draws the numbers; tests pass a seeded one. */
-  random?: () => number;
-}
-
 /**
  * The 404 game's state: the draw and its solutions, the bays, every run so far and the one the
  * console is printing. Rendered on the client only (the 404 is the SPA fallback), so the first
  * draw can be random.
  */
-export function useNotFoundGame({ random = Math.random }: UseNotFoundGameOptions = {}) {
-  const [state, dispatch] = useReducer(gameReducer, random, (r) => initialState(createPuzzle(r)));
+export function useNotFoundGame() {
+  const [state, dispatch] = useReducer(gameReducer, undefined, () => initialState(createPuzzle()));
   const { numbers, bays, attempts, shown, phase, stale, draw } = state;
   const run = lastRun(state);
   const last = attempts.at(-1);
@@ -257,7 +252,6 @@ export function useNotFoundGame({ random = Math.random }: UseNotFoundGameOptions
     phase,
     stale,
     draw,
-    /** The accumulator display: the last total printed, or `null` before any run. */
     /** What the ACC display shows: the total being printed, or the live one while building. */
     acc: phase === "running" ? (lastStep?.acc ?? null) : liveAcc,
     /** The total after each number bay, live (`null` for operators, gaps and past a fault). */
@@ -270,7 +264,7 @@ export function useNotFoundGame({ random = Math.random }: UseNotFoundGameOptions
     plugOperator: (operator: OperatorId) => dispatch({ type: "plugOperator", operator }),
     eject: (bay: number) => dispatch({ type: "eject", bay }),
     ejectAll: () => dispatch({ type: "ejectAll" }),
-    reroll: () => dispatch({ type: "reroll", puzzle: createPuzzle(random) }),
+    reroll: () => dispatch({ type: "reroll", puzzle: createPuzzle() }),
     power: () => dispatch({ type: "power", instant: prefersReducedMotion() }),
   };
 }

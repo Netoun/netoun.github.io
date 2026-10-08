@@ -24,8 +24,8 @@ import {
 } from "../../welcome-hero-layout.css";
 import { weight } from "@styles/weight";
 
-// Fin de la cascade d'entrée du hero (titre → texte → CTA → laptop).
-// Pas de `to` : chaque propriété revient à sa valeur de repos (0.94 ou 1 selon data-quality).
+// End of the hero entrance cascade (heading → lead → CTA → laptop).
+// No `to`: each property returns to its resting value (0.94 or 1, depending on data-quality).
 const computerEnter = keyframes({
   from: { opacity: 0, transform: "translateY(24px)" },
 });

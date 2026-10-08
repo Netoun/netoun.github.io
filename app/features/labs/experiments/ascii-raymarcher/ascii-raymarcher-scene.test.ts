@@ -29,8 +29,16 @@ describe("ascii raymarcher scene", () => {
   it("cuts luminance on the fastfetch logo's thresholds for the netoun ramp", () => {
     expect(RAMPS.netoun.map((bucket) => bucket.from)).toEqual([0, 0.1, 0.3, 0.62]);
     expect([0.05, 0.2, 0.5, 0.9].map((value) => bucketOf("netoun", value))).toEqual([0, 1, 2, 3]);
+    // strict > : a luminance sitting exactly on a threshold stays in the lower bucket
+    expect([0.1, 0.3, 0.62].map((value) => bucketOf("netoun", value))).toEqual([0, 1, 2]);
+    expect([0.1001, 0.3001, 0.6201].map((value) => bucketOf("netoun", value))).toEqual([1, 2, 3]);
     const frame = renderAsciiFrame({ ...FRAME, ramp: "netoun" });
     expect(frame.lines.join("")).toMatch(/[netou]/);
+  });
+
+  it("clamps the classic ramp's last bucket", () => {
+    expect(bucketOf("classic", 0.9)).toBe(9);
+    expect(bucketOf("classic", 1)).toBe(9);
   });
 
   it("fits cells 0.6em wide and 1em tall", () => {

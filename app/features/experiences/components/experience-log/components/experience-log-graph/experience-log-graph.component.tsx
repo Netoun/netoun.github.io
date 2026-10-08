@@ -81,7 +81,7 @@ export function ExperienceLogGraph({ row, main, along }: ExperienceLogGraphProps
         {COLUMNS.map((name) => {
           const { head, run } = columns[name];
           return (
-            <span key={name} className={styles.columnStyle}>
+            <span key={name} className={styles.columnStyle} data-column={name}>
               {head && <span className={styles.glyphStyle({ tone: head.tone })}>{head.char}</span>}
               {run && (
                 <span className={styles.runStyle({ tone: run.tone })}>

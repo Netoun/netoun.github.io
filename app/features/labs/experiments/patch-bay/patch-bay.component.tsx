@@ -2,6 +2,7 @@ import { assignInlineVars, setElementVars } from "@vanilla-extract/dynamic";
 import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import {
   BOOT,
+  COLS,
   JACKS,
   POINTS_PER_CABLE,
   STAGE,
@@ -12,10 +13,12 @@ import {
   jackById,
   layCable,
   nearestFreeJack,
+  restLength,
   stepCable,
   stretchPercent,
   type Cable,
   type Jack,
+  type Pin,
   type SolverParams,
 } from "./patch-bay-verlet";
 import * as styles from "./patch-bay.css";
@@ -136,7 +139,6 @@ const INITIAL_PLUGS = INITIAL.map((cable) => [
 ]);
 const INITIAL_POINTS = INITIAL.map(pointsAttr);
 const INITIAL_HANDLES = handlesPath(INITIAL[0]);
-const LEDS_OFF = "color-mix(in srgb, oklch(0.93 0.03 80) 12%, black)";
 
 const cloneCables = (cables: readonly Cable[]): Cable[] =>
   cables.map((cable) => ({
@@ -196,14 +198,14 @@ export function PatchBay({ params, xray, shakeToken, resetToken }: PatchBayProps
     const state = sim.current;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    const pins = (index: number): [ReturnType<typeof endPin>, ReturnType<typeof endPin>] => {
+    const pins = (index: number): [Pin, Pin] => {
       const cable = state.cables[index];
       const drag = state.drag;
-      return [0, 1].map((end) =>
+      const pinAt = (end: End): Pin =>
         drag && drag.cable === index && drag.end === end
           ? { x: drag.x, y: drag.y }
-          : endPin(cable, end as End),
-      ) as [ReturnType<typeof endPin>, ReturnType<typeof endPin>];
+          : endPin(cable, end);
+      return [pinAt(0), pinAt(1)];
     };
 
     const step = () => {
@@ -377,8 +379,7 @@ export function PatchBay({ params, xray, shakeToken, resetToken }: PatchBayProps
     // The other end holds the cable: a plug goes no farther than the cable reaches.
     const anchor = endPin(sim.current.cables[drag.cable], drag.end === 0 ? 1 : 0);
     if (anchor) {
-      const reach =
-        sim.current.cables[drag.cable].base * (1 + paramsRef.current.slack / 100) * 0.99;
+      const reach = restLength(sim.current.cables[drag.cable], paramsRef.current.slack) * 0.99;
       const distance = Math.hypot(x - anchor.x, y - anchor.y);
       if (distance > reach) {
         x = anchor.x + ((x - anchor.x) * reach) / distance;
@@ -449,8 +450,8 @@ export function PatchBay({ params, xray, shakeToken, resetToken }: PatchBayProps
       const from = jackById(current);
       const free = (jack: Jack) => isJackFree(state.cables, index, end, jack, slack);
       if (direction[0] !== 0) {
-        for (let col = from.col + direction[0]; col >= 0 && col < 8; col += direction[0]) {
-          const jack = JACKS[from.row * 8 + col];
+        for (let col = from.col + direction[0]; col >= 0 && col < COLS; col += direction[0]) {
+          const jack = JACKS[from.row * COLS + col];
           if (free(jack)) {
             target = jack;
             break;
@@ -510,7 +511,6 @@ export function PatchBay({ params, xray, shakeToken, resetToken }: PatchBayProps
               cx="49"
               cy="-9"
               r="2.6"
-              fill={litBy.has(jack.id) ? undefined : LEDS_OFF}
             />
           </g>
         ))}

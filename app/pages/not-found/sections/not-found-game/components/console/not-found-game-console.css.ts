@@ -1,3 +1,4 @@
+import { motion } from "@styles/motion.css";
 import { breakpoints } from "@styles/responsive.css";
 import { vars } from "@styles/theme.css";
 import { weight } from "@styles/weight";
@@ -50,7 +51,7 @@ export const screenStyle = style({
   lineHeight: "1.1875rem",
   letterSpacing: "0.02em",
   color: vars.colors.background,
-  transition: "opacity 300ms ease",
+  transition: `opacity ${motion.duration.base} ease`,
   selectors: {
     "&[data-stale]": { opacity: 0.45 },
   },

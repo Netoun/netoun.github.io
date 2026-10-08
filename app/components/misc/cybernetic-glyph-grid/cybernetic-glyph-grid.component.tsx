@@ -509,7 +509,7 @@ export const CyberneticGlyphGrid = memo(
         // Glitching now: violet. Rewritten by the last tick: gold, on top.
         ctx.strokeStyle = "oklch(0.62 0.25 313)";
         cells.forEach((cell, index) => {
-          if (cell.glitchUntil <= now || index >= cols * rows) return;
+          if (cell.glitchUntil <= now) return;
           const [x, y] = box(index);
           ctx.strokeRect(x + 0.5, y + 0.5, cellW - 1, cellH - 1);
         });

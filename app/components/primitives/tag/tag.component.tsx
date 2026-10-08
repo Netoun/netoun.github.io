@@ -1,5 +1,6 @@
 import { tagMarkStyle, tagStyle, type TagColor, type TagSize } from "./tag.css";
 import { memo } from "react";
+import { Glyph } from "../glyph/glyph.component";
 
 // Tags are coloured by tech domain so the palette reads as a system, not
 // decoration. Four accents map to four domains; everything else stays
@@ -92,7 +93,7 @@ const TAG_COLOR_MAP: Record<string, TagColor> = {
 };
 
 export function getTagColor(tag: string): TagColor {
-  return TAG_COLOR_MAP[tag] ?? "default";
+  return Object.hasOwn(TAG_COLOR_MAP, tag) ? TAG_COLOR_MAP[tag] : "default";
 }
 
 export interface TagProps {
@@ -108,11 +109,7 @@ function TagComponent({ children, color, size, mark }: TagProps) {
 
   return (
     <span className={tagStyle({ color: resolvedColor, size })}>
-      {mark && (
-        <span className={tagMarkStyle({ color: resolvedColor })} aria-hidden="true">
-          {mark}
-        </span>
-      )}
+      {mark && <Glyph className={tagMarkStyle({ color: resolvedColor })}>{mark}</Glyph>}
       {children}
     </span>
   );

@@ -19,10 +19,6 @@ type WebGLData = {
   gl: WebGLRenderingContext;
   program: WebGLProgram;
   uniforms: Map<string, WebGLUniformLocation | null>;
-  resolutionLoc: WebGLUniformLocation | null;
-  timeLoc: WebGLUniformLocation | null;
-  qualityLoc: WebGLUniformLocation | null;
-  scrollLoc: WebGLUniformLocation | null;
   positionBuffer: WebGLBuffer;
 };
 
@@ -133,25 +129,10 @@ function setupWebGL(
   gl.enableVertexAttribArray(positionLocation);
   gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
-  const resolutionLoc = gl.getUniformLocation(program, "u_resolution");
-  const timeLoc = gl.getUniformLocation(program, "u_time");
-  const qualityLoc = gl.getUniformLocation(program, "u_quality");
-  const scrollLoc = gl.getUniformLocation(program, "u_scroll");
-
-  const uniformMap = new Map<string, WebGLUniformLocation | null>();
-  if (resolutionLoc) uniformMap.set("u_resolution", resolutionLoc);
-  if (timeLoc) uniformMap.set("u_time", timeLoc);
-  if (qualityLoc) uniformMap.set("u_quality", qualityLoc);
-  if (scrollLoc) uniformMap.set("u_scroll", scrollLoc);
-
   return {
     gl,
     program,
-    uniforms: uniformMap,
-    resolutionLoc,
-    timeLoc,
-    qualityLoc,
-    scrollLoc,
+    uniforms: new Map(),
     positionBuffer,
   };
 }
@@ -182,7 +163,6 @@ async function setupWebGPU(
   canvas: HTMLCanvasElement,
   shader: ShaderBundle,
   options: RendererOptions,
-  quality: number,
   shouldAbort: () => boolean,
 ): Promise<WebGPUContext | null> {
   const gpu = navigator.gpu;
@@ -205,32 +185,39 @@ async function setupWebGPU(
     return null;
   }
 
-  const format = gpu.getPreferredCanvasFormat();
-  context.configure({ device, format, alphaMode: "premultiplied" });
+  // Past requestDevice() the device must be released on any failure, or it leaks
+  // and the caller falls back to WebGL with a GPU device still alive.
+  try {
+    const format = gpu.getPreferredCanvasFormat();
+    context.configure({ device, format, alphaMode: "premultiplied" });
 
-  const shaderModule = device.createShaderModule({ code: shader.webgpuWGSL });
-  const pipeline = device.createRenderPipeline({
-    layout: "auto",
-    vertex: { module: shaderModule, entryPoint: "vsMain" },
-    fragment: {
-      module: shaderModule,
-      entryPoint: "fsMain",
-      targets: [{ format }],
-    },
-    primitive: { topology: "triangle-list" },
-  });
+    const shaderModule = device.createShaderModule({ code: shader.webgpuWGSL });
+    const pipeline = device.createRenderPipeline({
+      layout: "auto",
+      vertex: { module: shaderModule, entryPoint: "vsMain" },
+      fragment: {
+        module: shaderModule,
+        entryPoint: "fsMain",
+        targets: [{ format }],
+      },
+      primitive: { topology: "triangle-list" },
+    });
 
-  const uniformBuffer = device.createBuffer({
-    size: 32,
-    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-  });
+    const uniformBuffer = device.createBuffer({
+      size: 32,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+    });
 
-  const bindGroup = device.createBindGroup({
-    layout: pipeline.getBindGroupLayout(0),
-    entries: [{ binding: 0, resource: { buffer: uniformBuffer } }],
-  });
+    const bindGroup = device.createBindGroup({
+      layout: pipeline.getBindGroupLayout(0),
+      entries: [{ binding: 0, resource: { buffer: uniformBuffer } }],
+    });
 
-  return { device, context, pipeline, bindGroup, uniformBuffer, format };
+    return { device, context, pipeline, bindGroup, uniformBuffer, format };
+  } catch (error) {
+    device.destroy();
+    throw error;
+  }
 }
 
 function drawWebGPU(ctx: WebGPUContext, canvas: HTMLCanvasElement, uniforms: Uniforms) {
@@ -306,9 +293,6 @@ export function createCanvasRenderer(
       const session: RendererSession = {
         get type() {
           return type;
-        },
-        redraw() {
-          if (type === "webgl" || type === "webgpu") scheduleDraw();
         },
         updateUniforms(newUniforms: Uniforms) {
           Object.assign(liveUniforms, newUniforms);
@@ -460,17 +444,23 @@ export function createCanvasRenderer(
       };
 
       if (shader.webgpuWGSL) {
+        let timeoutId: ReturnType<typeof setTimeout> | undefined;
         try {
           let webgpuTimedOut = false;
-          const gpuCleanup = await Promise.race([
-            setupWebGPU(canvas, shader, options, 0, () => cancelled || webgpuTimedOut),
-            new Promise<null>((r) =>
-              setTimeout(() => {
-                webgpuTimedOut = true;
-                r(null);
-              }, options.webgpuTimeout ?? 250),
-            ),
-          ]);
+          let gpuCleanup: WebGPUContext | null = null;
+          try {
+            gpuCleanup = await Promise.race([
+              setupWebGPU(canvas, shader, options, () => cancelled || webgpuTimedOut),
+              new Promise<null>((r) => {
+                timeoutId = setTimeout(() => {
+                  webgpuTimedOut = true;
+                  r(null);
+                }, options.webgpuTimeout ?? 250);
+              }),
+            ]);
+          } finally {
+            clearTimeout(timeoutId);
+          }
           if (!cancelled && gpuCleanup) {
             webgpuCtx = gpuCleanup;
             resolveRenderer("webgpu");
@@ -484,6 +474,9 @@ export function createCanvasRenderer(
         }
       }
 
+      // Destroyed while the WebGPU race was pending: skip WebGL so no GL objects
+      // are created that nothing will delete.
+      if (cancelled) return;
       const wgl = setupWebGL(canvas, shader, options);
       if (!cancelled && wgl) {
         webglData = wgl;
@@ -497,6 +490,8 @@ export function createCanvasRenderer(
       }
     }
 
-    void init();
+    init().catch(() => {
+      if (!cancelled) resolveRenderer("svg");
+    });
   });
 }

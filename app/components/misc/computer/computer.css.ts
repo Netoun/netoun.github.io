@@ -1,4 +1,5 @@
 import { createVar, fallbackVar, globalStyle, style } from "@vanilla-extract/css";
+import { motion } from "@/styles/motion.css";
 import { vars } from "@/styles/theme.css";
 import { weight } from "@styles/weight";
 
@@ -298,7 +299,7 @@ for (const face of Object.keys(computerFaceTransforms) as ComputerFace[]) {
     opacity: 0.66,
     outline: `1px solid color-mix(in srgb, ${vars.colors.primary} 70%, transparent)`,
     outlineOffset: "-1px",
-    transition: `transform 420ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms`,
+    transition: `transform 420ms ${motion.easing.signature}, opacity 200ms`,
   });
 }
 

@@ -30,8 +30,6 @@ const MESH_SHAPES = [
   },
 ] as const;
 
-const normalizeSvgId = (id: string) => id.replace(/:/g, "-");
-
 interface FooterSharedSvgIds {
   meshBlurId: string;
 }
@@ -107,8 +105,7 @@ const FooterMeshShaderBackground = memo(function FooterMeshShaderBackground({
 });
 
 export function FooterBackground() {
-  const svgId = normalizeSvgId("footer-bg");
-  const meshBlurId = `${svgId}-mesh-blur`;
+  const meshBlurId = "footer-bg-mesh-blur";
 
   return (
     <>

@@ -10,13 +10,8 @@ import {
 } from "@/components/primitives/icons/contact-icon.css";
 import { weight } from "@styles/weight";
 
-// Note: Les styles du beam SVG ont été déplacés dans
-// components/beam/welcome-hero-contact-hover-card-beam.css.ts
-
-// Surface of the popover (a lifted beige veil over the dark hero) and its
-// mint edge — shared by the arrow, so it reads as part of the card, and by
-// the link hover rows. They were referenced but never defined: the arrow
-// filled black and the hover rows had no background at all.
+// Popover surface (a lifted beige veil over the dark hero) and its mint edge.
+// Shared by the arrow, so it reads as part of the card, and by the link hover rows.
 const highlightBackground = createVar();
 const highlightBorder = createVar();
 
@@ -36,7 +31,7 @@ export const welcomeHeroContactHoverCardTriggerStyles = style({
   position: "relative",
   display: "inline-flex",
   width: "fit-content",
-  // Magnetic CTA : suit le curseur de ±4px max via use-magnetic.hook
+  // Magnetic CTA: follows the cursor by at most ±4px via use-magnetic.hook.
   transform: `translate3d(${fallbackVar(magnetOffset.x, "0px")}, ${fallbackVar(magnetOffset.y, "0px")}, 0)`,
   transition: `transform ${motion.duration.fast} ${motion.easing.out}`,
 });
@@ -245,7 +240,7 @@ export const linkStyles = style({
   textTransform: "uppercase",
   textDecoration: "none",
   letterSpacing: "0.04em",
-  transition: "background-color 150ms ease, color 150ms ease",
+  transition: `background-color ${motion.duration.fast} ease, color ${motion.duration.fast} ease`,
 
   ":hover": {
     backgroundColor: `color-mix(in srgb, ${highlightBackground} 88%, transparent)`,

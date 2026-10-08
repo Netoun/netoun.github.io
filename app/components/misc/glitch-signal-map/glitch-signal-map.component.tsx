@@ -233,7 +233,6 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
 }: GlitchSignalMapProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
 
   const isAnimatingRef = useRef(isAnimating);
   const runningRef = useRef(false);
@@ -258,7 +257,6 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
   const tickStepRef = useRef(0);
 
   const hoverIdxRef = useRef(-1);
-  const needsDrawRef = useRef(true);
 
   const tickMsRef = useRef(tickMs);
   const updateRatioRef = useRef(updateRatio);
@@ -285,11 +283,9 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
     const ctx = canvas.getContext("2d", {
       alpha: true,
       desynchronized: true,
-    } as CanvasRenderingContext2DSettings);
+    });
 
     if (!ctx) return;
-
-    ctxRef.current = ctx;
 
     const cancelMainRaf = () => {
       if (rafRef.current !== null) {
@@ -363,7 +359,6 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
       rectsRef.current = buildRects(layout);
       dotsRef.current = buildDotCells(width, height, dotMetaRef.current);
 
-      needsDrawRef.current = true;
       drawOnceRef.current();
     };
 
@@ -375,8 +370,6 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
 
       const blocks = blocksRef.current;
       const count = blocks.length;
-
-      if (count === 0) return;
 
       const batch = Math.max(1, Math.floor(count * updateRatioRef.current));
       const step = tickStepRef.current;
@@ -414,7 +407,6 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
       }
 
       touchedRef.current = touched;
-      needsDrawRef.current = true;
       onTickRef.current?.({
         tick: step,
         rewritten: touched.size,
@@ -488,7 +480,6 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
 
       if (xrayRef.current) {
         drawXray(now);
-        needsDrawRef.current = false;
         return;
       }
 
@@ -577,7 +568,6 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
       }
 
       ctx.globalAlpha = 1;
-      needsDrawRef.current = false;
     };
 
     const loop = (now: number) => {
@@ -660,7 +650,6 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
       );
       touchedRef.current = new Set();
       tickStepRef.current = 0;
-      needsDrawRef.current = true;
       if (!runningRef.current) drawOnce();
     };
 
@@ -694,7 +683,6 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
 
     const updateReducedMotion = () => {
       reducedMotionRef.current = motionQuery.matches;
-      needsDrawRef.current = true;
 
       if (motionQuery.matches) {
         stopLoop();
@@ -730,7 +718,6 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
       if (hoverIndex === hoverIdxRef.current) return;
 
       hoverIdxRef.current = hoverIndex;
-      needsDrawRef.current = true;
       reportHover(hoverIndex);
 
       if (!runningRef.current) {
@@ -742,7 +729,6 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
       if (hoverIdxRef.current === -1) return;
 
       hoverIdxRef.current = -1;
-      needsDrawRef.current = true;
       reportHover(-1);
 
       if (!runningRef.current) {
@@ -775,8 +761,6 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
       cancelMainRaf();
       cancelResizeRaf();
       window.clearTimeout(settleTimer);
-
-      ctxRef.current = null;
     };
   }, []);
 
@@ -805,7 +789,6 @@ export const GlitchSignalMap = memo(function GlitchSignalMap({
 
   useEffect(() => {
     xrayRef.current = xray;
-    needsDrawRef.current = true;
     if (!runningRef.current) drawOnceRef.current();
     // An xray readout opening mid-run gets the grid as it is, not after the next tick.
     if (xray) reportStatsRef.current();
